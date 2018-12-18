@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import './components/word.dart';
+// import './components/word.dart';
 import './bus.dart';
+import './functions/words.dart';
 
 void main() => runApp(MyApp());
 
@@ -46,7 +47,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  // int _counter = 0;
   initState() {
     super.initState();
     bus.on("word_clicked", (arg) {
@@ -72,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
+      // _counter++;
     });
   }
 
@@ -93,34 +94,13 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Row(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Word('We'),
-            Word('can'),
-            Word('run'),
-            Word('this'),
-            Word('in'),
-            Word('our'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+        child: Wrap(
+          spacing: 2,
+          runSpacing: 2,
+          children: createWordsByArticle(""" 
+After some thought, she asked whether the particular code camp he 
+had attended had touched on security, infrastructure, or operating systems; it was a question asked with the intention of understanding his comparison. Flustered, he responded that roles in those areas were so niche that his statement still stood.
+          """),
         ),
       ),
       floatingActionButton: FloatingActionButton(

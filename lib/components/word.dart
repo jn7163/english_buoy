@@ -9,12 +9,10 @@ class Word extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {
-          bus.emit('word_clicked', text);
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(1.0),
-          child: Text(text),
-        ));
+      onTap: () {
+        bus.emit('word_clicked', text);
+      },
+      child: Text(text),
+    );
   }
 }
