@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './components/word.dart';
+import './bus.dart';
 
 void main() => runApp(MyApp());
 
@@ -60,6 +61,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bus.on("word_clicked", (arg) {
+      showModalBottomSheet<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+                child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Text(arg,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Theme.of(context).accentColor,
+                            fontSize: 24.0))));
+          });
+    });
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -92,8 +107,12 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Word(text: 'bigzhu'),
-            Word(text: 'bigzhu2'),
+            Word('We'),
+            Word('can'),
+            Word('run'),
+            Word('this'),
+            Word('in'),
+            Word('our'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.display1,
