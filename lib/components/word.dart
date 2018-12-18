@@ -12,7 +12,12 @@ class Word extends StatelessWidget {
       onTap: () {
         bus.emit('word_clicked', text);
       },
-      child: Text(text),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 20.0, // insert your font size here
+        ),
+      ),
     );
   }
 }
