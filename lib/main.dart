@@ -91,17 +91,13 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Wrap(
-          spacing: 2,
-          runSpacing: 2,
-          children: createWordsByArticle(""" 
+      body: Wrap(
+        spacing: 2,
+        runSpacing: 2,
+        children: createWordsByArticle(""" 
 After some thought, she asked whether the particular code camp he 
 had attended had touched on security, infrastructure, or operating systems; it was a question asked with the intention of understanding his comparison. Flustered, he responded that roles in those areas were so niche that his statement still stood.
           """),
-        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
