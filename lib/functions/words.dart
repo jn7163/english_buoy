@@ -17,25 +17,26 @@ TextSpan getTextSpan(String word) {
 
 // 根据不同正则处理, 空格不要加事件
 List<TextSpan> createWordsByArticle(String article) {
+  var lWords = List<TextSpan>(); //存储分割好的单词
+  RegExp endWithWrap = new RegExp(r"\n$"); //以换行结尾
   RegExp reg = new RegExp(r"[a-zA-Z]+$");
-  RegExp p = new RegExp(r"[,|.|?|!]$");
-  var words = article.split(" ");
-  var lWords = List<TextSpan>();
-  for (var i = 0; i < words.length; i++) {
-    var word = words[i];
-    if (reg.hasMatch(word)) {
-      // 是否完全是字母
-      lWords.add(getRegistedTextSpan(word));
-    } else if (p.hasMatch(word)) {
-      // 结尾有标点的情况
-      var theP = word[word.length - 1];
-      word = word.replaceFirst(theP, "");
-      lWords.add(getRegistedTextSpan(word));
-      lWords.add(getTextSpan(theP));
-    } else {
-      lWords.add(getTextSpan(word));
+  // 先按换行分割
+  var wraps = article.split(new RegExp(r"\n"));
+  var theWraps = wraps.map((d) {
+    return d + '\n';
+  }).toList();
+
+  for (var i = 0; i < theWraps.length; i++) {
+    var words = theWraps[i].split(" ");
+    for (var j = 0; j < words.length; j++) {
+      var word = words[j];
+      if (endWithWrap.hasMatch(word)) {
+        lWords.add(getRegistedTextSpan(word));
+      } else {
+        lWords.add(getRegistedTextSpan(word));
+        lWords.add(getTextSpan(" "));
+      }
     }
-    lWords.add(getTextSpan(" "));
   }
   return lWords;
 }

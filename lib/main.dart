@@ -93,7 +93,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Container(
         margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: getRichText('''bigzhu very big.'''),
+        child: getRichText('''
+Don’t bet against Apple.” That’s my go-to mantra when someone asks me about Apple’s future as a market leader, or the success of any new iPhone. If the company’s performance this quarter didn’t wow you, the next one probably will.
+
+Yet the wind is clearly shifting for the iPhone, with intensifying worries about sales figures, diminishing global demand for smartphones overall, rumors that Apple won’t make the 5G leap for another year, and the company’s startling decision to stop disclosing unit sales for iOS devices and Macs in its financial reports. Though you’d be foolish to doubt Apple’s prospects, the status quo for its star product is, after many years, changing.
+        '''),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
