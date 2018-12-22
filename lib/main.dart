@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import './components/word.dart';
 import './bus.dart';
 import './functions/words.dart';
+import './store/article.dart';
 
 void main() => runApp(MyApp());
 
@@ -68,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
+      postArticle();
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
       // so that the display can reflect the updated values. If we changed
@@ -97,6 +99,10 @@ class _MyHomePageState extends State<MyHomePage> {
 Don’t bet against Apple.” That’s my go-to mantra when someone asks me about Apple’s future as a market leader, or the success of any new iPhone. If the company’s performance this quarter didn’t wow you, the next one probably will.
 
 Yet the wind is clearly shifting for the iPhone, with intensifying worries about sales figures, diminishing global demand for smartphones overall, rumors that Apple won’t make the 5G leap for another year, and the company’s startling decision to stop disclosing unit sales for iOS devices and Macs in its financial reports. Though you’d be foolish to doubt Apple’s prospects, the status quo for its star product is, after many years, changing.
+
+It’s no secret that much of Apple’s recent success has been driven by the now 11-year-old iPhone. Its rocket-like sales trajectory really began in 2009, after Apple introduced the App Store, a platform that transformed the iPhone from a beautiful gadget into a genuinely useful pocket device. Over the next decade, it narrowed our gaze from a wide vista to the distance between our eyes.
+
+Apple and the iPhone are not immune to larger smartphone market forces.
         '''),
       ),
       floatingActionButton: FloatingActionButton(

@@ -19,7 +19,7 @@ TextSpan getTextSpan(String word) {
 List<TextSpan> createWordsByArticle(String article) {
   var lWords = List<TextSpan>(); //存储分割好的单词
   RegExp endWithWrap = new RegExp(r"\n$"); //以换行结尾
-  RegExp reg = new RegExp(r"[a-zA-Z]+$");
+  // RegExp reg = new RegExp(r"[a-zA-Z]+$");
   // 先按换行分割
   var wraps = article.split(new RegExp(r"\n"));
   var theWraps = wraps.map((d) {
