@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import '../bus.dart';
+// import 'dart:convert';
 
 // getRegistedTextSpacn 获取监听了事件的 textSpan
 TextSpan getRegistedTextSpan(String word) {
@@ -12,7 +13,10 @@ TextSpan getRegistedTextSpan(String word) {
 }
 
 TextSpan getTextSpan(String word) {
-  return TextSpan(text: word);
+  return TextSpan(
+    text: word,
+    style: TextStyle(color: Colors.grey, fontSize: 20),
+  );
 }
 
 // 根据不同正则处理, 空格不要加事件
@@ -41,8 +45,32 @@ List<TextSpan> createWordsByArticle(String article) {
   return lWords;
 }
 
-RichText getRichText(String article) {
-  var words = createWordsByArticle(article);
+// 从 json 解析出文章
+List<TextSpan> createWordsByList(List theWraps) {
+  var lWords = List<TextSpan>(); //存储分割好的单词
+  // var theWraps = jsonDecode(articleJSON);
+  for (var i = 0; i < theWraps.length; i++) {
+    var words = theWraps[i];
+    for (var j = 0; j < words.length; j++) {
+      var word = words[j];
+      if (word['level'] != 0) {
+        // 需要学习的单词
+        lWords.add(getRegistedTextSpan(word['text']));
+        lWords.add(getTextSpan(' '));
+      } else {
+        lWords.add(getTextSpan(word['text']));
+        lWords.add(getTextSpan(' '));
+      }
+    }
+    // 一句完成, 换行
+    lWords.add(getTextSpan("\n"));
+  }
+  return lWords;
+}
+
+RichText getRichText(List article) {
+  // var words = createWordsByArticle(article);
+  var words = createWordsByList(article);
   return RichText(
     text: TextSpan(
       text: '',
