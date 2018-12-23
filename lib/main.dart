@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
-// import './components/word.dart';
 import './bus.dart';
 import './functions/words.dart';
 import './store/article.dart';
+import 'package:easy_alert/easy_alert.dart';
 
-void main() => runApp(MyApp());
+// void main() => runApp(MyApp());
+void main() => runApp(AlertProvider(
+      child: MyApp(),
+      config: AlertConfig(
+          ok: "OK text for `ok` button in AlertDialog",
+          cancel: "CANCEL text for `cancel` button in AlertDialog"),
+    ));
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -49,7 +55,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // int _counter = 0;
-  // String _article = '';
   RichText _richText;
   initState() {
     super.initState();
@@ -57,18 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() => _richText = getRichText(arg));
     });
     bus.on("word_clicked", (arg) {
-      showModalBottomSheet<void>(
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-                child: Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: Text(arg,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Theme.of(context).accentColor,
-                            fontSize: 24.0))));
-          });
+      Alert.toast(context, arg.toString(),
+          position: ToastPosition.bottom, duration: ToastDuration.short);
     });
   }
 
