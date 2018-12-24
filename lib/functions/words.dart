@@ -4,15 +4,21 @@ import 'package:flutter/rendering.dart';
 import '../bus.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
 
+var pressedText = "";
 // getRegistedTextSpacn 获取监听了事件的 textSpan
 TextSpan getRegistedTextSpan(String word, int level) {
   return TextSpan(
     text: word,
-    style: TextStyle(background: Paint()..color = Color(0xFF3b9c00)),
+    style: pressedText == word
+        ? TextStyle(background: Paint()..color = Colors.yellow)
+        : TextStyle(background: Paint()..color = Colors.red),
     recognizer: TapGestureRecognizer()
       ..onTap = () {
         bus.emit('word_clicked', level);
         ClipboardManager.copyToClipBoard(word);
+      }
+      ..onTapDown = (o) {
+        bus.emit('tap_down', word);
       },
   );
 }

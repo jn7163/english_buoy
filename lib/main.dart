@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import './bus.dart';
 import './functions/words.dart';
@@ -55,9 +56,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // int _counter = 0;
+  bool taped = false;
   RichText _richText;
   initState() {
     super.initState();
+    bus.on("analysis_done", (arg) {
+      setState(() => _richText = getRichText(arg));
+    });
     bus.on("analysis_done", (arg) {
       setState(() => _richText = getRichText(arg));
     });
@@ -95,7 +100,34 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Container(
         margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: _richText,
+        child: RichText(
+          text: TextSpan(
+            text: '',
+            style: TextStyle(color: Colors.black87, fontSize: 20),
+            children: [
+              TextSpan(
+                text: 'bigzhu',
+                style: taped
+                    ? TextStyle(background: Paint()..color = Colors.yellow)
+                    : TextStyle(background: Paint()..color = Colors.red),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    bus.emit('word_clicked', 1);
+                  }
+                  ..onTapDown = (o) {
+                    setState(() {
+                      taped = true;
+                    });
+                  }
+                  ..onTapUp = (o) {
+                    setState(() {
+                      taped = false;
+                    });
+                  },
+              )
+            ],
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
