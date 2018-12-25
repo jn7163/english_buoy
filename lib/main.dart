@@ -159,7 +159,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Container(
         margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: RichText(
+        child: SingleChildScrollView(
+            child: RichText(
           text: TextSpan(
             text: '',
             style: TextStyle(color: Colors.black87, fontSize: 20),
@@ -171,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
               }
             }).toList(),
           ),
-        ),
+        )),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
