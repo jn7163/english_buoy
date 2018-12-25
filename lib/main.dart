@@ -1,9 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import './bus.dart';
-import './functions/words.dart';
 import './store/article.dart';
 import 'package:easy_alert/easy_alert.dart';
+import './dto/word.dart';
 
 // void main() => runApp(MyApp());
 void main() => runApp(AlertProvider(
@@ -55,21 +55,77 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // int _counter = 0;
-  bool taped = false;
-  RichText _richText;
+  List _sentences = [
+    [
+      {'text': 'bigzhu', 'level': 1}
+    ],
+    [
+      {'text': 'fuck', 'level': 2}
+    ],
+  ]; // 后台返回的文章结构
+  String _tapedText = ''; // 当前点击的文本
   initState() {
     super.initState();
     bus.on("analysis_done", (arg) {
-      setState(() => _richText = getRichText(arg));
-    });
-    bus.on("analysis_done", (arg) {
-      setState(() => _richText = getRichText(arg));
+      setState(() {
+        _sentences = arg;
+      });
     });
     bus.on("word_clicked", (arg) {
       Alert.toast(context, arg.toString(),
           position: ToastPosition.bottom, duration: ToastDuration.short);
     });
+  }
+
+// 把句子铺平为单词
+  List<Word> _sentencesToPaveWords(List sentences) {
+    var paveWords = List<Word>();
+    for (var i = 0; i < sentences.length; i++) {
+      // 每行开头加入空格
+      paveWords.add(Word('    '));
+      var sentence = sentences[i];
+      for (var j = 0; j < sentence.length; j++) {
+        var word = sentence[j];
+        paveWords.add(Word(word['text'], word['label'], word['level']));
+        // 单词之间的空格
+        paveWords.add(Word(' '));
+      }
+      // 一句完成, 换行
+      paveWords.add(Word('\n'));
+    }
+    return paveWords;
+  }
+
+  TextSpan _getTextSpan(String word) {
+    return TextSpan(
+      text: word,
+      style: TextStyle(color: Colors.grey, fontSize: 20),
+    );
+  }
+
+// 生成一个注册好的 textSpan
+  TextSpan _getRegistedTextSpan(String word, int level) {
+    return TextSpan(
+      text: word,
+      style: (this._tapedText == word)
+          ? TextStyle(fontWeight: FontWeight.bold)
+          : TextStyle(),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          bus.emit('word_clicked', level);
+        }
+        ..onTapDown = (o) {
+          setState(() {
+            this._tapedText = word;
+            print(this._tapedText == word);
+          });
+        }
+        ..onTapUp = (o) {
+          setState(() {
+            this._tapedText = '';
+          });
+        },
+    );
   }
 
   void _incrementCounter() {
@@ -104,28 +160,13 @@ class _MyHomePageState extends State<MyHomePage> {
           text: TextSpan(
             text: '',
             style: TextStyle(color: Colors.black87, fontSize: 20),
-            children: [
-              TextSpan(
-                text: 'bigzhu',
-                style: taped
-                    ? TextStyle(background: Paint()..color = Colors.yellow)
-                    : TextStyle(background: Paint()..color = Colors.red),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    bus.emit('word_clicked', 1);
-                  }
-                  ..onTapDown = (o) {
-                    setState(() {
-                      taped = true;
-                    });
-                  }
-                  ..onTapUp = (o) {
-                    setState(() {
-                      taped = false;
-                    });
-                  },
-              )
-            ],
+            children: _sentencesToPaveWords(_sentences).map((d) {
+              if (d.level != 0) {
+                return _getRegistedTextSpan(d.text, d.level);
+              } else {
+                return _getTextSpan(d.text);
+              }
+            }).toList(),
           ),
         ),
       ),
