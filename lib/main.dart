@@ -2,9 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 import './bus.dart';
-import './store/article.dart';
 import 'package:easy_alert/easy_alert.dart';
 import './dto/word.dart';
+import './pages/addarticle.dart';
 
 // void main() => runApp(MyApp());
 void main() => runApp(AlertProvider(
@@ -56,91 +56,74 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List _sentences = [
-    [
-      {'text': 'bigzhu', 'level': 1}
-    ],
-    [
-      {'text': 'fuck', 'level': 2}
-    ],
-  ]; // 后台返回的文章结构
+  List _words = [
+    Word("""
+    big
+    """),
+    Word('fuck'),
+  ];
+  // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
   initState() {
     super.initState();
     bus.on("analysis_done", (arg) {
       setState(() {
-        _sentences = arg;
+        _words = arg.map((d) => Word.fromJson(d)).toList();
       });
     });
     bus.on("word_clicked", (arg) {
       Alert.toast(context, arg.toString(),
           position: ToastPosition.bottom, duration: ToastDuration.short);
     });
-    postArticle();
-  }
-
-// 把句子铺平为单词
-  List<Word> _sentencesToPaveWords(List sentences) {
-    var paveWords = List<Word>();
-    for (var i = 0; i < sentences.length; i++) {
-      // 每行开头加入空格
-      paveWords.add(Word('    '));
-      var sentence = sentences[i];
-      for (var j = 0; j < sentence.length; j++) {
-        var word = sentence[j];
-        paveWords.add(Word(word['text'], word['label'], word['level']));
-        // 单词之间的空格
-        paveWords.add(Word(' '));
-      }
-      // 一句完成, 换行
-      paveWords.add(Word('\n'));
-    }
-    return paveWords;
+    // postArticle();
   }
 
   TextSpan _getTextSpan(String word) {
-    return TextSpan(
-      text: word,
-      style: TextStyle(color: Colors.grey, fontSize: 20),
-    );
+    String blank = " ";
+    // 这些符号前面不要加空格
+    List noNeedBlank = [".", "!", "'", ",", "n't"];
+    if (noNeedBlank.contains(word)) blank = "";
+    if (word == "\n") word = "\n   "; // 如果换行了, 下一行加上3个空格, 保证缩进
+    return TextSpan(text: blank, children: [
+      TextSpan(
+        text: word,
+        style: TextStyle(color: Colors.grey[600], fontSize: 20),
+      )
+    ]);
   }
 
 // 生成一个注册好的 textSpan
   TextSpan _getRegistedTextSpan(String word, int level) {
-    return TextSpan(
-      text: word,
-      style: (this._tapedText == word)
-          ? TextStyle(fontWeight: FontWeight.bold)
-          : TextStyle(),
-      recognizer: TapGestureRecognizer()
-        ..onTap = () {
-          bus.emit('word_clicked', level);
-          ClipboardManager.copyToClipBoard(word);
-        }
-        ..onTapDown = (o) {
-          setState(() {
-            this._tapedText = word;
-            print(this._tapedText == word);
-          });
-        }
-        ..onTapUp = (o) {
-          setState(() {
-            this._tapedText = '';
-          });
-        },
-    );
+    return TextSpan(text: " ", children: [
+      TextSpan(
+        text: word,
+        style: (this._tapedText == word)
+            ? TextStyle(fontWeight: FontWeight.bold)
+            : TextStyle(),
+        recognizer: TapGestureRecognizer()
+          ..onTap = () {
+            bus.emit('word_clicked', level);
+            ClipboardManager.copyToClipBoard(word);
+          }
+          ..onTapDown = (o) {
+            setState(() {
+              this._tapedText = word;
+            });
+          }
+          ..onTapUp = (o) {
+            setState(() {
+              this._tapedText = '';
+            });
+          },
+      )
+    ]);
   }
 
-  void _incrementCounter() {
-    setState(() {
-      postArticle();
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      // _counter++;
-    });
+  void _toAddArticle() {
+    //导航到新路由
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return AddArticlePage();
+    }));
   }
 
   @override
@@ -164,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
           text: TextSpan(
             text: '',
             style: TextStyle(color: Colors.black87, fontSize: 20),
-            children: _sentencesToPaveWords(_sentences).map((d) {
+            children: _words.map((d) {
               if (d.level != 0) {
                 return _getRegistedTextSpan(d.text, d.level);
               } else {
@@ -175,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
         )),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _toAddArticle,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
