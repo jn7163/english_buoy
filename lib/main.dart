@@ -1,4 +1,5 @@
 import 'package:flutter/gestures.dart';
+import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 import './bus.dart';
 import './store/article.dart';
@@ -75,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
       Alert.toast(context, arg.toString(),
           position: ToastPosition.bottom, duration: ToastDuration.short);
     });
+    postArticle();
   }
 
 // 把句子铺平为单词
@@ -113,6 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
       recognizer: TapGestureRecognizer()
         ..onTap = () {
           bus.emit('word_clicked', level);
+          ClipboardManager.copyToClipBoard(word);
         }
         ..onTapDown = (o) {
           setState(() {
