@@ -145,10 +145,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SingleChildScrollView(
             child: RichText(
           text: TextSpan(
-            text: '',
+            text: '   ', // 第一句的空格
             style: TextStyle(color: Colors.black87, fontSize: 20),
             children: _words.map((d) {
-              if (d.level != 0) {
+              if (0 < d.level && d.level < 1000) {
                 return _getRegistedTextSpan(d.text, d.level);
               } else {
                 return _getTextSpan(d.text);
