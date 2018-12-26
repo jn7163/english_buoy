@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import './bus.dart';
 import 'package:easy_alert/easy_alert.dart';
 import './dto/word.dart';
-import './pages/addarticle.dart';
+import './pages/add_article.dart';
 
 // void main() => runApp(MyApp());
 void main() => runApp(AlertProvider(
@@ -78,17 +78,23 @@ class _MyHomePageState extends State<MyHomePage> {
     // postArticle();
   }
 
-  TextSpan _getTextSpan(String word) {
+  TextSpan _getTextSpan(String word, int level) {
     String blank = " ";
     // 这些符号前面不要加空格
-    List noNeedBlank = [".", "!", "'", ",", "n't"];
+    List noNeedBlank = [".", "!", "'", ",", "n't", "'s"];
     if (noNeedBlank.contains(word)) blank = "";
     if (word == "\n") word = "\n   "; // 如果换行了, 下一行加上3个空格, 保证缩进
     return TextSpan(text: blank, children: [
       TextSpan(
-        text: word,
-        style: TextStyle(color: Colors.grey[600], fontSize: 20),
-      )
+          text: word,
+          style: TextStyle(color: Colors.grey[600], fontSize: 20),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              if (level != 0) {
+                bus.emit('word_clicked', level);
+              }
+              ClipboardManager.copyToClipBoard(word);
+            })
     ]);
   }
 
@@ -148,10 +154,10 @@ class _MyHomePageState extends State<MyHomePage> {
             text: '   ', // 第一句的空格
             style: TextStyle(color: Colors.black87, fontSize: 20),
             children: _words.map((d) {
-              if (0 < d.level && d.level < 1000) {
+              if (d.level != null && d.level > 0 && d.level < 1000) {
                 return _getRegistedTextSpan(d.text, d.level);
               } else {
-                return _getTextSpan(d.text);
+                return _getTextSpan(d.text, d.level);
               }
             }).toList(),
           ),

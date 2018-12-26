@@ -9,7 +9,7 @@ Photo by Matthieu Paley @paleyphoto | Pure Joy! Wuluk Bu can’t help but kiss t
   }
   Dio dio = new Dio();
   print('post analysis');
-  var response = await dio.post("http://192.168.1.102:3004/api/analysis",
+  var response = await dio.post("http://192.168.50.85:3004/api/analysis",
       data: {"content": article});
   bus.emit('analysis_done', response.data);
   return response.data;

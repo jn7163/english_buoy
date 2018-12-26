@@ -3,8 +3,27 @@ import '../store/article.dart';
 
 TextEditingController _unameController = new TextEditingController();
 
-class AddArticlePage extends StatelessWidget {
-  var _isEnable = true;
+class AddArticlePage extends StatefulWidget {
+  AddArticlePage({Key key}) : super(key: key);
+  @override
+  _AddArticlePageState createState() => _AddArticlePageState();
+}
+
+class _AddArticlePageState extends State<AddArticlePage> {
+  bool _isEnable = true;
+  void _add() {
+    setState(() {
+      _isEnable = false;
+    });
+    postArticle(_unameController.text).then((d) {
+      setState(() {
+        _isEnable = true;
+      });
+      _unameController.text = '';
+      Navigator.pop(context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,15 +43,8 @@ class AddArticlePage extends StatelessWidget {
                 keyboardType: TextInputType.multiline,
               ),
               OutlineButton(
-                child: Text("提交"),
-                onPressed: () {
-                  _isEnable = false;
-                  postArticle(_unameController.text).then((d) {
-                    _isEnable = true;
-                    _unameController.text = '';
-                    Navigator.pop(context);
-                  });
-                },
+                child: Text(_isEnable ? "提交" : "提交中..."),
+                onPressed: _isEnable ? _add : null,
               )
             ],
           )),
