@@ -12,12 +12,12 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
   ],
 );
 
-class SignInDemo extends StatefulWidget {
+class SignInPage extends StatefulWidget {
   @override
-  State createState() => SignInDemoState();
+  State createState() => SignInPageState();
 }
 
-class SignInDemoState extends State<SignInDemo> {
+class SignInPageState extends State<SignInPage> {
   GoogleSignInAccount _currentUser;
   String _contactText;
 

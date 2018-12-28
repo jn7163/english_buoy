@@ -5,6 +5,7 @@ import './bus.dart';
 import 'package:easy_alert/easy_alert.dart';
 import './dto/word.dart';
 import './pages/add_article.dart';
+import './pages/sign.dart';
 
 // void main() => runApp(MyApp());
 void main() => runApp(AlertProvider(
@@ -57,9 +58,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List _words = [
-    Word("""
-    big
-    """),
+    Word('big'),
     Word('fuck'),
   ];
   // 后台返回的文章结构
@@ -132,6 +131,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }));
   }
 
+  void _toSignPage() {
+    //导航到新路由
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return SignInPage();
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -145,6 +151,13 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            tooltip: 'Air it',
+            onPressed: _toSignPage,
+          ),
+        ],
       ),
       body: Container(
         margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
