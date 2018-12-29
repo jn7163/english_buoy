@@ -58,6 +58,20 @@ class _ArticlePageState extends State<ArticlePage> {
     // postArticle();
   }
 
+// 设置当前文章的所有单词为正确状态
+  _setAllWordLearned(String word, bool learned) {
+    print("_setAllWordLearned");
+    _words.forEach((d) {
+      print(word + "=" + d.text);
+      if (d.text.toLowerCase() == word) {
+        print(word);
+        setState(() {
+          d.learned = learned;
+        });
+      }
+    });
+  }
+
 // 无需学习的单词
   TextSpan _getNoNeedLearnTextSpan(String word, int level) {
     String blank = " ";
@@ -90,6 +104,7 @@ class _ArticlePageState extends State<ArticlePage> {
         });
         putLearned(word.text, word.learned);
         bus.emit('learned', word);
+        _setAllWordLearned(word.text.toLowerCase(), word.learned);
       }
       ..onTap = (i) {
         bus.emit('word_clicked', word.level);
@@ -128,6 +143,7 @@ class _ArticlePageState extends State<ArticlePage> {
         });
         putLearned(word.text, word.learned);
         bus.emit('learned', word);
+        _setAllWordLearned(word.text.toLowerCase(), word.learned);
       }
       ..onTap = (i) {
         // bus.emit('word_clicked', word.level);
