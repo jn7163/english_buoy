@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../bus.dart';
+import './store.dart';
 
 postArticle(String article) async {
   if (article == "") {
@@ -9,8 +10,8 @@ Photo by Matthieu Paley @paleyphoto | Pure Joy! Wuluk Bu can’t help but kiss t
   }
   Dio dio = new Dio();
   print('post analysis');
-  var response = await dio.post("http://192.168.50.85:3004/api/analysis",
-      data: {"content": article});
+  var response = await dio
+      .post(Store.baseURL + "api/analysis", data: {"content": article});
   bus.emit('analysis_done', response.data);
   return response.data;
 }
