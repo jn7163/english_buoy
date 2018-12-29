@@ -3,7 +3,7 @@ class Word {
   final String text;
   final String label;
   final int level;
-  final bool learned;
+  bool learned;
 
   Word(this.text, [this.label, this.level, this.learned = false]);
   Word.fromJson(Map<String, dynamic> json)

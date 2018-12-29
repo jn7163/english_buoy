@@ -82,10 +82,13 @@ class _ArticlePageState extends State<ArticlePage> {
 // 需要学习的单词
   TextSpan _getNeedLearnTextSpan(Word word) {
     var _tapRecognizer = MultiTapGestureRecognizer()
-      ..longTapDelay = Duration(seconds: 1)
+      ..longTapDelay = Duration(milliseconds: 500)
       ..onLongTapDown = (i, detail) {
         print("onLongTapDown");
-        putLearned(word.text, !word.learned);
+        setState(() {
+          word.learned = !word.learned;
+        });
+        putLearned(word.text, word.learned);
         bus.emit('learned', word);
       }
       ..onTap = (i) {
@@ -107,23 +110,27 @@ class _ArticlePageState extends State<ArticlePage> {
       TextSpan(
           text: word.text,
           style: (this._tapedText == word.text)
-              ? TextStyle(color: Colors.teal[900], fontWeight: FontWeight.bold)
-              : TextStyle(color: Colors.teal[900]),
+              ? TextStyle(color: Colors.teal[500], fontWeight: FontWeight.bold)
+              : TextStyle(color: Colors.teal[700]),
           recognizer: _tapRecognizer)
     ]);
   }
 
-// 生成一个已学过的 textSpan
+// 已经学会的单词
   TextSpan _getLearnedTextSpan(Word word) {
     var _tapRecognizer = MultiTapGestureRecognizer()
-      ..longTapDelay = Duration(seconds: 1)
+      ..longTapDelay = Duration(milliseconds: 500)
       ..onLongTapDown = (i, detail) {
         print("onLongTapDown");
-        putLearned(word.text, !word.learned);
+        // 设置为已经学会
+        setState(() {
+          word.learned = !word.learned;
+        });
+        putLearned(word.text, word.learned);
         bus.emit('learned', word);
       }
       ..onTap = (i) {
-        bus.emit('word_clicked', word.level);
+        // bus.emit('word_clicked', word.level);
       }
       ..onTapDown = (i, detail) {
         setState(() {
@@ -192,7 +199,8 @@ class _ArticlePageState extends State<ArticlePage> {
               if (d.learned) {
                 return _getLearnedTextSpan(d);
               }
-              if (d.level != null && d.level > 0 && d.level < 1000) {
+              // if (d.level != null && d.level > 0 && d.level < 1000) {
+              if (d.level != null && d.level != 0) {
                 return _getNeedLearnTextSpan(d);
               } else {
                 return _getNoNeedLearnTextSpan(d.text, d.level);
