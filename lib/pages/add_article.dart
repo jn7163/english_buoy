@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../store/article.dart';
 
-TextEditingController _unameController = new TextEditingController();
+TextEditingController _articleController = new TextEditingController();
+TextEditingController _titleController = new TextEditingController();
 
 class AddArticlePage extends StatefulWidget {
   AddArticlePage({Key key}) : super(key: key);
@@ -15,11 +16,12 @@ class _AddArticlePageState extends State<AddArticlePage> {
     setState(() {
       _isEnable = false;
     });
-    postArticle(_unameController.text).then((d) {
+    postArticle(_titleController.text, _articleController.text).then((d) {
       setState(() {
         _isEnable = true;
       });
-      _unameController.text = '';
+      _titleController.text = '';
+      _articleController.text = '';
       Navigator.pop(context);
     });
   }
@@ -37,8 +39,14 @@ class _AddArticlePageState extends State<AddArticlePage> {
               Text("This is new route"),
               TextField(
                 enabled: _isEnable,
+                autofocus: false,
+                controller: _titleController,
+                keyboardType: TextInputType.text,
+              ),
+              TextField(
+                enabled: _isEnable,
                 autofocus: true,
-                controller: _unameController,
+                controller: _articleController,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
               ),

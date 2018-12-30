@@ -107,9 +107,12 @@ class _ArticlePageState extends State<ArticlePage> {
         _setAllWordLearned(word.text.toLowerCase(), word.learned);
       }
       ..onTap = (i) {
-        bus.emit('word_clicked', word.level);
-        ClipboardManager.copyToClipBoard(word.text);
-        putLearn(word.text);
+        if (!word.learned) {
+          // 避免长按的同时触发
+          bus.emit('word_clicked', word.level);
+          ClipboardManager.copyToClipBoard(word.text);
+          putLearn(word.text);
+        }
       }
       ..onTapDown = (i, d) {
         setState(() {
