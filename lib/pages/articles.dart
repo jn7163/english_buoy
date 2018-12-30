@@ -1,3 +1,4 @@
+// 文章列表
 import 'package:flutter/gestures.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +7,10 @@ import 'package:easy_alert/easy_alert.dart';
 import '../dto/word.dart';
 import '../pages/sign.dart';
 import '../store/learned.dart';
+import './add_article.dart';
 
-class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.title}) : super(key: key);
+class ArticlesPage extends StatefulWidget {
+  ArticlesPage({Key key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -22,10 +24,10 @@ class ArticlePage extends StatefulWidget {
   final String title;
 
   @override
-  _ArticlePageState createState() => _ArticlePageState();
+  _ArticlesPageState createState() => _ArticlesPageState();
 }
 
-class _ArticlePageState extends State<ArticlePage> {
+class _ArticlesPageState extends State<ArticlesPage> {
   List _words = [
     Word('big'),
     Word('fuck'),
@@ -54,7 +56,7 @@ class _ArticlePageState extends State<ArticlePage> {
       Alert.toast(context, info,
           position: ToastPosition.bottom, duration: ToastDuration.long);
     });
-    // postArticle();
+    // postArticles();
   }
 
 // 设置当前文章的所有单词为正确状态
@@ -171,6 +173,13 @@ class _ArticlePageState extends State<ArticlePage> {
     ]);
   }
 
+  void _toAddArticles() {
+    //导航到新路由
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return AddArticlePage();
+    }));
+  }
+
   void _toSignPage() {
     //导航到新路由
     Navigator.push(context, new MaterialPageRoute(builder: (context) {
@@ -220,6 +229,11 @@ class _ArticlePageState extends State<ArticlePage> {
           ),
         )),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _toAddArticles,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
