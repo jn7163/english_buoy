@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_alert/easy_alert.dart';
 import './pages/article.dart';
+import './pages/articles.dart';
 
 // void main() => runApp(MyApp());
 void main() => runApp(AlertProvider(
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: ArticlePage(title: 'Learn The Word'),
+      // home: ArticlePage(title: 'Learn The Word'),
+      home: ArticlesPage(),
     );
   }
 }
