@@ -73,43 +73,44 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
 // 无需学习的单词
-  TextSpan _getNoNeedLearnTextSpan(String word, int level) {
+  TextSpan _getNoNeedLearnTextSpan(Word word) {
     String blank = " ";
     // 单引号开头的, 前面不要留空白
     RegExp exp = new RegExp(r"^'");
-    if (exp.hasMatch(word)) blank = "";
+    if (exp.hasMatch(word.text)) blank = "";
 
     // 这些符号前面不要加空格
     List noNeedBlank = [".", "!", "'", ",", ":", '"', "?", "n't"];
     if (noNeedBlank.contains(word)) blank = "";
-    if (word == "\n") word = "\n   "; // 如果换行了, 下一行加上3个空格, 保证缩进
     return TextSpan(text: blank, children: [
       TextSpan(
-          text: word,
-          style: (this._tapedText == word)
+          text: (word.text == "\n")
+              ? word.text + "   "
+              : word.text, // 如果换行了, 下一行加上3个空格, 保证缩进
+          style: (this._tapedText == word.text)
               ? TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold)
               : TextStyle(color: Colors.grey[600]),
-          recognizer: TapGestureRecognizer()
-            ..onTapCancel = () {
+          recognizer: MultiTapGestureRecognizer()
+            ..onTapCancel = (i) {
               setState(() {
                 this._tapedText = '';
               });
             }
-            ..onTapDown = (d) {
+            ..onTapDown = (i, d) {
               setState(() {
-                this._tapedText = word;
+                this._tapedText = word.text;
               });
             }
-            ..onTapUp = (d) {
+            ..onTapUp = (i, d) {
               setState(() {
                 this._tapedText = '';
               });
             }
-            ..onTap = () {
-              if (level != 0) {
-                bus.emit('word_clicked', level);
+            ..onTap = (i) {
+              if (word.level != 0) {
+                bus.emit('word_clicked', word.level);
               }
-              ClipboardManager.copyToClipBoard(word);
+              ClipboardManager.copyToClipBoard(word.text);
             })
     ]);
   }
@@ -242,10 +243,10 @@ class _ArticlePageState extends State<ArticlePage> {
           ),
         ],
       ),
-      body: Container(
-        margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: SingleChildScrollView(
-            child: RichText(
+      body: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
+        child: RichText(
           text: TextSpan(
             text: '   ', // 第一句的空格
             style: TextStyle(color: Colors.black87, fontSize: 20),
@@ -257,11 +258,11 @@ class _ArticlePageState extends State<ArticlePage> {
               if (d.level != null && d.level != 0) {
                 return _getNeedLearnTextSpan(d);
               } else {
-                return _getNoNeedLearnTextSpan(d.text, d.level);
+                return _getNoNeedLearnTextSpan(d);
               }
             }).toList(),
           ),
-        )),
+        ),
       ),
     );
   }
