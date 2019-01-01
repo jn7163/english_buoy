@@ -22,6 +22,11 @@ class _ArticlePageState extends State<ArticlePage> {
     Word('Loading'),
     Word('...'),
   ];
+  // 单引号开头的, 前面不要留空白
+  RegExp _noNeedExp = new RegExp(r"^'");
+  // 这些符号前面不要加空格
+  List _noNeedBlank = [".", "!", "'", ",", ":", '"', "?", "n't"];
+
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
   initState() {
@@ -75,13 +80,9 @@ class _ArticlePageState extends State<ArticlePage> {
 // 无需学习的单词
   TextSpan _getNoNeedLearnTextSpan(Word word) {
     String blank = " ";
-    // 单引号开头的, 前面不要留空白
-    RegExp exp = new RegExp(r"^'");
-    if (exp.hasMatch(word.text)) blank = "";
+    if (_noNeedExp.hasMatch(word.text)) blank = "";
 
-    // 这些符号前面不要加空格
-    List noNeedBlank = [".", "!", "'", ",", ":", '"', "?", "n't"];
-    if (noNeedBlank.contains(word)) blank = "";
+    if (_noNeedBlank.contains(word)) blank = "";
     return TextSpan(text: blank, children: [
       TextSpan(
           text: (word.text == "\n")
@@ -117,9 +118,22 @@ class _ArticlePageState extends State<ArticlePage> {
 
 // 需要学习的单词
   TextSpan _getNeedLearnTextSpan(Word word) {
-    var _tapRecognizer = MultiTapGestureRecognizer()
+    return TextSpan(text: " ", children: [
+      TextSpan(
+          text: word.text,
+          style: (this._tapedText == word.text)
+              ? TextStyle(color: Colors.teal[500], fontWeight: FontWeight.bold)
+              : TextStyle(color: Colors.teal[700]),
+          recognizer: _getTapRecognizer(word))
+    ]);
+  }
+
+  MultiTapGestureRecognizer _getTapRecognizer(Word word) {
+    bool longTap = false; // 标记是否长按, 长按不要触发单词查询
+    return MultiTapGestureRecognizer()
       ..longTapDelay = Duration(milliseconds: 500)
       ..onLongTapDown = (i, detail) {
+        longTap = true;
         print("onLongTapDown");
         setState(() {
           word.learned = !word.learned;
@@ -134,7 +148,7 @@ class _ArticlePageState extends State<ArticlePage> {
         });
       }
       ..onTap = (i) {
-        if (!word.learned) {
+        if (!longTap) {
           // 避免长按的同时触发
           bus.emit('word_clicked', word.level);
           ClipboardManager.copyToClipBoard(word.text);
@@ -151,56 +165,17 @@ class _ArticlePageState extends State<ArticlePage> {
           this._tapedText = '';
         });
       };
-    return TextSpan(text: " ", children: [
-      TextSpan(
-          text: word.text,
-          style: (this._tapedText == word.text)
-              ? TextStyle(color: Colors.teal[500], fontWeight: FontWeight.bold)
-              : TextStyle(color: Colors.teal[700]),
-          recognizer: _tapRecognizer)
-    ]);
   }
 
 // 已经学会的单词
   TextSpan _getLearnedTextSpan(Word word) {
-    var _tapRecognizer = MultiTapGestureRecognizer()
-      ..longTapDelay = Duration(milliseconds: 500)
-      ..onLongTapDown = (i, detail) {
-        print("onLongTapDown");
-        // 设置为已经学会
-        setState(() {
-          word.learned = !word.learned;
-        });
-        putLearned(word.text, word.learned);
-        bus.emit('learned', word);
-        _setAllWordLearned(word.text.toLowerCase(), word.learned);
-      }
-      ..onTap = (i) {
-        // bus.emit('word_clicked', word.level);
-        ClipboardManager.copyToClipBoard(word.text);
-      }
-      ..onTapDown = (i, detail) {
-        setState(() {
-          this._tapedText = word.text;
-        });
-      }
-      ..onTapCancel = (i) {
-        setState(() {
-          this._tapedText = '';
-        });
-      }
-      ..onTapUp = (i, detail) {
-        setState(() {
-          this._tapedText = '';
-        });
-      };
     return TextSpan(text: " ", children: [
       TextSpan(
         text: word.text,
         style: (this._tapedText == word.text)
             ? TextStyle(fontWeight: FontWeight.bold)
             : TextStyle(),
-        recognizer: _tapRecognizer,
+        recognizer: _getTapRecognizer(word),
       )
     ]);
   }
