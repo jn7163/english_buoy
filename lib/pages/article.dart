@@ -81,7 +81,6 @@ class _ArticlePageState extends State<ArticlePage> {
   TextSpan _getNoNeedLearnTextSpan(Word word) {
     String blank = " ";
     if (_noNeedExp.hasMatch(word.text)) blank = "";
-
     if (_noNeedBlank.contains(word)) blank = "";
     return TextSpan(text: blank, children: [
       TextSpan(
@@ -91,28 +90,7 @@ class _ArticlePageState extends State<ArticlePage> {
           style: (this._tapedText == word.text)
               ? TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold)
               : TextStyle(color: Colors.grey[600]),
-          recognizer: MultiTapGestureRecognizer()
-            ..onTapCancel = (i) {
-              setState(() {
-                this._tapedText = '';
-              });
-            }
-            ..onTapDown = (i, d) {
-              setState(() {
-                this._tapedText = word.text;
-              });
-            }
-            ..onTapUp = (i, d) {
-              setState(() {
-                this._tapedText = '';
-              });
-            }
-            ..onTap = (i) {
-              if (word.level != 0) {
-                bus.emit('word_clicked', word.level);
-              }
-              ClipboardManager.copyToClipBoard(word.text);
-            })
+          recognizer: _getTapRecognizer(word, true))
     ]);
   }
 
@@ -128,11 +106,17 @@ class _ArticlePageState extends State<ArticlePage> {
     ]);
   }
 
-  MultiTapGestureRecognizer _getTapRecognizer(Word word) {
+// 定义各种 tap 后的处理
+// isNoNeed 是不需要学习的
+  MultiTapGestureRecognizer _getTapRecognizer(Word word,
+      [bool isNoNeedLearn = false]) {
     bool longTap = false; // 标记是否长按, 长按不要触发单词查询
     return MultiTapGestureRecognizer()
       ..longTapDelay = Duration(milliseconds: 500)
       ..onLongTapDown = (i, detail) {
+        // 不学习的没必要设置学会与否
+        if (isNoNeedLearn) return;
+
         longTap = true;
         print("onLongTapDown");
         setState(() {
@@ -148,11 +132,15 @@ class _ArticlePageState extends State<ArticlePage> {
         });
       }
       ..onTap = (i) {
+        // 避免长按的同时触发
         if (!longTap) {
-          // 避免长按的同时触发
-          bus.emit('word_clicked', word.level);
+          // 无需学的, 没必要记录学习次数以及显示级别
+          if (!isNoNeedLearn) {
+            bus.emit('word_clicked', word.level);
+            putLearn(word.text);
+          }
+          ;
           ClipboardManager.copyToClipBoard(word.text);
-          putLearn(word.text);
         }
       }
       ..onTapDown = (i, d) {
