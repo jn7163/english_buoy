@@ -41,10 +41,10 @@ class _ArticlesPageState extends State<ArticlesPage> {
     }));
   }
 
-  void _toArticle() {
+  void _toArticle(String title) {
     //导航到文章详情
     Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return ArticlePage();
+      return ArticlePage(title: title);
     }));
   }
 
@@ -67,7 +67,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
           children: _articleTitles.map((d) {
             return ListTile(
               onTap: () {
-                _toArticle();
+                _toArticle(d['title']);
                 print("获取文章详情");
                 getArticleByTitle(d['title']);
               },

@@ -10,14 +10,21 @@ import './articles.dart';
 import '../store/articles.dart';
 
 class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key}) : super(key: key);
+  ArticlePage({Key key, this.title}) : super(key: key);
 
+  final String title;
   @override
   _ArticlePageState createState() => _ArticlePageState();
 }
 
 class _ArticlePageState extends State<ArticlePage> {
-  String title = '';
+  @override
+  void dispose() {
+    print("dispose");
+    _words.clear();
+    super.dispose();
+  }
+
   List _words = [
     Word('Loading'),
     Word('...'),
@@ -81,7 +88,7 @@ class _ArticlePageState extends State<ArticlePage> {
   TextSpan _getNoNeedLearnTextSpan(Word word) {
     String blank = " ";
     if (_noNeedExp.hasMatch(word.text)) blank = "";
-    if (_noNeedBlank.contains(word)) blank = "";
+    if (_noNeedBlank.contains(word.text)) blank = "";
     return TextSpan(text: blank, children: [
       TextSpan(
           text: (word.text == "\n")
@@ -197,7 +204,7 @@ class _ArticlePageState extends State<ArticlePage> {
           tooltip: 'go to articles',
           onPressed: _toArticlesPage,
         ),
-        title: Text('这里放返回的文章列表'),
+        title: Text(widget.title),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.exit_to_app),
@@ -214,6 +221,7 @@ class _ArticlePageState extends State<ArticlePage> {
             text: '   ', // 第一句的空格
             style: TextStyle(color: Colors.black87, fontSize: 20),
             children: _words.map((d) {
+              // return TextSpan(text: d.text);
               if (d.learned) {
                 return _getLearnedTextSpan(d);
               }
