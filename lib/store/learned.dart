@@ -7,15 +7,14 @@ Dio dio = new Dio();
 putLearn(String word) async {
   // Dio dio = new Dio();
   print('putLearn');
-  var response =
-      await dio.put(Store.baseURL + "api/learn", data: {"word": word});
+  var response = await dio.put(Store.baseURL + "learn", data: {"word": word});
   return response.data;
 }
 
 // 记录学过的单词
 putLearned(String word, bool isLearned) async {
   // print('putLearned');
-  var response = await dio.put(Store.baseURL + "api/learned",
+  var response = await dio.put(Store.baseURL + "learned",
       data: {"word": word, "learned": isLearned});
   return response.data;
 }

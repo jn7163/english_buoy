@@ -5,6 +5,7 @@ import './store.dart';
 Dio dio = new Dio();
 // 提交新的文章进行分析
 postArticle(String article) async {
+  print("postArticle");
   if (article == "") {
     article = """
 
@@ -14,17 +15,25 @@ postArticle(String article) async {
     """;
   }
   print('post analysis');
-  var response = await dio
-      .post(Store.baseURL + "api/analysis", data: {"article": article});
+  var response =
+      await dio.post(Store.baseURL + "analysis", data: {"article": article});
   bus.emit('analysis_done', response.data);
   return response.data;
 }
 
 // 根据标题查询文章内容
 getArticleByTitle(String title) async {
-  print('get articles');
-  var response = await dio
-      .get(Store.baseURL + "api/article/" + Uri.encodeComponent(title));
+  print('getArticleByTitle');
+  var response =
+      await dio.get(Store.baseURL + "article/" + Uri.encodeComponent(title));
   bus.emit('get_article_done', response.data);
+  return response.data;
+}
+
+putUnlearnedCount(int articleID, int unlearnedCount) async {
+  print('putLearnedCount' + articleID.toString());
+  var response = await dio.put(Store.baseURL + "article/unlearned_count",
+      data: {"article_id": articleID, "unlearned_count": unlearnedCount});
+  bus.emit('put_unlearned_count_done', response.data);
   return response.data;
 }

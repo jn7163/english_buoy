@@ -25,6 +25,10 @@ class _ArticlesPageState extends State<ArticlesPage> {
         _articleTitles = arg;
       });
     });
+    // 设置了掌握数以后, 列表也要重新获取的
+    bus.on("put_unlearned_count_done", (arg) {
+      getArticleTitles();
+    });
     getArticleTitles();
   }
 
@@ -42,10 +46,10 @@ class _ArticlesPageState extends State<ArticlesPage> {
     }));
   }
 
-  void _toArticle(String title) {
+  void _toArticle(String title, int articleID) {
     //导航到文章详情
     Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return ArticlePage(title: title);
+      return ArticlePage(title: title, articleID: articleID);
     }));
   }
 
@@ -68,11 +72,14 @@ class _ArticlesPageState extends State<ArticlesPage> {
           children: _articleTitles.map((d) {
             return ListTile(
               onTap: () {
-                _toArticle(d['title']);
-                print("获取文章详情");
+                _toArticle(d['title'], d['id']);
                 getArticleByTitle(d['title']);
               },
-              leading: Text(d['unlearned_count']),
+              leading: Text(d['unlearned_count'].toString(),
+                  style: TextStyle(
+                      color: Colors.teal[700],
+                      fontSize: 16,
+                      fontFamily: "NotoSans-Medium")),
               title: Text(d['title']),
             );
           }).toList(),

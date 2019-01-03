@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../store/article.dart';
+import './article.dart';
 
 TextEditingController _articleController = new TextEditingController();
 
@@ -19,9 +20,16 @@ class _AddArticlePageState extends State<AddArticlePage> {
       setState(() {
         _isEnable = true;
       });
-      _articleController.text = '';
-      Navigator.pop(context);
     });
+    _articleController.text = '';
+    _toArticle("Analysising", 0);
+  }
+
+  void _toArticle(String title, int articleID) {
+    //导航到文章详情
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return ArticlePage(title: title, articleID: articleID);
+    }));
   }
 
   @override
@@ -41,10 +49,6 @@ class _AddArticlePageState extends State<AddArticlePage> {
               controller: _articleController,
               maxLines: null,
               keyboardType: TextInputType.multiline,
-            ),
-            OutlineButton(
-              child: Text(_isEnable ? "submit" : "submitting..."),
-              onPressed: _isEnable ? _add : null,
             )
           ],
         )),

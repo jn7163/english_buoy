@@ -7,21 +7,32 @@ import '../dto/word.dart';
 import './sign.dart';
 import '../store/learned.dart';
 import './articles.dart';
+import '../store/article.dart';
+import './add_article.dart';
 import '../store/articles.dart';
 
+@immutable
 class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.title}) : super(key: key);
-
+  ArticlePage({Key key, this.title, this.articleID}) : super(key: key);
   final String title;
+  final int articleID;
+
   @override
   _ArticlePageState createState() => _ArticlePageState();
 }
 
 class _ArticlePageState extends State<ArticlePage> {
+  String _title;
+  int _articleID;
+
   @override
   void dispose() {
     print("dispose");
     _words.clear();
+    bus.off("get_article_done");
+    bus.off("analysis_done");
+    bus.off("word_clicked");
+    bus.off("learned");
     super.dispose();
   }
 
@@ -38,26 +49,32 @@ class _ArticlePageState extends State<ArticlePage> {
   String _tapedText = ''; // 当前点击的文本
   initState() {
     super.initState();
+    _title = widget.title;
+    _articleID = widget.articleID;
+
     bus.on("get_article_done", (arg) {
       setState(() {
         _words = arg.map((d) => Word.fromJson(d)).toList();
       });
+      _putUnlearnedCount();
     });
 
     bus.on("analysis_done", (arg) {
-      // 重新取列表
       getArticleTitles();
       //渲染字体
       setState(() {
+        _articleID = arg["id"];
+        _title = arg["title"];
         _words.clear();
-        _words = arg.map((d) => Word.fromJson(d)).toList();
+        _words = arg['words'].map((d) => Word.fromJson(d)).toList();
       });
     });
     // 显示单词级别
     bus.on("word_clicked", (arg) {
       Alert.toast(context, arg.toString(),
-          position: ToastPosition.bottom, duration: ToastDuration.short);
+          position: ToastPosition.bottom, duration: ToastDuration.long);
     });
+    // 设置为已学会
     bus.on("learned", (d) {
       String info;
       if (d.learned) {
@@ -67,15 +84,35 @@ class _ArticlePageState extends State<ArticlePage> {
       }
       Alert.toast(context, info,
           position: ToastPosition.bottom, duration: ToastDuration.long);
+      _putUnlearnedCount();
     });
     // postArticle();
+  }
+
+  void _putUnlearnedCount() {
+    // 重新计算未掌握单词数
+    int unlearnedCount = _words
+            .map((d) {
+              if (d.level > 0 && !d.learned) return d.text;
+            })
+            .toSet()
+            .length -
+        1;
+    //提交保存
+    putUnlearnedCount(_articleID, unlearnedCount);
+  }
+
+  void _toAddArticle() {
+    //添加文章
+    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      return AddArticlePage();
+    }));
   }
 
 // 设置当前文章的所有单词为正确状态
   _setAllWordLearned(String word, bool learned) {
     print("_setAllWordLearned");
     _words.forEach((d) {
-      print(word + "=" + d.text);
       if (d.text.toLowerCase() == word) {
         print(word);
         setState(() {
@@ -202,7 +239,7 @@ class _ArticlePageState extends State<ArticlePage> {
           tooltip: 'go to articles',
           onPressed: _toArticlesPage,
         ),
-        title: Text(widget.title),
+        title: Text(_title),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.exit_to_app),
@@ -235,6 +272,11 @@ class _ArticlePageState extends State<ArticlePage> {
             }).toList(),
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _toAddArticle,
+        tooltip: 'add article',
+        child: Icon(Icons.add),
       ),
     );
   }
