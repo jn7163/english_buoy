@@ -49,6 +49,7 @@ class _ArticlePageState extends State<ArticlePage> {
       getArticleTitles();
       //渲染字体
       setState(() {
+        _words.clear();
         _words = arg.map((d) => Word.fromJson(d)).toList();
       });
     });
@@ -91,9 +92,7 @@ class _ArticlePageState extends State<ArticlePage> {
     if (_noNeedBlank.contains(word.text)) blank = "";
     return TextSpan(text: blank, children: [
       TextSpan(
-          text: (word.text == "\n")
-              ? word.text + "   "
-              : word.text, // 如果换行了, 下一行加上3个空格, 保证缩进
+          text: word.text,
           style: (this._tapedText == word.text)
               ? TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold)
               : TextStyle(color: Colors.grey[600]),
@@ -146,7 +145,6 @@ class _ArticlePageState extends State<ArticlePage> {
             bus.emit('word_clicked', word.level);
             putLearn(word.text);
           }
-          ;
           ClipboardManager.copyToClipBoard(word.text);
         }
       }
@@ -218,8 +216,11 @@ class _ArticlePageState extends State<ArticlePage> {
         padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
         child: RichText(
           text: TextSpan(
-            text: '   ', // 第一句的空格
-            style: TextStyle(color: Colors.black87, fontSize: 20),
+            text: '', // 英文似乎并不缩进
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: "NotoSans-Medium"),
             children: _words.map((d) {
               // return TextSpan(text: d.text);
               if (d.learned) {

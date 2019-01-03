@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:easy_alert/easy_alert.dart';
-import './pages/article.dart';
 import './pages/articles.dart';
 
 // void main() => runApp(MyApp());

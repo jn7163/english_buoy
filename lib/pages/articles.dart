@@ -21,6 +21,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
     super.initState();
     bus.on("get_article_titles_done", (arg) {
       setState(() {
+        _articleTitles.clear();
         _articleTitles = arg;
       });
     });
@@ -71,7 +72,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                 print("获取文章详情");
                 getArticleByTitle(d['title']);
               },
-              leading: Icon(Icons.title),
+              leading: Text(d['unlearned_count']),
               title: Text(d['title']),
             );
           }).toList(),
@@ -79,9 +80,9 @@ class _ArticlesPageState extends State<ArticlesPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _toAddArticle,
-        tooltip: 'Increment',
+        tooltip: 'add article',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
