@@ -17,11 +17,11 @@ class _AddArticlePageState extends State<AddArticlePage> {
       _isEnable = false;
     });
     postArticle(_articleController.text).then((d) {
+      _articleController.text = '';
       setState(() {
         _isEnable = true;
       });
     });
-    _articleController.text = '';
     _toArticle("Analysising", 0);
   }
 

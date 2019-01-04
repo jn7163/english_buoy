@@ -31,7 +31,6 @@ class _ArticlePageState extends State<ArticlePage> {
     _words.clear();
     bus.off("get_article_done");
     bus.off("analysis_done");
-    bus.off("word_clicked");
     bus.off("learned");
     super.dispose();
   }
@@ -69,11 +68,6 @@ class _ArticlePageState extends State<ArticlePage> {
         _words = arg['words'].map((d) => Word.fromJson(d)).toList();
       });
     });
-    // 显示单词级别
-    bus.on("word_clicked", (arg) {
-      Alert.toast(context, arg.toString(),
-          position: ToastPosition.bottom, duration: ToastDuration.long);
-    });
     // 设置为已学会
     bus.on("learned", (d) {
       String info;
@@ -82,11 +76,15 @@ class _ArticlePageState extends State<ArticlePage> {
       } else {
         info = "重新学习" + d.text;
       }
-      Alert.toast(context, info,
-          position: ToastPosition.bottom, duration: ToastDuration.long);
+      _show(info);
       _putUnlearnedCount();
     });
     // postArticle();
+  }
+
+  void _show(String content) {
+    Alert.toast(context, content,
+        position: ToastPosition.bottom, duration: ToastDuration.long);
   }
 
   void _putUnlearnedCount() {
@@ -179,7 +177,7 @@ class _ArticlePageState extends State<ArticlePage> {
         if (!longTap) {
           // 无需学的, 没必要记录学习次数以及显示级别
           if (!isNoNeedLearn) {
-            bus.emit('word_clicked', word.level);
+            _show(word.level.toString());
             putLearn(word.text);
           }
           ClipboardManager.copyToClipBoard(word.text);
