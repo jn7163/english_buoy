@@ -31,7 +31,6 @@ class _ArticlePageState extends State<ArticlePage> {
     _words.clear();
     bus.off("get_article_done");
     bus.off("analysis_done");
-    bus.off("learned");
     super.dispose();
   }
 
@@ -68,17 +67,6 @@ class _ArticlePageState extends State<ArticlePage> {
         _words = arg['words'].map((d) => Word.fromJson(d)).toList();
       });
     });
-    // 设置为已学会
-    bus.on("learned", (d) {
-      String info;
-      if (d.learned) {
-        info = d.text + "已经学会";
-      } else {
-        info = "重新学习" + d.text;
-      }
-      _show(info);
-      _putUnlearnedCount();
-    });
     // postArticle();
   }
 
@@ -90,12 +78,12 @@ class _ArticlePageState extends State<ArticlePage> {
   void _putUnlearnedCount() {
     // 重新计算未掌握单词数
     int unlearnedCount = _words
-            .map((d) {
-              if (d.level > 0 && !d.learned) return d.text;
-            })
-            .toSet()
-            .length -
-        1;
+        .map((d) {
+          if (d.level > 0 && !d.learned) return d.text;
+        })
+        .toSet()
+        .length;
+    unlearnedCount--;
     //提交保存
     putUnlearnedCount(_articleID, unlearnedCount);
   }
@@ -157,13 +145,21 @@ class _ArticlePageState extends State<ArticlePage> {
       ..onLongTapDown = (i, detail) {
         // 不学习的没必要设置学会与否
         if (isNoNeedLearn) return;
-
         longTap = true;
         print("onLongTapDown");
         setState(() {
           word.learned = !word.learned;
         });
-        putLearned(word.text, word.learned);
+        putLearned(word.text, word.learned).then((d) {
+          String info;
+          if (d.learned) {
+            info = d.text + "已经学会";
+          } else {
+            info = "重新学习" + d.text;
+          }
+          _show(info);
+          _putUnlearnedCount();
+        });
         bus.emit('learned', word);
         _setAllWordLearned(word.text.toLowerCase(), word.learned);
       }
