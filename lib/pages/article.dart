@@ -58,13 +58,14 @@ class _ArticlePageState extends State<ArticlePage> {
     });
 
     bus.on("analysis_done", (arg) {
-      getArticleTitles();
       //渲染字体
       setState(() {
         _articleID = arg["id"];
         _title = arg["title"];
         _words.clear();
         _words = arg['words'].map((d) => Word.fromJson(d)).toList();
+        // 计算没有学会的单词书
+        _putUnlearnedCount().then((d) => getArticleTitles());
       });
     });
     // postArticle();
@@ -75,7 +76,7 @@ class _ArticlePageState extends State<ArticlePage> {
         position: ToastPosition.bottom, duration: ToastDuration.long);
   }
 
-  void _putUnlearnedCount() {
+  _putUnlearnedCount() async {
     // 重新计算未掌握单词数
     int unlearnedCount = _words
         .map((d) {
@@ -85,7 +86,7 @@ class _ArticlePageState extends State<ArticlePage> {
         .length;
     unlearnedCount--;
     //提交保存
-    putUnlearnedCount(_articleID, unlearnedCount);
+    return putUnlearnedCount(_articleID, unlearnedCount);
   }
 
   void _toAddArticle() {
