@@ -1,4 +1,4 @@
-package com.example.learnngsl;
+package com.example.english_buoy;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

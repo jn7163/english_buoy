@@ -122,12 +122,17 @@ class _ArticlePageState extends State<ArticlePage> {
     });
   }
 
+// 根据规则, 判断单词前是否需要添加空白
+  String _getBlank(String text) {
+    String blank = " ";
+    if (_noNeedExp.hasMatch(text)) blank = "";
+    if (_noNeedBlank.contains(text)) blank = "";
+    return blank;
+  }
+
 // 无需学习的单词
   TextSpan _getNoNeedLearnTextSpan(Word word) {
-    String blank = " ";
-    if (_noNeedExp.hasMatch(word.text)) blank = "";
-    if (_noNeedBlank.contains(word.text)) blank = "";
-    return TextSpan(text: blank, children: [
+    return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
           text: word.text,
           style: (this._tapedText == word.text)
@@ -139,7 +144,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
 // 需要学习的单词
   TextSpan _getNeedLearnTextSpan(Word word) {
-    return TextSpan(text: " ", children: [
+    return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
           text: word.text,
           style: (this._tapedText == word.text)
@@ -199,7 +204,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
 // 已经学会的单词
   TextSpan _getLearnedTextSpan(Word word) {
-    return TextSpan(text: " ", children: [
+    return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
         text: word.text,
         style: (this._tapedText == word.text)
