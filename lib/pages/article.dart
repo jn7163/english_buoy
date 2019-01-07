@@ -31,8 +31,6 @@ class _ArticlePageState extends State<ArticlePage> {
     _words.clear();
     bus.off("get_article_done");
     bus.off("analysis_done");
-    bus.off("word_clicked");
-    bus.off("learned");
     super.dispose();
   }
 
@@ -60,46 +58,35 @@ class _ArticlePageState extends State<ArticlePage> {
     });
 
     bus.on("analysis_done", (arg) {
-      getArticleTitles();
       //渲染字体
       setState(() {
         _articleID = arg["id"];
         _title = arg["title"];
         _words.clear();
         _words = arg['words'].map((d) => Word.fromJson(d)).toList();
+        // 计算没有学会的单词书
+        _putUnlearnedCount().then((d) => getArticleTitles());
       });
-    });
-    // 显示单词级别
-    bus.on("word_clicked", (arg) {
-      Alert.toast(context, arg.toString(),
-          position: ToastPosition.bottom, duration: ToastDuration.long);
-    });
-    // 设置为已学会
-    bus.on("learned", (d) {
-      String info;
-      if (d.learned) {
-        info = d.text + "已经学会";
-      } else {
-        info = "重新学习" + d.text;
-      }
-      Alert.toast(context, info,
-          position: ToastPosition.bottom, duration: ToastDuration.long);
-      _putUnlearnedCount();
     });
     // postArticle();
   }
 
-  void _putUnlearnedCount() {
+  void _show(String content) {
+    Alert.toast(context, content,
+        position: ToastPosition.bottom, duration: ToastDuration.long);
+  }
+
+  _putUnlearnedCount() async {
     // 重新计算未掌握单词数
     int unlearnedCount = _words
-            .map((d) {
-              if (d.level > 0 && !d.learned) return d.text;
-            })
-            .toSet()
-            .length -
-        1;
+        .map((d) {
+          if (d.level > 0 && !d.learned) return d.text;
+        })
+        .toSet()
+        .length;
+    unlearnedCount--;
     //提交保存
-    putUnlearnedCount(_articleID, unlearnedCount);
+    return putUnlearnedCount(_articleID, unlearnedCount);
   }
 
   void _toAddArticle() {
@@ -164,13 +151,21 @@ class _ArticlePageState extends State<ArticlePage> {
       ..onLongTapDown = (i, detail) {
         // 不学习的没必要设置学会与否
         if (isNoNeedLearn) return;
-
         longTap = true;
         print("onLongTapDown");
         setState(() {
           word.learned = !word.learned;
         });
-        putLearned(word.text, word.learned);
+        putLearned(word.text, word.learned).then((d) {
+          String info;
+          if (d.learned) {
+            info = d.text + "已经学会";
+          } else {
+            info = "重新学习" + d.text;
+          }
+          _show(info);
+          _putUnlearnedCount();
+        });
         bus.emit('learned', word);
         _setAllWordLearned(word.text.toLowerCase(), word.learned);
       }
@@ -184,7 +179,7 @@ class _ArticlePageState extends State<ArticlePage> {
         if (!longTap) {
           // 无需学的, 没必要记录学习次数以及显示级别
           if (!isNoNeedLearn) {
-            bus.emit('word_clicked', word.level);
+            _show(word.level.toString());
             putLearn(word.text);
           }
           ClipboardManager.copyToClipBoard(word.text);
