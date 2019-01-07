@@ -157,16 +157,16 @@ class _ArticlePageState extends State<ArticlePage> {
           word.learned = !word.learned;
         });
         putLearned(word.text, word.learned).then((d) {
+          print("putLearned then");
           String info;
-          if (d.learned) {
-            info = d.text + "已经学会";
+          if (word.learned) {
+            info = word.text + " 已经学会";
           } else {
-            info = "重新学习" + d.text;
+            info = "重新学习 " + word.text;
           }
           _show(info);
           _putUnlearnedCount();
         });
-        bus.emit('learned', word);
         _setAllWordLearned(word.text.toLowerCase(), word.learned);
       }
       ..onTapCancel = (i) {
