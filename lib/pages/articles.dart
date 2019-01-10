@@ -25,10 +25,6 @@ class _ArticlesPageState extends State<ArticlesPage> {
         _articleTitles = arg;
       });
     });
-    // 设置了掌握数以后, 列表也要重新获取的
-    bus.on("put_unlearned_count_done", (arg) {
-      getArticleTitles();
-    });
     getArticleTitles();
   }
 

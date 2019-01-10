@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 import '../bus.dart';
-import 'package:easy_alert/easy_alert.dart';
 import '../dto/word.dart';
 import './sign.dart';
 import '../store/learned.dart';
@@ -69,11 +68,6 @@ class _ArticlePageState extends State<ArticlePage> {
       });
     });
     // postArticle();
-  }
-
-  void _show(String content) {
-    Alert.toast(context, content,
-        position: ToastPosition.bottom, duration: ToastDuration.long);
   }
 
   _putUnlearnedCount() async {
@@ -168,7 +162,7 @@ class _ArticlePageState extends State<ArticlePage> {
           } else {
             info = "重新学习 " + word.text;
           }
-          _show(info);
+          bus.emit('pop_show', info);
           _putUnlearnedCount();
         });
         _setAllWordLearned(word.text.toLowerCase(), word.learned);
@@ -183,7 +177,7 @@ class _ArticlePageState extends State<ArticlePage> {
         if (!longTap) {
           // 无需学的, 没必要记录学习次数以及显示级别
           if (!isNoNeedLearn) {
-            _show(word.level.toString());
+            bus.emit('pop_show', word.level.toString());
             putLearn(word.text);
           }
           ClipboardManager.copyToClipBoard(word.text);

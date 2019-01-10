@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_alert/easy_alert.dart';
 import './pages/articles.dart';
+import './bus.dart';
+import './store/articles.dart';
 
 // void main() => runApp(MyApp());
 void main() => runApp(AlertProvider(
@@ -14,6 +16,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // 设置了掌握数以后, 列表也要重新获取的
+    bus.on("put_unlearned_count_done", (arg) {
+      getArticleTitles();
+    });
+    bus.on("pop_show", (arg) {
+      Alert.toast(context, arg,
+          position: ToastPosition.bottom, duration: ToastDuration.long);
+    });
+
     return MaterialApp(
       title: 'English Buoy',
       theme: ThemeData(
