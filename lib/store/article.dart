@@ -31,7 +31,8 @@ getArticleByTitle(String title) async {
 }
 
 putUnlearnedCount(int articleID, int unlearnedCount) async {
-  print('putLearnedCount' + articleID.toString());
+  print('putLearnedCount id=' + articleID.toString());
+  print('putLearnedCount unlearnedCount=' + unlearnedCount.toString());
   var response = await dio.put(Store.baseURL + "article/unlearned_count",
       data: {"article_id": articleID, "unlearned_count": unlearnedCount});
   bus.emit('put_unlearned_count_done', response.data);

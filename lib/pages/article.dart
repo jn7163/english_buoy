@@ -80,11 +80,15 @@ class _ArticlePageState extends State<ArticlePage> {
     // 重新计算未掌握单词数
     int unlearnedCount = _words
         .map((d) {
-          if (d.level > 0 && !d.learned) return d.text;
+          if (d.level > 0 && !d.learned) {
+            // print("unleaded:" + d.text);
+            return d.text;
+          }
         })
         .toSet()
         .length;
     unlearnedCount--;
+    // print("unlearnedCount:" + unlearnedCount.toString());
     //提交保存
     return putUnlearnedCount(_articleID, unlearnedCount);
   }
