@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       getArticleTitles();
     });
     bus.on("pop_show", (arg) {
-      Alert.toast(context, arg,
+      Alert.toast(context, arg.toString(),
           position: ToastPosition.bottom, duration: ToastDuration.long);
     });
 

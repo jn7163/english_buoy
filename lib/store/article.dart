@@ -15,17 +15,20 @@ postArticle(String article) async {
     """;
   }
   print('post analysis');
-  var response =
-      await dio.post(Store.baseURL + "analysis", data: {"article": article});
-  bus.emit('analysis_done', response.data);
-  return response.data;
+  try {
+    var response =
+        await dio.post(Store.baseURL + "analysis", data: {"article": article});
+    bus.emit('analysis_done', response.data);
+    return response.data;
+  } on DioError catch (e) {
+    bus.emit('pop_show', e.response.data);
+  }
 }
 
 // 根据标题查询文章内容
-getArticleByTitle(String title) async {
+getArticleByID(int id) async {
   print('getArticleByTitle');
-  var response =
-      await dio.get(Store.baseURL + "article/" + Uri.encodeComponent(title));
+  var response = await dio.get(Store.baseURL + "article/" + id.toString());
   bus.emit('get_article_done', response.data);
   return response.data;
 }

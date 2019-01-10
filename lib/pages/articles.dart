@@ -57,7 +57,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.exit_to_app),
-            tooltip: 'Air it',
+            tooltip: 'Sign',
             onPressed: _toSignPage,
           ),
         ],
@@ -69,7 +69,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
             return ListTile(
               onTap: () {
                 _toArticle(d['title'], d['id']);
-                getArticleByTitle(d['title']);
+                getArticleByID(d['id']);
               },
               leading: Text(d['unlearned_count'].toString(),
                   style: TextStyle(
