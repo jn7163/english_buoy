@@ -8,12 +8,10 @@ import '../store/learned.dart';
 import './articles.dart';
 import '../store/article.dart';
 import './add_article.dart';
-import '../store/articles.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.title, this.articleID}) : super(key: key);
-  final String title;
+  ArticlePage({Key key, this.articleID}) : super(key: key);
   final int articleID;
 
   @override
@@ -21,18 +19,7 @@ class ArticlePage extends StatefulWidget {
 }
 
 class _ArticlePageState extends State<ArticlePage> {
-  String _title;
-  int _articleID;
-
-  @override
-  void dispose() {
-    print("dispose");
-    _words.clear();
-    bus.off("get_article_done");
-    bus.off("analysis_done");
-    super.dispose();
-  }
-
+  String _title = "loading...";
   List _words = [
     Word('Loading'),
     Word('...'),
@@ -46,27 +33,14 @@ class _ArticlePageState extends State<ArticlePage> {
   String _tapedText = ''; // 当前点击的文本
   initState() {
     super.initState();
-    _title = widget.title;
-    _articleID = widget.articleID;
-
-    bus.on("get_article_done", (arg) {
+    getArticleByID(widget.articleID).then((data) {
       setState(() {
-        _words = arg.map((d) => Word.fromJson(d)).toList();
+        _title = data['title'];
+        _words = data['words'].map((d) => Word.fromJson(d)).toList();
       });
       _putUnlearnedCount();
     });
 
-    bus.on("analysis_done", (arg) {
-      //渲染字体
-      setState(() {
-        _articleID = arg["id"];
-        _title = arg["title"];
-        _words.clear();
-        _words = arg['words'].map((d) => Word.fromJson(d)).toList();
-        // 计算没有学会的单词书
-        _putUnlearnedCount().then((d) => getArticleTitles());
-      });
-    });
     // postArticle();
   }
 
@@ -84,12 +58,12 @@ class _ArticlePageState extends State<ArticlePage> {
     unlearnedCount--;
     // print("unlearnedCount:" + unlearnedCount.toString());
     //提交保存
-    return putUnlearnedCount(_articleID, unlearnedCount);
+    return putUnlearnedCount(widget.articleID, unlearnedCount);
   }
 
   void _toAddArticle() {
     //添加文章
-    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       return AddArticlePage();
     }));
   }
@@ -210,16 +184,20 @@ class _ArticlePageState extends State<ArticlePage> {
 
   void _toSignPage() {
     //导航到新路由
-    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       return SignInPage();
     }));
   }
 
   void _toArticlesPage() {
     //导航文章列表
-    Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return ArticlesPage();
-    }));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            maintainState: false,
+            builder: (context) {
+              return ArticlesPage();
+            }));
   }
 
   @override

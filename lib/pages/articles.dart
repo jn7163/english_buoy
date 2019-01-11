@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import '../pages/sign.dart';
 import './add_article.dart';
-import '../bus.dart';
 import '../store/articles.dart';
 import './article.dart';
 import '../store/article.dart';
@@ -19,34 +18,38 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
   initState() {
     super.initState();
-    bus.on("get_article_titles_done", (arg) {
+    // 进入的时候, 获取一次文章列表
+    getArticleTitles().then((d) {
       setState(() {
-        _articleTitles.clear();
-        _articleTitles = arg;
+        // _articleTitles.clear();
+        _articleTitles = d;
       });
     });
-    getArticleTitles();
   }
 
   void _toAddArticle() {
     //添加文章
-    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       return AddArticlePage();
     }));
   }
 
   void _toSignPage() {
     //导航到新路由
-    Navigator.push(context, new MaterialPageRoute(builder: (context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       return SignInPage();
     }));
   }
 
   void _toArticle(String title, int articleID) {
     //导航到文章详情
-    Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return ArticlePage(title: title, articleID: articleID);
-    }));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            maintainState: false, // 每次都新建一个详情页
+            builder: (context) {
+              return ArticlePage(articleID: articleID);
+            }));
   }
 
   @override

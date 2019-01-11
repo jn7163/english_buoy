@@ -21,15 +21,19 @@ class _AddArticlePageState extends State<AddArticlePage> {
       setState(() {
         _isEnable = true;
       });
+      _toArticle(d['id']);
     });
-    _toArticle("Analysising", 0);
   }
 
-  void _toArticle(String title, int articleID) {
+  void _toArticle(int articleID) {
     //导航到文章详情
-    Navigator.push(context, new MaterialPageRoute(builder: (context) {
-      return ArticlePage(title: title, articleID: articleID);
-    }));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            maintainState: false,
+            builder: (context) {
+              return ArticlePage(articleID: articleID);
+            }));
   }
 
   @override
