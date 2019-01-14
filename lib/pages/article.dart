@@ -11,8 +11,9 @@ import './add_article.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.articleID}) : super(key: key);
+  ArticlePage({Key key, this.articleID, this.articleTitles}) : super(key: key);
   final int articleID;
+  final List articleTitles;
 
   @override
   _ArticlePageState createState() => _ArticlePageState();
@@ -31,6 +32,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
+  String _lastTapedText = ''; // 上次点击的文本
   initState() {
     super.initState();
     getArticleByID(widget.articleID).then((data) {
@@ -40,8 +42,6 @@ class _ArticlePageState extends State<ArticlePage> {
       });
       _putUnlearnedCount();
     });
-
-    // postArticle();
   }
 
   _putUnlearnedCount() async {
@@ -49,14 +49,12 @@ class _ArticlePageState extends State<ArticlePage> {
     int unlearnedCount = _words
         .map((d) {
           if (d.level > 0 && !d.learned) {
-            // print("unleaded:" + d.text);
             return d.text;
           }
         })
         .toSet()
         .length;
     unlearnedCount--;
-    // print("unlearnedCount:" + unlearnedCount.toString());
     //提交保存
     return putUnlearnedCount(widget.articleID, unlearnedCount);
   }
@@ -155,18 +153,49 @@ class _ArticlePageState extends State<ArticlePage> {
             putLearn(word.text);
           }
           ClipboardManager.copyToClipBoard(word.text);
+          // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
+          if (_lastTapedText == word.text) {
+            _tryJumpTo(word.text);
+          } else {
+            _lastTapedText = word.text;
+          }
         }
       }
       ..onTapDown = (i, d) {
         setState(() {
-          this._tapedText = word.text;
+          _tapedText = word.text;
         });
       }
       ..onTapUp = (i, d) {
         setState(() {
-          this._tapedText = '';
+          _tapedText = '';
         });
       };
+  }
+
+  int _getIDByTitle(String title) {
+    var titles =
+        widget.articleTitles.where((d) => d['title'] == title).toList();
+    if (titles.length > 0) {
+      return titles[0]['id'];
+    }
+    return 0;
+  }
+
+  void _tryJumpTo(String text) {
+    int id = _getIDByTitle(text);
+
+    if (id != 0) {
+      //导航到文章详情
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              maintainState: false, // 每次都新建一个详情页
+              builder: (context) {
+                return ArticlePage(
+                    articleID: id, articleTitles: widget.articleTitles);
+              }));
+    }
   }
 
 // 已经学会的单词

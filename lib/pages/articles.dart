@@ -4,7 +4,6 @@ import '../pages/sign.dart';
 import './add_article.dart';
 import '../store/articles.dart';
 import './article.dart';
-import '../store/article.dart';
 
 class ArticlesPage extends StatefulWidget {
   ArticlesPage({Key key}) : super(key: key);
@@ -41,14 +40,15 @@ class _ArticlesPageState extends State<ArticlesPage> {
     }));
   }
 
-  void _toArticle(String title, int articleID) {
+  void _toArticle(int articleID) {
     //导航到文章详情
     Navigator.push(
         context,
         MaterialPageRoute(
             maintainState: false, // 每次都新建一个详情页
             builder: (context) {
-              return ArticlePage(articleID: articleID);
+              return ArticlePage(
+                  articleID: articleID, articleTitles: _articleTitles);
             }));
   }
 
@@ -71,8 +71,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
           children: _articleTitles.map((d) {
             return ListTile(
               onTap: () {
-                _toArticle(d['title'], d['id']);
-                getArticleByID(d['id']);
+                _toArticle(d['id']);
+                // getArticleByID(d['id']);
               },
               leading: Text(d['unlearned_count'].toString(),
                   style: TextStyle(
