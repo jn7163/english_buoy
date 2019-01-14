@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:clipboard_manager/clipboard_manager.dart';
 import '../store/article.dart';
 import './article.dart';
+import 'package:flutter/services.dart';
 
 TextEditingController _articleController = new TextEditingController();
 
@@ -12,7 +14,22 @@ class AddArticlePage extends StatefulWidget {
 }
 
 class _AddArticlePageState extends State<AddArticlePage> {
+  @override
+  void initState() {
+    super.initState();
+    _getFromClipboard().then((d) => _articleController.text = d);
+  }
+
   bool _isEnable = true;
+  _getFromClipboard() async {
+    Map<String, dynamic> result =
+        await SystemChannels.platform.invokeMethod('Clipboard.getData');
+    if (result != null) {
+      return result['text'].toString();
+    }
+    return '';
+  }
+
   void _add() {
     setState(() {
       _isEnable = false;
