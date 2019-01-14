@@ -29,7 +29,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
   void _toAddArticle() {
     //添加文章
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return AddArticlePage();
+      return AddArticlePage(articleTitles: _articleTitles);
     }));
   }
 

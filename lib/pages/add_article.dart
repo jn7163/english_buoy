@@ -5,7 +5,8 @@ import './article.dart';
 TextEditingController _articleController = new TextEditingController();
 
 class AddArticlePage extends StatefulWidget {
-  AddArticlePage({Key key}) : super(key: key);
+  AddArticlePage({Key key, this.articleTitles}) : super(key: key);
+  final List articleTitles;
   @override
   _AddArticlePageState createState() => _AddArticlePageState();
 }
@@ -32,7 +33,8 @@ class _AddArticlePageState extends State<AddArticlePage> {
         MaterialPageRoute(
             maintainState: false,
             builder: (context) {
-              return ArticlePage(articleID: articleID);
+              return ArticlePage(
+                  articleID: articleID, articleTitles: widget.articleTitles);
             }));
   }
 
