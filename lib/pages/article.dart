@@ -20,6 +20,7 @@ class ArticlePage extends StatefulWidget {
 }
 
 class _ArticlePageState extends State<ArticlePage> {
+  Set _setArticleTitles;
   String _title = "loading...";
   List _words = [
     Word('Loading'),
@@ -35,6 +36,8 @@ class _ArticlePageState extends State<ArticlePage> {
   String _lastTapedText = ''; // 上次点击的文本
   initState() {
     super.initState();
+    // 把 articleTitles 的 title 组合成 set
+    _setArticleTitles = widget.articleTitles.map((d) => d['title']).toSet();
     getArticleByID(widget.articleID).then((data) {
       setState(() {
         _title = data['title'];
@@ -104,9 +107,15 @@ class _ArticlePageState extends State<ArticlePage> {
     return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
           text: word.text,
-          style: (this._tapedText == word.text)
-              ? TextStyle(color: Colors.teal[500], fontWeight: FontWeight.bold)
-              : TextStyle(color: Colors.teal[700]),
+          style: (_tapedText == word.text)
+              ? ((_setArticleTitles.contains(word.text))
+                  ? TextStyle(
+                      color: Colors.teal[400], fontWeight: FontWeight.bold)
+                  : TextStyle(
+                      color: Colors.teal[700], fontWeight: FontWeight.bold))
+              : ((_setArticleTitles.contains(word.text))
+                  ? TextStyle(color: Colors.teal[400])
+                  : TextStyle(color: Colors.teal[700])),
           recognizer: _getTapRecognizer(word))
     ]);
   }
@@ -258,7 +267,7 @@ class _ArticlePageState extends State<ArticlePage> {
         padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
         child: RichText(
           text: TextSpan(
-            text: '', // 英文似乎并不缩进
+            text: '', // 英文似乎并不���进
             style: TextStyle(
                 color: Colors.black,
                 fontSize: 20,

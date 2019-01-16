@@ -66,9 +66,9 @@ class _AddArticlePageState extends State<AddArticlePage> {
             child: Column(
           children: <Widget>[
             TextField(
-              textInputAction: TextInputAction.go,
+              textInputAction: TextInputAction.newline,
               enabled: _isEnable,
-              autofocus: true,
+              autofocus: false, // 不要默认焦点, 避免键盘弹出来
               controller: _articleController,
               maxLines: null,
               keyboardType: TextInputType.multiline,
