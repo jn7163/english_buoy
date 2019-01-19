@@ -92,7 +92,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
 // 无需学习的单词
   TextSpan _getNoNeedLearnTextSpan(Word word) {
-    return TextSpan(text: _getBlank(word.text), children: [
+    return TextSpan(text: _getBlank(word.text.toLowerCase()), children: [
       TextSpan(
           text: word.text,
           style: (this._tapedText.toLowerCase() == word.text.toLowerCase())
@@ -108,12 +108,12 @@ class _ArticlePageState extends State<ArticlePage> {
       TextSpan(
           text: word.text,
           style: (_tapedText.toLowerCase() == word.text.toLowerCase())
-              ? ((_setArticleTitles.contains(word.text))
+              ? ((_setArticleTitles.contains(word.text.toLowerCase()))
                   ? TextStyle(
                       color: Colors.teal[400], fontWeight: FontWeight.bold)
                   : TextStyle(
                       color: Colors.teal[700], fontWeight: FontWeight.bold))
-              : ((_setArticleTitles.contains(word.text))
+              : ((_setArticleTitles.contains(word.text.toLowerCase()))
                   ? TextStyle(color: Colors.teal[400])
                   : TextStyle(color: Colors.teal[700])),
           recognizer: _getTapRecognizer(word))
