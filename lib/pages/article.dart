@@ -107,7 +107,7 @@ class _ArticlePageState extends State<ArticlePage> {
     return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
           text: word.text,
-          style: (_tapedText == word.text)
+          style: (_tapedText.toLowerCase() == word.text.toLowerCase())
               ? ((_setArticleTitles.contains(word.text))
                   ? TextStyle(
                       color: Colors.teal[400], fontWeight: FontWeight.bold)
@@ -163,7 +163,7 @@ class _ArticlePageState extends State<ArticlePage> {
           }
           ClipboardManager.copyToClipBoard(word.text);
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
-          if (_lastTapedText == word.text) {
+          if (_lastTapedText.toLowerCase() == word.text.toLowerCase()) {
             _tryJumpTo(word.text);
           } else {
             _lastTapedText = word.text;
@@ -212,7 +212,7 @@ class _ArticlePageState extends State<ArticlePage> {
     return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
         text: word.text,
-        style: (this._tapedText == word.text)
+        style: (this._tapedText.toLowerCase() == word.text.toLowerCase())
             ? TextStyle(fontWeight: FontWeight.bold)
             : TextStyle(),
         recognizer: _getTapRecognizer(word),

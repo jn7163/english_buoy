@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:clipboard_manager/clipboard_manager.dart';
 import '../store/article.dart';
 import './article.dart';
 import 'package:flutter/services.dart';
