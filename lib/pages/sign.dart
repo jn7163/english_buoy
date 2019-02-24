@@ -23,6 +23,14 @@ class SignInPageState extends State<SignInPage> {
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       setState(() {
         _currentUser = account;
+
+        if (account != null) {
+          account.authentication.then((GoogleSignInAuthentication value) {
+            setState(() {
+              print(value.toString());
+            });
+          });
+        }
       });
     });
     _googleSignIn.signInSilently();
