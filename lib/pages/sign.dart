@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../store/sign.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: <String>[
@@ -21,19 +23,31 @@ class SignInPageState extends State<SignInPage> {
   void initState() {
     super.initState();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
-      setState(() {
-        _currentUser = account;
-
-        if (account != null) {
-          account.authentication.then((GoogleSignInAuthentication value) {
-            setState(() {
-              print(value.toString());
-            });
+      if (account != null) {
+        account.authentication
+            .then((GoogleSignInAuthentication authentication) {
+          setState(() {
+            _currentUser = account;
           });
-        }
-      });
+          // google 用户注册到服务器后, 记录 token
+          putAccount(account, authentication).then((d) {
+            _setToShared(authentication.accessToken);
+            // render 当前 widget
+          });
+        });
+      }
     });
     _googleSignIn.signInSilently();
+  }
+
+  void _setToShared(String accessToken) async {
+    // 登录后存储到临时缓存中
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String accessTokenShare = prefs.getString('accessToken');
+    print('accessToken: $accessTokenShare');
+    await prefs.setString('accessToken', accessToken);
+    accessTokenShare = prefs.getString('accessToken');
+    print('accessToken: $accessTokenShare');
   }
 
   Future<void> _handleSignIn() async {
