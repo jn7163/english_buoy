@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 // import '../bus.dart';
 import './store.dart';
 
-Dio dio = new Dio();
+Dio dio = getDio();
 // 记录学过的单词
 putLearn(String word) async {
   // Dio dio = new Dio();

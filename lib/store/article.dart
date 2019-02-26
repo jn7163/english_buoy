@@ -3,7 +3,7 @@ import '../bus.dart';
 import './store.dart';
 import './articles.dart';
 
-Dio dio = new Dio();
+Dio dio = getDio();
 // 提交新的文章进行分析
 postArticle(String article) async {
   print("postArticle");
