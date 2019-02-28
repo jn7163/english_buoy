@@ -59,6 +59,7 @@ class SignInPageState extends State<SignInPage> {
   }
 
   Future<void> _handleSignOut() async {
+    _setToShared("");
     _googleSignIn.disconnect();
   }
 

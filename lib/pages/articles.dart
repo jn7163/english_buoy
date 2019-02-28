@@ -1,9 +1,11 @@
 // 文章列表
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import '../pages/sign.dart';
 import './add_article.dart';
 import '../store/articles.dart';
 import './article.dart';
+import '../store/store.dart';
 
 class ArticlesPage extends StatefulWidget {
   ArticlesPage({Key key}) : super(key: key);
@@ -17,13 +19,22 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
   initState() {
     super.initState();
+    _getArticleTitles();
+  }
+
+  void _getArticleTitles() async {
     // 进入的时候, 获取一次文章列表
-    getArticleTitles().then((d) {
+    try {
+      var response = await dio.get(Store.baseURL + "article_titles");
       setState(() {
-        // _articleTitles.clear();
-        _articleTitles = d;
+        _articleTitles = response.data;
       });
-    });
+    } on DioError catch (e) {
+      if (e.response.statusCode == 401) {
+        print("未授权");
+        _toSignPage();
+      }
+    }
   }
 
   void _toAddArticle() {
@@ -35,9 +46,13 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
   void _toSignPage() {
     //导航到新路由
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return SignInPage();
-    }));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            maintainState: false, // 每次都新建一个详情页
+            builder: (context) {
+              return SignInPage();
+            }));
   }
 
   void _toArticle(int articleID) {
