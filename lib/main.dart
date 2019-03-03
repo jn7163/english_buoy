@@ -2,14 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:easy_alert/easy_alert.dart';
 import './pages/articles.dart';
 import './bus.dart';
+import './models/oauth_info.dart';
+import 'package:provide/provide.dart';
 
-// void main() => runApp(MyApp());
-void main() => runApp(AlertProvider(
-      child: MyApp(),
-      config: AlertConfig(
-          ok: "OK text for `ok` button in AlertDialog",
-          cancel: "CANCEL text for `cancel` button in AlertDialog"),
-    ));
+void main() {
+  var oauthInfo = OauthInfo();
+  var providers = Providers();
+
+  providers.provide(Provider<OauthInfo>.value(oauthInfo));
+
+  runApp(ProviderNode(
+      child: AlertProvider(
+        child: MyApp(),
+        config: AlertConfig(
+            ok: "OK text for `ok` button in AlertDialog",
+            cancel: "CANCEL text for `cancel` button in AlertDialog"),
+      ),
+      providers: providers));
+}
 
 class MyApp extends StatelessWidget {
   void init(BuildContext context) {

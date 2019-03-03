@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'package:provide/provide.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../store/sign.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/oauth_info.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: <String>[
@@ -17,8 +19,6 @@ class SignInPage extends StatefulWidget {
 }
 
 class SignInPageState extends State<SignInPage> {
-  GoogleSignInAccount _currentUser;
-
   @override
   void initState() {
     super.initState();
@@ -26,11 +26,14 @@ class SignInPageState extends State<SignInPage> {
       if (account != null) {
         account.authentication
             .then((GoogleSignInAuthentication authentication) {
-          setState(() {
-            _currentUser = account;
-          });
+          // setState(() {
+          //   _currentUser = account;
+          // });
           // google 用户注册到服务器后, 记录 token
           putAccount(account, authentication).then((d) {
+            var oauthInfo = Provide.value<OauthInfo>(context);
+            oauthInfo.set(authentication.accessToken, account.email,
+                account.displayName, account.photoUrl);
             _setToShared(authentication.accessToken);
             // render 当前 widget
           });
@@ -50,6 +53,11 @@ class SignInPageState extends State<SignInPage> {
     print('accessToken: $accessTokenShare');
   }
 
+  void _removeShared(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(key);
+  }
+
   Future<void> _handleSignIn() async {
     try {
       await _googleSignIn.signIn();
@@ -59,39 +67,43 @@ class SignInPageState extends State<SignInPage> {
   }
 
   Future<void> _handleSignOut() async {
-    _setToShared("");
+    _removeShared('accessToken');
+    var oauthInfo = Provide.value<OauthInfo>(context);
+    oauthInfo.signOut();
     _googleSignIn.disconnect();
   }
 
   Widget _buildBody() {
-    if (_currentUser != null) {
-      print(_currentUser.photoUrl);
+    return Provide<OauthInfo>(builder: (context, child, oauthInfo) {
+      print(oauthInfo.email);
+      if (oauthInfo.email != null) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            ListTile(
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(oauthInfo.avatarURL),
+              ),
+              title: Text(oauthInfo.name),
+              subtitle: Text(oauthInfo.email),
+            ),
+            RaisedButton(
+              child: const Text('退出'),
+              onPressed: _handleSignOut,
+            ),
+          ],
+        );
+      }
       return Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(_currentUser.photoUrl),
-            ),
-            title: Text(_currentUser.displayName),
-            subtitle: Text(_currentUser.email),
-          ),
           RaisedButton(
-            child: const Text('退出'),
-            onPressed: _handleSignOut,
+            child: const Text('登录'),
+            onPressed: _handleSignIn,
           ),
         ],
       );
-    }
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        RaisedButton(
-          child: const Text('登录'),
-          onPressed: _handleSignIn,
-        ),
-      ],
-    );
+    });
   }
 
   @override
