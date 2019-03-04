@@ -1,4 +1,5 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
@@ -24,10 +25,7 @@ class ArticlePage extends StatefulWidget {
 class _ArticlePageState extends State<ArticlePage> {
   // Set _setArticleTitles;
   String _title = "loading...";
-  List _words = [
-    Word('Loading'),
-    Word('...'),
-  ];
+  List _words = [];
   // 单引号开头的, 前面不要留空白
   RegExp _noNeedExp = new RegExp(r"^'");
   // 这些符号前面不要加空格
@@ -233,13 +231,9 @@ class _ArticlePageState extends State<ArticlePage> {
 
   void _toArticlesPage() {
     //导航文章列表
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            maintainState: false,
-            builder: (context) {
-              return ArticlesPage();
-            }));
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ArticlesPage();
+    }));
   }
 
   @override
@@ -270,7 +264,7 @@ class _ArticlePageState extends State<ArticlePage> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
         child: Provide<Articles>(builder: (context, child, articles) {
-          if (articles.articles.length != 0) {
+          if (articles.articles.length != 0 && _words.length != 0) {
             return RichText(
               text: TextSpan(
                 text: '',
@@ -293,7 +287,10 @@ class _ArticlePageState extends State<ArticlePage> {
               ),
             );
           }
-          return Text('加载中');
+          return SpinKitChasingDots(
+            color: Colors.blueGrey,
+            size: 50.0,
+          );
         }),
       ),
       floatingActionButton: FloatingActionButton(

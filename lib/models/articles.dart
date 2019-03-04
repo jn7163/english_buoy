@@ -30,6 +30,7 @@ class Articles with ChangeNotifier {
 
 // 根据返回的 json 设置到对象
   setFromJSON(List json) {
+    this.articles.clear();
     json.forEach((d) {
       ArticleTitle articleTitle = ArticleTitle();
       articleTitle.setFromJSON(d);

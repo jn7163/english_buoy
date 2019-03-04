@@ -8,6 +8,7 @@ import './add_article.dart';
 import './article.dart';
 import '../models/oauth_info.dart';
 import '../models/articles.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ArticlesPage extends StatefulWidget {
   ArticlesPage({Key key}) : super(key: key);
@@ -105,7 +106,10 @@ class _ArticlesPageState extends State<ArticlesPage> {
               }).toList(),
             );
           }
-          return Text('加载中');
+          return SpinKitChasingDots(
+            color: Colors.blueGrey,
+            size: 50.0,
+          );
         }),
       ),
       floatingActionButton: FloatingActionButton(

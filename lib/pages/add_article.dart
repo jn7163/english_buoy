@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provide/provide.dart';
 import '../store/article.dart';
 import './article.dart';
+import '../models/articles.dart';
 import 'package:flutter/services.dart';
 
 TextEditingController _articleController = new TextEditingController();
@@ -38,6 +40,9 @@ class _AddArticlePageState extends State<AddArticlePage> {
       setState(() {
         _isEnable = true;
       });
+      //重新获取列表
+      var articles = Provide.value<Articles>(context);
+      articles.syncServer();
       _toArticle(d['id']);
     });
   }
