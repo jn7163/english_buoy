@@ -1,7 +1,8 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import '../bus.dart';
 import './store.dart';
-import './articles.dart';
 
 Dio dio = getDio();
 // 提交新的文章进行分析
@@ -37,7 +38,7 @@ getArticleByID(int id) async {
   return response.data;
 }
 
-putUnlearnedCount(int articleID, int unlearnedCount) async {
+Future putUnlearnedCount(int articleID, int unlearnedCount) async {
   if (articleID == 0) {
     return null;
   }
@@ -45,8 +46,6 @@ putUnlearnedCount(int articleID, int unlearnedCount) async {
   print('putLearnedCount unlearnedCount=' + unlearnedCount.toString());
   var response = await dio.put(Store.baseURL + "article/unlearned_count",
       data: {"article_id": articleID, "unlearned_count": unlearnedCount});
-  // 设置了掌握数以后, 列表也要重新获取的
-  getArticleTitles();
   bus.emit('put_unlearned_count_done', response.data);
-  return response.data;
+  return response;
 }

@@ -60,8 +60,11 @@ class _ArticlePageState extends State<ArticlePage> {
         .toSet()
         .length;
     unlearnedCount--;
-    //提交保存
-    return putUnlearnedCount(widget.articleID, unlearnedCount);
+    // 设置了掌握数以后, 列表也要重新获取的
+    putUnlearnedCount(widget.articleID, unlearnedCount).then((d) {
+      var articles = Provide.value<Articles>(context);
+      articles.syncServer();
+    });
   }
 
   void _toAddArticle() {

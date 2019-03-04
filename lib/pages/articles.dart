@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
-import 'package:dio/dio.dart';
 import '../pages/sign.dart';
 import './add_article.dart';
 import './article.dart';
