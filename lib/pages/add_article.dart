@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
 import '../store/article.dart';
 import './article.dart';
@@ -58,13 +59,9 @@ class _AddArticlePageState extends State<AddArticlePage> {
             }));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("add new article"),
-      ),
-      body: SingleChildScrollView(
+  Widget _getLoadingOr() {
+    if (_isEnable) {
+      return SingleChildScrollView(
         child: Center(
             child: Column(
           children: <Widget>[
@@ -78,7 +75,21 @@ class _AddArticlePageState extends State<AddArticlePage> {
             )
           ],
         )),
+      );
+    }
+    return SpinKitChasingDots(
+      color: Colors.blueGrey,
+      size: 50.0,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("add new article"),
       ),
+      body: _getLoadingOr(),
       floatingActionButton: FloatingActionButton(
         onPressed: _isEnable ? _add : null,
         tooltip: 'add article',
