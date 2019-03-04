@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../store/sign.dart';
 import '../models/oauth_info.dart';
+import '../models/articles.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: <String>[
@@ -49,6 +50,9 @@ class SignInPageState extends State<SignInPage> {
   Future<void> _handleSignOut() async {
     var oauthInfo = Provide.value<OauthInfo>(context);
     oauthInfo.signOut();
+    // 需要清空文章列表
+    var articles = Provide.value<Articles>(context);
+    articles.clear();
     _googleSignIn.disconnect();
   }
 

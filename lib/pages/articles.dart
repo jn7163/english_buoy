@@ -8,6 +8,7 @@ import '../store/articles.dart';
 import './article.dart';
 import '../store/store.dart';
 import '../models/oauth_info.dart';
+import '../models/articles.dart';
 
 class ArticlesPage extends StatefulWidget {
   ArticlesPage({Key key}) : super(key: key);
@@ -17,7 +18,7 @@ class ArticlesPage extends StatefulWidget {
 }
 
 class _ArticlesPageState extends State<ArticlesPage> {
-  List _articleTitles = [];
+  // List _articleTitles = [];
 
   initState() {
     super.initState();
@@ -29,9 +30,12 @@ class _ArticlesPageState extends State<ArticlesPage> {
     // 进入的时候, 获取一次文章列表
     try {
       var response = await dio.get(Store.baseURL + "article_titles");
-      setState(() {
-        _articleTitles = response.data;
-      });
+
+      var articles = Provide.value<Articles>(context);
+      articles.setFromJSON(response.data);
+      //setState(() {
+      //  _articleTitles = response.data;
+      //});
     } on DioError catch (e) {
       if (e.response.statusCode == 401) {
         print("未授权");
@@ -43,7 +47,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
   void _toAddArticle() {
     //添加文章
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return AddArticlePage(articleTitles: _articleTitles);
+      return AddArticlePage();
     }));
   }
 
@@ -65,8 +69,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
         MaterialPageRoute(
             maintainState: false, // 每次都新建一个详情页
             builder: (context) {
-              return ArticlePage(
-                  articleID: articleID, articleTitles: _articleTitles);
+              return ArticlePage(articleID: articleID);
             }));
   }
 
@@ -99,22 +102,26 @@ class _ArticlesPageState extends State<ArticlesPage> {
       ),
       body: Container(
         margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: ListView(
-          children: _articleTitles.map((d) {
-            return ListTile(
-              onTap: () {
-                _toArticle(d['id']);
-                // getArticleByID(d['id']);
-              },
-              leading: Text(d['unlearned_count'].toString(),
-                  style: TextStyle(
-                      color: Colors.teal[700],
-                      fontSize: 16,
-                      fontFamily: "NotoSans-Medium")),
-              title: Text(d['title']),
+        child: Provide<Articles>(builder: (context, child, articles) {
+          if (articles.articles.length != 0) {
+            return ListView(
+              children: articles.articles.map((d) {
+                return ListTile(
+                  onTap: () {
+                    _toArticle(d.id);
+                  },
+                  leading: Text(d.unlearnedCount.toString(),
+                      style: TextStyle(
+                          color: Colors.teal[700],
+                          fontSize: 16,
+                          fontFamily: "NotoSans-Medium")),
+                  title: Text(d.title),
+                );
+              }).toList(),
             );
-          }).toList(),
-        ),
+          }
+          return Text('加载中');
+        }),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _toAddArticle,

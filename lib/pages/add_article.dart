@@ -49,8 +49,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
         MaterialPageRoute(
             maintainState: false,
             builder: (context) {
-              return ArticlePage(
-                  articleID: articleID, articleTitles: widget.articleTitles);
+              return ArticlePage(articleID: articleID);
             }));
   }
 

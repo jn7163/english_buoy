@@ -3,13 +3,19 @@ import 'package:easy_alert/easy_alert.dart';
 import './pages/articles.dart';
 import './bus.dart';
 import './models/oauth_info.dart';
+import './models/articles.dart';
 import 'package:provide/provide.dart';
 
 void main() {
+  // 登录信息
   var oauthInfo = OauthInfo();
+  // 文章列表
+  var articles = Articles();
   var providers = Providers();
 
-  providers.provide(Provider<OauthInfo>.value(oauthInfo));
+  providers
+    ..provide(Provider<OauthInfo>.value(oauthInfo))
+    ..provide(Provider<Articles>.value(articles));
 
   runApp(ProviderNode(
       child: AlertProvider(

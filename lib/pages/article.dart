@@ -1,4 +1,5 @@
 import 'package:flutter/gestures.dart';
+import 'package:provide/provide.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 import '../bus.dart';
@@ -8,19 +9,20 @@ import '../store/learned.dart';
 import './articles.dart';
 import '../store/article.dart';
 import './add_article.dart';
+import '../models/articles.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.articleID, this.articleTitles}) : super(key: key);
+  ArticlePage({Key key, this.articleID}) : super(key: key);
   final int articleID;
-  final List articleTitles;
+  // final List articleTitles;
 
   @override
   _ArticlePageState createState() => _ArticlePageState();
 }
 
 class _ArticlePageState extends State<ArticlePage> {
-  Set _setArticleTitles;
+  // Set _setArticleTitles;
   String _title = "loading...";
   List _words = [
     Word('Loading'),
@@ -37,7 +39,7 @@ class _ArticlePageState extends State<ArticlePage> {
   initState() {
     super.initState();
     // 把 articleTitles 的 title 组合成 set
-    _setArticleTitles = widget.articleTitles.map((d) => d['title']).toSet();
+    // _setArticleTitles = widget.articleTitles.map((d) => d['title']).toSet();
     getArticleByID(widget.articleID).then((data) {
       setState(() {
         _title = data['title'];
@@ -65,7 +67,7 @@ class _ArticlePageState extends State<ArticlePage> {
   void _toAddArticle() {
     //添加文章
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return AddArticlePage(articleTitles: widget.articleTitles);
+      return AddArticlePage();
     }));
   }
 
@@ -74,7 +76,6 @@ class _ArticlePageState extends State<ArticlePage> {
     print("_setAllWordLearned");
     _words.forEach((d) {
       if (d.text.toLowerCase() == word) {
-        print(word);
         setState(() {
           d.learned = learned;
         });
@@ -103,17 +104,17 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
 // 需要学习的单词
-  TextSpan _getNeedLearnTextSpan(Word word) {
+  TextSpan _getNeedLearnTextSpan(Word word, Articles articles) {
     return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
           text: word.text,
           style: (_tapedText.toLowerCase() == word.text.toLowerCase())
-              ? ((_setArticleTitles.contains(word.text.toLowerCase()))
+              ? ((articles.setArticleTitles.contains(word.text.toLowerCase()))
                   ? TextStyle(
                       color: Colors.teal[400], fontWeight: FontWeight.bold)
                   : TextStyle(
                       color: Colors.teal[700], fontWeight: FontWeight.bold))
-              : ((_setArticleTitles.contains(word.text.toLowerCase()))
+              : ((articles.setArticleTitles.contains(word.text.toLowerCase()))
                   ? TextStyle(color: Colors.teal[400])
                   : TextStyle(color: Colors.teal[700])),
           recognizer: _getTapRecognizer(word))
@@ -184,10 +185,10 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   int _getIDByTitle(String title) {
-    var titles =
-        widget.articleTitles.where((d) => d['title'] == title).toList();
+    var articles = Provide.value<Articles>(context);
+    var titles = articles.articles.where((d) => d.title == title).toList();
     if (titles.length > 0) {
-      return titles[0]['id'];
+      return titles[0].id;
     }
     return 0;
   }
@@ -202,8 +203,7 @@ class _ArticlePageState extends State<ArticlePage> {
           MaterialPageRoute(
               maintainState: false, // 每次都新建一个详情页
               builder: (context) {
-                return ArticlePage(
-                    articleID: id, articleTitles: widget.articleTitles);
+                return ArticlePage(articleID: id);
               }));
     }
   }
@@ -266,27 +266,32 @@ class _ArticlePageState extends State<ArticlePage> {
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: RichText(
-          text: TextSpan(
-            text: '', // 英文似乎并不���进
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontFamily: "NotoSans-Medium"),
-            children: _words.map((d) {
-              // return TextSpan(text: d.text);
-              if (d.learned) {
-                return _getLearnedTextSpan(d);
-              }
-              // if (d.level != null && d.level > 0 && d.level < 1000) {
-              if (d.level != null && d.level != 0) {
-                return _getNeedLearnTextSpan(d);
-              } else {
-                return _getNoNeedLearnTextSpan(d);
-              }
-            }).toList(),
-          ),
-        ),
+        child: Provide<Articles>(builder: (context, child, articles) {
+          if (articles.articles.length != 0) {
+            return RichText(
+              text: TextSpan(
+                text: '',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: "NotoSans-Medium"),
+                children: _words.map((d) {
+                  // return TextSpan(text: d.text);
+                  if (d.learned) {
+                    return _getLearnedTextSpan(d);
+                  }
+                  // if (d.level != null && d.level > 0 && d.level < 1000) {
+                  if (d.level != null && d.level != 0) {
+                    return _getNeedLearnTextSpan(d, articles);
+                  } else {
+                    return _getNoNeedLearnTextSpan(d);
+                  }
+                }).toList(),
+              ),
+            );
+          }
+          return Text('加载中');
+        }),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _toAddArticle,
