@@ -27,11 +27,13 @@ class SignInPageState extends State<SignInPage> {
         account.authentication
             .then((GoogleSignInAuthentication authentication) {
           var oauthInfo = Provide.value<OauthInfo>(context);
+          var articles = Provide.value<Articles>(context);
           // google 用户注册到服务器后, 记录 token
           putAccount(account, authentication).then((d) {
             oauthInfo.set(authentication.accessToken, account.email,
                 account.displayName, account.photoUrl);
-            // render 当前 widget
+            //登录后从服务器获取
+            articles.syncServer();
           });
         });
       }

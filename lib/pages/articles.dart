@@ -1,12 +1,12 @@
 // 文章列表
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import 'package:dio/dio.dart';
 import '../pages/sign.dart';
 import './add_article.dart';
-import '../store/articles.dart';
 import './article.dart';
-import '../store/store.dart';
 import '../models/oauth_info.dart';
 import '../models/articles.dart';
 
@@ -18,30 +18,18 @@ class ArticlesPage extends StatefulWidget {
 }
 
 class _ArticlesPageState extends State<ArticlesPage> {
-  // List _articleTitles = [];
-
   initState() {
     super.initState();
-
-    _getArticleTitles();
-  }
-
-  void _getArticleTitles() async {
-    // 进入的时候, 获取一次文章列表
-    try {
-      var response = await dio.get(Store.baseURL + "article_titles");
-
+    // 需要初始化后才能使用 context
+    Future.delayed(Duration.zero, () {
       var articles = Provide.value<Articles>(context);
-      articles.setFromJSON(response.data);
-      //setState(() {
-      //  _articleTitles = response.data;
-      //});
-    } on DioError catch (e) {
-      if (e.response.statusCode == 401) {
-        print("未授权");
-        _toSignPage();
-      }
-    }
+      articles.syncServer().catchError((e) {
+        if (e.response.statusCode == 401) {
+          print("未授权");
+          _toSignPage();
+        }
+      });
+    });
   }
 
   void _toAddArticle() {
@@ -75,8 +63,6 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
   @override
   Widget build(BuildContext context) {
-    // var oauthInfo = Provide.value<OauthInfo>(context);
-    // oauthInfo.backFromShared();
     return Scaffold(
       appBar: AppBar(
         title: Text('文章列表'),
