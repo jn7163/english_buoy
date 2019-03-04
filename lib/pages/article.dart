@@ -236,6 +236,45 @@ class _ArticlePageState extends State<ArticlePage> {
     }));
   }
 
+  Widget _wrapLoading() {
+    if (_words.length != 0) {
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
+        child: Provide<Articles>(builder: (context, child, articles) {
+          if (articles.articles.length != 0) {
+            return RichText(
+              text: TextSpan(
+                text: '',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: "NotoSans-Medium"),
+                children: _words.map((d) {
+                  // return TextSpan(text: d.text);
+                  if (d.learned) {
+                    return _getLearnedTextSpan(d);
+                  }
+                  // if (d.level != null && d.level > 0 && d.level < 1000) {
+                  if (d.level != null && d.level != 0) {
+                    return _getNeedLearnTextSpan(d, articles);
+                  } else {
+                    return _getNoNeedLearnTextSpan(d);
+                  }
+                }).toList(),
+              ),
+            );
+          }
+          return Text('some error!');
+        }),
+      );
+    }
+    return SpinKitChasingDots(
+      color: Colors.blueGrey,
+      size: 50.0,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -260,39 +299,7 @@ class _ArticlePageState extends State<ArticlePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: Provide<Articles>(builder: (context, child, articles) {
-          if (articles.articles.length != 0 && _words.length != 0) {
-            return RichText(
-              text: TextSpan(
-                text: '',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontFamily: "NotoSans-Medium"),
-                children: _words.map((d) {
-                  // return TextSpan(text: d.text);
-                  if (d.learned) {
-                    return _getLearnedTextSpan(d);
-                  }
-                  // if (d.level != null && d.level > 0 && d.level < 1000) {
-                  if (d.level != null && d.level != 0) {
-                    return _getNeedLearnTextSpan(d, articles);
-                  } else {
-                    return _getNoNeedLearnTextSpan(d);
-                  }
-                }).toList(),
-              ),
-            );
-          }
-          return SpinKitChasingDots(
-            color: Colors.blueGrey,
-            size: 50.0,
-          );
-        }),
-      ),
+      body: _wrapLoading(),
       floatingActionButton: FloatingActionButton(
         onPressed: _toAddArticle,
         tooltip: 'add article',
