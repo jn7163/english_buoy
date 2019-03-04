@@ -28,6 +28,8 @@ class MyApp extends StatelessWidget {
       Alert.toast(context, arg.toString(),
           position: ToastPosition.bottom, duration: ToastDuration.long);
     });
+    var oauthInfo = Provide.value<OauthInfo>(context);
+    oauthInfo.backFromShared();
   }
 
   // This widget is the root of your application.

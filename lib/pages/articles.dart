@@ -1,11 +1,13 @@
 // 文章列表
 import 'package:flutter/material.dart';
+import 'package:provide/provide.dart';
 import 'package:dio/dio.dart';
 import '../pages/sign.dart';
 import './add_article.dart';
 import '../store/articles.dart';
 import './article.dart';
 import '../store/store.dart';
+import '../models/oauth_info.dart';
 
 class ArticlesPage extends StatefulWidget {
   ArticlesPage({Key key}) : super(key: key);
@@ -19,6 +21,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
   initState() {
     super.initState();
+
     _getArticleTitles();
   }
 
@@ -69,15 +72,29 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
   @override
   Widget build(BuildContext context) {
+    // var oauthInfo = Provide.value<OauthInfo>(context);
+    // oauthInfo.backFromShared();
     return Scaffold(
       appBar: AppBar(
         title: Text('文章列表'),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            tooltip: 'Sign',
-            onPressed: _toSignPage,
-          ),
+          Provide<OauthInfo>(builder: (context, child, oauthInfo) {
+            if (oauthInfo.email == null) {
+              return IconButton(
+                icon: Icon(Icons.exit_to_app),
+                tooltip: 'Sign',
+                onPressed: _toSignPage,
+              );
+            } else {
+              return GestureDetector(
+                  onTap: _toSignPage,
+                  child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(oauthInfo.avatarURL),
+                      )));
+            }
+          }),
         ],
       ),
       body: Container(
