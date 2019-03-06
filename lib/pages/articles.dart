@@ -96,7 +96,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
         child: Provide<Articles>(builder: (context, child, articles) {
           if (articles.articles.length != 0) {
             return ListView(
-              children: articles.articles.map((d) {
+              children:
+                  articles.articles.where((d) => d.unlearnedCount > 0).map((d) {
                 return ListTile(
                   onTap: () {
                     _toArticle(d.id);

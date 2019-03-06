@@ -120,13 +120,11 @@ class _ArticlePageState extends State<ArticlePage> {
           ClipboardManager.copyToClipBoard(word.text);
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
           if (_lastTapedText.toLowerCase() == word.text.toLowerCase()) {
-            int id = _getIDByTitle(word.text.toLowerCase());
+            int id = _getIDByTitle(word.text);
             if (id != 0) {
               article.clear();
               article.getArticleByID(id);
             }
-            // 跳转时候要用小写
-            // _tryJumpTo(word.text.toLowerCase());
           } else {
             _lastTapedText = word.text;
           }
@@ -146,26 +144,13 @@ class _ArticlePageState extends State<ArticlePage> {
 
   int _getIDByTitle(String title) {
     var articles = Provide.value<Articles>(context);
-    var titles = articles.articles.where((d) => d.title == title).toList();
+    var titles = articles.articles
+        .where((d) => d.title.toLowerCase() == title.toLowerCase())
+        .toList();
     if (titles.length > 0) {
       return titles[0].id;
     }
     return 0;
-  }
-
-  void _tryJumpTo(String text) {
-    int id = _getIDByTitle(text);
-
-    if (id != 0) {
-      //导航到文章详情
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              maintainState: false, // 每次都新建一个详情页
-              builder: (context) {
-                return ArticlePage(articleID: id);
-              }));
-    }
   }
 
 // 已经学会的单词
