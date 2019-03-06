@@ -8,6 +8,7 @@ import './add_article.dart';
 import './article.dart';
 import '../models/oauth_info.dart';
 import '../models/articles.dart';
+import '../models/article.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ArticlesPage extends StatefulWidget {
@@ -51,14 +52,18 @@ class _ArticlesPageState extends State<ArticlesPage> {
   }
 
   void _toArticle(int articleID) {
+    var article = Provide.value<Article>(context);
+    article.clear();
+    article.getArticleByID(articleID).then((d) {
+      var articles = Provide.value<Articles>(context);
+      articles.syncServer();
+    });
     //导航到文章详情
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            maintainState: false, // 每次都新建一个详情页
-            builder: (context) {
-              return ArticlePage(articleID: articleID);
-            }));
+    Navigator.push(context, MaterialPageRoute(
+        // maintainState: false, // 每次都新建一个详情页
+        builder: (context) {
+      return ArticlePage(articleID: articleID);
+    }));
   }
 
   @override

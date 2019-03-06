@@ -4,6 +4,7 @@ import './pages/articles.dart';
 import './bus.dart';
 import './models/oauth_info.dart';
 import './models/articles.dart';
+import './models/article.dart';
 import 'package:provide/provide.dart';
 
 void main() {
@@ -11,11 +12,13 @@ void main() {
   var oauthInfo = OauthInfo();
   // 文章列表
   var articles = Articles();
+  var article = Article();
   var providers = Providers();
 
   providers
     ..provide(Provider<OauthInfo>.value(oauthInfo))
-    ..provide(Provider<Articles>.value(articles));
+    ..provide(Provider<Articles>.value(articles))
+    ..provide(Provider<Article>.value(article));
 
   runApp(ProviderNode(
       child: AlertProvider(
