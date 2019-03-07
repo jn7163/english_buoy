@@ -119,7 +119,9 @@ class _ArticlePageState extends State<ArticlePage> {
           }
           ClipboardManager.copyToClipBoard(word.text);
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
-          if (_lastTapedText.toLowerCase() == word.text.toLowerCase()) {
+          // 已经在这个单词也, 就不要跳转了
+          if (_lastTapedText.toLowerCase() == word.text.toLowerCase() &&
+              word.text.toLowerCase() != article.title.toLowerCase()) {
             int id = _getIDByTitle(word.text);
             if (id != 0) {
               article.clear();
