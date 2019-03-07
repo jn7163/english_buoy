@@ -6,6 +6,7 @@ import './article.dart';
 import '../models/articles.dart';
 import '../models/article.dart';
 import 'package:flutter/services.dart';
+import '../components/oauth_info.dart';
 
 TextEditingController _articleController = new TextEditingController();
 
@@ -93,6 +94,9 @@ class _AddArticlePageState extends State<AddArticlePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("add new article"),
+        actions: <Widget>[
+          OauthInfoWidget(),
+        ],
       ),
       body: _getLoadingOr(),
       floatingActionButton: FloatingActionButton(

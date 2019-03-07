@@ -6,7 +6,7 @@ import 'package:provide/provide.dart';
 import '../pages/sign.dart';
 import './add_article.dart';
 import './article.dart';
-import '../models/oauth_info.dart';
+import '../components/oauth_info.dart';
 import '../models/articles.dart';
 import '../models/article.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -72,23 +72,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
       appBar: AppBar(
         title: Text('文章列表'),
         actions: <Widget>[
-          Provide<OauthInfo>(builder: (context, child, oauthInfo) {
-            if (oauthInfo.email == null) {
-              return IconButton(
-                icon: Icon(Icons.exit_to_app),
-                tooltip: 'Sign',
-                onPressed: _toSignPage,
-              );
-            } else {
-              return GestureDetector(
-                  onTap: _toSignPage,
-                  child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(oauthInfo.avatarURL),
-                      )));
-            }
-          }),
+          OauthInfoWidget(),
         ],
       ),
       body: Container(

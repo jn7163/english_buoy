@@ -4,14 +4,13 @@ import 'package:provide/provide.dart';
 import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 import '../bus.dart';
-// import '../dto/word.dart';
-import './sign.dart';
 import '../store/learned.dart';
 import './articles.dart';
 import './add_article.dart';
 import '../models/articles.dart';
 import '../models/article.dart';
 import '../models/word.dart';
+import '../components/oauth_info.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
@@ -32,16 +31,6 @@ class _ArticlePageState extends State<ArticlePage> {
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
   String _lastTapedText = ''; // 上次点击的文本
-  //initState() {
-  //  super.initState();
-  //
-  //  getArticleByID(widget.articleID).then((data) {
-  //    setState(() {
-  //      _words = data['words'].map((d) => Word.fromJson(d)).toList();
-  //    });
-  //    _putUnlearnedCount();
-  //  });
-  //}
 
   void _toAddArticle() {
     //添加文章
@@ -168,13 +157,6 @@ class _ArticlePageState extends State<ArticlePage> {
     ]);
   }
 
-  void _toSignPage() {
-    //导航到新路由
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return SignInPage();
-    }));
-  }
-
   void _toArticlesPage() {
     //导航文章列表
     Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -237,11 +219,7 @@ class _ArticlePageState extends State<ArticlePage> {
           return Text("loading...");
         }),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            tooltip: 'Air it',
-            onPressed: _toSignPage,
-          ),
+          OauthInfoWidget(),
         ],
       ),
       body: _wrapLoading(),
