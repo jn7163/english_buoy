@@ -113,7 +113,10 @@ class _ArticlePageState extends State<ArticlePage> {
         longTap = true;
         print("onLongTapDown");
         word.learned = !word.learned;
-        article.putLearned(word);
+        article.putLearned(word).then((d) {
+          var articleTitles = Provide.value<ArticleTitles>(context);
+          articleTitles.syncServer();
+        });
       }
       ..onTapCancel = (i) {
         setState(() {
@@ -136,7 +139,7 @@ class _ArticlePageState extends State<ArticlePage> {
             int id = _getIDByTitle(word.text);
             if (id != 0) {
               // toArticle(context, id);
-              Navigator.pushNamed(context, '/Article', arguments: {"id": id});
+              Navigator.pushNamed(context, '/Article', arguments: id);
             }
           } else {
             _lastTapedText = word.text;

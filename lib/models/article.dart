@@ -68,9 +68,9 @@ class Article {
   }
 
   // 记录学习状态
-  putLearned(Word word) {
+  Future putLearned(Word word) async {
     // 标记所有单词为对应状态, 并通知
     this._setWordIsLearned(word.text, word.learned);
-    word.putLearned().then((d) => _putUnlearnedCount());
+    return word.putLearned().then((d) => _putUnlearnedCount());
   }
 }
