@@ -5,7 +5,7 @@ import './word.dart';
 import 'package:dio/dio.dart';
 import '../store/store.dart';
 
-class Article with ChangeNotifier {
+class Article {
   int articleID;
   // 文章中的文字内容
   List words = [];
@@ -15,13 +15,13 @@ class Article with ChangeNotifier {
   setFromJSON(Map json) {
     this.title = json['title'];
     this.words = json['words'].map((d) => Word.fromJson(d)).toList();
-    notifyListeners();
+    // notifyListeners();
   }
 
   clear() {
     this.title = '';
     this.words.clear();
-    notifyListeners();
+    // notifyListeners();
   }
 
   // 从服务器获取
@@ -65,7 +65,7 @@ class Article with ChangeNotifier {
         d.learned = isLearned;
       }
     });
-    notifyListeners();
+    // notifyListeners();
   }
 
   // 记录学习状态

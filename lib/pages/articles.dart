@@ -3,13 +3,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
-import '../pages/sign.dart';
-import './add_article.dart';
-import './article.dart';
 import '../components/oauth_info.dart';
 import '../models/article_titles.dart';
+import '../models/articles.dart';
 import '../models/article.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../functions/router.dart';
 
 class ArticlesPage extends StatefulWidget {
   ArticlesPage({Key key}) : super(key: key);
@@ -21,49 +20,17 @@ class ArticlesPage extends StatefulWidget {
 class _ArticlesPageState extends State<ArticlesPage> {
   initState() {
     super.initState();
+    print('init articles');
     // 需要初始化后才能使用 context
     Future.delayed(Duration.zero, () {
-      var articles = Provide.value<Articles>(context);
+      var articles = Provide.value<ArticleTitles>(context);
       articles.syncServer().catchError((e) {
         if (e.response.statusCode == 401) {
           print("未授权");
-          _toSignPage();
+          toSignPage(context);
         }
       });
     });
-  }
-
-  void _toAddArticle() {
-    //添加文章
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return AddArticlePage();
-    }));
-  }
-
-  void _toSignPage() {
-    //导航到新路由
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            maintainState: false, // 每次都新建一个详情页
-            builder: (context) {
-              return SignInPage();
-            }));
-  }
-
-  void _toArticle(int articleID) {
-    var article = Provide.value<Article>(context);
-    article.clear();
-    article.getArticleByID(articleID).then((d) {
-      var articles = Provide.value<Articles>(context);
-      articles.syncServer();
-    });
-    //导航到文章详情
-    Navigator.push(context, MaterialPageRoute(
-        // maintainState: false, // 每次都新建一个详情页
-        builder: (context) {
-      return ArticlePage(articleID: articleID);
-    }));
   }
 
   @override
@@ -77,14 +44,14 @@ class _ArticlesPageState extends State<ArticlesPage> {
       ),
       body: Container(
         margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: Provide<Articles>(builder: (context, child, articles) {
+        child: Provide<ArticleTitles>(builder: (context, child, articles) {
           if (articles.articles.length != 0) {
             return ListView(
               children:
                   articles.articles.where((d) => d.unlearnedCount > 0).map((d) {
                 return ListTile(
                   onTap: () {
-                    _toArticle(d.id);
+                    toArticle(context, d.id);
                   },
                   leading: Text(d.unlearnedCount.toString(),
                       style: TextStyle(
@@ -103,7 +70,9 @@ class _ArticlesPageState extends State<ArticlesPage> {
         }),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _toAddArticle,
+        onPressed: () {
+          toAddArticle(context);
+        },
         tooltip: 'add article',
         child: Icon(Icons.add),
       ),

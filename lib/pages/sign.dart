@@ -27,7 +27,7 @@ class SignInPageState extends State<SignInPage> {
         account.authentication
             .then((GoogleSignInAuthentication authentication) {
           var oauthInfo = Provide.value<OauthInfo>(context);
-          var articles = Provide.value<Articles>(context);
+          var articles = Provide.value<ArticleTitles>(context);
           // google 用户注册到服务器后, 记录 token
           putAccount(account, authentication).then((d) {
             oauthInfo.set(authentication.accessToken, account.email,
@@ -53,7 +53,7 @@ class SignInPageState extends State<SignInPage> {
     var oauthInfo = Provide.value<OauthInfo>(context);
     oauthInfo.signOut();
     // 需要清空文章列表
-    var articles = Provide.value<Articles>(context);
+    var articles = Provide.value<ArticleTitles>(context);
     articles.clear();
     _googleSignIn.disconnect();
   }

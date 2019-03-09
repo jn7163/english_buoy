@@ -5,7 +5,7 @@ import './article_title.dart';
 import '../store/store.dart';
 import 'package:dio/dio.dart';
 
-class Articles with ChangeNotifier {
+class ArticleTitles with ChangeNotifier {
   List<ArticleTitle> articles = [];
   // Set 合集, 用于快速查找添加过的单词
   Set setArticleTitles = Set();

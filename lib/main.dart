@@ -5,18 +5,21 @@ import './bus.dart';
 import './models/oauth_info.dart';
 import './models/article_titles.dart';
 import './models/article.dart';
+import './models/articles.dart';
 import 'package:provide/provide.dart';
 
 void main() {
   // 登录信息
   var oauthInfo = OauthInfo();
   // 文章列表
-  var articles = Articles();
+  var articleTitles = ArticleTitles();
   var article = Article();
+  var articles = Articles();
   var providers = Providers();
 
   providers
     ..provide(Provider<OauthInfo>.value(oauthInfo))
+    ..provide(Provider<ArticleTitles>.value(articleTitles))
     ..provide(Provider<Articles>.value(articles))
     ..provide(Provider<Article>.value(article));
 

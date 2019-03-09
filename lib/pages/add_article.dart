@@ -47,7 +47,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
       article.clear();
       article.getArticleByID(d['id']).then((d) {
         //显示以后, 会计算未读数字, 需要刷新列表
-        var articles = Provide.value<Articles>(context);
+        var articles = Provide.value<ArticleTitles>(context);
         articles.syncServer();
       });
       _toArticle(d['id']);

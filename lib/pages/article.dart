@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
@@ -5,12 +7,12 @@ import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 import '../bus.dart';
 import '../store/learned.dart';
-import './articles.dart';
-import './add_article.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
+import '../models/articles.dart';
 import '../models/word.dart';
 import '../components/oauth_info.dart';
+import '../functions/router.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
@@ -31,12 +33,38 @@ class _ArticlePageState extends State<ArticlePage> {
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
   String _lastTapedText = ''; // 上次点击的文本
+  Article article;
 
-  void _toAddArticle() {
-    //添加文章
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return AddArticlePage();
-    }));
+  @override
+  initState() {
+    super.initState();
+    print('init');
+    var newArticle = Article();
+    newArticle.getArticleByID(widget.articleID).then((d) {
+      setState(() {
+        this.article = newArticle;
+      });
+    });
+    /*
+    Future.delayed(Duration.zero, () {
+      var articles = Provide.value<Articles>(context);
+      var newArticle = articles.articles[widget.articleID];
+      print("init");
+      if (newArticle == null) {
+        newArticle = Article();
+        newArticle.getArticleByID(widget.articleID).then((d) {
+          articles.set(newArticle);
+          setState(() {
+            this.article = newArticle;
+          });
+        });
+      } else {
+        setState(() {
+          this.article = newArticle;
+        });
+      }
+    });
+    */
   }
 
 // 根据规则, 判断单词前是否需要添加空白
@@ -61,7 +89,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
 // 需要学习的单词
   TextSpan _getNeedLearnTextSpan(
-      Word word, Articles articles, Article article) {
+      Word word, ArticleTitles articles, Article article) {
     return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
           text: word.text,
@@ -113,8 +141,7 @@ class _ArticlePageState extends State<ArticlePage> {
               word.text.toLowerCase() != article.title.toLowerCase()) {
             int id = _getIDByTitle(word.text);
             if (id != 0) {
-              article.clear();
-              article.getArticleByID(id);
+              toArticle(context, id);
             }
           } else {
             _lastTapedText = word.text;
@@ -134,7 +161,7 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   int _getIDByTitle(String title) {
-    var articles = Provide.value<Articles>(context);
+    var articles = Provide.value<ArticleTitles>(context);
     var titles = articles.articles
         .where((d) => d.title.toLowerCase() == title.toLowerCase())
         .toList();
@@ -157,52 +184,42 @@ class _ArticlePageState extends State<ArticlePage> {
     ]);
   }
 
-  void _toArticlesPage() {
-    //导航文章列表
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ArticlesPage();
-    }));
-  }
-
   Widget _wrapLoading() {
-    return Provide<Article>(builder: (context, child, article) {
-      if (article.words.length != 0) {
-        return SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding:
-              EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-          child: Provide<Articles>(builder: (context, child, articles) {
-            if (articles.articles.length != 0) {
-              return RichText(
-                text: TextSpan(
-                  text: '',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontFamily: "NotoSans-Medium"),
-                  children: article.words.map((d) {
-                    if (d.learned) {
-                      return _getLearnedTextSpan(d, article);
-                    }
-                    // if (d.level != null && d.level > 0 && d.level < 1000) {
-                    if (d.level != null && d.level != 0) {
-                      return _getNeedLearnTextSpan(d, articles, article);
-                    } else {
-                      return _getNoNeedLearnTextSpan(d, article);
-                    }
-                  }).toList(),
-                ),
-              );
-            }
-            return Text('some error!');
-          }),
-        );
-      }
-      return SpinKitChasingDots(
-        color: Colors.blueGrey,
-        size: 50.0,
+    if (article != null) {
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
+        child: Provide<ArticleTitles>(builder: (context, child, articles) {
+          if (articles.articles.length != 0) {
+            return RichText(
+              text: TextSpan(
+                text: '',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: "NotoSans-Medium"),
+                children: article.words.map((d) {
+                  if (d.learned) {
+                    return _getLearnedTextSpan(d, article);
+                  }
+                  // if (d.level != null && d.level > 0 && d.level < 1000) {
+                  if (d.level != null && d.level != 0) {
+                    return _getNeedLearnTextSpan(d, articles, article);
+                  } else {
+                    return _getNoNeedLearnTextSpan(d, article);
+                  }
+                }).toList(),
+              ),
+            );
+          }
+          return Text('some error!');
+        }),
       );
-    });
+    }
+    return SpinKitChasingDots(
+      color: Colors.blueGrey,
+      size: 50.0,
+    );
   }
 
   @override
@@ -212,19 +229,20 @@ class _ArticlePageState extends State<ArticlePage> {
         leading: IconButton(
           icon: Icon(Icons.list),
           tooltip: 'go to articles',
-          onPressed: _toArticlesPage,
+          onPressed: () {
+            toArticlesPage(context);
+          },
         ),
-        title: Provide<Article>(builder: (context, child, article) {
-          if (article.title != null) return Text(article.title);
-          return Text("loading...");
-        }),
+        title: (article != null) ? Text(article.title) : Text("loading..."),
         actions: <Widget>[
           OauthInfoWidget(),
         ],
       ),
       body: _wrapLoading(),
       floatingActionButton: FloatingActionButton(
-        onPressed: _toAddArticle,
+        onPressed: () {
+          toAddArticle(context);
+        },
         tooltip: 'add article',
         child: Icon(Icons.add),
       ),
