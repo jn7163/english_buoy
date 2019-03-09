@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../models/oauth_info.dart';
-import '../functions/router.dart';
 
 class OauthInfoWidget extends StatelessWidget {
   @override
@@ -12,13 +11,13 @@ class OauthInfoWidget extends StatelessWidget {
           icon: Icon(Icons.exit_to_app),
           tooltip: 'Sign',
           onPressed: () {
-            toSignPage(context);
+            Navigator.pushNamed(context, '/Sign');
           },
         );
       } else {
         return GestureDetector(
             onTap: () {
-              toSignPage(context);
+              Navigator.pushNamed(context, '/Sign');
             },
             child: Padding(
                 padding: const EdgeInsets.all(8.0),

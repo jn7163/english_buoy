@@ -1,6 +1,5 @@
 // 文章详情内容
 import 'dart:async';
-import 'package:flutter/material.dart';
 import './word.dart';
 import 'package:dio/dio.dart';
 import '../store/store.dart';

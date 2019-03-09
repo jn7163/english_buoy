@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../components/oauth_info.dart';
 import '../models/article_titles.dart';
-import '../models/articles.dart';
-import '../models/article.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../functions/router.dart';
 
 class ArticlesPage extends StatefulWidget {
   ArticlesPage({Key key}) : super(key: key);
@@ -27,7 +24,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
       articles.syncServer().catchError((e) {
         if (e.response.statusCode == 401) {
           print("未授权");
-          toSignPage(context);
+          Navigator.pushNamed(context, '/Sign');
         }
       });
     });
@@ -51,7 +48,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                   articles.articles.where((d) => d.unlearnedCount > 0).map((d) {
                 return ListTile(
                   onTap: () {
-                    toArticle(context, d.id);
+                    Navigator.pushNamed(context, '/Article', arguments: d.id);
                   },
                   leading: Text(d.unlearnedCount.toString(),
                       style: TextStyle(
@@ -71,7 +68,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          toAddArticle(context);
+          Navigator.pushNamed(context, '/AddArticle');
         },
         tooltip: 'add article',
         child: Icon(Icons.add),

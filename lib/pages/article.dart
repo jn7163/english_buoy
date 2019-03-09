@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
@@ -12,12 +10,12 @@ import '../models/article.dart';
 import '../models/articles.dart';
 import '../models/word.dart';
 import '../components/oauth_info.dart';
-import '../functions/router.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.articleID}) : super(key: key);
-  final int articleID;
+  ArticlePage({Key key, this.id}) : super(key: key);
+  // ArticlePage({this.id});
+  final int id;
   // final List articleTitles;
 
   @override
@@ -35,36 +33,21 @@ class _ArticlePageState extends State<ArticlePage> {
   String _lastTapedText = ''; // 上次点击的文本
   Article article;
 
-  @override
-  initState() {
-    super.initState();
-    print('init');
-    var newArticle = Article();
-    newArticle.getArticleByID(widget.articleID).then((d) {
-      setState(() {
-        this.article = newArticle;
-      });
+  loadArticleByID() {
+    print(widget.id);
+    var articles = Provide.value<Articles>(context);
+    setState(() {
+      article = articles.articles[widget.id];
     });
-    /*
-    Future.delayed(Duration.zero, () {
-      var articles = Provide.value<Articles>(context);
-      var newArticle = articles.articles[widget.articleID];
-      print("init");
-      if (newArticle == null) {
-        newArticle = Article();
-        newArticle.getArticleByID(widget.articleID).then((d) {
-          articles.set(newArticle);
-          setState(() {
-            this.article = newArticle;
-          });
-        });
-      } else {
+    if (this.article == null) {
+      this.article = Article();
+      this.article.getArticleByID(widget.id).then((d) {
+        articles.set(this.article);
         setState(() {
-          this.article = newArticle;
+          this.article = this.article;
         });
-      }
-    });
-    */
+      });
+    }
   }
 
 // 根据规则, 判断单词前是否需要添加空白
@@ -141,7 +124,8 @@ class _ArticlePageState extends State<ArticlePage> {
               word.text.toLowerCase() != article.title.toLowerCase()) {
             int id = _getIDByTitle(word.text);
             if (id != 0) {
-              toArticle(context, id);
+              // toArticle(context, id);
+              Navigator.pushNamed(context, '/Article', arguments: {"id": id});
             }
           } else {
             _lastTapedText = word.text;
@@ -216,6 +200,7 @@ class _ArticlePageState extends State<ArticlePage> {
         }),
       );
     }
+    this.loadArticleByID();
     return SpinKitChasingDots(
       color: Colors.blueGrey,
       size: 50.0,
@@ -230,7 +215,7 @@ class _ArticlePageState extends State<ArticlePage> {
           icon: Icon(Icons.list),
           tooltip: 'go to articles',
           onPressed: () {
-            toArticlesPage(context);
+            Navigator.pushNamed(context, '/Articles');
           },
         ),
         title: (article != null) ? Text(article.title) : Text("loading..."),
@@ -241,7 +226,7 @@ class _ArticlePageState extends State<ArticlePage> {
       body: _wrapLoading(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          toAddArticle(context);
+          Navigator.pushNamed(context, '/AddArticle');
         },
         tooltip: 'add article',
         child: Icon(Icons.add),

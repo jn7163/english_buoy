@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
 import '../store/article.dart';
-import './article.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
 import 'package:flutter/services.dart';
@@ -50,19 +49,8 @@ class _AddArticlePageState extends State<AddArticlePage> {
         var articles = Provide.value<ArticleTitles>(context);
         articles.syncServer();
       });
-      _toArticle(d['id']);
+      Navigator.pushNamed(context, '/Article', arguments: {"id": d["id"]});
     });
-  }
-
-  void _toArticle(int articleID) {
-    //导航到文章详情
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            maintainState: false,
-            builder: (context) {
-              return ArticlePage(articleID: articleID);
-            }));
   }
 
   Widget _getLoadingOr() {

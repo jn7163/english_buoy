@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:easy_alert/easy_alert.dart';
-import './pages/articles.dart';
 import './bus.dart';
 import './models/oauth_info.dart';
 import './models/article_titles.dart';
 import './models/article.dart';
 import './models/articles.dart';
 import 'package:provide/provide.dart';
+
+import './pages/articles.dart';
+import './pages/article.dart';
+import './pages/sign.dart';
+import './pages/add_article.dart';
 
 void main() {
   // 登录信息
@@ -49,11 +53,42 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     init(context);
     return MaterialApp(
-        title: 'English Buoy',
-        theme: ThemeData(
-          primarySwatch: Colors.blueGrey,
-        ),
-        // home: ArticlePage(title: 'Learn The Word'),
-        home: ArticlesPage());
+      title: 'English Buoy',
+      theme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+      ),
+      home: ArticlesPage(),
+      onGenerateRoute: _getRoute,
+      //initialRoute: '/ArticlesPage',
+      //routes: {
+      //  '/': (context) => ArticlesPage(),
+      //  '/Articles': (context) => ArticlesPage(),
+      //  '/AddArticle': (context) => AddArticlePage(),
+      //  '/Article': (context) => ArticlePage(),
+      //  '/Sign': (context) => SignInPage(),
+      //},
+    );
+  }
+
+  Route _getRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case '/Articles':
+        return _buildRoute(settings, ArticlesPage());
+      case '/AddArticle':
+        return _buildRoute(settings, AddArticlePage());
+      case '/Article':
+        return _buildRoute(settings, ArticlePage(id: settings.arguments));
+      case '/Sign':
+        return _buildRoute(settings, SignInPage());
+      default:
+        return null;
+    }
+  }
+
+  MaterialPageRoute _buildRoute(RouteSettings settings, Widget builder) {
+    return new MaterialPageRoute(
+      settings: settings,
+      builder: (BuildContext context) => builder,
+    );
   }
 }
