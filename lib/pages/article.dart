@@ -7,7 +7,7 @@ import '../bus.dart';
 import '../store/learned.dart';
 import './articles.dart';
 import './add_article.dart';
-import '../models/articles.dart';
+import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/word.dart';
 import '../components/oauth_info.dart';

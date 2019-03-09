@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../store/sign.dart';
 import '../models/oauth_info.dart';
-import '../models/articles.dart';
+import '../models/article_titles.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: <String>[

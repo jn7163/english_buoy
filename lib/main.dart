@@ -3,7 +3,7 @@ import 'package:easy_alert/easy_alert.dart';
 import './pages/articles.dart';
 import './bus.dart';
 import './models/oauth_info.dart';
-import './models/articles.dart';
+import './models/article_titles.dart';
 import './models/article.dart';
 import 'package:provide/provide.dart';
 

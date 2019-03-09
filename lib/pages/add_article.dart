@@ -3,7 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
 import '../store/article.dart';
 import './article.dart';
-import '../models/articles.dart';
+import '../models/article_titles.dart';
 import '../models/article.dart';
 import 'package:flutter/services.dart';
 import '../components/oauth_info.dart';
