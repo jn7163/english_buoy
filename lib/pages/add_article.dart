@@ -49,7 +49,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
         var articles = Provide.value<ArticleTitles>(context);
         articles.syncServer();
       });
-      Navigator.pushNamed(context, '/Article', arguments: {"id": d["id"]});
+      Navigator.pushNamed(context, '/Article', arguments: d["id"]);
     });
   }
 
