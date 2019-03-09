@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
@@ -31,20 +33,29 @@ class _ArticlePageState extends State<ArticlePage> {
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
   String _lastTapedText = ''; // 上次点击的文本
-  Article article;
+  Article _article;
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      loadArticleByID();
+    });
+  }
 
   loadArticleByID() {
-    print(widget.id);
+    if (_article != null) return;
     var articles = Provide.value<Articles>(context);
     setState(() {
-      article = articles.articles[widget.id];
+      print("loadArticleByID");
+      _article = articles.articles[widget.id];
+      print(_article);
     });
-    if (this.article == null) {
-      this.article = Article();
-      this.article.getArticleByID(widget.id).then((d) {
-        articles.set(this.article);
+    if (_article == null) {
+      var article = Article();
+      article.getArticleByID(widget.id).then((d) {
+        articles.set(article);
         setState(() {
-          this.article = this.article;
+          _article = article;
         });
       });
     }
@@ -169,7 +180,7 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Widget _wrapLoading() {
-    if (article != null) {
+    if (_article != null) {
       return SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
@@ -182,15 +193,15 @@ class _ArticlePageState extends State<ArticlePage> {
                     color: Colors.black,
                     fontSize: 20,
                     fontFamily: "NotoSans-Medium"),
-                children: article.words.map((d) {
+                children: _article.words.map((d) {
                   if (d.learned) {
-                    return _getLearnedTextSpan(d, article);
+                    return _getLearnedTextSpan(d, _article);
                   }
                   // if (d.level != null && d.level > 0 && d.level < 1000) {
                   if (d.level != null && d.level != 0) {
-                    return _getNeedLearnTextSpan(d, articles, article);
+                    return _getNeedLearnTextSpan(d, articles, _article);
                   } else {
-                    return _getNoNeedLearnTextSpan(d, article);
+                    return _getNoNeedLearnTextSpan(d, _article);
                   }
                 }).toList(),
               ),
@@ -200,7 +211,6 @@ class _ArticlePageState extends State<ArticlePage> {
         }),
       );
     }
-    this.loadArticleByID();
     return SpinKitChasingDots(
       color: Colors.blueGrey,
       size: 50.0,
@@ -218,7 +228,7 @@ class _ArticlePageState extends State<ArticlePage> {
             Navigator.pushNamed(context, '/Articles');
           },
         ),
-        title: (article != null) ? Text(article.title) : Text("loading..."),
+        title: (_article != null) ? Text(_article.title) : Text("loading..."),
         actions: <Widget>[
           OauthInfoWidget(),
         ],
