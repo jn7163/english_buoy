@@ -34,6 +34,7 @@ class SignInPageState extends State<SignInPage> {
                 account.displayName, account.photoUrl);
             //登录后从服务器获取
             articles.syncServer();
+            Navigator.pushNamed(context, '/Articles');
           });
         });
       }

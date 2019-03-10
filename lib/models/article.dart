@@ -60,7 +60,7 @@ class Article {
 // 设置当前文章的所有该单词为需要的学习状态
   _setWordIsLearned(String word, bool isLearned) {
     this.words.forEach((d) {
-      if (d.text.toLowerCase() == word) {
+      if (d.text.toLowerCase() == word.toLowerCase()) {
         d.learned = isLearned;
       }
     });

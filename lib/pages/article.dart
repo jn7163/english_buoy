@@ -75,8 +75,8 @@ class _ArticlePageState extends State<ArticlePage> {
       TextSpan(
           text: word.text,
           style: (this._tapedText.toLowerCase() == word.text.toLowerCase())
-              ? TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold)
-              : TextStyle(color: Colors.grey[600]),
+              ? TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold)
+              : TextStyle(color: Colors.blueGrey),
           recognizer: _getTapRecognizer(word, article, true))
     ]);
   }
