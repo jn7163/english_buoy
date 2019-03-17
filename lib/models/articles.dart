@@ -11,13 +11,19 @@ class Articles with ChangeNotifier {
     notifyListeners();
   }
 
+// always set data
+  Future setByID(int articleID) async {
+    Article newArticle = Article();
+    return newArticle
+        .getArticleByID(articleID)
+        .then((d) => this.set(newArticle));
+  }
+
+// is not exists add, else do nothing
   Future addByID(int articleID) async {
     Article article = this.articles[articleID];
     if (article == null) {
-      Article newArticle = Article();
-      return newArticle
-          .getArticleByID(articleID)
-          .then((d) => this.set(newArticle));
+      return this.setByID(articleID);
     }
   }
 }

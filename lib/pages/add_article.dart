@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
 import '../store/article.dart';
+import '../bus.dart';
 import '../models/article_titles.dart';
-import '../models/article.dart';
+import '../models/articles.dart';
 import 'package:flutter/services.dart';
 import '../components/oauth_info.dart';
 
@@ -39,18 +40,28 @@ class _AddArticlePageState extends State<AddArticlePage> {
     });
     postArticle(_articleController.text).then((d) {
       _articleController.text = '';
-      setState(() {
-        _isEnable = true;
-      });
-      var article = Provide.value<Article>(context);
-      article.clear();
-      article.getArticleByID(d['id']).then((d) {
-        //显示以后, 会计算未读数字, 需要刷新列表
-        var articles = Provide.value<ArticleTitles>(context);
-        articles.syncServer();
-      });
-      Navigator.pushNamed(context, '/Article', arguments: d["id"]);
+
+      // make sure refalsh local data
+      if (d["exists"]) {
+        bus.emit('pop_show', "update article");
+        var articles = Provide.value<Articles>(context);
+        articles.setByID(d["id"]).then((d2) {
+          _loadArticleTitlesAndToArticle(d["id"]);
+        });
+      } else {
+        _loadArticleTitlesAndToArticle(d["id"]);
+      }
     });
+  }
+
+  void _loadArticleTitlesAndToArticle(int articleID) {
+    setState(() {
+      _isEnable = true;
+    });
+    //显示以后, 会计算未读数字, 需要刷新列表
+    var articleTitles = Provide.value<ArticleTitles>(context);
+    articleTitles.syncServer();
+    Navigator.pushNamed(context, '/Article', arguments: articleID);
   }
 
   Widget _getLoadingOr() {
