@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
-import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 import '../bus.dart';
 import '../store/learned.dart';
@@ -131,7 +131,7 @@ class _ArticlePageState extends State<ArticlePage> {
             bus.emit('pop_show', word.level.toString());
             putLearn(word.text);
           }
-          ClipboardManager.copyToClipBoard(word.text);
+          Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
           // 已经在这个单词也, 就不要跳转了
           if (_lastTapedText.toLowerCase() == word.text.toLowerCase() &&

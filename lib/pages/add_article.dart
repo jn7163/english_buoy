@@ -26,12 +26,8 @@ class _AddArticlePageState extends State<AddArticlePage> {
 
   bool _isEnable = true;
   _getFromClipboard() async {
-    Map<String, dynamic> result =
-        await SystemChannels.platform.invokeMethod('Clipboard.getData');
-    if (result != null) {
-      return result['text'].toString();
-    }
-    return '';
+    var clipboardData = await Clipboard.getData('text/plain');
+    return clipboardData.text;
   }
 
   void _add() {
