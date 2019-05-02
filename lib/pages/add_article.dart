@@ -26,7 +26,13 @@ class _AddArticlePageState extends State<AddArticlePage> {
 
   bool _isEnable = true;
   _getFromClipboard() async {
+    setState(() {
+      this._isEnable = false;
+    });
     var clipboardData = await Clipboard.getData('text/plain');
+    setState(() {
+      this._isEnable = true;
+    });
     return clipboardData.text;
   }
 
@@ -36,7 +42,6 @@ class _AddArticlePageState extends State<AddArticlePage> {
     });
     postArticle(_articleController.text).then((d) {
       _articleController.text = '';
-
       // make sure refalsh local data
       if (d["exists"]) {
         bus.emit('pop_show', "update article");

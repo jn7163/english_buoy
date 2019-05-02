@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.english_buoy">
+    package="net.bigzhu.english_buoy">
 
     <!-- The INTERNET permission is required for development. Specifically,
          flutter needs it to communicate with the running application
