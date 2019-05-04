@@ -71,32 +71,43 @@ class _ArticlePageState extends State<ArticlePage> {
 // 定义应该的 style
   TextStyle _defineStyle(Word word, ArticleTitles articleTitles) {
     TextStyle textStyle = TextStyle();
+    bool needLearn = (word.level != null && word.level != 0);
+    bool inArticleTitles =
+        articleTitles.setArticleTitles.contains(word.text.toLowerCase());
     // 需要学习
-    // if (d.level != null && d.level > 0 && d.level < 1000) {
-    if (word.level != null && word.level != 0) {
-      textStyle = textStyle.copyWith(color: Colors.teal[700]);
-    } else {
-      // 无需学习的单词
-      textStyle = textStyle.copyWith(color: Colors.blueGrey);
+    textStyle = needLearn
+        ? textStyle.copyWith(color: Colors.teal[700])
+        : textStyle.copyWith(color: Colors.blueGrey);
+    // 存在已经添加的单词标题列表中
+    if (inArticleTitles) {
+      //需要掌握的单词正常绿色, 超编添加淡绿色
+      textStyle = needLearn
+          ? textStyle.copyWith(color: Colors.teal[700])
+          : textStyle.copyWith(color: Colors.teal[400]);
+    } else if (needLearn) {
+      // 需要学习又没加入单词列表
+      textStyle = textStyle.copyWith(
+        decoration: TextDecoration.underline,
+        decorationStyle: TextDecorationStyle.dotted,
+      );
     }
-    // 存在已经添加的单词标题列表中, 无论是不是需要学习的单词, 都高亮淡绿色
-    if (articleTitles.setArticleTitles.contains(word.text.toLowerCase())) {
-      textStyle = textStyle.copyWith(color: Colors.teal[400]);
+
+    // 已经学会, 不用任何样式, 继承原本就可以
+    if (word.learned == true) {
+      textStyle = TextStyle();
     }
     // 长按选中
     if (_tapedText.toLowerCase() == word.text.toLowerCase()) {
       textStyle = textStyle.copyWith(fontWeight: FontWeight.bold);
-    }
-    // 已经学会用黑色
-    if (word.learned == true) {
-      textStyle = textStyle.copyWith(color: Colors.black);
+      if (inArticleTitles) {
+        textStyle = textStyle.copyWith(color: Colors.teal[700]);
+      }
     }
     return textStyle;
   }
 
 // 需要学习的单词
-  TextSpan _getNeedLearnTextSpan(
-      Word word, ArticleTitles articles, Article article) {
+  TextSpan _getTextSpan(Word word, ArticleTitles articles, Article article) {
     return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
           text: word.text,
@@ -188,7 +199,7 @@ class _ArticlePageState extends State<ArticlePage> {
                       fontSize: 20,
                       fontFamily: "NotoSans-Medium"),
                   children: _article.words.map((d) {
-                    return _getNeedLearnTextSpan(d, articles, _article);
+                    return _getTextSpan(d, articles, _article);
                   }).toList(),
                 ),
               );
