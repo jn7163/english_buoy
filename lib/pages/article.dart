@@ -71,21 +71,20 @@ class _ArticlePageState extends State<ArticlePage> {
 // 定义应该的 style
   TextStyle _defineStyle(Word word, ArticleTitles articleTitles) {
     TextStyle textStyle = TextStyle();
-    bool needLearn = (word.level != null && word.level != 0);
-    bool inArticleTitles =
-        articleTitles.setArticleTitles.contains(word.text.toLowerCase());
-    // 需要学习
+    bool needLearn = (word.level != null && word.level != 0); // 是否需要掌握
+    bool inArticleTitles = articleTitles.setArticleTitles
+        .contains(word.text.toLowerCase()); // 是否添加
+    bool isSelected =
+        (_tapedText.toLowerCase() == word.text.toLowerCase()); // 是否选中
+
+    // 需要学习teal, 否则 blueGrep
     textStyle = needLearn
         ? textStyle.copyWith(color: Colors.teal[700])
         : textStyle.copyWith(color: Colors.blueGrey);
-    // 存在已经添加的单词标题列表中
+    // 已添加
     if (inArticleTitles) {
-      //需要掌握的单词正常绿色, 超编添加淡绿色
-      textStyle = needLearn
-          ? textStyle.copyWith(color: Colors.teal[700])
-          : textStyle.copyWith(color: Colors.teal[400]);
-    } else if (needLearn) {
-      // 需要学习又没加入单词列表
+      //无需掌握的添加单词为淡绿色
+      if (!needLearn) textStyle = textStyle.copyWith(color: Colors.teal[400]);
       textStyle = textStyle.copyWith(
         decoration: TextDecoration.underline,
         decorationStyle: TextDecorationStyle.dotted,
@@ -93,16 +92,11 @@ class _ArticlePageState extends State<ArticlePage> {
     }
 
     // 已经学会, 不用任何样式, 继承原本就可以
-    if (word.learned == true) {
-      textStyle = TextStyle();
-    }
+    // 一旦选中, 还原本来的样式
+    if (word.learned == true && !isSelected) textStyle = TextStyle();
     // 长按选中
-    if (_tapedText.toLowerCase() == word.text.toLowerCase()) {
-      textStyle = textStyle.copyWith(fontWeight: FontWeight.bold);
-      if (inArticleTitles) {
-        textStyle = textStyle.copyWith(color: Colors.teal[700]);
-      }
-    }
+    if (isSelected) textStyle = textStyle.copyWith(fontWeight: FontWeight.bold);
+
     return textStyle;
   }
 
