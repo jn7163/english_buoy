@@ -46,9 +46,8 @@ class _ArticlePageState extends State<ArticlePage> {
     if (_article != null) return;
     var articles = Provide.value<Articles>(context);
     setState(() {
-      print("loadArticleByID");
+      // print("loadArticleByID");
       _article = articles.articles[widget.id];
-      print(_article);
     });
     if (_article == null) {
       var article = Article();
@@ -69,16 +68,30 @@ class _ArticlePageState extends State<ArticlePage> {
     return blank;
   }
 
-// 无需学习的单词
-  TextSpan _getNoNeedLearnTextSpan(Word word, Article article) {
-    return TextSpan(text: _getBlank(word.text.toLowerCase()), children: [
-      TextSpan(
-          text: word.text,
-          style: (this._tapedText.toLowerCase() == word.text.toLowerCase())
-              ? TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold)
-              : TextStyle(color: Colors.blueGrey),
-          recognizer: _getTapRecognizer(word, article, true))
-    ]);
+// 定义应该的 style
+  TextStyle _defineStyle(Word word, ArticleTitles articleTitles) {
+    TextStyle textStyle = TextStyle();
+    // 需要学习
+    // if (d.level != null && d.level > 0 && d.level < 1000) {
+    if (word.level != null && word.level != 0) {
+      textStyle = textStyle.copyWith(color: Colors.teal[700]);
+    } else {
+      // 无需学习的单词
+      textStyle = textStyle.copyWith(color: Colors.blueGrey);
+    }
+    // 存在已经添加的单词标题列表中, 无论是不是需要学习的单词, 都高亮淡绿色
+    if (articleTitles.setArticleTitles.contains(word.text.toLowerCase())) {
+      textStyle = textStyle.copyWith(color: Colors.teal[400]);
+    }
+    // 长按选中
+    if (_tapedText.toLowerCase() == word.text.toLowerCase()) {
+      textStyle = textStyle.copyWith(fontWeight: FontWeight.bold);
+    }
+    // 已经学会用黑色
+    if (word.learned == true) {
+      textStyle = textStyle.copyWith(color: Colors.black);
+    }
+    return textStyle;
   }
 
 // 需要学习的单词
@@ -87,31 +100,23 @@ class _ArticlePageState extends State<ArticlePage> {
     return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
           text: word.text,
-          style: (_tapedText.toLowerCase() == word.text.toLowerCase())
-              ? ((articles.setArticleTitles.contains(word.text.toLowerCase()))
-                  ? TextStyle(
-                      color: Colors.teal[400], fontWeight: FontWeight.bold)
-                  : TextStyle(
-                      color: Colors.teal[700], fontWeight: FontWeight.bold))
-              : ((articles.setArticleTitles.contains(word.text.toLowerCase()))
-                  ? TextStyle(color: Colors.teal[400])
-                  : TextStyle(color: Colors.teal[700])),
+          style: _defineStyle(word, articles),
           recognizer: _getTapRecognizer(word, article))
     ]);
   }
 
 // 定义各种 tap 后的处理
 // isNoNeed 是不需要学习的
-  MultiTapGestureRecognizer _getTapRecognizer(Word word, Article article,
-      [bool isNoNeedLearn = false]) {
+  MultiTapGestureRecognizer _getTapRecognizer(
+    Word word,
+    Article article,
+  ) {
     bool longTap = false; // 标记是否长按, 长按不要触发单词查询
     return MultiTapGestureRecognizer()
       ..longTapDelay = Duration(milliseconds: 500)
       ..onLongTapDown = (i, detail) {
-        // 不学习的没必要设置学会与否
-        if (isNoNeedLearn) return;
         longTap = true;
-        print("onLongTapDown");
+        // print("onLongTapDown");
         word.learned = !word.learned;
         article.putLearned(word).then((d) {
           var articleTitles = Provide.value<ArticleTitles>(context);
@@ -127,10 +132,8 @@ class _ArticlePageState extends State<ArticlePage> {
         // 避免长按的同时触发
         if (!longTap) {
           // 无需学的, 没必要记录学习次数以及显示级别
-          if (!isNoNeedLearn) {
-            bus.emit('pop_show', word.level.toString());
-            putLearn(word.text);
-          }
+          bus.emit('pop_show', word.level.toString());
+          putLearn(word.text);
           Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
           // 已经在这个单词也, 就不要跳转了
@@ -169,19 +172,6 @@ class _ArticlePageState extends State<ArticlePage> {
     return 0;
   }
 
-// 已经学会的单词
-  TextSpan _getLearnedTextSpan(Word word, Article article) {
-    return TextSpan(text: _getBlank(word.text), children: [
-      TextSpan(
-        text: word.text,
-        style: (this._tapedText.toLowerCase() == word.text.toLowerCase())
-            ? TextStyle(fontWeight: FontWeight.bold)
-            : TextStyle(),
-        recognizer: _getTapRecognizer(word, article),
-      )
-    ]);
-  }
-
   Widget _wrapLoading() {
     if (_article != null) {
       return SingleChildScrollView(
@@ -198,24 +188,18 @@ class _ArticlePageState extends State<ArticlePage> {
                       fontSize: 20,
                       fontFamily: "NotoSans-Medium"),
                   children: _article.words.map((d) {
-                    if (d.learned) {
-                      return _getLearnedTextSpan(d, _article);
-                    }
-                    // if (d.level != null && d.level > 0 && d.level < 1000) {
-                    if (d.level != null && d.level != 0) {
-                      return _getNeedLearnTextSpan(d, articles, _article);
-                    } else {
-                      return _getNoNeedLearnTextSpan(d, _article);
-                    }
+                    return _getNeedLearnTextSpan(d, articles, _article);
                   }).toList(),
                 ),
               );
             }
             return Text('some error!');
           }),
+          /*
           Image.network(
             'https://follow.bigzhu.net/medias/natgeo/instagram/58684976_2120196621599783_7845444018273837766_n.jpg',
           )
+          */
         ]),
       );
     }
