@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../models/article_titles.dart';
 
 import 'package:dio/dio.dart';
 import '../bus.dart';
@@ -6,7 +7,7 @@ import './store.dart';
 
 Dio dio = getDio();
 // 提交新的文章进行分析
-postArticle(String article) async {
+postArticle(String article, ArticleTitles articleTitles) async {
   print("postArticle");
   if (article == "") {
     article = """
@@ -20,6 +21,8 @@ postArticle(String article) async {
     var response =
         await dio.post(Store.baseURL + "analysis", data: {"article": article});
     bus.emit('analysis_done', response.data);
+    //显示以后, 会计算未读数字, 需要刷新列表
+    articleTitles.syncServer();
     return response.data;
   } on DioError catch (e) {
     // 如果是已经存在, 那么应该会把 article id 传过来

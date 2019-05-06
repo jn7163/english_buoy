@@ -40,28 +40,29 @@ class _AddArticlePageState extends State<AddArticlePage> {
     setState(() {
       _isEnable = false;
     });
-    postArticle(_articleController.text).then((d) {
+    var articleTitles = Provide.value<ArticleTitles>(context);
+    bool showNewArticle = false;
+    postArticle(_articleController.text, articleTitles).then((d) {
       _articleController.text = '';
       // make sure refalsh local data
       if (d["exists"]) {
         bus.emit('pop_show', "update article");
         var articles = Provide.value<Articles>(context);
         articles.setByID(d["id"]).then((d2) {
-          _loadArticleTitlesAndToArticle(d["id"]);
+          if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
         });
       } else {
-        _loadArticleTitlesAndToArticle(d["id"]);
+        if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
       }
     });
+    // 如果不需要显示新加入的, 返回上一页
+    if (!showNewArticle) Navigator.pop(context);
   }
 
   void _loadArticleTitlesAndToArticle(int articleID) {
     setState(() {
       _isEnable = true;
     });
-    //显示以后, 会计算未读数字, 需要刷新列表
-    var articleTitles = Provide.value<ArticleTitles>(context);
-    articleTitles.syncServer();
     Navigator.pushNamed(context, '/Article', arguments: articleID);
   }
 
