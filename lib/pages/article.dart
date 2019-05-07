@@ -102,6 +102,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
 // 需要学习的单词
   TextSpan _getTextSpan(Word word, ArticleTitles articles, Article article) {
+    print("_getTextSpan:" + word.text);
     return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
           text: word.text,
@@ -116,9 +117,10 @@ class _ArticlePageState extends State<ArticlePage> {
     Word word,
     Article article,
   ) {
+    if (word.text == "") return null;
     bool longTap = false; // 标记是否长按, 长按不要触发单词查询
     return MultiTapGestureRecognizer()
-      ..longTapDelay = Duration(milliseconds: 500)
+      ..longTapDelay = Duration(milliseconds: 800)
       ..onLongTapDown = (i, detail) {
         longTap = true;
         // print("onLongTapDown");
@@ -178,21 +180,20 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Widget _wrapLoading() {
+    TextStyle textStyle = TextStyle(
+        color: Colors.black, fontSize: 20, fontFamily: "NotoSans-Medium");
     if (_article != null) {
       return SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
+        // physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: Provide<ArticleTitles>(builder: (context, child, articles) {
-          if (articles.articles.length != 0) {
+        child: Provide<ArticleTitles>(builder: (context, child, articleTitles) {
+          if (articleTitles.articles.length != 0) {
             return RichText(
               text: TextSpan(
                 text: '',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontFamily: "NotoSans-Medium"),
+                style: textStyle,
                 children: _article.words.map((d) {
-                  return _getTextSpan(d, articles, _article);
+                  return _getTextSpan(d, articleTitles, _article);
                 }).toList(),
               ),
             );

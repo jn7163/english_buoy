@@ -53,6 +53,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     init(context);
     return MaterialApp(
+      /*
+      showPerformanceOverlay: true,
+      checkerboardOffscreenLayers: true, // 使用了saveLayer的图形会显示为棋盘格式并随着页面刷新而闪烁
+      checkerboardRasterCacheImages:
+          true, // 做了缓存的静态图片在刷新页面时不会改变棋盘格的颜色；如果棋盘格颜色变了说明被重新缓存了，这是我们要避免的
+          */
+
       title: 'English Buoy',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
