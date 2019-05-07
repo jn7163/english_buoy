@@ -102,7 +102,6 @@ class _ArticlePageState extends State<ArticlePage> {
 
 // 需要学习的单词
   TextSpan _getTextSpan(Word word, ArticleTitles articles, Article article) {
-    print("_getTextSpan:" + word.text);
     return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
           text: word.text,
@@ -120,7 +119,7 @@ class _ArticlePageState extends State<ArticlePage> {
     if (word.text == "") return null;
     bool longTap = false; // 标记是否长按, 长按不要触发单词查询
     return MultiTapGestureRecognizer()
-      ..longTapDelay = Duration(milliseconds: 800)
+      ..longTapDelay = Duration(milliseconds: 500)
       ..onLongTapDown = (i, detail) {
         longTap = true;
         // print("onLongTapDown");
@@ -158,11 +157,13 @@ class _ArticlePageState extends State<ArticlePage> {
       }
       ..onTapDown = (i, d) {
         setState(() {
+          print("onTapDown setState");
           _tapedText = word.text;
         });
       }
       ..onTapUp = (i, d) {
         setState(() {
+          print("onTapUp setState");
           _tapedText = '';
         });
       };
