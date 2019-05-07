@@ -182,30 +182,23 @@ class _ArticlePageState extends State<ArticlePage> {
       return SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: Column(children: [
-          Provide<ArticleTitles>(builder: (context, child, articles) {
-            if (articles.articles.length != 0) {
-              return RichText(
-                text: TextSpan(
-                  text: '',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontFamily: "NotoSans-Medium"),
-                  children: _article.words.map((d) {
-                    return _getTextSpan(d, articles, _article);
-                  }).toList(),
-                ),
-              );
-            }
-            return Text('some error!');
-          }),
-          /*
-          Image.network(
-            'https://follow.bigzhu.net/medias/natgeo/instagram/58684976_2120196621599783_7845444018273837766_n.jpg',
-          )
-          */
-        ]),
+        child: Provide<ArticleTitles>(builder: (context, child, articles) {
+          if (articles.articles.length != 0) {
+            return RichText(
+              text: TextSpan(
+                text: '',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: "NotoSans-Medium"),
+                children: _article.words.map((d) {
+                  return _getTextSpan(d, articles, _article);
+                }).toList(),
+              ),
+            );
+          }
+          return Text('some error!');
+        }),
       );
     }
     return SpinKitChasingDots(
