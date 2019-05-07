@@ -31,7 +31,7 @@ class _ArticlePageState extends State<ArticlePage> {
   // 单引号开头的, 前面不要留空白
   RegExp _noNeedExp = new RegExp(r"^'");
   // 这些符号前面不要加空格
-  List _noNeedBlank = [".", "!", "'", ",", ":", '"', "?", "n't"];
+  List _noNeedBlank = [".", "!", "'", ",", ":", "?", "n't"];
 
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
@@ -47,10 +47,10 @@ class _ArticlePageState extends State<ArticlePage> {
     _controller.addListener(() {
       if (_scrolling) return;
       _scrolling = true;
-      print("_scrolling = true");
+      // print("_scrolling = true");
       Future.delayed(Duration(milliseconds: 800), () {
         _scrolling = false;
-        print("_scrolling = false");
+        // print("_scrolling = false");
       });
     });
   }
