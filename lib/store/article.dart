@@ -1,5 +1,6 @@
 import 'dart:async';
 import '../models/article_titles.dart';
+import '../models/articles.dart';
 
 import 'package:dio/dio.dart';
 import '../bus.dart';
@@ -7,7 +8,8 @@ import './store.dart';
 
 Dio dio = getDio();
 // 提交新的文章进行分析
-postArticle(String article, ArticleTitles articleTitles) async {
+postArticle(
+    String article, ArticleTitles articleTitles, Articles articles) async {
   print("postArticle");
   if (article == "") {
     article = """
@@ -23,6 +25,12 @@ postArticle(String article, ArticleTitles articleTitles) async {
     bus.emit('analysis_done', response.data);
     //显示以后, 会计算未读数字, 需要刷新列表
     articleTitles.syncServer();
+    // 如果是 update exists, 确保更新手机当前数据
+    if (response.data["exists"]) {
+      bus.emit('pop_show', "update article");
+      // make sure refalsh local data
+      await articles.setByID(response.data["id"]);
+    }
     return response.data;
   } on DioError catch (e) {
     // 如果是已经存在, 那么应该会把 article id 传过来

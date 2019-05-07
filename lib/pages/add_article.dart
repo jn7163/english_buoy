@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
 import '../store/article.dart';
-import '../bus.dart';
 import '../models/article_titles.dart';
 import '../models/articles.dart';
 import 'package:flutter/services.dart';
@@ -41,19 +40,11 @@ class _AddArticlePageState extends State<AddArticlePage> {
       _isEnable = false;
     });
     var articleTitles = Provide.value<ArticleTitles>(context);
+    var articles = Provide.value<Articles>(context);
     bool showNewArticle = false;
-    postArticle(_articleController.text, articleTitles).then((d) {
+    postArticle(_articleController.text, articleTitles, articles).then((d) {
       _articleController.text = '';
-      // make sure refalsh local data
-      if (d["exists"]) {
-        bus.emit('pop_show', "update article");
-        var articles = Provide.value<Articles>(context);
-        articles.setByID(d["id"]).then((d2) {
-          if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
-        });
-      } else {
-        if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
-      }
+      if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
     });
     // 如果不需要显示新加入的, 返回上一页
     if (!showNewArticle) Navigator.pop(context);
