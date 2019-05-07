@@ -25,6 +25,9 @@ class ArticlePage extends StatefulWidget {
 }
 
 class _ArticlePageState extends State<ArticlePage> {
+  // 监听滚动事件
+  ScrollController _controller = new ScrollController();
+  bool _scrolling = false;
   // 单引号开头的, 前面不要留空白
   RegExp _noNeedExp = new RegExp(r"^'");
   // 这些符号前面不要加空格
@@ -40,6 +43,23 @@ class _ArticlePageState extends State<ArticlePage> {
     Future.delayed(Duration.zero, () {
       loadArticleByID();
     });
+    // 滚动后, 有那么一段时间点击不触发 setState, 避免卡顿的感觉
+    _controller.addListener(() {
+      if (_scrolling) return;
+      _scrolling = true;
+      print("_scrolling = true");
+      Future.delayed(Duration(milliseconds: 800), () {
+        _scrolling = false;
+        print("_scrolling = false");
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    //为了避免内存泄露，需要调用_controller.dispose
+    _controller.dispose();
+    super.dispose();
   }
 
   loadArticleByID() {
@@ -129,11 +149,6 @@ class _ArticlePageState extends State<ArticlePage> {
           articleTitles.syncServer();
         });
       }
-      ..onTapCancel = (i) {
-        setState(() {
-          this._tapedText = '';
-        });
-      }
       ..onTap = (i) {
         // 避免长按的同时触发
         if (!longTap) {
@@ -155,13 +170,21 @@ class _ArticlePageState extends State<ArticlePage> {
           }
         }
       }
+      ..onTapCancel = (i) {
+        if (_scrolling) return;
+        setState(() {
+          this._tapedText = '';
+        });
+      }
       ..onTapDown = (i, d) {
+        if (_scrolling) return;
         setState(() {
           print("onTapDown setState");
           _tapedText = word.text;
         });
       }
       ..onTapUp = (i, d) {
+        if (_scrolling) return;
         setState(() {
           print("onTapUp setState");
           _tapedText = '';
@@ -185,6 +208,7 @@ class _ArticlePageState extends State<ArticlePage> {
         color: Colors.black, fontSize: 20, fontFamily: "NotoSans-Medium");
     if (_article != null) {
       return SingleChildScrollView(
+        controller: _controller,
         // physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
         child: Provide<ArticleTitles>(builder: (context, child, articleTitles) {
