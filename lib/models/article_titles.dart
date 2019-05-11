@@ -32,7 +32,6 @@ class ArticleTitles with ChangeNotifier {
       this.articles.add(articleTitle);
       this.setArticleTitles.add(articleTitle.title);
     });
-    print(json[0]);
     notifyListeners();
   }
 }
