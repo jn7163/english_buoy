@@ -24,7 +24,7 @@ postArticle(
         await dio.post(Store.baseURL + "analysis", data: {"article": article});
     bus.emit('analysis_done', response.data);
     //显示以后, 会计算未读数字, 需要刷新列表
-    articleTitles.syncServer();
+    await articleTitles.syncServer();
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
       bus.emit('pop_show', "update article");

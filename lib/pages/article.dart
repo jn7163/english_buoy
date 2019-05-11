@@ -120,7 +120,7 @@ class _ArticlePageState extends State<ArticlePage> {
     if (word.text == "") return null;
     bool longTap = false; // 标记是否长按, 长按不要触发单词查询
     return MultiTapGestureRecognizer()
-      ..longTapDelay = Duration(milliseconds: 500)
+      ..longTapDelay = Duration(milliseconds: 300)
       ..onLongTapDown = (i, detail) {
         longTap = true;
         // print("onLongTapDown");
