@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../components/oauth_info.dart';
 import '../models/article_titles.dart';
+import '../models/article_title.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ArticlesPage extends StatefulWidget {
@@ -15,6 +16,9 @@ class ArticlesPage extends StatefulWidget {
 }
 
 class _ArticlesPageState extends State<ArticlesPage> {
+  TextEditingController _searchQuery = new TextEditingController();
+  bool _isSearching = false;
+  String _searchText = "";
   initState() {
     super.initState();
     print('init articles');
@@ -28,24 +32,66 @@ class _ArticlesPageState extends State<ArticlesPage> {
         }
       });
     });
+    _searchQuery.addListener(() {
+      if (!_isSearching) {
+        _searchQuery.text = "";
+      }
+      if (!(_searchQuery.text.isEmpty)) {
+        setState(() {
+          // _isSearching = true;
+          _searchText = _searchQuery.text;
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('文章列表'),
+        title: _isSearching
+            ? TextField(
+                autofocus: true, // 自动对焦
+                decoration: null, // 不要有下划线
+                cursorColor: Colors.white,
+                controller: _searchQuery,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              )
+            : Text(
+                "The Articles",
+                style: TextStyle(color: Colors.white),
+              ),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(_isSearching ? Icons.close : Icons.search),
+            tooltip: 'go to articles',
+            onPressed: () {
+              setState(() {
+                _isSearching = !_isSearching;
+              });
+            },
+          ),
           OauthInfoWidget(),
         ],
       ),
       body: Container(
         margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
         child: Provide<ArticleTitles>(builder: (context, child, articles) {
+          List<ArticleTitle> filterTiltes;
+          if (_isSearching) {
+            filterTiltes = articles.articles
+                .where((d) =>
+                    d.title.toLowerCase().contains(_searchText.toLowerCase()))
+                .toList();
+          } else {
+            filterTiltes =
+                articles.articles.where((d) => d.unlearnedCount > 0).toList();
+          }
           if (articles.articles.length != 0) {
             return ListView(
-              children:
-                  articles.articles.where((d) => d.unlearnedCount > 0).map((d) {
+              children: filterTiltes.map((d) {
                 return ListTile(
                   onTap: () {
                     Navigator.pushNamed(context, '/Article', arguments: d.id);
