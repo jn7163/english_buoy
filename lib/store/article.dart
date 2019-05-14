@@ -11,13 +11,10 @@ Dio dio = getDio();
 postArticle(
     String article, ArticleTitles articleTitles, Articles articles) async {
   print("postArticle");
+  // 替换奇怪的连写字符串
+  article = article.replaceAll("—", "-");
   if (article == "") {
-    article = """
-
-    test
-    this is test article.
-    please give me some money!
-    """;
+    return "article is null";
   }
   try {
     var response =
