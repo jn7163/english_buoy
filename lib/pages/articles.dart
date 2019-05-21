@@ -36,7 +36,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
       if (!_isSearching) {
         _searchQuery.text = "";
       }
-      if (!(_searchQuery.text.isEmpty)) {
+      if (_searchQuery.text.isNotEmpty) {
         setState(() {
           // _isSearching = true;
           _searchText = _searchQuery.text;
