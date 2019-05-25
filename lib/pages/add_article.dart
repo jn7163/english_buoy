@@ -43,9 +43,10 @@ class _AddArticlePageState extends State<AddArticlePage> {
     var articles = Provide.value<Articles>(context);
     bool showNewArticle = false;
     postArticle(_articleController.text, articleTitles, articles).then((d) {
-      _articleController.text = '';
       if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
     });
+    // 不等待后台返回, 直接清除内容
+    _articleController.text = '';
     // 如果不需要显示新加入的, 返回上一页
     if (!showNewArticle) Navigator.pop(context);
   }
