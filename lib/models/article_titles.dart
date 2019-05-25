@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import './article_title.dart';
+import './article.dart';
 import '../store/store.dart';
 import 'package:dio/dio.dart';
 
@@ -23,14 +24,30 @@ class ArticleTitles with ChangeNotifier {
     notifyListeners();
   }
 
+  addByArticle(Article article) {
+    ArticleTitle articleTitle = ArticleTitle();
+    articleTitle.title = article.title;
+    articleTitle.id = article.articleID;
+    articleTitle.unlearnedCount = 99;
+    articleTitle.createdAt = DateTime.now();
+    add(articleTitle);
+    notifyListeners();
+  }
+
+  add(ArticleTitle articleTitle) {
+    this.articles.add(articleTitle);
+    this.setArticleTitles.add(articleTitle.title);
+  }
+
 // 根据返回的 json 设置到对象
   setFromJSON(List json) {
     this.articles.clear();
     json.forEach((d) {
       ArticleTitle articleTitle = ArticleTitle();
       articleTitle.setFromJSON(d);
-      this.articles.add(articleTitle);
-      this.setArticleTitles.add(articleTitle.title);
+      add(articleTitle);
+      // this.articles.add(articleTitle);
+      // this.setArticleTitles.add(articleTitle.title);
     });
     notifyListeners();
   }

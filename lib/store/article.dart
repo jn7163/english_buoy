@@ -21,18 +21,21 @@ postArticle(
     var response =
         await dio.post(Store.baseURL + "analysis", data: {"article": article});
     bus.emit('analysis_done', response.data);
+    // 将新添加的文章添加到缓存中
+    Article newArticle = Article();
+    newArticle.setFromJSON(response.data);
+    articles.set(newArticle);
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
       bus.emit('pop_show', "update article");
       // make sure refalsh local data
       // await articles.setByID(response.data["id"]);
+    } else {
+      // 先添加到 titles 加速显示
+      articleTitles.addByArticle(newArticle);
     }
-    // 将新添加的文章添加到列表中
-    Article newArticle = Article();
-    newArticle.setFromJSON(response.data);
-    articles.set(newArticle);
     //显示以后, 会计算未读数字, 需要刷新列表
-    await articleTitles.syncServer();
+    // await articleTitles.syncServer();
     return response.data;
   } on DioError catch (e) {
     // 如果是已经存在, 那么应该会把 article id 传过来
