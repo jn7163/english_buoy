@@ -69,6 +69,13 @@ class _ArticlePageState extends State<ArticlePage> {
     return blank;
   }
 
+  bool isNumeric(String str) {
+    if (str == null) {
+      return false;
+    }
+    return double.tryParse(str) != null;
+  }
+
 // 定义应该的 style
   TextStyle _defineStyle(Word word, ArticleTitles articleTitles) {
     TextStyle textStyle = TextStyle();
@@ -91,6 +98,9 @@ class _ArticlePageState extends State<ArticlePage> {
         decorationStyle: TextDecorationStyle.dotted,
       );
     }
+
+// 如果是数字, 统一当做已经学会
+    if (isNumeric(word.text)) word.learned = true;
 
     // 已经学会, 不用任何样式, 继承原本就可以
     // 一旦选中, 还原本来的样式
