@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../bus.dart';
 
 import 'package:flutter/material.dart';
 import './article_title.dart';
@@ -13,9 +14,13 @@ class ArticleTitles with ChangeNotifier {
   // 和服务器同步
   Future syncServer() async {
     Dio dio = getDio();
-    var response = await dio.get(Store.baseURL + "article_titles");
-    this.setFromJSON(response.data);
-    return response;
+    try {
+      var response = await dio.get(Store.baseURL + "article_titles");
+      this.setFromJSON(response.data);
+      return response;
+    } on DioError catch (e) {
+      bus.emit('pop_show', e.message);
+    }
   }
 
 // 退出清空数据

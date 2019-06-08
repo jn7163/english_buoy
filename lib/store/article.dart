@@ -39,9 +39,12 @@ postArticle(
     return response.data;
   } on DioError catch (e) {
     // 如果是已经存在, 那么应该会把 article id 传过来
-    bus.emit('pop_show', e.response.data);
-    if (e.response.data['error'] == "already exists") {
-      return e.response.data;
+    if (e.response != null) {
+      if (e.response.data is String) {
+        bus.emit('pop_show', e.message);
+      } else if (e.response.data['error'] == "already exists") {
+        return e.response.data;
+      }
     }
   }
 }

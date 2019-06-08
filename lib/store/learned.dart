@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-// import '../bus.dart';
+import '../bus.dart';
 import './store.dart';
 
 Dio dio = getDio();
@@ -7,8 +7,12 @@ Dio dio = getDio();
 putLearn(String word) async {
   // Dio dio = new Dio();
   print('putLearn');
-  var response = await dio.put(Store.baseURL + "learn", data: {"word": word});
-  return response.data;
+  try {
+    var response = await dio.put(Store.baseURL + "learn", data: {"word": word});
+    return response.data;
+  } on DioError catch (e) {
+    bus.emit('pop_show', e.message);
+  }
 }
 
 // 记录学过的单词
