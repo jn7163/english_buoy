@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_alert/easy_alert.dart';
 import './bus.dart';
 import './models/oauth_info.dart';
+import './models/top_loading.dart';
 import './models/article_titles.dart';
 import './models/article.dart';
 import './models/articles.dart';
@@ -13,6 +14,7 @@ import './pages/sign.dart';
 import './pages/add_article.dart';
 
 void main() {
+  var topLoading = TopLoading();
   // 登录信息
   var oauthInfo = OauthInfo();
   // 文章列表
@@ -22,6 +24,7 @@ void main() {
   var providers = Providers();
 
   providers
+    ..provide(Provider<TopLoading>.value(topLoading))
     ..provide(Provider<OauthInfo>.value(oauthInfo))
     ..provide(Provider<ArticleTitles>.value(articleTitles))
     ..provide(Provider<Articles>.value(articles))

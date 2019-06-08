@@ -2,6 +2,7 @@ import 'dart:async';
 import '../models/article_titles.dart';
 import '../models/articles.dart';
 import '../models/article.dart';
+import '../models/top_loading.dart';
 
 import 'package:dio/dio.dart';
 import '../bus.dart';
@@ -9,14 +10,15 @@ import './store.dart';
 
 Dio dio = getDio();
 // 提交新的文章进行分析
-postArticle(
-    String article, ArticleTitles articleTitles, Articles articles) async {
+postArticle(String article, ArticleTitles articleTitles, Articles articles,
+    TopLoading topLoading) async {
   print("postArticle");
   // 替换奇怪的连写字符串
   article = article.replaceAll("—", "-");
   if (article == "") {
     return "article is null";
   }
+  topLoading.set(true);
   try {
     var response =
         await dio.post(Store.baseURL + "analysis", data: {"article": article});
@@ -46,6 +48,8 @@ postArticle(
         return e.response.data;
       }
     }
+  } finally {
+    topLoading.set(false);
   }
 }
 

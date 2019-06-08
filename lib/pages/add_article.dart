@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
 import '../store/article.dart';
 import '../models/article_titles.dart';
+import '../models/top_loading.dart';
 import '../models/articles.dart';
 import 'package:flutter/services.dart';
 import '../components/oauth_info.dart';
@@ -41,8 +42,10 @@ class _AddArticlePageState extends State<AddArticlePage> {
     });
     var articleTitles = Provide.value<ArticleTitles>(context);
     var articles = Provide.value<Articles>(context);
+    var topLoading = Provide.value<TopLoading>(context);
     bool showNewArticle = false;
-    postArticle(_articleController.text, articleTitles, articles).then((d) {
+    postArticle(_articleController.text, articleTitles, articles, topLoading)
+        .then((d) {
       if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
     });
     // 不等待后台返回, 直接清除内容
