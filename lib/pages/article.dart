@@ -131,8 +131,11 @@ class _ArticlePageState extends State<ArticlePage> {
     // 已经学会, 不用任何样式, 继承原本就可以
     // 一旦选中, 还原本来的样式
     if (word.learned == true && !isSelected) textStyle = TextStyle();
-    // 长按选中
-    if (isSelected) textStyle = textStyle.copyWith(fontWeight: FontWeight.bold);
+    // 长按选中 显示波浪下划线
+    if (isSelected)
+      textStyle = textStyle.copyWith(
+          decoration: TextDecoration.underline,
+          decorationStyle: TextDecorationStyle.wavy);
 
     return textStyle;
   }
@@ -186,7 +189,7 @@ class _ArticlePageState extends State<ArticlePage> {
           putLearn(word.text);
           Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
-          // 已经在这个单词也, 就不要跳转了
+          // 已经在这个单词页, 就不要跳转了
           if (_lastTapedText.toLowerCase() == word.text.toLowerCase() &&
               word.text.toLowerCase() != article.title.toLowerCase()) {
             int id = _getIDByTitle(word.text);
