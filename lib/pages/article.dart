@@ -29,18 +29,42 @@ class _ArticlePageState extends State<ArticlePage> {
   // 单引号开头的, 前面不要留空白
   RegExp _noNeedExp = new RegExp(r"^'");
   // 这些符号前面不要加空格
-  List _noNeedBlank = [".", "!", "'", ",", ":", "?", "n't"];
+  List _noNeedBlank = [
+    "'ll",
+    "'s",
+    "'re",
+    "'m",
+    "'d",
+    "'ve",
+    "n't",
+    ".",
+    "!",
+    ",",
+    ":",
+    "?",
+    "?",
+    "…",
+  ];
 
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
   String _lastTapedText = ''; // 上次点击的文本
   Article _article;
+  ScrollController _controller;
   @override
   void initState() {
     super.initState();
+    _controller = ScrollController();
     Future.delayed(Duration.zero, () {
       loadArticleByID();
     });
+  }
+
+  @override
+  void dispose() {
+    //为了避免内存泄露，需要调用_controller.dispose
+    _controller.dispose();
+    super.dispose();
   }
 
   loadArticleByID() {
@@ -64,7 +88,7 @@ class _ArticlePageState extends State<ArticlePage> {
 // 根据规则, 判断单词前是否需要添加空白
   String _getBlank(String text) {
     String blank = " ";
-    if (_noNeedExp.hasMatch(text)) blank = "";
+    //if (_noNeedExp.hasMatch(text)) blank = "";
     if (_noNeedBlank.contains(text)) blank = "";
     return blank;
   }
@@ -99,8 +123,10 @@ class _ArticlePageState extends State<ArticlePage> {
       );
     }
 
-// 如果是数字, 统一当做已经学会
+    // 如果是数字, 统一当做已经学会
     if (isNumeric(word.text)) word.learned = true;
+    // 标点符号也不用学习
+    if (this._noNeedBlank.contains(word.text)) word.learned = true;
 
     // 已经学会, 不用任何样式, 继承原本就可以
     // 一旦选中, 还原本来的样式
@@ -155,8 +181,8 @@ class _ArticlePageState extends State<ArticlePage> {
             });
             // print("_scrolling = false");
           });
-          // 无需学的, 没必要记录学习次数以及显示级别
-          bus.emit('pop_show', word.level.toString());
+          // 无需学的, 没必要显示级别
+          if (word.level != 0) bus.emit('pop_show', word.level.toString());
           putLearn(word.text);
           Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
@@ -213,6 +239,7 @@ class _ArticlePageState extends State<ArticlePage> {
         color: Colors.black, fontSize: 20, fontFamily: "NotoSans-Medium");
     if (_article != null) {
       return SingleChildScrollView(
+        controller: _controller,
         // physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
         child: Provide<ArticleTitles>(builder: (context, child, articleTitles) {
