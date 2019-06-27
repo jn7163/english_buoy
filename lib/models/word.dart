@@ -8,7 +8,7 @@ class Word with ChangeNotifier {
   final String text;
   final int level;
   bool learned;
-  final int count;
+  int count;
 
   Word(this.text, [this.level, this.learned = false, this.count = 0]);
   Word.fromJson(Map<String, dynamic> json)
@@ -32,6 +32,14 @@ class Word with ChangeNotifier {
         data: {"word": this.text, "learned": this.learned});
     //提交未学会单词数(其实可以放在后台, 或者和上面的提交合并)
     // _putUnlearnedCount();
+    return response;
+  }
+
+// 记录学习次数
+  Future putLearn() async {
+    Dio dio = getDio();
+    var response =
+        await dio.put(Store.baseURL + "learn", data: {"word": this.text});
     return response;
   }
 }

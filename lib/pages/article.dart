@@ -6,7 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter/material.dart';
 import '../bus.dart';
-import '../store/learned.dart';
+// import '../store/learned.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/articles.dart';
@@ -200,7 +200,11 @@ class _ArticlePageState extends State<ArticlePage> {
           });
           // 无需学的, 没必要显示级别
           if (word.level != 0) bus.emit('pop_show', word.level.toString());
-          putLearn(word.text);
+          // 实时增加次数的效果
+          article.increaseLearnCount(word.text);
+          // 记录学习次数
+          word.putLearn();
+          // putLearn(word.text);
           Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
           // 已经在这个单词页, 就不要跳转了

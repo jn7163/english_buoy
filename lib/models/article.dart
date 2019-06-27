@@ -70,6 +70,15 @@ class Article {
     // notifyListeners();
   }
 
+// 增加学习次数
+  increaseLearnCount(String word) {
+    this.words.forEach((d) {
+      if (d.text.toLowerCase() == word.toLowerCase()) {
+        d.count++;
+      }
+    });
+  }
+
   // 记录学习状态
   Future putLearned(Word word) async {
     // 标记所有单词为对应状态, 并通知
