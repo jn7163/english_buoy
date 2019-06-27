@@ -8,16 +8,19 @@ class Word with ChangeNotifier {
   final String text;
   final int level;
   bool learned;
+  final int count;
 
-  Word(this.text, [this.level, this.learned = false]);
+  Word(this.text, [this.level, this.learned = false, this.count = 0]);
   Word.fromJson(Map<String, dynamic> json)
       : text = json['text'],
         learned = json['learned'],
-        level = json['level'];
+        level = json['level'],
+        count = json['count'];
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'text': text,
         'learned': learned,
+        'count': count,
         'level': level,
       };
 

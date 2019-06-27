@@ -1,5 +1,6 @@
 // 文章详情内容
 import 'dart:async';
+
 import './word.dart';
 import 'package:dio/dio.dart';
 import '../store/store.dart';
@@ -29,6 +30,8 @@ class Article {
     Dio dio = getDio();
     var response =
         await dio.get(Store.baseURL + "article/" + this.articleID.toString());
+
+    // debugPrint(response.data.toString());
     this.setFromJSON(response.data);
     // 获取以后, 就计算一遍未读数, 然后提交
     this._putUnlearnedCount();
@@ -57,7 +60,7 @@ class Article {
     return response;
   }
 
-// 设置当前文章的所有该单词为需要的学习状态
+// 设置当前文章这个单词的学习状态
   _setWordIsLearned(String word, bool isLearned) {
     this.words.forEach((d) {
       if (d.text.toLowerCase() == word.toLowerCase()) {

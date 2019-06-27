@@ -27,7 +27,7 @@ class ArticlePage extends StatefulWidget {
 class _ArticlePageState extends State<ArticlePage> {
   // 监听滚动事件
   // 单引号开头的, 前面不要留空白
-  RegExp _noNeedExp = new RegExp(r"^'");
+  //RegExp _noNeedExp = new RegExp(r"^'");
   // 这些符号前面不要加空格
   List _noNeedBlank = [
     "'ll",
@@ -45,6 +45,7 @@ class _ArticlePageState extends State<ArticlePage> {
     "?",
     "…",
   ];
+  List _noNeedLearn = ["[", "]"];
 
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
@@ -140,13 +141,26 @@ class _ArticlePageState extends State<ArticlePage> {
     return textStyle;
   }
 
-// 需要学习的单词
+// 组装为需要的 textSpan
   TextSpan _getTextSpan(Word word, ArticleTitles articles, Article article) {
+    var wordStyle = _defineStyle(word, articles); // 文字样式
+
+    TextSpan subscript = TextSpan(); // 显示该单词查询次数的下标
+    if (word.learned == false &&
+        !_noNeedLearn.contains(word.text) &&
+        !isNumeric(word.text) &&
+        word.count != 0) {
+      subscript = TextSpan(
+          text: word.count.toString(),
+          style: wordStyle.copyWith(fontSize: 12)); // 数字样式和原本保持一致, 只是变小
+    }
+
     return TextSpan(text: _getBlank(word.text), children: [
       TextSpan(
           text: word.text,
-          style: _defineStyle(word, articles),
-          recognizer: _getTapRecognizer(word, article))
+          style: wordStyle,
+          recognizer: _getTapRecognizer(word, article)),
+      subscript,
     ]);
   }
 
