@@ -19,6 +19,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
   TextEditingController _searchQuery = new TextEditingController();
   bool _isSearching = false;
   String _searchText = "";
+  int _selectArticleID = 0;
   initState() {
     super.initState();
     print('init articles');
@@ -77,7 +78,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
         ],
       ),
       body: Container(
-        margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
+        // margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
         child: Provide<ArticleTitles>(builder: (context, child, articles) {
           List<ArticleTitle> filterTiltes;
           if (_isSearching) {
@@ -92,17 +93,23 @@ class _ArticlesPageState extends State<ArticlesPage> {
           if (articles.articles.length != 0) {
             return ListView(
               children: filterTiltes.map((d) {
-                return ListTile(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/Article', arguments: d.id);
-                  },
-                  leading: Text(d.unlearnedCount.toString(),
-                      style: TextStyle(
-                          color: Colors.teal[700],
-                          fontSize: 16,
-                          fontFamily: "NotoSans-Medium")),
-                  title: Text(d.title),
-                );
+                return Ink(
+                    color: this._selectArticleID == d.id
+                        ? Colors.blueGrey[50]
+                        : Colors.transparent,
+                    child: ListTile(
+                      onTap: () {
+                        this._selectArticleID = d.id;
+                        Navigator.pushNamed(context, '/Article',
+                            arguments: d.id);
+                      },
+                      leading: Text(d.unlearnedCount.toString(),
+                          style: TextStyle(
+                              color: Colors.teal[700],
+                              fontSize: 16,
+                              fontFamily: "NotoSans-Medium")),
+                      title: Text(d.title),
+                    ));
               }).toList(),
             );
           }
