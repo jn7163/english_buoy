@@ -11,6 +11,7 @@ import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/articles.dart';
 import '../models/word.dart';
+import '../models/setting.dart';
 import '../components/oauth_info.dart';
 
 @immutable
@@ -208,8 +209,10 @@ class _ArticlePageState extends State<ArticlePage> {
           Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
           // 已经在这个单词页, 就不要跳转了
+          var setting = Provide.value<Setting>(context);
           if (_lastTapedText.toLowerCase() == word.text.toLowerCase() &&
-              word.text.toLowerCase() != article.title.toLowerCase()) {
+              word.text.toLowerCase() != article.title.toLowerCase() &&
+              setting.isJump) {
             int id = _getIDByTitle(word.text);
             if (id != 0) {
               // toArticle(context, id);

@@ -6,6 +6,7 @@ import './models/top_loading.dart';
 import './models/article_titles.dart';
 import './models/article.dart';
 import './models/articles.dart';
+import './models/setting.dart';
 import 'package:provide/provide.dart';
 
 import './pages/articles.dart';
@@ -22,8 +23,10 @@ void main() {
   var article = Article();
   var articles = Articles();
   var providers = Providers();
+  var setting = Setting();
 
   providers
+    ..provide(Provider<Setting>.value(setting))
     ..provide(Provider<TopLoading>.value(topLoading))
     ..provide(Provider<OauthInfo>.value(oauthInfo))
     ..provide(Provider<ArticleTitles>.value(articleTitles))

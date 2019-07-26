@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../store/sign.dart';
 import '../models/oauth_info.dart';
 import '../models/article_titles.dart';
+import '../models/setting.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: <String>[
@@ -63,8 +64,8 @@ class SignInPageState extends State<SignInPage> {
     return Provide<OauthInfo>(builder: (context, child, oauthInfo) {
       if (oauthInfo.email != null) {
         return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
+          //mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
             ListTile(
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(oauthInfo.avatarURL),
@@ -72,6 +73,14 @@ class SignInPageState extends State<SignInPage> {
               title: Text(oauthInfo.name),
               subtitle: Text(oauthInfo.email),
             ),
+            Provide<Setting>(builder: (context, child, setting) {
+              return SwitchListTile(
+                  value: setting.isJump,
+                  onChanged: setting.set,
+                  title: Text(
+                    'jump to word when click twice',
+                  ));
+            }),
             RaisedButton(
               child: const Text('退出'),
               onPressed: _handleSignOut,
