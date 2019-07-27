@@ -53,11 +53,14 @@ class _ArticlePageState extends State<ArticlePage> {
   String _lastTapedText = ''; // 上次点击的文本
   Article _article;
   ScrollController _controller;
+  Setting _setting;
+
   @override
   void initState() {
     super.initState();
     _controller = ScrollController();
     Future.delayed(Duration.zero, () {
+      _setting = Provide.value<Setting>(context);
       loadArticleByID();
     });
   }
@@ -209,10 +212,9 @@ class _ArticlePageState extends State<ArticlePage> {
           Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
           // 已经在这个单词页, 就不要跳转了
-          var setting = Provide.value<Setting>(context);
           if (_lastTapedText.toLowerCase() == word.text.toLowerCase() &&
               word.text.toLowerCase() != article.title.toLowerCase() &&
-              setting.isJump) {
+              _setting.isJump) {
             int id = _getIDByTitle(word.text);
             if (id != 0) {
               // toArticle(context, id);
