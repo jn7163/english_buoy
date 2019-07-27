@@ -23,6 +23,16 @@ class ArticleTitles with ChangeNotifier {
     }
   }
 
+  setUnLearndCountByArticleID(int unLearndCount, int articleID) {
+    for (int i = 0; i < articles.length; i++) {
+      if (articles[i].id == articleID) {
+        articles[i].unlearnedCount = unLearndCount;
+        notifyListeners();
+        return;
+      }
+    }
+  }
+
 // 退出清空数据
   clear() {
     this.articles.clear();

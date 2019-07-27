@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import '../store/store.dart';
 
 class Article {
+  int unlearnedCount;
   int articleID;
   // 文章中的文字内容
   List words = [];
@@ -38,13 +39,13 @@ class Article {
     return response;
   }
 
-  // 更新提交为学会单词数
+  // 更新提交未学会单词数
   Future _putUnlearnedCount() async {
     if (articleID == null) {
       return null;
     }
     // 重新计算未掌握单词数
-    int unlearnedCount = this
+    unlearnedCount = this
         .words
         .map((d) {
           if (d.level > 0 && !d.learned) {
@@ -54,6 +55,7 @@ class Article {
         .toSet()
         .length;
     unlearnedCount--;
+    // 设置本地的列表
     Dio dio = getDio();
     var response = await dio.put(Store.baseURL + "article/unlearned_count",
         data: {"article_id": articleID, "unlearned_count": unlearnedCount});

@@ -79,18 +79,19 @@ class _ArticlesPageState extends State<ArticlesPage> {
       ),
       body: Container(
         // margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: Provide<ArticleTitles>(builder: (context, child, articles) {
+        child: Provide<ArticleTitles>(builder: (context, child, articleTitles) {
           List<ArticleTitle> filterTiltes;
           if (_isSearching) {
-            filterTiltes = articles.articles
+            filterTiltes = articleTitles.articles
                 .where((d) =>
                     d.title.toLowerCase().contains(_searchText.toLowerCase()))
                 .toList();
           } else {
-            filterTiltes =
-                articles.articles.where((d) => d.unlearnedCount > 0).toList();
+            filterTiltes = articleTitles.articles
+                .where((d) => d.unlearnedCount > 0)
+                .toList();
           }
-          if (articles.articles.length != 0) {
+          if (articleTitles.articles.length != 0) {
             return ListView(
               children: filterTiltes.map((d) {
                 return Ink(

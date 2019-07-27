@@ -46,7 +46,6 @@ class _ArticlePageState extends State<ArticlePage> {
     "?",
     "…",
   ];
-  List _noNeedLearn = ["[", "]"];
 
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
@@ -86,6 +85,10 @@ class _ArticlePageState extends State<ArticlePage> {
         setState(() {
           _article = article;
         });
+        // 更新本地未学单词数
+        var articleTitles = Provide.value<ArticleTitles>(context);
+        articleTitles.setUnLearndCountByArticleID(
+            article.unlearnedCount, article.articleID);
       });
     }
   }
@@ -98,11 +101,19 @@ class _ArticlePageState extends State<ArticlePage> {
     return blank;
   }
 
+/*
   bool isNumeric(String str) {
     if (str == null) {
       return false;
     }
     return double.tryParse(str) != null;
+  }
+  */
+
+  // 字符串是否包含字母
+  bool hasLetter(String str) {
+    RegExp regHasLetter = new RegExp(r"[a-zA-Z]+");
+    return regHasLetter.hasMatch(str);
   }
 
 // 定义应该的 style
@@ -128,8 +139,8 @@ class _ArticlePageState extends State<ArticlePage> {
       );
     }
 
-    // 如果是数字, 统一当做已经学会
-    if (isNumeric(word.text)) word.learned = true;
+    // 如果是词中没有字母, 当做已经学会
+    if (!hasLetter(word.text)) word.learned = true;
     // 标点符号也不用学习
     if (this._noNeedBlank.contains(word.text)) word.learned = true;
 
@@ -150,10 +161,7 @@ class _ArticlePageState extends State<ArticlePage> {
     var wordStyle = _defineStyle(word, articles); // 文字样式
 
     TextSpan subscript = TextSpan(); // 显示该单词查询次数的下标
-    if (word.learned == false &&
-        !_noNeedLearn.contains(word.text) &&
-        !isNumeric(word.text) &&
-        word.count != 0) {
+    if (word.learned == false && hasLetter(word.text) && word.count != 0) {
       subscript = TextSpan(
           text: word.count.toString(),
           style: wordStyle.copyWith(fontSize: 12)); // 数字样式和原本保持一致, 只是变小
@@ -185,9 +193,11 @@ class _ArticlePageState extends State<ArticlePage> {
           word.learned = !word.learned;
         });
         article.putLearned(word).then((d) {
+          // 每次标记一个单词已经学习或者未学习后, 都要重新获取一次列表, 已便于更新文章列表显示的未掌握单词数(蠢)
           var articleTitles = Provide.value<ArticleTitles>(context);
-
-          articleTitles.syncServer();
+          articleTitles.setUnLearndCountByArticleID(
+              article.unlearnedCount, article.articleID);
+          //articleTitles.syncServer();
         });
       }
       ..onTap = (i) {
