@@ -25,13 +25,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
     print('init articles');
     // 需要初始化后才能使用 context
     Future.delayed(Duration.zero, () {
-      var articles = Provide.value<ArticleTitles>(context);
-      articles.syncServer().catchError((e) {
-        if (e.response.statusCode == 401) {
-          print("未授权");
-          Navigator.pushNamed(context, '/Sign');
-        }
-      });
+      _syncArticleTitles();
     });
     _searchQuery.addListener(() {
       if (!_isSearching) {
@@ -43,6 +37,57 @@ class _ArticlesPageState extends State<ArticlesPage> {
           _searchText = _searchQuery.text;
         });
       }
+    });
+  }
+
+  Future _syncArticleTitles() async {
+    var articles = Provide.value<ArticleTitles>(context);
+    return articles.syncServer().catchError((e) {
+      if (e.response.statusCode == 401) {
+        print("未授权");
+        Navigator.pushNamed(context, '/Sign');
+      }
+    });
+  }
+
+  Widget getArticleTitles() {
+    return Provide<ArticleTitles>(builder: (context, child, articleTitles) {
+      List<ArticleTitle> filterTiltes;
+      if (_isSearching) {
+        filterTiltes = articleTitles.articles
+            .where((d) =>
+                d.title.toLowerCase().contains(_searchText.toLowerCase()))
+            .toList();
+      } else {
+        filterTiltes =
+            articleTitles.articles.where((d) => d.unlearnedCount > 0).toList();
+      }
+      if (articleTitles.articles.length != 0) {
+        return ListView(
+          children: filterTiltes.map((d) {
+            return Ink(
+                color: this._selectArticleID == d.id
+                    ? Colors.blueGrey[50]
+                    : Colors.transparent,
+                child: ListTile(
+                  onTap: () {
+                    this._selectArticleID = d.id;
+                    Navigator.pushNamed(context, '/Article', arguments: d.id);
+                  },
+                  leading: Text(d.unlearnedCount.toString(),
+                      style: TextStyle(
+                          color: Colors.teal[700],
+                          fontSize: 16,
+                          fontFamily: "NotoSans-Medium")),
+                  title: Text(d.title),
+                ));
+          }).toList(),
+        );
+      }
+      return SpinKitChasingDots(
+        color: Colors.blueGrey,
+        size: 50.0,
+      );
     });
   }
 
@@ -78,48 +123,9 @@ class _ArticlesPageState extends State<ArticlesPage> {
         ],
       ),
       body: Container(
-        // margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: Provide<ArticleTitles>(builder: (context, child, articleTitles) {
-          List<ArticleTitle> filterTiltes;
-          if (_isSearching) {
-            filterTiltes = articleTitles.articles
-                .where((d) =>
-                    d.title.toLowerCase().contains(_searchText.toLowerCase()))
-                .toList();
-          } else {
-            filterTiltes = articleTitles.articles
-                .where((d) => d.unlearnedCount > 0)
-                .toList();
-          }
-          if (articleTitles.articles.length != 0) {
-            return ListView(
-              children: filterTiltes.map((d) {
-                return Ink(
-                    color: this._selectArticleID == d.id
-                        ? Colors.blueGrey[50]
-                        : Colors.transparent,
-                    child: ListTile(
-                      onTap: () {
-                        this._selectArticleID = d.id;
-                        Navigator.pushNamed(context, '/Article',
-                            arguments: d.id);
-                      },
-                      leading: Text(d.unlearnedCount.toString(),
-                          style: TextStyle(
-                              color: Colors.teal[700],
-                              fontSize: 16,
-                              fontFamily: "NotoSans-Medium")),
-                      title: Text(d.title),
-                    ));
-              }).toList(),
-            );
-          }
-          return SpinKitChasingDots(
-            color: Colors.blueGrey,
-            size: 50.0,
-          );
-        }),
-      ),
+          // margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
+          child:
+              RefreshIndicator(onRefresh: _refresh, child: getArticleTitles())),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/AddArticle');
@@ -128,5 +134,12 @@ class _ArticlesPageState extends State<ArticlesPage> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  Future _refresh() async {
+    print("刷新了");
+    await _syncArticleTitles();
+    print("刷新完成");
+    return;
   }
 }
