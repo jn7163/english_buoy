@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -317,13 +319,28 @@ class _ArticlePageState extends State<ArticlePage> {
         ],
       ),
       body: _wrapLoading(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/AddArticle');
-        },
-        tooltip: 'add article',
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: (_article == null || _article.youtube == "")
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                // Navigator.pushNamed(context, '/AddArticle');
+                _launchURL(_article.youtube);
+              },
+              tooltip: 'open youtube',
+              child: Icon(
+                FontAwesomeIcons.youtube,
+                color: Colors.red,
+              ),
+              backgroundColor: Colors.white,
+            ),
     );
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

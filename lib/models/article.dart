@@ -12,14 +12,17 @@ class Article {
   List words = [];
   // 标题
   String title;
+  String youtube;
   // 从 json 中设置
   setFromJSON(Map json) {
     this.title = json['title'];
+    this.youtube = json['Youtube'];
     this.words = json['words'].map((d) => Word.fromJson(d)).toList();
     // notifyListeners();
   }
 
   clear() {
+    this.youtube = '';
     this.title = '';
     this.words.clear();
     // notifyListeners();
