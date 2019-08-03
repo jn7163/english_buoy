@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provide/provide.dart';
 
 import 'package:flutter/material.dart';
@@ -28,13 +29,12 @@ class SignInPageState extends State<SignInPage> {
         account.authentication
             .then((GoogleSignInAuthentication authentication) {
           var oauthInfo = Provide.value<OauthInfo>(context);
-          var articles = Provide.value<ArticleTitles>(context);
+          //var articles = Provide.value<ArticleTitles>(context);
           // google 用户注册到服务器后, 记录 token
           putAccount(account, authentication).then((d) {
             oauthInfo.set(authentication.accessToken, account.email,
                 account.displayName, account.photoUrl);
             //登录后从服务器获取
-            articles.syncServer();
             Navigator.pushNamed(context, '/Articles');
           });
         });
@@ -82,7 +82,7 @@ class SignInPageState extends State<SignInPage> {
                   ));
             }),
             RaisedButton(
-              child: const Text('退出'),
+              child: const Text('Logout'),
               onPressed: _handleSignOut,
             ),
           ],
@@ -91,8 +91,9 @@ class SignInPageState extends State<SignInPage> {
       return Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          RaisedButton(
-            child: const Text('登录'),
+          RaisedButton.icon(
+            label: Text('Login with Google'),
+            icon: Icon(FontAwesomeIcons.google, color: Colors.red),
             onPressed: _handleSignIn,
           ),
         ],

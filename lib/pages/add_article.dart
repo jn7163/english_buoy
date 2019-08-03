@@ -44,7 +44,8 @@ class _AddArticlePageState extends State<AddArticlePage> {
     var articles = Provide.value<Articles>(context);
     var topLoading = Provide.value<TopLoading>(context);
     bool showNewArticle = false;
-    postArticle(_articleController.text, articleTitles, articles, topLoading)
+    postArticle(context, _articleController.text, articleTitles, articles,
+            topLoading)
         .then((d) {
       if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
     });

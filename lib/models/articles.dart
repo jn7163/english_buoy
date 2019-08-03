@@ -12,18 +12,18 @@ class Articles with ChangeNotifier {
   }
 
 // always set data
-  Future setByID(int articleID) async {
+  Future setByID(BuildContext context, int articleID) async {
     Article newArticle = Article();
     return newArticle
-        .getArticleByID(articleID)
+        .getArticleByID(context, articleID)
         .then((d) => this.set(newArticle));
   }
 
 // is not exists add, else do nothing
-  Future addByID(int articleID) async {
+  Future addByID(BuildContext context, int articleID) async {
     Article article = this.articles[articleID];
     if (article == null) {
-      return this.setByID(articleID);
+      return this.setByID(context, articleID);
     }
   }
 }

@@ -1,4 +1,5 @@
 // 文章详情内容
+import 'package:flutter/material.dart';
 import 'dart:async';
 
 import './word.dart';
@@ -29,21 +30,21 @@ class Article {
   }
 
   // 从服务器获取
-  Future getArticleByID(int articleID) async {
+  Future getArticleByID(BuildContext context, int articleID) async {
     this.articleID = articleID;
-    Dio dio = getDio();
+    Dio dio = getDio(context);
     var response =
         await dio.get(Store.baseURL + "article/" + this.articleID.toString());
 
     // debugPrint(response.data.toString());
     this.setFromJSON(response.data);
     // 获取以后, 就计算一遍未读数, 然后提交
-    this._putUnlearnedCount();
+    this._putUnlearnedCount(context);
     return response;
   }
 
   // 更新提交未学会单词数
-  Future _putUnlearnedCount() async {
+  Future _putUnlearnedCount(BuildContext context) async {
     if (articleID == null) {
       return null;
     }
@@ -59,7 +60,7 @@ class Article {
         .length;
     unlearnedCount--;
     // 设置本地的列表
-    Dio dio = getDio();
+    Dio dio = getDio(context);
     var response = await dio.put(Store.baseURL + "article/unlearned_count",
         data: {"article_id": articleID, "unlearned_count": unlearnedCount});
     return response;
@@ -85,9 +86,9 @@ class Article {
   }
 
   // 记录学习状态
-  Future putLearned(Word word) async {
+  Future putLearned(BuildContext context, Word word) async {
     // 标记所有单词为对应状态, 并通知
     this._setWordIsLearned(word.text, word.learned);
-    return word.putLearned().then((d) => _putUnlearnedCount());
+    return word.putLearned(context).then((d) => _putUnlearnedCount(context));
   }
 }

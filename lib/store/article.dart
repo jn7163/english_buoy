@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import '../models/article_titles.dart';
 import '../models/articles.dart';
 import '../models/article.dart';
@@ -8,10 +9,10 @@ import 'package:dio/dio.dart';
 import '../bus.dart';
 import './store.dart';
 
-Dio dio = getDio();
 // 提交新的文章进行分析
-postArticle(String article, ArticleTitles articleTitles, Articles articles,
-    TopLoading topLoading) async {
+postArticle(BuildContext context, String article, ArticleTitles articleTitles,
+    Articles articles, TopLoading topLoading) async {
+  Dio dio = getDio(context);
   print("postArticle");
   // 替换奇怪的连写字符串
   article = article.replaceAll("—", "-");
@@ -54,14 +55,17 @@ postArticle(String article, ArticleTitles articleTitles, Articles articles,
 }
 
 // 根据标题查询文章内容
-getArticleByID(int id) async {
+getArticleByID(BuildContext context, int id) async {
+  Dio dio = getDio(context);
   print('getArticleByID: ' + id.toString());
   var response = await dio.get(Store.baseURL + "article/" + id.toString());
   // bus.emit('get_article_done', response.data);
   return response.data;
 }
 
-Future putUnlearnedCount(int articleID, int unlearnedCount) async {
+Future putUnlearnedCount(
+    BuildContext context, int articleID, int unlearnedCount) async {
+  Dio dio = getDio(context);
   if (articleID == 0) {
     return null;
   }

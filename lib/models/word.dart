@@ -25,9 +25,11 @@ class Word with ChangeNotifier {
       };
 
 // 记录学习状态
-  Future putLearned() async {
+  Future putLearned(
+    BuildContext context,
+  ) async {
     // 标记所有单词为对应状态, 并通知
-    Dio dio = getDio();
+    Dio dio = getDio(context);
     var response = await dio.put(Store.baseURL + "learned",
         data: {"word": this.text, "learned": this.learned});
     //提交未学会单词数(其实可以放在后台, 或者和上面的提交合并)
@@ -36,8 +38,8 @@ class Word with ChangeNotifier {
   }
 
 // 记录学习次数
-  Future putLearn() async {
-    Dio dio = getDio();
+  Future putLearn(BuildContext context) async {
+    Dio dio = getDio(context);
     var response =
         await dio.put(Store.baseURL + "learn", data: {"word": this.text});
     return response;

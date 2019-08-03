@@ -82,7 +82,7 @@ class _ArticlePageState extends State<ArticlePage> {
     });
     if (_article == null) {
       var article = Article();
-      article.getArticleByID(widget.id).then((d) {
+      article.getArticleByID(context, widget.id).then((d) {
         articles.set(article);
         setState(() {
           _article = article;
@@ -194,7 +194,7 @@ class _ArticlePageState extends State<ArticlePage> {
         setState(() {
           word.learned = !word.learned;
         });
-        article.putLearned(word).then((d) {
+        article.putLearned(context, word).then((d) {
           // 每次标记一个单词已经学习或者未学习后, 都要重新获取一次列表, 已便于更新文章列表显示的未掌握单词数(蠢)
           var articleTitles = Provide.value<ArticleTitles>(context);
           articleTitles.setUnLearndCountByArticleID(
@@ -219,7 +219,7 @@ class _ArticlePageState extends State<ArticlePage> {
           // 实时增加次数的效果
           article.increaseLearnCount(word.text);
           // 记录学习次数
-          word.putLearn();
+          word.putLearn(context);
           // putLearn(word.text);
           Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表

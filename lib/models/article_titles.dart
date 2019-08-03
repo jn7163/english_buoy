@@ -12,14 +12,18 @@ class ArticleTitles with ChangeNotifier {
   // Set 合集, 用于快速查找添加过的单词
   Set setArticleTitles = Set();
   // 和服务器同步
-  Future syncServer() async {
-    Dio dio = getDio();
+  Future syncServer(BuildContext context) async {
+    Dio dio = getDio(context);
     try {
       var response = await dio.get(Store.baseURL + "article_titles");
       this.setFromJSON(response.data);
       return response;
     } on DioError catch (e) {
-      bus.emit('pop_show', e.message);
+      if (e.response != null && e.response.statusCode == 401) {
+      } else {
+        bus.emit('pop_show', e.message);
+      }
+      return e;
     }
   }
 

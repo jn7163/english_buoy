@@ -9,7 +9,7 @@ import './models/articles.dart';
 import './models/setting.dart';
 import 'package:provide/provide.dart';
 
-import './pages/articles.dart';
+import './pages/article_titles.dart';
 import './pages/article.dart';
 import './pages/sign.dart';
 import './pages/add_article.dart';

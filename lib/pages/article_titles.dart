@@ -42,9 +42,9 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
   Future _syncArticleTitles() async {
     var articles = Provide.value<ArticleTitles>(context);
-    return articles.syncServer().catchError((e) {
+    return articles.syncServer(context).catchError((e) {
       if (e.response.statusCode == 401) {
-        print("未授权");
+        print("请登录");
         Navigator.pushNamed(context, '/Sign');
       }
     });
