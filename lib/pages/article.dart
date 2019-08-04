@@ -175,6 +175,9 @@ class _ArticlePageState extends State<ArticlePage> {
           style: wordStyle,
           recognizer: _getTapRecognizer(word, article)),
       subscript,
+      word.text == "\n"
+          ? TextSpan(text: "   ")
+          : TextSpan(text: ""), //新的一行空3个空格, 和单词原本的前空格凑成4个
     ]);
   }
 
@@ -259,7 +262,7 @@ class _ArticlePageState extends State<ArticlePage> {
           if (articleTitles.articles.length != 0) {
             return RichText(
               text: TextSpan(
-                text: '',
+                text: '   ',
                 style: textStyle,
                 children: _article.words.map((d) {
                   return _getTextSpan(d, articleTitles, _article);
