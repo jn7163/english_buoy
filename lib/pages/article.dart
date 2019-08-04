@@ -212,7 +212,6 @@ class _ArticlePageState extends State<ArticlePage> {
             setState(() {
               _tapedText = '';
             });
-            // print("_scrolling = false");
           });
           // 无需学的, 没必要显示级别
           if (word.level != 0) bus.emit('pop_show', word.level.toString());
@@ -220,7 +219,6 @@ class _ArticlePageState extends State<ArticlePage> {
           article.increaseLearnCount(word.text);
           // 记录学习次数
           word.putLearn(context);
-          // putLearn(word.text);
           Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
           // 已经在这个单词页, 就不要跳转了
@@ -229,7 +227,6 @@ class _ArticlePageState extends State<ArticlePage> {
               _setting.isJump) {
             int id = _getIDByTitle(word.text);
             if (id != 0) {
-              // toArticle(context, id);
               Navigator.pushNamed(context, '/Article', arguments: id);
             }
           } else {
@@ -237,28 +234,6 @@ class _ArticlePageState extends State<ArticlePage> {
           }
         }
       };
-    /*
-      ..onTapCancel = (i) {
-        // if (_scrolling) return;
-        //setState(() {
-        // this._tapedText = '';
-        //});
-      }
-      ..onTapDown = (i, d) {
-        //if (_scrolling) return;
-        //setState(() {
-        print("onTapDown setState");
-        // _tapedText = word.text;
-        //});
-      }
-      ..onTapUp = (i, d) {
-        // if (_scrolling) return;
-        // setState(() {
-        print("onTapUp setState");
-        // _tapedText = '';
-        // });
-      };
-      */
   }
 
   int _getIDByTitle(String title) {
