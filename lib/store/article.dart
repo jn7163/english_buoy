@@ -9,6 +9,42 @@ import 'package:dio/dio.dart';
 import '../bus.dart';
 import './store.dart';
 
+postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
+    Articles articles, TopLoading topLoading) async {
+  Dio dio = getDio(context);
+  topLoading.set(true);
+  try {
+    var response =
+        await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": youtube});
+    bus.emit('analysis_done', response.data);
+    // 将新添加的文章添加到缓存中
+    Article newArticle = Article();
+    newArticle.setFromJSON(response.data);
+    articles.set(newArticle);
+    // 如果是 update exists, 确保更新手机当前数据
+    if (response.data["exists"]) {
+      bus.emit('pop_show', "update article");
+    } else {
+      // 先添加到 titles 加速显示
+      articleTitles.addByArticle(newArticle);
+    }
+    return response.data;
+  } on DioError catch (e) {
+    // 如果是已经存在, 那么应该会把 article id 传过来
+    if (e.response != null) {
+      debugPrint(e.response.toString());
+      if (e.response.data is String) {
+        bus.emit('pop_show', e.message);
+      } else if (e.response.data['error'] == "no subtitle") {
+        bus.emit('pop_show', "This youbetu don't have en subtitle!");
+        return e.response.data;
+      }
+    }
+  } finally {
+    topLoading.set(false);
+  }
+}
+
 // 提交新的文章进行分析
 postArticle(BuildContext context, String article, ArticleTitles articleTitles,
     Articles articles, TopLoading topLoading) async {

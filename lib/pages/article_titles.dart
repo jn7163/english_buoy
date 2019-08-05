@@ -1,12 +1,17 @@
 // 文章列表
 import 'dart:async';
 
+import 'package:english_buoy/store/article.dart';
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../components/oauth_info.dart';
 import '../models/article_titles.dart';
 import '../models/article_title.dart';
+import '../models/top_loading.dart';
+import '../models/articles.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:share/share.dart';
+import 'package:share/receive_share_state.dart';
 
 class ArticlesPage extends StatefulWidget {
   ArticlesPage({Key key}) : super(key: key);
@@ -15,13 +20,23 @@ class ArticlesPage extends StatefulWidget {
   _ArticlesPageState createState() => _ArticlesPageState();
 }
 
-class _ArticlesPageState extends State<ArticlesPage> {
+class _ArticlesPageState extends ReceiveShareState<ArticlesPage> {
+  @override
+  void receiveShare(Share shared) {
+    var articleTitles = Provide.value<ArticleTitles>(context);
+    var articles = Provide.value<Articles>(context);
+    var topLoading = Provide.value<TopLoading>(context);
+    postYouTube(context, shared.text, articleTitles, articles, topLoading);
+    // debugPrint(shared.text);
+  }
+
   TextEditingController _searchQuery = new TextEditingController();
   bool _isSearching = false;
   String _searchText = "";
   int _selectArticleID = 0;
   initState() {
     super.initState();
+    enableShareReceiving();
     print('init articles');
     // 需要初始化后才能使用 context
     Future.delayed(Duration.zero, () {
