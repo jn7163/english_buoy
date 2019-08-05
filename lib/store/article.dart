@@ -36,6 +36,7 @@ postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
       if (e.response.data is String) {
         bus.emit('pop_show', e.message);
       } else if (e.response.data['error'] == "no subtitle") {
+        debugPrint(e.response.data['error']);
         bus.emit('pop_show', "This youbetu don't have en subtitle!");
         return e.response.data;
       }
