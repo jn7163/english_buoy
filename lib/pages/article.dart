@@ -241,7 +241,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
   int _getIDByTitle(String title) {
     var articles = Provide.value<ArticleTitles>(context);
-    var titles = articles.articles
+    var titles = articles.articleTitles
         .where((d) => d.title.toLowerCase() == title.toLowerCase())
         .toList();
     if (titles.length > 0) {
@@ -259,7 +259,7 @@ class _ArticlePageState extends State<ArticlePage> {
         // physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
         child: Provide<ArticleTitles>(builder: (context, child, articleTitles) {
-          if (articleTitles.articles.length != 0) {
+          if (articleTitles.articleTitles.length != 0) {
             return RichText(
               text: TextSpan(
                 text: '   ',

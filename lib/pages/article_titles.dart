@@ -1,6 +1,7 @@
 // 文章列表
 import 'dart:async';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:english_buoy/store/article.dart';
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
@@ -69,15 +70,16 @@ class _ArticlesPageState extends ReceiveShareState<ArticlesPage> {
     return Provide<ArticleTitles>(builder: (context, child, articleTitles) {
       List<ArticleTitle> filterTiltes;
       if (_isSearching) {
-        filterTiltes = articleTitles.articles
+        filterTiltes = articleTitles.articleTitles
             .where((d) =>
                 d.title.toLowerCase().contains(_searchText.toLowerCase()))
             .toList();
       } else {
-        filterTiltes =
-            articleTitles.articles.where((d) => d.unlearnedCount > 0).toList();
+        filterTiltes = articleTitles.articleTitles
+            .where((d) => d.unlearnedCount > 0)
+            .toList();
       }
-      if (articleTitles.articles.length != 0) {
+      if (articleTitles.articleTitles.length != 0) {
         return ListView(
           children: filterTiltes.map((d) {
             return Ink(
@@ -85,6 +87,13 @@ class _ArticlesPageState extends ReceiveShareState<ArticlesPage> {
                     ? Colors.blueGrey[50]
                     : Colors.transparent,
                 child: ListTile(
+                  trailing: Visibility(
+                      visible: d.youtube == '' ? false : true,
+                      child: Icon(
+                        FontAwesomeIcons.youtube,
+                        color: Colors.red,
+                      )),
+                  dense: false,
                   onTap: () {
                     this._selectArticleID = d.id;
                     Navigator.pushNamed(context, '/Article', arguments: d.id);
