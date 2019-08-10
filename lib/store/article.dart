@@ -28,6 +28,9 @@ postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
       // 先添加到 titles 加速显示
       articleTitles.addByArticle(newArticle);
     }
+    // 跳转到添加的那个详情
+    debugPrint("to articleID=" + newArticle.articleID.toString());
+    Navigator.pushNamed(context, '/Article', arguments: newArticle.articleID);
     return response.data;
   } on DioError catch (e) {
     // 如果是已经存在, 那么应该会把 article id 传过来
