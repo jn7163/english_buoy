@@ -19,6 +19,7 @@ class Article {
     this.title = json['title'];
     this.youtube = json['Youtube'];
     this.words = json['words'].map((d) => Word.fromJson(d)).toList();
+    this.unlearnedCount = json['UnlearnedCount'];
     // notifyListeners();
   }
 
@@ -39,7 +40,7 @@ class Article {
     // debugPrint(response.data.toString());
     this.setFromJSON(response.data);
     // 获取以后, 就计算一遍未读数, 然后提交
-    this._putUnlearnedCount(context);
+    // this._putUnlearnedCount(context);
     return response;
   }
 
@@ -52,7 +53,7 @@ class Article {
     unlearnedCount = this
         .words
         .map((d) {
-          if (d.level > 0 && !d.learned) {
+          if (!d.learned) {
             return d.text;
           }
         })

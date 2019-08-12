@@ -47,7 +47,7 @@ class ArticleTitles with ChangeNotifier {
     ArticleTitle articleTitle = ArticleTitle();
     articleTitle.title = article.title;
     articleTitle.id = article.articleID;
-    articleTitle.unlearnedCount = 99;
+    articleTitle.unlearnedCount = article.unlearnedCount;
     articleTitle.createdAt = DateTime.now();
     articleTitle.youtube = article.youtube;
     // 新增加的插入到第一位
