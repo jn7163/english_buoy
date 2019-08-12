@@ -21,7 +21,7 @@ Dio getDio(BuildContext context) {
     // Do something with response error
     print("bigzhu:" + e.toString());
     if (e.response != null && e.response.statusCode == 401) {
-      bus.emit('pop_show', '需要登录');
+      bus.emit('pop_show', 'need login');
       Navigator.pushNamed(context, '/Sign');
       return null;
     } else
