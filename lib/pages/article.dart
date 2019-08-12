@@ -255,24 +255,45 @@ class _ArticlePageState extends State<ArticlePage> {
         color: Colors.black, fontSize: 20, fontFamily: "NotoSans-Medium");
     if (_article != null) {
       return SingleChildScrollView(
-        controller: _controller,
-        // physics: const AlwaysScrollableScrollPhysics(),
-        padding: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-        child: Provide<ArticleTitles>(builder: (context, child, articleTitles) {
-          if (articleTitles.articleTitles.length != 0) {
-            return RichText(
-              text: TextSpan(
-                text: '   ',
-                style: textStyle,
-                children: _article.words.map((d) {
-                  return _getTextSpan(d, articleTitles, _article);
-                }).toList(),
+          controller: _controller,
+          // physics: const AlwaysScrollableScrollPhysics(),
+          //padding:
+          //   EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
+          child: Column(children: [
+            AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.list),
+                tooltip: 'go to articles',
+                onPressed: () {
+                  Navigator.pushNamed(context, '/Articles');
+                },
               ),
-            );
-          }
-          return Text('some error!');
-        }),
-      );
+              title: (_article != null)
+                  ? Text(_article.title)
+                  : Text("loading..."),
+              actions: <Widget>[
+                OauthInfoWidget(),
+              ],
+            ),
+            Padding(
+                padding:
+                    EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
+                child: Provide<ArticleTitles>(
+                    builder: (context, child, articleTitles) {
+                  if (articleTitles.articleTitles.length != 0) {
+                    return RichText(
+                      text: TextSpan(
+                        text: '   ',
+                        style: textStyle,
+                        children: _article.words.map((d) {
+                          return _getTextSpan(d, articleTitles, _article);
+                        }).toList(),
+                      ),
+                    );
+                  }
+                  return Text('some error!');
+                })),
+          ]));
     }
     return SpinKitChasingDots(
       color: Colors.blueGrey,
@@ -283,19 +304,6 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.list),
-          tooltip: 'go to articles',
-          onPressed: () {
-            Navigator.pushNamed(context, '/Articles');
-          },
-        ),
-        title: (_article != null) ? Text(_article.title) : Text("loading..."),
-        actions: <Widget>[
-          OauthInfoWidget(),
-        ],
-      ),
       body: _wrapLoading(),
       floatingActionButton: (_article == null || _article.youtube == "")
           ? null
