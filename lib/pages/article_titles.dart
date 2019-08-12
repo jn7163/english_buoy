@@ -10,7 +10,7 @@ import '../models/article_titles.dart';
 import '../models/article_title.dart';
 import '../models/top_loading.dart';
 import '../models/articles.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+// import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:share/share.dart';
 import 'package:share/receive_share_state.dart';
 
@@ -79,6 +79,7 @@ class _ArticlesPageState extends ReceiveShareState<ArticlesPage> {
             .where((d) => d.unlearnedCount > 0)
             .toList();
       }
+      // 应该用 loading 判断是否显示 loading
       if (articleTitles.articleTitles.length != 0) {
         return ListView(
           children: filterTiltes.map((d) {
@@ -108,10 +109,55 @@ class _ArticlesPageState extends ReceiveShareState<ArticlesPage> {
           }).toList(),
         );
       }
-      return SpinKitChasingDots(
-        color: Colors.blueGrey,
-        size: 50.0,
-      );
+      return Center(
+          child: Container(
+              margin: EdgeInsets.only(top: 5.0, left: 5.0, bottom: 5, right: 5),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/logo.png',
+                      width: 96.0,
+                      height: 96.0,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(20.0),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            style: TextStyle(color: Colors.black, fontSize: 14),
+                            text: "You can share YouTube ",
+                          ),
+                          WidgetSpan(
+                            child: Icon(
+                              FontAwesomeIcons.youtube,
+                              color: Colors.red,
+                            ),
+                          ),
+                          TextSpan(
+                            style: TextStyle(color: Colors.black, fontSize: 14),
+                            text: "  video to here",
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(20.0),
+                    ),
+                    RichText(
+                        text: TextSpan(
+                            style: TextStyle(color: Colors.black, fontSize: 14),
+                            text: "Or click Add button to add English article"))
+                  ])));
+      /*else {
+        return SpinKitChasingDots(
+          color: Colors.blueGrey,
+          size: 50.0,
+        );
+      }
+      */
     });
   }
 
