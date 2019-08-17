@@ -50,6 +50,7 @@ class ArticleTitles with ChangeNotifier {
     articleTitle.unlearnedCount = article.unlearnedCount;
     articleTitle.createdAt = DateTime.now();
     articleTitle.youtube = article.youtube;
+    articleTitle.avatar = article.avatar;
     // 新增加的插入到第一位
     this.articleTitles.insert(0, articleTitle);
     this.setArticleTitles.add(articleTitle.title);
