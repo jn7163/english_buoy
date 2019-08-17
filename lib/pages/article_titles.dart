@@ -8,7 +8,6 @@ import 'package:provide/provide.dart';
 import '../components/oauth_info.dart';
 import '../models/article_titles.dart';
 import '../models/article_title.dart';
-import '../models/top_loading.dart';
 import '../models/articles.dart';
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:share/share.dart';
@@ -26,8 +25,7 @@ class _ArticlesPageState extends ReceiveShareState<ArticlesPage> {
   void receiveShare(Share shared) {
     var articleTitles = Provide.value<ArticleTitles>(context);
     var articles = Provide.value<Articles>(context);
-    var topLoading = Provide.value<TopLoading>(context);
-    postYouTube(context, shared.text, articleTitles, articles, topLoading);
+    postYouTube(context, shared.text, articleTitles, articles);
     // debugPrint(shared.text);
   }
 
@@ -90,10 +88,14 @@ class _ArticlesPageState extends ReceiveShareState<ArticlesPage> {
                 child: ListTile(
                   trailing: Visibility(
                       visible: d.youtube == '' ? false : true,
-                      child: Icon(
-                        FontAwesomeIcons.youtube,
-                        color: Colors.red,
-                      )),
+                      child: d.avatar == ''
+                          ? Icon(
+                              FontAwesomeIcons.youtube,
+                              color: Colors.red,
+                            )
+                          : CircleAvatar(
+                              backgroundImage: NetworkImage(d.avatar),
+                            )),
                   dense: false,
                   onTap: () {
                     this._selectArticleID = d.id;

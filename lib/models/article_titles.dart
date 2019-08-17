@@ -1,11 +1,13 @@
 import 'dart:async';
 import '../bus.dart';
+import 'package:provide/provide.dart';
 
 import 'package:flutter/material.dart';
 import './article_title.dart';
 import './article.dart';
 import '../store/store.dart';
 import 'package:dio/dio.dart';
+import '../models/top_loading.dart';
 
 class ArticleTitles with ChangeNotifier {
   List<ArticleTitle> articleTitles = [];
@@ -13,6 +15,8 @@ class ArticleTitles with ChangeNotifier {
   Set setArticleTitles = Set();
   // 和服务器同步
   Future syncServer(BuildContext context) async {
+    var topLoading = Provide.value<TopLoading>(context);
+    topLoading.set(true);
     Dio dio = getDio(context);
     try {
       var response = await dio.get(Store.baseURL + "article_titles");
@@ -24,6 +28,8 @@ class ArticleTitles with ChangeNotifier {
         bus.emit('pop_show', e.message);
       }
       return e;
+    } finally {
+      topLoading.set(false);
     }
   }
 

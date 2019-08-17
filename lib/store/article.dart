@@ -8,9 +8,11 @@ import '../models/top_loading.dart';
 import 'package:dio/dio.dart';
 import '../bus.dart';
 import './store.dart';
+import 'package:provide/provide.dart';
 
 postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
-    Articles articles, TopLoading topLoading) async {
+    Articles articles) async {
+  var topLoading = Provide.value<TopLoading>(context);
   Dio dio = getDio(context);
   topLoading.set(true);
   try {
