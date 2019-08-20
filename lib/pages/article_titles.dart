@@ -2,7 +2,7 @@
 import 'dart:async';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:english_buoy/store/article.dart';
+import 'package:ebuoy/store/article.dart';
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../components/oauth_info.dart';

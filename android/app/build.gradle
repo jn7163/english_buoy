@@ -30,6 +30,11 @@ def keystoreProperties = new Properties()
      keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
  }
 android {
+        dexOptions {
+        incremental = true;
+        preDexLibraries = false
+        javaMaxHeapSize "2g" // 2g should be also OK
+    }
     compileSdkVersion 28
 
     lintOptions {
@@ -39,7 +44,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "net.bigzhu.english_buoy"
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -77,4 +82,3 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
-//apply plugin: 'com.google.gms.google-services'
