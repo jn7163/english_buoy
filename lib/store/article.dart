@@ -33,11 +33,9 @@ postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
     // 跳转到添加的那个详情
     debugPrint("to articleID=" + newArticle.articleID.toString());
     Navigator.pushNamed(context, '/Article', arguments: newArticle.articleID);
-    topLoading.set(false);
     return response.data;
   } on DioError catch (e) {
     // 如果是已经存在, 那么应该会把 article id 传过来
-    topLoading.set(false);
     if (e.response != null) {
       debugPrint(e.response.toString());
       if (e.response.data is String) {
@@ -48,6 +46,8 @@ postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
         return e.response.data;
       }
     }
+  } finally {
+    topLoading.set(false);
   }
 }
 

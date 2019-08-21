@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../components/oauth_info.dart';
 import '../models/article_titles.dart';
+import '../models/receive_share.dart';
 import '../models/article_title.dart';
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
 //import 'package:share/share.dart';
@@ -33,6 +34,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
     print('init articles');
     // 需要初始化后才能使用 context
     Future.delayed(Duration.zero, () {
+      initReceiveShare();
       _syncArticleTitles();
     });
     _searchQuery.addListener(() {
@@ -47,28 +49,32 @@ class _ArticlesPageState extends State<ArticlesPage> {
         });
       }
     });
-    // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    _receivelShareLiveSubscription =
-        ReceiveSharingIntent.getTextStream().listen((String value) {
-      receiveShare(value);
-      debugPrint("share from app in memory text=" + value);
-    }, onError: (err) {
-      print("getLinkStream error: $err");
-    });
-
-    // For sharing or opening urls/text coming from outside the app while the app is closed
-    /*
-    ReceiveSharingIntent.getInitialText().then((String value) {
-      debugPrint("share from app is closed text=" + value);
-      receiveShare(value);
-    });
-    */
   }
 
   @override
   void dispose() {
     _receivelShareLiveSubscription.cancel();
     super.dispose();
+  }
+
+  void initReceiveShare() {
+    var isReceiveShare = Provide.value<ReceiveShare>(context);
+    if (isReceiveShare.initialized == false) {
+      // For sharing or opening urls/text coming from outside the app while the app is in the memory
+      _receivelShareLiveSubscription =
+          ReceiveSharingIntent.getTextStream().listen((String value) {
+        receiveShare(value);
+        debugPrint("share from app in memory text=" + value);
+      }, onError: (err) {
+        print("getLinkStream error: $err");
+      });
+      // For sharing or opening urls/text coming from outside the app while the app is closed
+      ReceiveSharingIntent.getInitialText().then((String value) {
+        // debugPrint("closed share=" + value);
+        receiveShare(value);
+      });
+      isReceiveShare.done();
+    }
   }
 
   void receiveShare(String sharedText) {
@@ -237,9 +243,9 @@ class _ArticlesPageState extends State<ArticlesPage> {
   }
 
   Future _refresh() async {
-    print("刷新了");
+    // print("刷新了");
     await _syncArticleTitles();
-    print("刷新完成");
+    // print("刷新完成");
     return;
   }
 }

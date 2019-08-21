@@ -7,6 +7,7 @@ import './models/article_titles.dart';
 import './models/article.dart';
 import './models/articles.dart';
 import './models/setting.dart';
+import './models/receive_share.dart';
 import 'package:provide/provide.dart';
 
 import './pages/article_titles.dart';
@@ -24,8 +25,10 @@ void main() {
   var articles = Articles();
   var providers = Providers();
   var setting = Setting();
+  var receiveShare = ReceiveShare();
 
   providers
+    ..provide(Provider<ReceiveShare>.value(receiveShare))
     ..provide(Provider<Setting>.value(setting))
     ..provide(Provider<TopLoading>.value(topLoading))
     ..provide(Provider<OauthInfo>.value(oauthInfo))
