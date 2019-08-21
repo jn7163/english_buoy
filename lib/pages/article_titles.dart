@@ -1,17 +1,18 @@
 // 文章列表
 import 'dart:async';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../models/articles.dart';
 import 'package:ebuoy/store/article.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../components/oauth_info.dart';
 import '../models/article_titles.dart';
 import '../models/article_title.dart';
-import '../models/articles.dart';
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:share/share.dart';
-import 'package:share/receive_share_state.dart';
+//import 'package:share/share.dart';
 
 class ArticlesPage extends StatefulWidget {
   ArticlesPage({Key key}) : super(key: key);
@@ -20,25 +21,15 @@ class ArticlesPage extends StatefulWidget {
   _ArticlesPageState createState() => _ArticlesPageState();
 }
 
-class _ArticlesPageState extends ReceiveShareState<ArticlesPage> {
-  @override
-  void receiveShare(Share shared) {
-    // 收到分享, 先跳转到 list 页面
-    Navigator.pushNamed(context, '/Articles');
-    var articleTitles = Provide.value<ArticleTitles>(context);
-    var articles = Provide.value<Articles>(context);
-    // 获取完成,再跳到详情页面
-    postYouTube(context, shared.text, articleTitles, articles);
-    // debugPrint(shared.text);
-  }
-
+class _ArticlesPageState extends State<ArticlesPage> {
   TextEditingController _searchQuery = new TextEditingController();
   bool _isSearching = false;
   String _searchText = "";
   int _selectArticleID = 0;
+  StreamSubscription _receivelShareLiveSubscription;
   initState() {
     super.initState();
-    enableShareReceiving();
+    //enableShareReceiving();
     print('init articles');
     // 需要初始化后才能使用 context
     Future.delayed(Duration.zero, () {
@@ -52,9 +43,43 @@ class _ArticlesPageState extends ReceiveShareState<ArticlesPage> {
         setState(() {
           // _isSearching = true;
           _searchText = _searchQuery.text;
+          // debugPrint(_sharedText);
         });
       }
     });
+    // For sharing or opening urls/text coming from outside the app while the app is in the memory
+    _receivelShareLiveSubscription =
+        ReceiveSharingIntent.getTextStream().listen((String value) {
+      receiveShare(value);
+      debugPrint("share from app in memory text=" + value);
+    }, onError: (err) {
+      print("getLinkStream error: $err");
+    });
+
+    // For sharing or opening urls/text coming from outside the app while the app is closed
+    /*
+    ReceiveSharingIntent.getInitialText().then((String value) {
+      debugPrint("share from app is closed text=" + value);
+      receiveShare(value);
+    });
+    */
+  }
+
+  @override
+  void dispose() {
+    _receivelShareLiveSubscription.cancel();
+    super.dispose();
+  }
+
+  void receiveShare(String sharedText) {
+    if (sharedText == null) return;
+    var articleTitles = Provide.value<ArticleTitles>(context);
+    var articles = Provide.value<Articles>(context);
+    // 获取完成,再跳到详情页面
+    postYouTube(context, sharedText, articleTitles, articles);
+    // debugPrint(shared.text);
+    // 收到分享, 先跳转到 list 页面
+    Navigator.pushNamed(context, '/Articles');
   }
 
   Future _syncArticleTitles() async {

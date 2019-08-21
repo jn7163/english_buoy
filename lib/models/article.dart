@@ -17,6 +17,7 @@ class Article {
   String avatar;
   // 从 json 中设置
   setFromJSON(Map json) {
+    this.articleID = json['id'];
     this.title = json['title'];
     this.youtube = json['Youtube'];
     this.words = json['words'].map((d) => Word.fromJson(d)).toList();

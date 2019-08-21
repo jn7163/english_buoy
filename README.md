@@ -4,6 +4,10 @@
 
 ## Change Log
 
+### 1.1.3+13
+
+- 修复失效的接收分享插件
+
 ### 1.1.2+12
 
 - 修改详情页的 top bar, 取消使用 app bar; 取消跳转按钮, 取消 oauth 按钮; 只显示 avatar 和 title
