@@ -14,7 +14,7 @@ import '../models/article.dart';
 import '../models/articles.dart';
 import '../models/word.dart';
 import '../models/setting.dart';
-import '../components/oauth_info.dart';
+//import '../components/oauth_info.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
@@ -250,6 +250,29 @@ class _ArticlePageState extends State<ArticlePage> {
     return 0;
   }
 
+  Widget _getArticleDetailTitle() {
+    TextStyle textStyle = TextStyle(
+        color: Colors.black, fontSize: 20, fontFamily: "NotoSans-Medium");
+    var title = (_article != null)
+        ? Text(_article.title, style: textStyle.copyWith(color: Colors.white))
+        : Text("loading...");
+    return title;
+  }
+
+  Widget _getAvatar() {
+    var avatar = Visibility(
+        visible: _article.youtube == '' ? false : true,
+        child: _article.avatar == ''
+            ? Icon(
+                FontAwesomeIcons.youtube,
+                color: Colors.red,
+              )
+            : CircleAvatar(
+                backgroundImage: NetworkImage(_article.avatar),
+              ));
+    return avatar;
+  }
+
   Widget _wrapLoading() {
     TextStyle textStyle = TextStyle(
         color: Colors.black, fontSize: 20, fontFamily: "NotoSans-Medium");
@@ -260,6 +283,7 @@ class _ArticlePageState extends State<ArticlePage> {
           //padding:
           //   EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
           child: Column(children: [
+            /*
             AppBar(
               leading: IconButton(
                 icon: Icon(Icons.list),
@@ -275,6 +299,32 @@ class _ArticlePageState extends State<ArticlePage> {
                 OauthInfoWidget(),
               ],
             ),
+            */
+            Container(
+                padding: EdgeInsets.only(left: 8, top: 30),
+                color: Colors.blueGrey,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    /*
+                    IconButton(
+                      color: Colors.white,
+                      icon: Icon(Icons.list),
+                      tooltip: 'go to articles',
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/Articles');
+                      },
+                    ),
+                    */
+                    _getAvatar(),
+                    Expanded(
+                        child: Container(
+                            padding: EdgeInsets.only(
+                                top: 10, left: 5, bottom: 15, right: 0),
+                            child: _getArticleDetailTitle())),
+                    //OauthInfoWidget(),
+                  ],
+                )),
             Padding(
                 padding:
                     EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),

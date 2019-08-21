@@ -23,8 +23,11 @@ class ArticlesPage extends StatefulWidget {
 class _ArticlesPageState extends ReceiveShareState<ArticlesPage> {
   @override
   void receiveShare(Share shared) {
+    // 收到分享, 先跳转到 list 页面
+    Navigator.pushNamed(context, '/Articles');
     var articleTitles = Provide.value<ArticleTitles>(context);
     var articles = Provide.value<Articles>(context);
+    // 获取完成,再跳到详情页面
     postYouTube(context, shared.text, articleTitles, articles);
     // debugPrint(shared.text);
   }
