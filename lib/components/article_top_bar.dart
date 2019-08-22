@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'article_youtube_avatar.dart';
 
 // 文章对应的 youtube 图标或者头像
-class ArticleTitle extends StatelessWidget {
-  const ArticleTitle({this.article, Key key}) : super(key: key);
+class ArticleTopBar extends StatelessWidget {
+  const ArticleTopBar({this.article, Key key}) : super(key: key);
   final Article article;
   final TextStyle textStyle = const TextStyle(
       color: Colors.white, fontSize: 20, fontFamily: "NotoSans-Medium");

@@ -55,6 +55,7 @@ class MyApp extends StatelessWidget {
           position: ToastPosition.bottom, duration: ToastDuration.long);
     });
     var oauthInfo = Provide.value<OauthInfo>(context);
+
     oauthInfo.backFromShared();
   }
 

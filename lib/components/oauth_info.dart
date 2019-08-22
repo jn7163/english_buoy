@@ -11,7 +11,7 @@ class OauthInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provide<AllLoading>(builder: (context, child, allLoading) {
       return Provide<OauthInfo>(builder: (context, child, oauthInfo) {
-        if (allLoading.loading || allLoading.articleTitlesLoading) {
+        if (allLoading.loading) {
           return SpinKitChasingDots(
             color: Colors.white,
             size: 50.0,

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:ebuoy/components/article_title.dart';
+import 'package:ebuoy/components/article_top_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
@@ -19,8 +19,10 @@ import '../models/setting.dart';
 @immutable
 class ArticlePage extends StatefulWidget {
   ArticlePage({Key key, this.id}) : super(key: key);
+
   // ArticlePage({this.id});
   final int id;
+
   // final List articleTitles;
 
   @override
@@ -268,7 +270,7 @@ class _ArticlePageState extends State<ArticlePage> {
               ],
             ),
             */
-            ArticleTitle(article: _article),
+            ArticleTopBar(article: _article),
             Padding(
                 padding:
                     EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),

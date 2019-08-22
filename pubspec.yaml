@@ -31,8 +31,9 @@ dependencies:
   shared_preferences: ^0.5.1+1 # 数据持久化存储
   provide: ^1.0.2 # 状态管理器
   flutter_spinkit: "^3.1.0" # loading 动画
-  receive_sharing_intent: ^1.3.0
-  loading_overlay: ^0.2.0
+  receive_sharing_intent: ^1.3.0 # 接收分享过来的内容
+  modal_progress_hud: ^0.1.3 # loading 遮盖
+
 
   #share:
   #  git:

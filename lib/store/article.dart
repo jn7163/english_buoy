@@ -14,7 +14,7 @@ postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
     Articles articles) async {
   var allLoading = Provide.value<AllLoading>(context);
   Dio dio = getDio(context);
-  allLoading.setArticleTitlesLoading(true);
+  allLoading.set(true);
   try {
     var response =
         await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": youtube});
@@ -47,7 +47,7 @@ postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
       }
     }
   } finally {
-    allLoading.setArticleTitlesLoading(false);
+    allLoading.set(false);
   }
 }
 

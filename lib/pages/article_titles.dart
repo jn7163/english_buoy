@@ -2,9 +2,9 @@
 import 'dart:async';
 
 import '../components/article_youtube_avatar.dart';
-import 'package:loading_overlay/loading_overlay.dart';
 
 import '../models/articles.dart';
+import '../models/all_loading.dart';
 import 'package:ebuoy/store/article.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,11 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../components/oauth_info.dart';
 import '../models/article_titles.dart';
-import '../models/all_loading.dart';
 import '../models/receive_share.dart';
 import '../models/article_title.dart';
-// import 'package:flutter_spinkit/flutter_spinkit.dart';
-//import 'package:share/share.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class ArticlesPage extends StatefulWidget {
   ArticlesPage({Key key}) : super(key: key);
@@ -32,9 +30,9 @@ class _ArticlesPageState extends State<ArticlesPage> {
   String _searchText = "";
   int _selectArticleID = 0;
   StreamSubscription _receivelShareLiveSubscription;
+
   initState() {
     super.initState();
-    //enableShareReceiving();
     print('init articles');
     // 需要初始化后才能使用 context
     Future.delayed(Duration.zero, () {
@@ -106,6 +104,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
   }
 
   Widget getArticleTitles() {
+
     return Provide<ArticleTitles>(builder: (context, child, articleTitles) {
       List<ArticleTitle> filterTiltes;
       if (_isSearching) {
@@ -200,14 +199,15 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
   @override
   Widget build(BuildContext context) {
-    var _allLoading = Provide.value<AllLoading>(context);
-
+    var allLoading = Provide.value<AllLoading>(context);
     return Scaffold(
       appBar: AppBar(
         title: _isSearching
             ? TextField(
-                autofocus: true, // 自动对焦
-                decoration: null, // 不要有下划线
+                autofocus: true,
+                // 自动对焦
+                decoration: null,
+                // 不要有下划线
                 cursorColor: Colors.white,
                 controller: _searchQuery,
                 style: TextStyle(
@@ -231,20 +231,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
           OauthInfoWidget(),
         ],
       ),
-      body: StreamBuilder<AllLoading>(
-          initialData: _allLoading,
-          stream: Provide.stream<AllLoading>(context),
-          builder:
-              (BuildContext context, AsyncSnapshot<AllLoading> allLoading) {
-            return LoadingOverlay(
-                child: Container(
-                    // margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-                    child: RefreshIndicator(
-                        onRefresh: _refresh, child: getArticleTitles())),
-                isLoading: allLoading.data.articleTitlesLoading,
-                // isLoading: true,
-                progressIndicator: const CircularProgressIndicator());
-          }),
+      body: ModalProgressHUD(child:RefreshIndicator(onRefresh: _refresh, child: getArticleTitles()),
+          inAsyncCall:allLoading.loading),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/AddArticle');
