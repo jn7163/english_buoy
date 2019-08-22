@@ -9,10 +9,11 @@ class ArticleYoutubeAvatar extends StatelessWidget {
       : super(key: key);
   final String youtubeURL;
   final String avatar;
+
   @override
   Widget build(BuildContext context) {
     return Visibility(
-        visible: youtubeURL == '' ? false : true,
+        visible: youtubeURL != '',
         child: avatar == ''
             ? Icon(
                 FontAwesomeIcons.youtube,

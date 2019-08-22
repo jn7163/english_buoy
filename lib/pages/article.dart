@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:ebuoy/components/article_top_bar.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:ebuoy/components/launch_youbube_button.dart';
+
+import '../components/article_top_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -14,7 +14,6 @@ import '../models/article.dart';
 import '../models/articles.dart';
 import '../models/word.dart';
 import '../models/setting.dart';
-//import '../components/oauth_info.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
@@ -300,29 +299,9 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _wrapLoading(),
-      floatingActionButton: (_article == null || _article.youtube == "")
-          ? null
-          : FloatingActionButton(
-              onPressed: () {
-                // Navigator.pushNamed(context, '/AddArticle');
-                _launchURL(_article.youtube);
-              },
-              tooltip: 'open youtube',
-              child: Icon(
-                FontAwesomeIcons.youtube,
-                color: Colors.red,
-              ),
-              backgroundColor: Colors.white,
-            ),
-    );
-  }
-
-  _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
+        body: _wrapLoading(),
+        floatingActionButton: LaunchYoutubeButton(
+          youtubeURL: _article == null ? '' : _article.youtube,
+        ));
   }
 }
