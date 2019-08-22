@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ebuoy/components/article_title.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
@@ -8,8 +9,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter/material.dart';
 import '../bus.dart';
-// import '../store/learned.dart';
-import '../components/article_youtube_avatar.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/articles.dart';
@@ -103,15 +102,6 @@ class _ArticlePageState extends State<ArticlePage> {
     if (_noNeedBlank.contains(text)) blank = "";
     return blank;
   }
-
-/*
-  bool isNumeric(String str) {
-    if (str == null) {
-      return false;
-    }
-    return double.tryParse(str) != null;
-  }
-  */
 
   // 字符串是否包含字母
   bool hasLetter(String str) {
@@ -251,15 +241,6 @@ class _ArticlePageState extends State<ArticlePage> {
     return 0;
   }
 
-  Widget _getArticleDetailTitle() {
-    TextStyle textStyle = TextStyle(
-        color: Colors.black, fontSize: 20, fontFamily: "NotoSans-Medium");
-    var title = (_article != null)
-        ? Text(_article.title, style: textStyle.copyWith(color: Colors.white))
-        : Text("loading...");
-    return title;
-  }
-
   Widget _wrapLoading() {
     TextStyle textStyle = TextStyle(
         color: Colors.black, fontSize: 20, fontFamily: "NotoSans-Medium");
@@ -287,24 +268,7 @@ class _ArticlePageState extends State<ArticlePage> {
               ],
             ),
             */
-            Container(
-                padding: EdgeInsets.only(left: 8, top: 30),
-                color: Colors.blueGrey,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    ArticleYoutubeAvatar(
-                      youtubeURL: _article.youtube,
-                      avatar: _article.avatar,
-                    ),
-                    Expanded(
-                        child: Container(
-                            padding: EdgeInsets.only(
-                                top: 10, left: 5, bottom: 15, right: 0),
-                            child: _getArticleDetailTitle())),
-                    //OauthInfoWidget(),
-                  ],
-                )),
+            ArticleTitle(article: _article),
             Padding(
                 padding:
                     EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
