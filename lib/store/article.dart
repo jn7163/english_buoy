@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/article_titles.dart';
 import '../models/articles.dart';
 import '../models/article.dart';
-import '../models/top_loading.dart';
+import '../models/all_loading.dart';
 
 import 'package:dio/dio.dart';
 import '../bus.dart';
@@ -12,9 +12,9 @@ import 'package:provide/provide.dart';
 
 postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
     Articles articles) async {
-  var topLoading = Provide.value<TopLoading>(context);
+  var allLoading = Provide.value<AllLoading>(context);
   Dio dio = getDio(context);
-  topLoading.set(true);
+  allLoading.setArticleTitlesLoading(true);
   try {
     var response =
         await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": youtube});
@@ -47,13 +47,13 @@ postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
       }
     }
   } finally {
-    topLoading.set(false);
+    allLoading.setArticleTitlesLoading(false);
   }
 }
 
 // 提交新的文章进行分析
 postArticle(BuildContext context, String article, ArticleTitles articleTitles,
-    Articles articles, TopLoading topLoading) async {
+    Articles articles, AllLoading topLoading) async {
   Dio dio = getDio(context);
   print("postArticle");
   // 替换奇怪的连写字符串

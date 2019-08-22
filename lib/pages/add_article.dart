@@ -3,7 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
 import '../store/article.dart';
 import '../models/article_titles.dart';
-import '../models/top_loading.dart';
+import '../models/all_loading.dart';
 import '../models/articles.dart';
 import 'package:flutter/services.dart';
 import '../components/oauth_info.dart';
@@ -42,10 +42,10 @@ class _AddArticlePageState extends State<AddArticlePage> {
     });
     var articleTitles = Provide.value<ArticleTitles>(context);
     var articles = Provide.value<Articles>(context);
-    var topLoading = Provide.value<TopLoading>(context);
+    var allLoading = Provide.value<AllLoading>(context);
     bool showNewArticle = false;
     postArticle(context, _articleController.text, articleTitles, articles,
-            topLoading)
+            allLoading)
         .then((d) {
       if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
     });

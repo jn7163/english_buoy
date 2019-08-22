@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../models/oauth_info.dart';
-import '../models/top_loading.dart';
+import '../models/all_loading.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class OauthInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Provide<TopLoading>(builder: (context, child, topLoading) {
+    return Provide<AllLoading>(builder: (context, child, allLoading) {
       return Provide<OauthInfo>(builder: (context, child, oauthInfo) {
-        if (topLoading.loading) {
+        if (allLoading.loading) {
           return SpinKitChasingDots(
             color: Colors.white,
             size: 50.0,

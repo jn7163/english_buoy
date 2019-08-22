@@ -1,6 +1,8 @@
 // 文章列表
 import 'dart:async';
 
+import 'package:loading_overlay/loading_overlay.dart';
+
 import '../models/articles.dart';
 import 'package:ebuoy/store/article.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -10,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../components/oauth_info.dart';
 import '../models/article_titles.dart';
+import '../models/all_loading.dart';
 import '../models/receive_share.dart';
 import '../models/article_title.dart';
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -228,10 +231,15 @@ class _ArticlesPageState extends State<ArticlesPage> {
           OauthInfoWidget(),
         ],
       ),
-      body: Container(
-          // margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-          child:
-              RefreshIndicator(onRefresh: _refresh, child: getArticleTitles())),
+      body: Provide<AllLoading>(builder: (context, child, allLoading) {
+        return LoadingOverlay(
+            child: Container(
+                // margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
+                child: RefreshIndicator(
+                    onRefresh: _refresh, child: getArticleTitles())),
+            isLoading: allLoading.articleTitlesLoading,
+            progressIndicator: const CircularProgressIndicator());
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/AddArticle');
