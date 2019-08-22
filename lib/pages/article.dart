@@ -9,6 +9,7 @@ import 'package:provide/provide.dart';
 import 'package:flutter/material.dart';
 import '../bus.dart';
 // import '../store/learned.dart';
+import '../components/article_youtube_avatar.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/articles.dart';
@@ -259,20 +260,6 @@ class _ArticlePageState extends State<ArticlePage> {
     return title;
   }
 
-  Widget _getAvatar() {
-    var avatar = Visibility(
-        visible: _article.youtube == '' ? false : true,
-        child: _article.avatar == ''
-            ? Icon(
-                FontAwesomeIcons.youtube,
-                color: Colors.red,
-              )
-            : CircleAvatar(
-                backgroundImage: NetworkImage(_article.avatar),
-              ));
-    return avatar;
-  }
-
   Widget _wrapLoading() {
     TextStyle textStyle = TextStyle(
         color: Colors.black, fontSize: 20, fontFamily: "NotoSans-Medium");
@@ -306,17 +293,10 @@ class _ArticlePageState extends State<ArticlePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    /*
-                    IconButton(
-                      color: Colors.white,
-                      icon: Icon(Icons.list),
-                      tooltip: 'go to articles',
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/Articles');
-                      },
+                    ArticleYoutubeAvatar(
+                      youtubeURL: _article.youtube,
+                      avatar: _article.avatar,
                     ),
-                    */
-                    _getAvatar(),
                     Expanded(
                         child: Container(
                             padding: EdgeInsets.only(

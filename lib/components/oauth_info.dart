@@ -5,12 +5,13 @@ import '../models/all_loading.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 //登录后显示头像的组件
+// loading 时候显示 loading
 class OauthInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provide<AllLoading>(builder: (context, child, allLoading) {
       return Provide<OauthInfo>(builder: (context, child, oauthInfo) {
-        if (allLoading.loading) {
+        if (allLoading.loading || allLoading.articleTitlesLoading) {
           return SpinKitChasingDots(
             color: Colors.white,
             size: 50.0,

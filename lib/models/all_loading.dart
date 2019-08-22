@@ -5,6 +5,8 @@ class AllLoading with ChangeNotifier {
   bool articleTitlesLoading = false;
   setArticleTitlesLoading(bool loading) {
     this.articleTitlesLoading = loading;
+    debugPrint(
+        "this.articleTitlesLoading=" + this.articleTitlesLoading.toString());
     notifyListeners();
   }
 

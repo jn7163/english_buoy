@@ -1,6 +1,7 @@
 // 文章列表
 import 'dart:async';
 
+import '../components/article_youtube_avatar.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 import '../models/articles.dart';
@@ -38,7 +39,10 @@ class _ArticlesPageState extends State<ArticlesPage> {
     // 需要初始化后才能使用 context
     Future.delayed(Duration.zero, () {
       initReceiveShare();
-      _syncArticleTitles();
+
+// 初始化时候, 如果是 0 才自动取数据
+      var articles = Provide.value<ArticleTitles>(context);
+      if (articles.articleTitles.length == 0) _syncArticleTitles();
     });
     _searchQuery.addListener(() {
       if (!_isSearching) {
@@ -123,16 +127,10 @@ class _ArticlesPageState extends State<ArticlesPage> {
                     ? Colors.blueGrey[50]
                     : Colors.transparent,
                 child: ListTile(
-                  trailing: Visibility(
-                      visible: d.youtube == '' ? false : true,
-                      child: d.avatar == ''
-                          ? Icon(
-                              FontAwesomeIcons.youtube,
-                              color: Colors.red,
-                            )
-                          : CircleAvatar(
-                              backgroundImage: NetworkImage(d.avatar),
-                            )),
+                  trailing: ArticleYoutubeAvatar(
+                    youtubeURL: d.youtube,
+                    avatar: d.avatar,
+                  ),
                   dense: false,
                   onTap: () {
                     this._selectArticleID = d.id;
@@ -202,6 +200,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
   @override
   Widget build(BuildContext context) {
+    var _allLoading = Provide.value<AllLoading>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: _isSearching
@@ -232,6 +232,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
         ],
       ),
       body: StreamBuilder<AllLoading>(
+          initialData: _allLoading,
           stream: Provide.stream<AllLoading>(context),
           builder:
               (BuildContext context, AsyncSnapshot<AllLoading> allLoading) {
@@ -241,6 +242,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                     child: RefreshIndicator(
                         onRefresh: _refresh, child: getArticleTitles())),
                 isLoading: allLoading.data.articleTitlesLoading,
+                // isLoading: true,
                 progressIndicator: const CircularProgressIndicator());
           }),
       floatingActionButton: FloatingActionButton(
