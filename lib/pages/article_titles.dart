@@ -231,15 +231,18 @@ class _ArticlesPageState extends State<ArticlesPage> {
           OauthInfoWidget(),
         ],
       ),
-      body: Provide<AllLoading>(builder: (context, child, allLoading) {
-        return LoadingOverlay(
-            child: Container(
-                // margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-                child: RefreshIndicator(
-                    onRefresh: _refresh, child: getArticleTitles())),
-            isLoading: allLoading.articleTitlesLoading,
-            progressIndicator: const CircularProgressIndicator());
-      }),
+      body: StreamBuilder<AllLoading>(
+          stream: Provide.stream<AllLoading>(context),
+          builder:
+              (BuildContext context, AsyncSnapshot<AllLoading> allLoading) {
+            return LoadingOverlay(
+                child: Container(
+                    // margin: EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
+                    child: RefreshIndicator(
+                        onRefresh: _refresh, child: getArticleTitles())),
+                isLoading: allLoading.data.articleTitlesLoading,
+                progressIndicator: const CircularProgressIndicator());
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/AddArticle');

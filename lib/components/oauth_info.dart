@@ -4,6 +4,7 @@ import '../models/oauth_info.dart';
 import '../models/all_loading.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+//登录后显示头像的组件
 class OauthInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
