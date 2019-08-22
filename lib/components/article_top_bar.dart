@@ -15,7 +15,7 @@ class ArticleTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.only(left: 8, top: 30),
-        color: Colors.blueGrey,
+        color: Theme.of(context).primaryColorDark,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[

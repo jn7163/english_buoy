@@ -202,6 +202,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
     var allLoading = Provide.value<AllLoading>(context);
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: _isSearching
             ? TextField(
                 autofocus: true,

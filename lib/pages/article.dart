@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:ebuoy/components/launch_youbube_button.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../components/article_top_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter/material.dart';
 import '../bus.dart';
@@ -245,55 +245,33 @@ class _ArticlePageState extends State<ArticlePage> {
   Widget _wrapLoading() {
     TextStyle textStyle = TextStyle(
         color: Colors.black, fontSize: 20, fontFamily: "NotoSans-Medium");
-    if (_article != null) {
-      return SingleChildScrollView(
-          controller: _controller,
-          // physics: const AlwaysScrollableScrollPhysics(),
-          //padding:
-          //   EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10, right: 10),
-          child: Column(children: [
-            /*
-            AppBar(
-              leading: IconButton(
-                icon: Icon(Icons.list),
-                tooltip: 'go to articles',
-                onPressed: () {
-                  Navigator.pushNamed(context, '/Articles');
-                },
-              ),
-              title: (_article != null)
-                  ? Text(_article.title)
-                  : Text("loading..."),
-              actions: <Widget>[
-                OauthInfoWidget(),
-              ],
-            ),
-            */
-            ArticleTopBar(article: _article),
-            Padding(
-                padding:
-                    EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
-                child: Provide<ArticleTitles>(
-                    builder: (context, child, articleTitles) {
-                  if (articleTitles.articleTitles.length != 0) {
-                    return RichText(
-                      text: TextSpan(
-                        text: '   ',
-                        style: textStyle,
-                        children: _article.words.map((d) {
-                          return _getTextSpan(d, articleTitles, _article);
-                        }).toList(),
-                      ),
-                    );
-                  }
-                  return Text('some error!');
-                })),
-          ]));
-    }
-    return SpinKitChasingDots(
-      color: Colors.blueGrey,
-      size: 50.0,
-    );
+    return ModalProgressHUD(
+        child: _article == null
+            ? Container() //这里可以搞一个动画或者什么效果
+            : SingleChildScrollView(
+                controller: _controller,
+                child: Column(children: [
+                  ArticleTopBar(article: _article),
+                  Padding(
+                      padding: EdgeInsets.only(
+                          top: 15.0, left: 5.0, bottom: 5, right: 5),
+                      child: Provide<ArticleTitles>(
+                          builder: (context, child, articleTitles) {
+                        if (articleTitles.articleTitles.length != 0) {
+                          return RichText(
+                            text: TextSpan(
+                              text: '   ',
+                              style: textStyle,
+                              children: _article.words.map((d) {
+                                return _getTextSpan(d, articleTitles, _article);
+                              }).toList(),
+                            ),
+                          );
+                        }
+                        return Text('some error!');
+                      })),
+                ])),
+        inAsyncCall: _article == null);
   }
 
   @override
