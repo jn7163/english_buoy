@@ -161,7 +161,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                            style: Theme.of(context).textTheme.body1,
                             text: "You can share YouTube ",
                           ),
                           WidgetSpan(
@@ -171,7 +171,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                             ),
                           ),
                           TextSpan(
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                            style: Theme.of(context).textTheme.body1,
                             text: "  video to here",
                           ),
                         ],
@@ -182,7 +182,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                     ),
                     RichText(
                         text: TextSpan(
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                            style: Theme.of(context).textTheme.body1,
                             text: "Or click Add button to add English article"))
                   ])));
       /*else {
