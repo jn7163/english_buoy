@@ -20,9 +20,9 @@ class LaunchYoutubeButton extends StatelessWidget {
           tooltip: 'open youtube',
           child: Icon(
             FontAwesomeIcons.youtube,
-            color: Colors.red,
+            // color: Theme.of(context).primaryTextTheme.button.color,
           ),
-          backgroundColor: Colors.white,
+          //backgroundColor: Colors.grey[400],
         ));
   }
 

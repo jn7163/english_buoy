@@ -37,8 +37,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
     // 需要初始化后才能使用 context
     Future.delayed(Duration.zero, () {
       initReceiveShare();
-
-// 初始化时候, 如果是 0 才自动取数据
+      // 初始化时候, 如果是 0 才自动取数据
       var articles = Provide.value<ArticleTitles>(context);
       if (articles.articleTitles.length == 0) _syncArticleTitles();
     });
@@ -104,7 +103,6 @@ class _ArticlesPageState extends State<ArticlesPage> {
   }
 
   Widget getArticleTitles() {
-
     return Provide<ArticleTitles>(builder: (context, child, articleTitles) {
       List<ArticleTitle> filterTiltes;
       if (_isSearching) {
@@ -117,13 +115,13 @@ class _ArticlesPageState extends State<ArticlesPage> {
             .where((d) => d.unlearnedCount > 0)
             .toList();
       }
-      // 应该用 loading 判断是否显示 loading
+      // 判断显示说明文字还是列表
       if (articleTitles.articleTitles.length != 0) {
         return ListView(
           children: filterTiltes.map((d) {
             return Ink(
                 color: this._selectArticleID == d.id
-                    ? Colors.blueGrey[50]
+                    ? Theme.of(context).highlightColor
                     : Colors.transparent,
                 child: ListTile(
                   trailing: ArticleYoutubeAvatar(
@@ -137,9 +135,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                   },
                   leading: Text(d.unlearnedCount.toString(),
                       style: TextStyle(
-                          color: Colors.teal[700],
-                          fontSize: 16,
-                          fontFamily: "NotoSans-Medium")),
+                        color: Colors.blueGrey,
+                      )),
                   title: Text(d.title),
                 ));
           }).toList(),
@@ -163,7 +160,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            style: TextStyle(color: Colors.black, fontSize: 14),
+                            style: TextStyle(color: Colors.white, fontSize: 14),
                             text: "You can share YouTube ",
                           ),
                           WidgetSpan(
@@ -173,7 +170,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                             ),
                           ),
                           TextSpan(
-                            style: TextStyle(color: Colors.black, fontSize: 14),
+                            style: TextStyle(color: Colors.white, fontSize: 14),
                             text: "  video to here",
                           ),
                         ],
@@ -184,7 +181,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                     ),
                     RichText(
                         text: TextSpan(
-                            style: TextStyle(color: Colors.black, fontSize: 14),
+                            style: TextStyle(color: Colors.white, fontSize: 14),
                             text: "Or click Add button to add English article"))
                   ])));
       /*else {
@@ -199,8 +196,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
   @override
   Widget build(BuildContext context) {
-    var allLoading = Provide.value<AllLoading>(context);
     return Scaffold(
+      //backgroundColor: Color(0XFF3c3f41),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: _isSearching
@@ -216,7 +213,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                 ),
               )
             : Text(
-                "The Articles",
+                "English Buoy",
                 style: TextStyle(color: Colors.white),
               ),
         actions: <Widget>[
@@ -232,8 +229,12 @@ class _ArticlesPageState extends State<ArticlesPage> {
           OauthInfoWidget(),
         ],
       ),
-      body: ModalProgressHUD(child:RefreshIndicator(onRefresh: _refresh, child: getArticleTitles()),
-          inAsyncCall:allLoading.loading),
+      body: Provide<AllLoading>(builder: (context, child, allLoading) {
+        return ModalProgressHUD(
+            child: RefreshIndicator(
+                onRefresh: _refresh, child: getArticleTitles()),
+            inAsyncCall: allLoading.loading);
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/AddArticle');

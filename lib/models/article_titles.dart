@@ -11,12 +11,15 @@ import '../models/all_loading.dart';
 
 class ArticleTitles with ChangeNotifier {
   List<ArticleTitle> articleTitles = [];
+
   // Set 合集, 用于快速查找添加过的单词
   Set setArticleTitles = Set();
+
   // 和服务器同步
   Future syncServer(BuildContext context) async {
     var allLoading = Provide.value<AllLoading>(context);
     allLoading.set(true);
+    debugPrint("set loading=true");
     Dio dio = getDio(context);
     try {
       var response = await dio.get(Store.baseURL + "article_titles");
@@ -30,6 +33,7 @@ class ArticleTitles with ChangeNotifier {
       return e;
     } finally {
       allLoading.set(false);
+      debugPrint("set loading=false");
     }
   }
 

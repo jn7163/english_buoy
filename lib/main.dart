@@ -15,6 +15,9 @@ import './pages/article.dart';
 import './pages/sign.dart';
 import './pages/add_article.dart';
 
+// import './themes/dark.dart';
+import './themes/bright.dart';
+
 void main() {
   var allLoading = AllLoading();
   // 登录信息
@@ -62,14 +65,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // MaterialColor colorCustom = MaterialColor(0x1E1E1E, color);
-    MaterialColor colorCustom = MaterialColor(0xFF282828, color);
     init(context);
     return MaterialApp(
       title: 'English Buoy',
-      theme: ThemeData(
-        primarySwatch: colorCustom,
-      ),
+      theme: brightTheme,
       home: ArticlesPage(),
       onGenerateRoute: _getRoute,
     );
@@ -97,16 +96,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-Map<int, Color> color = {
-  50: Color.fromRGBO(40, 40, 40, .1),
-  100: Color.fromRGBO(40, 40, 40, .2),
-  200: Color.fromRGBO(40, 40, 40, .3),
-  300: Color.fromRGBO(40, 40, 40, .4),
-  400: Color.fromRGBO(40, 40, 40, .5),
-  500: Color.fromRGBO(40, 40, 40, .6),
-  600: Color.fromRGBO(40, 40, 40, .7),
-  700: Color.fromRGBO(40, 40, 40, .8),
-  800: Color.fromRGBO(40, 40, 40, .9),
-  900: Color.fromRGBO(40, 40, 40, 1),
-};

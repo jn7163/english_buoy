@@ -112,42 +112,47 @@ class _ArticlePageState extends State<ArticlePage> {
 
 // 定义应该的 style
   TextStyle _defineStyle(Word word, ArticleTitles articleTitles) {
-    TextStyle textStyle = TextStyle();
     bool needLearn = (word.level != null && word.level != 0); // 是否需要掌握
     bool inArticleTitles = articleTitles.setArticleTitles
         .contains(word.text.toLowerCase()); // 是否添加
     bool isSelected =
         (_tapedText.toLowerCase() == word.text.toLowerCase()); // 是否选中
 
-    // 需要学习teal, 否则 blueGrep
-    textStyle = needLearn
-        ? textStyle.copyWith(color: Colors.teal[700])
-        : textStyle.copyWith(color: Colors.blueGrey);
-    // 已添加
+    // 默认的文字样式
+    TextStyle defaultTextStyle = Theme.of(context).textTheme.body1;
+    // 必学的高亮色
+    TextStyle needLearnTextStyle = Theme.of(context).textTheme.display1;
+    // 非必学的高亮色
+    TextStyle noNeedLearnTextStyle = Theme.of(context).textTheme.display2;
+    //根据条件逐步加工修改的样式
+    TextStyle processTextStyle = defaultTextStyle;
+
+    // 如果是词中没有字母, 默认样式
+    if (!hasLetter(word.text)) return defaultTextStyle;
+    // 无需前置空格的单词, 默认样式
+    if (this._noNeedBlank.contains(word.text)) return defaultTextStyle;
+    // 已经学会且没有选中, 不用任何修改
+    if (word.learned == true && !isSelected) return defaultTextStyle;
+
+    // 是否必学
+    processTextStyle = needLearn ? needLearnTextStyle : noNeedLearnTextStyle;
+    // 单词作为文章标题添加
     if (inArticleTitles) {
-      //无需掌握的添加单词为淡绿色
-      if (!needLearn) textStyle = textStyle.copyWith(color: Colors.teal[400]);
-      textStyle = textStyle.copyWith(
+      //无需掌握的添加单词高亮为需要学习的颜色
+      processTextStyle = needLearnTextStyle.copyWith(
+        //添加下划线区分
         decoration: TextDecoration.underline,
         decorationStyle: TextDecorationStyle.dotted,
       );
     }
-
-    // 如果是词中没有字母, 当做已经学会
-    if (!hasLetter(word.text)) word.learned = true;
-    // 标点符号也不用学习
-    if (this._noNeedBlank.contains(word.text)) word.learned = true;
-
-    // 已经学会, 不用任何样式, 继承原本就可以
     // 一旦选中, 还原本来的样式
-    if (word.learned == true && !isSelected) textStyle = TextStyle();
     // 长按选中 显示波浪下划线
     if (isSelected)
-      textStyle = textStyle.copyWith(
+      processTextStyle = processTextStyle.copyWith(
           decoration: TextDecoration.underline,
           decorationStyle: TextDecorationStyle.wavy);
 
-    return textStyle;
+    return processTextStyle;
   }
 
 // 组装为需要的 textSpan
@@ -244,7 +249,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
   Widget _wrapLoading() {
     TextStyle textStyle = TextStyle(
-        color: Colors.black, fontSize: 20, fontFamily: "NotoSans-Medium");
+        color: Colors.grey, fontSize: 20, fontFamily: "NotoSans-Medium");
     return ModalProgressHUD(
         child: _article == null
             ? Container() //这里可以搞一个动画或者什么效果
@@ -277,6 +282,7 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        // backgroundColor: Color(0XFF3c3f41),
         body: _wrapLoading(),
         floatingActionButton: LaunchYoutubeButton(
           youtubeURL: _article == null ? '' : _article.youtube,

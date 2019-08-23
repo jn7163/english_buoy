@@ -9,13 +9,12 @@ import 'article_youtube_avatar.dart';
 class ArticleTopBar extends StatelessWidget {
   const ArticleTopBar({this.article, Key key}) : super(key: key);
   final Article article;
-  final TextStyle textStyle = const TextStyle(
-      color: Colors.white, fontSize: 20, fontFamily: "NotoSans-Medium");
+
   @override
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.only(left: 8, top: 30),
-        color: Theme.of(context).primaryColorDark,
+        color: Theme.of(context).primaryColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -28,8 +27,12 @@ class ArticleTopBar extends StatelessWidget {
                     padding:
                         EdgeInsets.only(top: 10, left: 5, bottom: 15, right: 0),
                     child: (article != null)
-                        ? Text(article.title, style: textStyle)
-                        : Text("loading..."))),
+                        ? Text(article.title,
+                            style: Theme.of(context).primaryTextTheme.title)
+                        : Text(
+                            "loading...",
+                            style: Theme.of(context).primaryTextTheme.title,
+                          ))),
             //OauthInfoWidget(),
           ],
         ));

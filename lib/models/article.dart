@@ -40,7 +40,6 @@ class Article {
     var response =
         await dio.get(Store.baseURL + "article/" + this.articleID.toString());
 
-    // debugPrint(response.data.toString());
     this.setFromJSON(response.data);
     // 获取以后, 就计算一遍未读数, 然后提交
     // this._putUnlearnedCount(context);
