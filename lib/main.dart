@@ -15,7 +15,7 @@ import './pages/article.dart';
 import './pages/sign.dart';
 import './pages/add_article.dart';
 
-// import './themes/dark.dart';
+import './themes/dark.dart';
 import './themes/bright.dart';
 
 void main() {
@@ -66,12 +66,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     init(context);
-    return MaterialApp(
-      title: 'English Buoy',
-      theme: brightTheme,
-      home: ArticlesPage(),
-      onGenerateRoute: _getRoute,
-    );
+    return Provide<Setting>(builder: (context, child, setting) {
+      return MaterialApp(
+        title: 'English Buoy',
+        theme: setting.isDark ? darkTheme : brightTheme,
+        home: ArticlesPage(),
+        onGenerateRoute: _getRoute,
+      );
+    });
   }
 
   Route _getRoute(RouteSettings settings) {

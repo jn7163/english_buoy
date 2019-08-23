@@ -13,6 +13,7 @@ TextEditingController _articleController = new TextEditingController();
 class AddArticlePage extends StatefulWidget {
   AddArticlePage({Key key, this.articleTitles}) : super(key: key);
   final List articleTitles;
+
   @override
   _AddArticlePageState createState() => _AddArticlePageState();
 }
@@ -25,6 +26,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
   }
 
   bool _isEnable = true;
+
   _getFromClipboard() async {
     setState(() {
       this._isEnable = false;
@@ -71,7 +73,8 @@ class _AddArticlePageState extends State<AddArticlePage> {
             TextField(
               textInputAction: TextInputAction.newline,
               enabled: _isEnable,
-              autofocus: false, // 不要默认焦点, 避免键盘弹出来
+              autofocus: false,
+              // 不要默认焦点, 避免键盘弹出来
               controller: _articleController,
               maxLines: null,
               keyboardType: TextInputType.multiline,
@@ -89,6 +92,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text("add new article"),
         actions: <Widget>[
@@ -99,7 +103,8 @@ class _AddArticlePageState extends State<AddArticlePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _isEnable ? _add : null,
         tooltip: 'add article',
-        child: Icon(_isEnable ? Icons.add : Icons.backup),
+        child: Icon(_isEnable ? Icons.add : Icons.backup,
+            color: Theme.of(context).primaryTextTheme.title.color),
       ),
     );
   }

@@ -1,11 +1,11 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-setIsJumpWord(bool isJump) async {
+setLocalBool(String key, bool v) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setBool("isJump", isJump);
+  prefs.setBool(key, v);
 }
 
-getIsJumpWord() async {
+getLocalBool(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getBool("isJump") ?? false;
+  return prefs.getBool(key) ?? false;
 }

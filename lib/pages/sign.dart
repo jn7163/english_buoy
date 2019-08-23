@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:ebuoy/components/config_dark_theme.dart';
+import 'package:ebuoy/components/config_jump_to_word.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provide/provide.dart';
 
@@ -7,7 +9,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../store/sign.dart';
 import '../models/oauth_info.dart';
 import '../models/article_titles.dart';
-import '../models/setting.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: <String>[
@@ -73,14 +74,8 @@ class SignInPageState extends State<SignInPage> {
               title: Text(oauthInfo.name),
               subtitle: Text(oauthInfo.email),
             ),
-            Provide<Setting>(builder: (context, child, setting) {
-              return SwitchListTile(
-                  value: setting.isJump,
-                  onChanged: setting.set,
-                  title: Text(
-                    'jump to word when click twice',
-                  ));
-            }),
+            ConfigJumpToWord(),
+            ConfigDarkTheme(),
             RaisedButton(
               child: const Text('Logout'),
               onPressed: _handleSignOut,
@@ -104,6 +99,7 @@ class SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
           title: const Text('Google Sign In'),
         ),

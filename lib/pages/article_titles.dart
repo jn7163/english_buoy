@@ -137,7 +137,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       style: TextStyle(
                         color: Colors.blueGrey,
                       )),
-                  title: Text(d.title),
+                  title:
+                      Text(d.title, style: Theme.of(context).textTheme.subhead),
                 ));
           }).toList(),
         );
@@ -197,7 +198,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Color(0XFF3c3f41),
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: _isSearching
@@ -214,11 +215,13 @@ class _ArticlesPageState extends State<ArticlesPage> {
               )
             : Text(
                 "English Buoy",
-                style: TextStyle(color: Colors.white),
               ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(_isSearching ? Icons.close : Icons.search),
+            icon: Icon(
+              _isSearching ? Icons.close : Icons.search,
+              color: Theme.of(context).primaryTextTheme.title.color,
+            ),
             tooltip: 'go to articles',
             onPressed: () {
               setState(() {
@@ -240,7 +243,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
           Navigator.pushNamed(context, '/AddArticle');
         },
         tooltip: 'add article',
-        child: Icon(Icons.add),
+        child: Icon(Icons.add,
+            color: Theme.of(context).primaryTextTheme.title.color),
       ),
     );
   }

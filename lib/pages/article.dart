@@ -282,7 +282,7 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // backgroundColor: Color(0XFF3c3f41),
+        backgroundColor: Theme.of(context).backgroundColor,
         body: _wrapLoading(),
         floatingActionButton: LaunchYoutubeButton(
           youtubeURL: _article == null ? '' : _article.youtube,

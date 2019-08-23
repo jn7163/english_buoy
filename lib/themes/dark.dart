@@ -14,23 +14,33 @@ Map<int, Color> darkColorMap = {
 };
 MaterialColor darkMaterialColor = MaterialColor(0xFF282828, darkColorMap);
 
-var baseTextStyle =
+var darkTextStyle =
     TextStyle(color: Colors.grey, fontFamily: "NotoSans-Medium");
+var darkArticleContent = darkTextStyle.copyWith(fontSize: 20); //显示文章正文需要放大文字
 var darkTextTheme = TextTheme(
-  headline: baseTextStyle.copyWith(
-    fontSize: 20,
-    fontWeight: FontWeight.bold,
-  ),
-  title: baseTextStyle.copyWith(
-    fontSize: 36.0,
-    fontStyle: FontStyle.italic,
-  ),
-  body1: baseTextStyle.copyWith(fontSize: 14.0),
-);
-
-// 阅读背景色 Color(0XFF3c3f41)
-// list 选中高亮 Colors.black54
+    headline: darkTextStyle.copyWith(
+      color: Colors.white,
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+    ),
+    // login subtitle 文字
+    caption: darkTextStyle,
+    // article 列表文字
+    subhead: darkArticleContent,
+    // article 正文文字
+    body1: darkArticleContent,
+    //必学单词
+    display1: darkArticleContent.copyWith(color: Colors.blueGrey[400]),
+    //非必学单词
+    display2: darkArticleContent.copyWith(color: Colors.blueGrey));
+// 控制 app bar 之类的
+var darkPrimaryTextTheme =
+    TextTheme(title: darkTextStyle, button: darkTextStyle);
 var darkTheme = ThemeData(
-  primarySwatch: darkMaterialColor,
-  textTheme: darkTextTheme,
-);
+    primarySwatch: darkMaterialColor,
+    textTheme: darkTextTheme,
+    // 列表被选中的高亮颜色
+    highlightColor: Colors.black54,
+    primaryTextTheme: darkPrimaryTextTheme,
+    // 阅读背景色
+    backgroundColor: Color(0XFF3c3f41));

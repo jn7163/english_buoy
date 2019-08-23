@@ -18,10 +18,8 @@ class LaunchYoutubeButton extends StatelessWidget {
             _launchURL(youtubeURL);
           },
           tooltip: 'open youtube',
-          child: Icon(
-            FontAwesomeIcons.youtube,
-            // color: Theme.of(context).primaryTextTheme.button.color,
-          ),
+          child: Icon(FontAwesomeIcons.youtube,
+              color: Theme.of(context).primaryTextTheme.title.color),
           //backgroundColor: Colors.grey[400],
         ));
   }
