@@ -27,16 +27,15 @@ class SignInPageState extends State<SignInPage> {
     super.initState();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       if (account != null) {
-        account.authentication
-            .then((GoogleSignInAuthentication authentication) {
-          var oauthInfo = Provide.value<OauthInfo>(context);
+        account.authentication.then((GoogleSignInAuthentication authentication) {
           //var articles = Provide.value<ArticleTitles>(context);
           // google 用户注册到服务器后, 记录 token
           putAccount(account, authentication).then((d) {
-            oauthInfo.set(authentication.accessToken, account.email,
-                account.displayName, account.photoUrl);
-            //登录后从服务器获取
-            Navigator.pushNamed(context, '/Articles');
+            var oauthInfo = Provide.value<OauthInfo>(context);
+            bool needJump = oauthInfo.set(
+                authentication.accessToken, account.email, account.displayName, account.photoUrl);
+            //登录后自动跳转
+            if (needJump) Navigator.pushNamed(context, '/Articles');
           });
         });
       }

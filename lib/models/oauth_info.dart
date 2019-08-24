@@ -6,21 +6,26 @@ class OauthInfo with ChangeNotifier {
   String email;
   String name;
   String avatarURL;
-  set(String accessToken, String email, String name, String avatarURL) {
+
+  bool set(String accessToken, String email, String name, String avatarURL) {
+    // 如果从未登录转换到登录, 那么返回需要跳转
+    bool needJump = false;
+    if (this.email == null) needJump = true;
     this.accessToken = accessToken;
     this.email = email;
     this.name = name;
     this.avatarURL = avatarURL;
     _setToShared();
     notifyListeners();
+    return needJump;
   }
 
   backFromShared() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     this.email = prefs.getString('email');
     if (this.email != null) {
-      this.set(prefs.getString('accessToken'), this.email,
-          prefs.getString('name'), prefs.getString('avatarURL'));
+      this.set(prefs.getString('accessToken'), this.email, prefs.getString('name'),
+          prefs.getString('avatarURL'));
     }
   }
 
@@ -36,11 +41,7 @@ class OauthInfo with ChangeNotifier {
 
   _removeShared() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs
-      ..remove('accessToken')
-      ..remove('email')
-      ..remove('name')
-      ..remove('avatarURL');
+    prefs..remove('accessToken')..remove('email')..remove('name')..remove('avatarURL');
   }
 
   signOut() {
