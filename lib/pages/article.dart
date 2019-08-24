@@ -119,7 +119,7 @@ class _ArticlePageState extends State<ArticlePage> {
         (_tapedText.toLowerCase() == word.text.toLowerCase()); // 是否选中
 
     // 默认的文字样式
-    TextStyle defaultTextStyle = Theme.of(context).textTheme.body1;
+    TextStyle defaultTextStyle = Theme.of(context).textTheme.body2;
     // 必学的高亮色
     TextStyle needLearnTextStyle = Theme.of(context).textTheme.display1;
     // 非必学的高亮色

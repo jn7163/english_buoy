@@ -6,7 +6,7 @@ import 'package:provide/provide.dart';
 import '../models/setting.dart';
 
 class ConfigJumpToWord extends StatelessWidget {
-  const ConfigJumpToWord({Key key}) : super(key: key);
+  //const ConfigJumpToWord({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

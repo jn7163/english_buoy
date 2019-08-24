@@ -5,8 +5,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // 文章对应的 youtube 图标或者头像
 class ArticleYoutubeAvatar extends StatelessWidget {
-  const ArticleYoutubeAvatar({this.youtubeURL, this.avatar, Key key})
-      : super(key: key);
+  const ArticleYoutubeAvatar({
+    Key key,
+    @required this.youtubeURL,
+    @required this.avatar,
+  }) : super(key: key);
   final String youtubeURL;
   final String avatar;
 

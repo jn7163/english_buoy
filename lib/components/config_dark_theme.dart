@@ -6,7 +6,7 @@ import 'package:provide/provide.dart';
 import '../models/setting.dart';
 
 class ConfigDarkTheme extends StatelessWidget {
-  const ConfigDarkTheme({Key key}) : super(key: key);
+  // const ConfigDarkTheme({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

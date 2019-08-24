@@ -19,7 +19,8 @@ class OauthInfoWidget extends StatelessWidget {
       } else {
         return GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/Sign');
+              // 点击头像没必要动作
+              // Navigator.pushNamed(context, '/Sign');
             },
             child: Padding(
                 padding: const EdgeInsets.all(8.0),

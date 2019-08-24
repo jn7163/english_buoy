@@ -1,6 +1,9 @@
 // 文章列表
 import 'dart:async';
 
+import 'package:ebuoy/components/article_lists_app_bar.dart';
+import 'package:ebuoy/models/search.dart';
+
 import '../components/article_youtube_avatar.dart';
 
 import '../models/articles.dart';
@@ -11,26 +14,23 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
-import '../components/oauth_info.dart';
 import '../models/article_titles.dart';
 import '../models/receive_share.dart';
 import '../models/article_title.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-class ArticlesPage extends StatefulWidget {
-  ArticlesPage({Key key}) : super(key: key);
+class ArticleTitlesPage extends StatefulWidget {
+  ArticleTitlesPage({Key key}) : super(key: key);
 
   @override
-  _ArticlesPageState createState() => _ArticlesPageState();
+  ArticleTitlesPageState createState() => ArticleTitlesPageState();
 }
 
-class _ArticlesPageState extends State<ArticlesPage> {
-  TextEditingController _searchQuery = new TextEditingController();
-  bool _isSearching = false;
-  String _searchText = "";
+class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   int _selectArticleID = 0;
-  StreamSubscription _receivelShareLiveSubscription;
+  StreamSubscription _receiveShareLiveSubscription;
 
+  @override
   initState() {
     super.initState();
     print('init articles');
@@ -41,23 +41,11 @@ class _ArticlesPageState extends State<ArticlesPage> {
       var articles = Provide.value<ArticleTitles>(context);
       if (articles.articleTitles.length == 0) _syncArticleTitles();
     });
-    _searchQuery.addListener(() {
-      if (!_isSearching) {
-        _searchQuery.text = "";
-      }
-      if (_searchQuery.text.isNotEmpty) {
-        setState(() {
-          // _isSearching = true;
-          _searchText = _searchQuery.text;
-          // debugPrint(_sharedText);
-        });
-      }
-    });
   }
 
   @override
   void dispose() {
-    _receivelShareLiveSubscription.cancel();
+    _receiveShareLiveSubscription.cancel();
     super.dispose();
   }
 
@@ -65,8 +53,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
     var isReceiveShare = Provide.value<ReceiveShare>(context);
     if (isReceiveShare.initialized == false) {
       // For sharing or opening urls/text coming from outside the app while the app is in the memory
-      _receivelShareLiveSubscription =
-          ReceiveSharingIntent.getTextStream().listen((String value) {
+      _receiveShareLiveSubscription = ReceiveSharingIntent.getTextStream().listen((String value) {
         receiveShare(value);
         debugPrint("share from app in memory text=" + value);
       }, onError: (err) {
@@ -103,95 +90,91 @@ class _ArticlesPageState extends State<ArticlesPage> {
   }
 
   Widget getArticleTitles() {
-    return Provide<ArticleTitles>(builder: (context, child, articleTitles) {
-      List<ArticleTitle> filterTiltes;
-      if (_isSearching) {
-        filterTiltes = articleTitles.articleTitles
-            .where((d) =>
-                d.title.toLowerCase().contains(_searchText.toLowerCase()))
-            .toList();
-      } else {
-        filterTiltes = articleTitles.articleTitles
-            .where((d) => d.unlearnedCount > 0)
-            .toList();
-      }
-      // 判断显示说明文字还是列表
-      if (articleTitles.articleTitles.length != 0) {
-        return ListView(
-          children: filterTiltes.map((d) {
-            return Ink(
-                color: this._selectArticleID == d.id
-                    ? Theme.of(context).highlightColor
-                    : Colors.transparent,
-                child: ListTile(
-                  trailing: ArticleYoutubeAvatar(
-                    youtubeURL: d.youtube,
-                    avatar: d.avatar,
+    return Provide<Search>(builder: (context, child, search) {
+      return Provide<ArticleTitles>(builder: (context, child, articleTitles) {
+        List<ArticleTitle> filterTitles;
+        if (search.key != "") {
+          filterTitles = articleTitles.articleTitles
+              .where((d) => d.title.toLowerCase().contains(search.key.toLowerCase()))
+              .toList();
+        } else {
+          filterTitles = articleTitles.articleTitles.where((d) => d.unlearnedCount > 0).toList();
+        }
+        // 判断显示说明文字还是列表
+        if (articleTitles.articleTitles.length != 0) {
+          return ListView(
+            children: filterTitles.map((d) {
+              return Ink(
+                  color: this._selectArticleID == d.id
+                      ? Theme.of(context).highlightColor
+                      : Colors.transparent,
+                  child: ListTile(
+                    trailing: ArticleYoutubeAvatar(
+                      youtubeURL: d.youtube,
+                      avatar: d.avatar,
+                    ),
+                    dense: false,
+                    onTap: () {
+                      this._selectArticleID = d.id;
+                      Navigator.pushNamed(context, '/Article', arguments: d.id);
+                    },
+                    leading: Text(d.unlearnedCount.toString(),
+                        style: TextStyle(
+                          color: Colors.blueGrey,
+                        )),
+                    title: Text(d.title, style: Theme.of(context).textTheme.subhead),
+                  ));
+            }).toList(),
+          );
+        }
+        return Center(
+            child: Container(
+                margin: EdgeInsets.only(top: 5.0, left: 5.0, bottom: 5, right: 5),
+                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: 96.0,
+                    height: 96.0,
                   ),
-                  dense: false,
-                  onTap: () {
-                    this._selectArticleID = d.id;
-                    Navigator.pushNamed(context, '/Article', arguments: d.id);
-                  },
-                  leading: Text(d.unlearnedCount.toString(),
-                      style: TextStyle(
-                        color: Colors.blueGrey,
-                      )),
-                  title:
-                      Text(d.title, style: Theme.of(context).textTheme.subhead),
-                ));
-          }).toList(),
-        );
-      }
-      return Center(
-          child: Container(
-              margin: EdgeInsets.only(top: 5.0, left: 5.0, bottom: 5, right: 5),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/images/logo.png',
-                      width: 96.0,
-                      height: 96.0,
+                  Padding(
+                    padding: EdgeInsets.all(20.0),
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          style: Theme.of(context).textTheme.body1,
+                          text: "You can share YouTube ",
+                        ),
+                        WidgetSpan(
+                          child: Icon(
+                            FontAwesomeIcons.youtube,
+                            color: Colors.red,
+                          ),
+                        ),
+                        TextSpan(
+                          style: Theme.of(context).textTheme.body1,
+                          text: "  video to here",
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(20.0),
-                    ),
-                    RichText(
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(20.0),
+                  ),
+                  RichText(
                       text: TextSpan(
-                        children: [
-                          TextSpan(
-                            style: Theme.of(context).textTheme.body1,
-                            text: "You can share YouTube ",
-                          ),
-                          WidgetSpan(
-                            child: Icon(
-                              FontAwesomeIcons.youtube,
-                              color: Colors.red,
-                            ),
-                          ),
-                          TextSpan(
-                            style: Theme.of(context).textTheme.body1,
-                            text: "  video to here",
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(20.0),
-                    ),
-                    RichText(
-                        text: TextSpan(
-                            style: Theme.of(context).textTheme.body1,
-                            text: "Or click Add button to add English article"))
-                  ])));
-      /*else {
+                          style: Theme.of(context).textTheme.body1,
+                          text: "Or click Add button to add English article"))
+                ])));
+        /*else {
         return SpinKitChasingDots(
           color: Colors.blueGrey,
           size: 50.0,
         );
       }
       */
+      });
     });
   }
 
@@ -199,43 +182,10 @@ class _ArticlesPageState extends State<ArticlesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: _isSearching
-            ? TextField(
-                autofocus: true,
-                // 自动对焦
-                decoration: null,
-                // 不要有下划线
-                cursorColor: Colors.white,
-                controller: _searchQuery,
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              )
-            : Text(
-                "English Buoy",
-              ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              _isSearching ? Icons.close : Icons.search,
-              color: Theme.of(context).primaryTextTheme.title.color,
-            ),
-            tooltip: 'go to articles',
-            onPressed: () {
-              setState(() {
-                _isSearching = !_isSearching;
-              });
-            },
-          ),
-          OauthInfoWidget(),
-        ],
-      ),
+      appBar: ArticleListsAppBar(),
       body: Provide<AllLoading>(builder: (context, child, allLoading) {
         return ModalProgressHUD(
-            child: RefreshIndicator(
-                onRefresh: _refresh, child: getArticleTitles()),
+            child: RefreshIndicator(onRefresh: _refresh, child: getArticleTitles()),
             inAsyncCall: allLoading.loading);
       }),
       floatingActionButton: FloatingActionButton(
@@ -243,8 +193,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
           Navigator.pushNamed(context, '/AddArticle');
         },
         tooltip: 'add article',
-        child: Icon(Icons.add,
-            color: Theme.of(context).primaryTextTheme.title.color),
+        child: Icon(Icons.add, color: Theme.of(context).primaryTextTheme.title.color),
       ),
     );
   }

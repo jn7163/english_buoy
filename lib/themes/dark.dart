@@ -26,9 +26,11 @@ var darkTextTheme = TextTheme(
     // login subtitle 文字
     caption: darkTextStyle,
     // article 列表文字
-    subhead: darkArticleContent,
-    // article 正文文字
-    body1: darkArticleContent,
+    subhead: darkTextStyle,
+    // 一般的文字颜色
+    body1: darkTextStyle,
+    // article 正文需要放大
+    body2: darkArticleContent,
     //必学单词
     display1: darkArticleContent.copyWith(color: Colors.blueGrey[400]),
     //非必学单词

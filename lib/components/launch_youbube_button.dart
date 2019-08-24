@@ -6,7 +6,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // 启动 youtube 的浮动按钮
 class LaunchYoutubeButton extends StatelessWidget {
-  const LaunchYoutubeButton({this.youtubeURL, Key key}) : super(key: key);
+  const LaunchYoutubeButton({
+    Key key,
+    @required this.youtubeURL,
+  }) : super(key: key);
   final String youtubeURL;
 
   @override

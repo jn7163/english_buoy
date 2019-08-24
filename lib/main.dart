@@ -17,6 +17,7 @@ import './pages/add_article.dart';
 
 import './themes/dark.dart';
 import './themes/bright.dart';
+import 'models/search.dart';
 
 void main() {
   var allLoading = AllLoading();
@@ -29,8 +30,10 @@ void main() {
   var providers = Providers();
   var setting = Setting();
   var receiveShare = ReceiveShare();
+  var search = Search();
 
   providers
+    ..provide(Provider<Search>.value(search))
     ..provide(Provider<ReceiveShare>.value(receiveShare))
     ..provide(Provider<Setting>.value(setting))
     ..provide(Provider<AllLoading>.value(allLoading))
@@ -70,7 +73,7 @@ class MyApp extends StatelessWidget {
       return MaterialApp(
         title: 'English Buoy',
         theme: setting.isDark ? darkTheme : brightTheme,
-        home: ArticlesPage(),
+        home: ArticleTitlesPage(),
         onGenerateRoute: _getRoute,
       );
     });
@@ -79,7 +82,7 @@ class MyApp extends StatelessWidget {
   Route _getRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/Articles':
-        return _buildRoute(settings, ArticlesPage());
+        return _buildRoute(settings, ArticleTitlesPage());
       case '/AddArticle':
         return _buildRoute(settings, AddArticlePage());
       case '/Article':

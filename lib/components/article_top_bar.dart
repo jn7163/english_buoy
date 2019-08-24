@@ -7,7 +7,7 @@ import 'article_youtube_avatar.dart';
 
 // 文章对应的 youtube 图标或者头像
 class ArticleTopBar extends StatelessWidget {
-  const ArticleTopBar({this.article, Key key}) : super(key: key);
+  const ArticleTopBar({Key key, @required this.article}) : super(key: key);
   final Article article;
 
   @override
