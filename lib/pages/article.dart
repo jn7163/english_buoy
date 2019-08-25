@@ -90,8 +90,7 @@ class _ArticlePageState extends State<ArticlePage> {
         });
         // 更新本地未学单词数
         var articleTitles = Provide.value<ArticleTitles>(context);
-        articleTitles.setUnLearndCountByArticleID(
-            article.unlearnedCount, article.articleID);
+        articleTitles.setUnLearndCountByArticleID(article.unlearnedCount, article.articleID);
       });
     }
   }
@@ -113,13 +112,11 @@ class _ArticlePageState extends State<ArticlePage> {
 // 定义应该的 style
   TextStyle _defineStyle(Word word, ArticleTitles articleTitles) {
     bool needLearn = (word.level != null && word.level != 0); // 是否需要掌握
-    bool inArticleTitles = articleTitles.setArticleTitles
-        .contains(word.text.toLowerCase()); // 是否添加
-    bool isSelected =
-        (_tapedText.toLowerCase() == word.text.toLowerCase()); // 是否选中
+    bool inArticleTitles = articleTitles.setArticleTitles.contains(word.text.toLowerCase()); // 是否添加
+    bool isSelected = (_tapedText.toLowerCase() == word.text.toLowerCase()); // 是否选中
 
     // 默认的文字样式
-    TextStyle defaultTextStyle = Theme.of(context).textTheme.body2;
+    TextStyle defaultTextStyle = Theme.of(context).textTheme.display3;
     // 必学的高亮色
     TextStyle needLearnTextStyle = Theme.of(context).textTheme.display1;
     // 非必学的高亮色
@@ -149,8 +146,7 @@ class _ArticlePageState extends State<ArticlePage> {
     // 长按选中 显示波浪下划线
     if (isSelected)
       processTextStyle = processTextStyle.copyWith(
-          decoration: TextDecoration.underline,
-          decorationStyle: TextDecorationStyle.wavy);
+          decoration: TextDecoration.underline, decorationStyle: TextDecorationStyle.wavy);
 
     return processTextStyle;
   }
@@ -167,14 +163,9 @@ class _ArticlePageState extends State<ArticlePage> {
     }
 
     return TextSpan(text: _getBlank(word.text), children: [
-      TextSpan(
-          text: word.text,
-          style: wordStyle,
-          recognizer: _getTapRecognizer(word, article)),
+      TextSpan(text: word.text, style: wordStyle, recognizer: _getTapRecognizer(word, article)),
       subscript,
-      word.text == "\n"
-          ? TextSpan(text: "   ")
-          : TextSpan(text: ""), //新的一行空3个空格, 和单词原本的前空格凑成4个
+      word.text == "\n" ? TextSpan(text: "   ") : TextSpan(text: ""), //新的一行空3个空格, 和单词原本的前空格凑成4个
     ]);
   }
 
@@ -197,8 +188,7 @@ class _ArticlePageState extends State<ArticlePage> {
         article.putLearned(context, word).then((d) {
           // 每次标记一个单词已经学习或者未学习后, 都要重新获取一次列表, 已便于更新文章列表显示的未掌握单词数(蠢)
           var articleTitles = Provide.value<ArticleTitles>(context);
-          articleTitles.setUnLearndCountByArticleID(
-              article.unlearnedCount, article.articleID);
+          articleTitles.setUnLearndCountByArticleID(article.unlearnedCount, article.articleID);
           //articleTitles.syncServer();
         });
       }
@@ -238,9 +228,8 @@ class _ArticlePageState extends State<ArticlePage> {
 
   int _getIDByTitle(String title) {
     var articles = Provide.value<ArticleTitles>(context);
-    var titles = articles.articleTitles
-        .where((d) => d.title.toLowerCase() == title.toLowerCase())
-        .toList();
+    var titles =
+        articles.articleTitles.where((d) => d.title.toLowerCase() == title.toLowerCase()).toList();
     if (titles.length > 0) {
       return titles[0].id;
     }
@@ -248,8 +237,8 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Widget _wrapLoading() {
-    TextStyle textStyle = TextStyle(
-        color: Colors.grey, fontSize: 20, fontFamily: "NotoSans-Medium");
+    TextStyle textStyle =
+        TextStyle(color: Colors.grey, fontSize: 20, fontFamily: "NotoSans-Medium");
     return ModalProgressHUD(
         child: _article == null
             ? Container() //这里可以搞一个动画或者什么效果
@@ -258,10 +247,8 @@ class _ArticlePageState extends State<ArticlePage> {
                 child: Column(children: [
                   ArticleTopBar(article: _article),
                   Padding(
-                      padding: EdgeInsets.only(
-                          top: 15.0, left: 5.0, bottom: 5, right: 5),
-                      child: Provide<ArticleTitles>(
-                          builder: (context, child, articleTitles) {
+                      padding: EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
+                      child: Provide<ArticleTitles>(builder: (context, child, articleTitles) {
                         if (articleTitles.articleTitles.length != 0) {
                           return RichText(
                             text: TextSpan(

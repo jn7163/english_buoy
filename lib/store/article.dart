@@ -10,14 +10,13 @@ import '../bus.dart';
 import './store.dart';
 import 'package:provide/provide.dart';
 
-postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
-    Articles articles) async {
+Future<Article> postYouTube(
+    BuildContext context, String youtube, ArticleTitles articleTitles, Articles articles) async {
   var allLoading = Provide.value<AllLoading>(context);
   Dio dio = getDio(context);
   allLoading.set(true);
   try {
-    var response =
-        await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": youtube});
+    var response = await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": youtube});
     bus.emit('analysis_done', response.data);
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
@@ -31,9 +30,9 @@ postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
       articleTitles.addByArticle(newArticle);
     }
     // 跳转到添加的那个详情
-    debugPrint("to articleID=" + newArticle.articleID.toString());
-    Navigator.pushNamed(context, '/Article', arguments: newArticle.articleID);
-    return response.data;
+    // debugPrint("to articleID=" + newArticle.articleID.toString());
+    // Navigator.pushNamed(context, '/Article', arguments: newArticle.articleID);
+    return newArticle;
   } on DioError catch (e) {
     // 如果是已经存在, 那么应该会把 article id 传过来
     if (e.response != null) {
@@ -42,17 +41,18 @@ postYouTube(BuildContext context, String youtube, ArticleTitles articleTitles,
       } else if (e.response.data['error'] == "no subtitle") {
         debugPrint(e.response.data['error']);
         bus.emit('pop_show', "This youbetu don't have en subtitle!");
-        return e.response.data;
+        // return e.response.data;
       }
     }
+    throw e;
   } finally {
     allLoading.set(false);
   }
 }
 
 // 提交新的文章进行分析
-postArticle(BuildContext context, String article, ArticleTitles articleTitles,
-    Articles articles, AllLoading topLoading) async {
+postArticle(BuildContext context, String article, ArticleTitles articleTitles, Articles articles,
+    AllLoading topLoading) async {
   Dio dio = getDio(context);
   print("postArticle");
   // 替换奇怪的连写字符串
@@ -62,8 +62,7 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles,
   }
   topLoading.set(true);
   try {
-    var response =
-        await dio.post(Store.baseURL + "analysis", data: {"article": article});
+    var response = await dio.post(Store.baseURL + "analysis", data: {"article": article});
     bus.emit('analysis_done', response.data);
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
@@ -104,8 +103,7 @@ getArticleByID(BuildContext context, int id) async {
   return response.data;
 }
 
-Future putUnlearnedCount(
-    BuildContext context, int articleID, int unlearnedCount) async {
+Future putUnlearnedCount(BuildContext context, int articleID, int unlearnedCount) async {
   Dio dio = getDio(context);
   if (articleID == 0) {
     return null;

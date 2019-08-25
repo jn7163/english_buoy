@@ -1,10 +1,8 @@
 import 'package:ebuoy/themes/dark.dart';
 import 'package:flutter/material.dart';
 
-var brightTextStyle =
-    TextStyle(color: Colors.black87, fontFamily: "NotoSans-Medium");
-var brightArticleContent =
-    brightTextStyle.copyWith(fontSize: 20); //显示文章正文需要放大文字
+var brightTextStyle = TextStyle(color: Colors.black87, fontFamily: "NotoSans-Medium");
+var brightArticleContent = brightTextStyle.copyWith(fontSize: 20); //显示文章正文需要放大文字
 var brightTextTheme = TextTheme(
     headline: brightTextStyle.copyWith(
       color: Colors.white,
@@ -20,6 +18,7 @@ var brightTextTheme = TextTheme(
     // article 正文文字
     body1: brightTextStyle,
     body2: brightArticleContent,
+    display3: brightArticleContent,
     //必学单词
     display1: brightArticleContent.copyWith(color: Colors.teal[700]),
     //非必学单词

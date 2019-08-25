@@ -33,11 +33,12 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   @override
   initState() {
     super.initState();
-    print('init articles');
-    // 需要初始化后才能使用 context
     Future.delayed(Duration.zero, () {
+      setState(() {
+        _selectArticleID = ModalRoute.of(context).settings.arguments;
+      });
       initReceiveShare();
-      // 初始化时候, 如果是 0 才自动取数据
+      // 初始化时候, 如果无数据才自动取
       var articles = Provide.value<ArticleTitles>(context);
       if (articles.articleTitles.length == 0) _syncArticleTitles();
     });
@@ -70,13 +71,20 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
 
   void receiveShare(String sharedText) {
     if (sharedText == null) return;
+    // 收到分享, 先跳转到 list 页面
     var articleTitles = Provide.value<ArticleTitles>(context);
     var articles = Provide.value<Articles>(context);
-    // 获取完成,再跳到详情页面
-    postYouTube(context, sharedText, articleTitles, articles);
-    // debugPrint(shared.text);
-    // 收到分享, 先跳转到 list 页面
+    // 先过去, 为了显示 loading
     Navigator.pushNamed(context, '/Articles');
+    postYouTube(context, sharedText, articleTitles, articles).then((d) {
+      // highlight the new article title
+      setState(() {
+        this._selectArticleID = d.articleID;
+        // 带参数跳转, 用于高亮
+        Navigator.pushNamed(context, '/Articles', arguments: d.articleID);
+      });
+    });
+    // debugPrint(shared.text);
   }
 
   Future _syncArticleTitles() async {
