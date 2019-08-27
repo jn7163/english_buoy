@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_alert/easy_alert.dart';
 import './bus.dart';
 import './models/oauth_info.dart';
-import './models/all_loading.dart';
+import './models/loading.dart';
 import './models/article_titles.dart';
 import './models/article.dart';
 import './models/articles.dart';
@@ -20,7 +20,7 @@ import './themes/bright.dart';
 import 'models/search.dart';
 
 void main() {
-  var allLoading = AllLoading();
+  var allLoading = Loading();
   // 登录信息
   var oauthInfo = OauthInfo();
   // 文章列表
@@ -36,7 +36,7 @@ void main() {
     ..provide(Provider<Search>.value(search))
     ..provide(Provider<ReceiveShare>.value(receiveShare))
     ..provide(Provider<Setting>.value(setting))
-    ..provide(Provider<AllLoading>.value(allLoading))
+    ..provide(Provider<Loading>.value(allLoading))
     ..provide(Provider<OauthInfo>.value(oauthInfo))
     ..provide(Provider<ArticleTitles>.value(articleTitles))
     ..provide(Provider<Articles>.value(articles))

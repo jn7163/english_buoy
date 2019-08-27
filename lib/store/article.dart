@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/article_titles.dart';
 import '../models/articles.dart';
 import '../models/article.dart';
-import '../models/all_loading.dart';
+import '../models/loading.dart';
 
 import 'package:dio/dio.dart';
 import '../bus.dart';
@@ -12,7 +12,7 @@ import 'package:provide/provide.dart';
 
 Future<Article> postYouTube(
     BuildContext context, String youtube, ArticleTitles articleTitles, Articles articles) async {
-  var allLoading = Provide.value<AllLoading>(context);
+  var allLoading = Provide.value<Loading>(context);
   Dio dio = getDio(context);
   allLoading.set(true);
   try {
@@ -52,7 +52,7 @@ Future<Article> postYouTube(
 
 // 提交新的文章进行分析
 postArticle(BuildContext context, String article, ArticleTitles articleTitles, Articles articles,
-    AllLoading topLoading) async {
+    Loading topLoading) async {
   Dio dio = getDio(context);
   print("postArticle");
   // 替换奇怪的连写字符串

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-class AllLoading with ChangeNotifier {
+class Loading with ChangeNotifier {
   bool loading = false;
+  int _loadingCount = 0;
 
   /*
   bool articleTitlesLoading = false;
@@ -14,7 +15,17 @@ class AllLoading with ChangeNotifier {
    */
 
   set(bool loading) {
-    this.loading = loading;
-    notifyListeners();
+    if (loading) {
+      this._loadingCount++;
+      this.loading = loading;
+      notifyListeners();
+    } else {
+      this._loadingCount--;
+      if (this._loadingCount == 0) {
+        this.loading = loading;
+        notifyListeners();
+      }
+    }
+    //this.loading = loading;
   }
 }

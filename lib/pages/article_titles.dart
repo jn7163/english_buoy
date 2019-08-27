@@ -7,7 +7,7 @@ import 'package:ebuoy/models/search.dart';
 import '../components/article_youtube_avatar.dart';
 
 import '../models/articles.dart';
-import '../models/all_loading.dart';
+import '../models/loading.dart';
 import 'package:ebuoy/store/article.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -191,7 +191,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: ArticleListsAppBar(),
-      body: Provide<AllLoading>(builder: (context, child, allLoading) {
+      body: Provide<Loading>(builder: (context, child, allLoading) {
         return ModalProgressHUD(
             child: RefreshIndicator(onRefresh: _refresh, child: getArticleTitles()),
             inAsyncCall: allLoading.loading);

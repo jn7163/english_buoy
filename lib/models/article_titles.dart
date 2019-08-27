@@ -7,7 +7,7 @@ import './article_title.dart';
 import './article.dart';
 import '../store/store.dart';
 import 'package:dio/dio.dart';
-import '../models/all_loading.dart';
+import '../models/loading.dart';
 
 class ArticleTitles with ChangeNotifier {
   List<ArticleTitle> articleTitles = [];
@@ -17,7 +17,7 @@ class ArticleTitles with ChangeNotifier {
 
   // 和服务器同步
   Future syncServer(BuildContext context) async {
-    var allLoading = Provide.value<AllLoading>(context);
+    var allLoading = Provide.value<Loading>(context);
     allLoading.set(true);
     debugPrint("set loading=true");
     Dio dio = getDio(context);
