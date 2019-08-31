@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:easy_alert/easy_alert.dart';
+import 'package:provider/provider.dart';
 import './bus.dart';
 import './models/oauth_info.dart';
 import './models/loading.dart';
 import './models/article_titles.dart';
-import './models/article.dart';
 import './models/articles.dart';
 import './models/setting.dart';
 import './models/receive_share.dart';
-import 'package:provide/provide.dart';
 
 import './pages/article_titles.dart';
 import './pages/article.dart';
@@ -20,37 +19,7 @@ import './themes/bright.dart';
 import 'models/search.dart';
 
 void main() {
-  var allLoading = Loading();
-  // 登录信息
-  var oauthInfo = OauthInfo();
-  // 文章列表
-  var articleTitles = ArticleTitles();
-  var article = Article();
-  var articles = Articles();
-  var providers = Providers();
-  var setting = Setting();
-  var receiveShare = ReceiveShare();
-  var search = Search();
-
-  providers
-    ..provide(Provider<Search>.value(search))
-    ..provide(Provider<ReceiveShare>.value(receiveShare))
-    ..provide(Provider<Setting>.value(setting))
-    ..provide(Provider<Loading>.value(allLoading))
-    ..provide(Provider<OauthInfo>.value(oauthInfo))
-    ..provide(Provider<ArticleTitles>.value(articleTitles))
-    ..provide(Provider<Articles>.value(articles))
-    ..provide(Provider<Article>.value(article));
-
-  runApp(ProviderNode(
-      child: AlertProvider(
-        child: MyApp(),
-        config: AlertConfig(
-            ok: "OK text for `ok` button in AlertDialog",
-            cancel: "CANCEL text for `cancel` button in AlertDialog"),
-      ),
-      providers: providers));
-  //runApp(MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -60,23 +29,32 @@ class MyApp extends StatelessWidget {
       Alert.toast(context, arg.toString(),
           position: ToastPosition.bottom, duration: ToastDuration.long);
     });
-    var oauthInfo = Provide.value<OauthInfo>(context);
-
+    var oauthInfo = Provider.of<OauthInfo>(context);
     oauthInfo.backFromShared();
   }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    init(context);
-    return Provide<Setting>(builder: (context, child, setting) {
-      return MaterialApp(
-        title: 'English Buoy',
-        theme: setting.isDark ? darkTheme : brightTheme,
-        home: ArticleTitlesPage(),
-        onGenerateRoute: _getRoute,
-      );
-    });
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(builder: (_) => Loading()),
+          ChangeNotifierProvider(builder: (_) => Search()),
+          ChangeNotifierProvider(builder: (_) => OauthInfo()),
+          ChangeNotifierProvider(builder: (_) => ArticleTitles()),
+          ChangeNotifierProvider(builder: (_) => Articles()),
+          ChangeNotifierProvider(builder: (_) => Setting()),
+          ChangeNotifierProvider(builder: (_) => ReceiveShare()),
+        ],
+        child: Consumer<Setting>(builder: (context, setting, child) {
+          init(context);
+          return MaterialApp(
+            title: 'English Buoy',
+            theme: setting.isDark ? darkTheme : brightTheme,
+            home: ArticleTitlesPage(),
+            onGenerateRoute: _getRoute,
+          );
+        }));
   }
 
   Route _getRoute(RouteSettings settings) {

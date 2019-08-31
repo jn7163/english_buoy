@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:ebuoy/components/config_dark_theme.dart';
 import 'package:ebuoy/components/config_jump_to_word.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provide/provide.dart';
+import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -28,10 +28,10 @@ class SignInPageState extends State<SignInPage> {
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       if (account != null) {
         account.authentication.then((GoogleSignInAuthentication authentication) {
-          //var articles = Provide.value<ArticleTitles>(context);
+          //var articles = Provider.of<ArticleTitles>(context);
           // google 用户注册到服务器后, 记录 token
           putAccount(account, authentication).then((d) {
-            var oauthInfo = Provide.value<OauthInfo>(context);
+            var oauthInfo = Provider.of<OauthInfo>(context);
             bool needJump = oauthInfo.set(
                 authentication.accessToken, account.email, account.displayName, account.photoUrl);
             //登录后自动跳转
@@ -52,16 +52,16 @@ class SignInPageState extends State<SignInPage> {
   }
 
   Future<void> _handleSignOut() async {
-    var oauthInfo = Provide.value<OauthInfo>(context);
+    var oauthInfo = Provider.of<OauthInfo>(context);
     oauthInfo.signOut();
     // 需要清空文章列表
-    var articles = Provide.value<ArticleTitles>(context);
+    var articles = Provider.of<ArticleTitles>(context);
     articles.clear();
     _googleSignIn.disconnect();
   }
 
   Widget _buildBody() {
-    return Provide<OauthInfo>(builder: (context, child, oauthInfo) {
+    return Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
       if (oauthInfo.email != null) {
         return Column(
           //mainAxisAlignment: MainAxisAlignment.spaceAround,

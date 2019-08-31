@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:provide/provide.dart';
+import 'package:provider/provider.dart';
 import '../store/article.dart';
 import '../models/article_titles.dart';
 import '../models/loading.dart';
@@ -42,13 +42,11 @@ class _AddArticlePageState extends State<AddArticlePage> {
     setState(() {
       _isEnable = false;
     });
-    var articleTitles = Provide.value<ArticleTitles>(context);
-    var articles = Provide.value<Articles>(context);
-    var allLoading = Provide.value<Loading>(context);
+    var articleTitles = Provider.of<ArticleTitles>(context);
+    var articles = Provider.of<Articles>(context);
+    var allLoading = Provider.of<Loading>(context);
     bool showNewArticle = false;
-    postArticle(context, _articleController.text, articleTitles, articles,
-            allLoading)
-        .then((d) {
+    postArticle(context, _articleController.text, articleTitles, articles, allLoading).then((d) {
       if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
     });
     // 不等待后台返回, 直接清除内容

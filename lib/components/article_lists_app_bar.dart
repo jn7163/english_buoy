@@ -1,7 +1,7 @@
 import 'package:ebuoy/models/search.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
-import 'package:provide/provide.dart';
 import 'package:flutter/material.dart';
 
 import 'oauth_info.dart';
@@ -19,7 +19,7 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
       if (!isSearching) {
         searchController.text = "";
       }
-      var search = Provide.value<Search>(context);
+      var search = Provider.of<Search>(context);
       search.set(searchController.text);
     });
   }

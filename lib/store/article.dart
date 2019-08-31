@@ -8,11 +8,11 @@ import '../models/loading.dart';
 import 'package:dio/dio.dart';
 import '../bus.dart';
 import './store.dart';
-import 'package:provide/provide.dart';
+import 'package:provider/provider.dart';
 
 Future<Article> postYouTube(
     BuildContext context, String youtube, ArticleTitles articleTitles, Articles articles) async {
-  var allLoading = Provide.value<Loading>(context);
+  var allLoading = Provider.of<Loading>(context);
   Dio dio = getDio(context);
   allLoading.set(true);
   try {

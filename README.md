@@ -5,6 +5,7 @@
 ## Change Log
 
 ### 1.1.6+16
+- 状态管理升级为 Provider
 - loading 计数器
 
 ### 1.1.5+15

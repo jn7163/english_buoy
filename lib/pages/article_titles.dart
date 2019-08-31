@@ -13,7 +13,7 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:flutter/material.dart';
-import 'package:provide/provide.dart';
+import 'package:provider/provider.dart';
 import '../models/article_titles.dart';
 import '../models/receive_share.dart';
 import '../models/article_title.dart';
@@ -39,7 +39,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
       });
       initReceiveShare();
       // 初始化时候, 如果无数据才自动取
-      var articles = Provide.value<ArticleTitles>(context);
+      var articles = Provider.of<ArticleTitles>(context);
       if (articles.articleTitles.length == 0) _syncArticleTitles();
     });
   }
@@ -51,7 +51,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   }
 
   void initReceiveShare() {
-    var isReceiveShare = Provide.value<ReceiveShare>(context);
+    var isReceiveShare = Provider.of<ReceiveShare>(context);
     if (isReceiveShare.initialized == false) {
       // For sharing or opening urls/text coming from outside the app while the app is in the memory
       _receiveShareLiveSubscription = ReceiveSharingIntent.getTextStream().listen((String value) {
@@ -72,8 +72,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   void receiveShare(String sharedText) {
     if (sharedText == null) return;
     // 收到分享, 先跳转到 list 页面
-    var articleTitles = Provide.value<ArticleTitles>(context);
-    var articles = Provide.value<Articles>(context);
+    var articleTitles = Provider.of<ArticleTitles>(context);
+    var articles = Provider.of<Articles>(context);
     // 先过去, 为了显示 loading
     Navigator.pushNamed(context, '/Articles');
     postYouTube(context, sharedText, articleTitles, articles).then((d) {
@@ -88,7 +88,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   }
 
   Future _syncArticleTitles() async {
-    var articles = Provide.value<ArticleTitles>(context);
+    var articles = Provider.of<ArticleTitles>(context);
     return articles.syncServer(context).catchError((e) {
       if (e.response.statusCode == 401) {
         print("请登录");
@@ -98,8 +98,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   }
 
   Widget getArticleTitles() {
-    return Provide<Search>(builder: (context, child, search) {
-      return Provide<ArticleTitles>(builder: (context, child, articleTitles) {
+    return Consumer<Search>(builder: (context, search, child) {
+      return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
         List<ArticleTitle> filterTitles;
         if (search.key != "") {
           filterTitles = articleTitles.articleTitles
@@ -191,7 +191,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: ArticleListsAppBar(),
-      body: Provide<Loading>(builder: (context, child, allLoading) {
+      body: Consumer<Loading>(builder: (context, allLoading, _) {
         return ModalProgressHUD(
             child: RefreshIndicator(onRefresh: _refresh, child: getArticleTitles()),
             inAsyncCall: allLoading.loading);

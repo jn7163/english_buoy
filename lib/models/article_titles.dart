@@ -1,6 +1,7 @@
 import 'dart:async';
+import 'package:provider/provider.dart';
+
 import '../bus.dart';
-import 'package:provide/provide.dart';
 
 import 'package:flutter/material.dart';
 import './article_title.dart';
@@ -17,7 +18,7 @@ class ArticleTitles with ChangeNotifier {
 
   // 和服务器同步
   Future syncServer(BuildContext context) async {
-    var allLoading = Provide.value<Loading>(context);
+    var allLoading = Provider.of<Loading>(context);
     allLoading.set(true);
     debugPrint("set loading=true");
     Dio dio = getDio(context);

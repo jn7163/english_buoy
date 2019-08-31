@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provide/provide.dart';
+import 'package:provider/provider.dart';
 import '../models/oauth_info.dart';
 
 //登录后显示头像的组件
@@ -7,7 +7,7 @@ import '../models/oauth_info.dart';
 class OauthInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Provide<OauthInfo>(builder: (context, child, oauthInfo) {
+    return Consumer<OauthInfo>(builder: (context, oauthInfo, child) {
       if (oauthInfo.email == null) {
         return IconButton(
           icon: Icon(Icons.exit_to_app),

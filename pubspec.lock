@@ -172,13 +172,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
-  provide:
+  provider:
     dependency: "direct main"
     description:
-      name: provide
+      name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "3.1.0"
   quiver:
     dependency: transitive
     description:

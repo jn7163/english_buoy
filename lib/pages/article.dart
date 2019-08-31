@@ -6,7 +6,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../components/article_top_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
-import 'package:provide/provide.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import '../bus.dart';
 import '../models/article_titles.dart';
@@ -62,7 +62,7 @@ class _ArticlePageState extends State<ArticlePage> {
     super.initState();
     _controller = ScrollController();
     Future.delayed(Duration.zero, () {
-      _setting = Provide.value<Setting>(context);
+      _setting = Provider.of<Setting>(context);
       loadArticleByID();
     });
   }
@@ -76,7 +76,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
   loadArticleByID() {
     if (_article != null) return;
-    var articles = Provide.value<Articles>(context);
+    var articles = Provider.of<Articles>(context);
     setState(() {
       // print("loadArticleByID");
       _article = articles.articles[widget.id];
@@ -89,7 +89,7 @@ class _ArticlePageState extends State<ArticlePage> {
           _article = article;
         });
         // 更新本地未学单词数
-        var articleTitles = Provide.value<ArticleTitles>(context);
+        var articleTitles = Provider.of<ArticleTitles>(context);
         articleTitles.setUnLearndCountByArticleID(article.unlearnedCount, article.articleID);
       });
     }
@@ -181,15 +181,14 @@ class _ArticlePageState extends State<ArticlePage> {
       ..longTapDelay = Duration(milliseconds: 400)
       ..onLongTapDown = (i, detail) {
         longTap = true;
-        // print("onLongTapDown");
+        // 因为 setState 导致整个 RichText 重新渲染, 文章大时必然导致卡顿
         setState(() {
           word.learned = !word.learned;
         });
         article.putLearned(context, word).then((d) {
-          // 每次标记一个单词已经学习或者未学习后, 都要重新获取一次列表, 已便于更新文章列表显示的未掌握单词数(蠢)
-          var articleTitles = Provide.value<ArticleTitles>(context);
+          //重新计算文章未掌握单词数
+          var articleTitles = Provider.of<ArticleTitles>(context);
           articleTitles.setUnLearndCountByArticleID(article.unlearnedCount, article.articleID);
-          //articleTitles.syncServer();
         });
       }
       ..onTap = (i) {
@@ -227,7 +226,7 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   int _getIDByTitle(String title) {
-    var articles = Provide.value<ArticleTitles>(context);
+    var articles = Provider.of<ArticleTitles>(context);
     var titles =
         articles.articleTitles.where((d) => d.title.toLowerCase() == title.toLowerCase()).toList();
     if (titles.length > 0) {
@@ -248,7 +247,7 @@ class _ArticlePageState extends State<ArticlePage> {
                   ArticleTopBar(article: _article),
                   Padding(
                       padding: EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
-                      child: Provide<ArticleTitles>(builder: (context, child, articleTitles) {
+                      child: Consumer<ArticleTitles>(builder: (context, articleTitles, _) {
                         if (articleTitles.articleTitles.length != 0) {
                           return RichText(
                             text: TextSpan(
