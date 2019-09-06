@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:provider/provider.dart';
-
-import '../bus.dart';
+import 'package:easy_alert/easy_alert.dart';
 
 import 'package:flutter/material.dart';
 import './article_title.dart';
@@ -29,7 +28,8 @@ class ArticleTitles with ChangeNotifier {
     } on DioError catch (e) {
       if (e.response != null && e.response.statusCode == 401) {
       } else {
-        bus.emit('pop_show', e.message);
+        Alert.toast(context, e.message.toString(),
+            position: ToastPosition.bottom, duration: ToastDuration.long);
       }
       return e;
     } finally {

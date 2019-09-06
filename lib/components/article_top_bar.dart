@@ -13,7 +13,7 @@ class ArticleTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.only(left: 8, top: 30),
+        padding: EdgeInsets.only(left: 8, top: this.article.youtube == "" ? 10 : 240),
         color: Theme.of(context).primaryColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -24,11 +24,9 @@ class ArticleTopBar extends StatelessWidget {
             ),
             Expanded(
                 child: Container(
-                    padding:
-                        EdgeInsets.only(top: 10, left: 5, bottom: 15, right: 0),
+                    padding: EdgeInsets.only(top: 0, left: 5, bottom: 15, right: 0),
                     child: (article != null)
-                        ? Text(article.title,
-                            style: Theme.of(context).primaryTextTheme.title)
+                        ? Text(article.title, style: Theme.of(context).primaryTextTheme.title)
                         : Text(
                             "loading...",
                             style: Theme.of(context).primaryTextTheme.title,

@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:easy_alert/easy_alert.dart' as toast;
+import 'package:rflutter_alert/rflutter_alert.dart';
 import '../models/article_titles.dart';
 import '../models/articles.dart';
 import '../models/article.dart';
 import '../models/loading.dart';
 
 import 'package:dio/dio.dart';
-import '../bus.dart';
 import './store.dart';
 import 'package:provider/provider.dart';
+// import 'package:easy_alert/easy_alert.dart';
 
 Future<Article> postYouTube(
     BuildContext context, String youtube, ArticleTitles articleTitles, Articles articles) async {
@@ -17,14 +19,14 @@ Future<Article> postYouTube(
   allLoading.set(true);
   try {
     var response = await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": youtube});
-    bus.emit('analysis_done', response.data);
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
     articles.set(newArticle);
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
-      bus.emit('pop_show', "update article");
+      toast.Alert.toast(context, "update article",
+          position: toast.ToastPosition.bottom, duration: toast.ToastDuration.long);
     } else {
       // 先添加到 titles 加速显示
       articleTitles.addByArticle(newArticle);
@@ -37,11 +39,27 @@ Future<Article> postYouTube(
     // 如果是已经存在, 那么应该会把 article id 传过来
     if (e.response != null) {
       if (e.response.data is String) {
-        bus.emit('pop_show', e.message);
+        toast.Alert.toast(context, e.message.toString(),
+            position: toast.ToastPosition.bottom, duration: toast.ToastDuration.long);
       } else if (e.response.data['error'] == "no subtitle") {
         debugPrint(e.response.data['error']);
-        bus.emit('pop_show', "This youbetu don't have en subtitle!");
         // return e.response.data;
+        Alert(
+          context: context,
+          type: AlertType.info,
+          title: "Sorry",
+          desc: "This YouTube video don't have any en subtitle!",
+          buttons: [
+            DialogButton(
+              child: Text(
+                "Ok",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              onPressed: () => Navigator.pop(context),
+              width: 120,
+            )
+          ],
+        ).show();
       }
     }
     throw e;
@@ -63,15 +81,15 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles, A
   topLoading.set(true);
   try {
     var response = await dio.post(Store.baseURL + "analysis", data: {"article": article});
-    bus.emit('analysis_done', response.data);
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
     articles.set(newArticle);
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
-      bus.emit('pop_show', "update article");
-      // make sure refalsh local data
+      toast.Alert.toast(context, "update article",
+          position: toast.ToastPosition.bottom, duration: toast.ToastDuration.long);
+      // make sure reflash local data
       // await articles.setByID(response.data["id"]);
     } else {
       // 先添加到 titles 加速显示
@@ -84,7 +102,8 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles, A
     // 如果是已经存在, 那么应该会把 article id 传过来
     if (e.response != null) {
       if (e.response.data is String) {
-        bus.emit('pop_show', e.message);
+        toast.Alert.toast(context, e.message.toString(),
+            position: toast.ToastPosition.bottom, duration: toast.ToastDuration.long);
       } else if (e.response.data['error'] == "already exists") {
         return e.response.data;
       }
@@ -112,6 +131,5 @@ Future putUnlearnedCount(BuildContext context, int articleID, int unlearnedCount
   print('putLearnedCount unlearnedCount=' + unlearnedCount.toString());
   var response = await dio.put(Store.baseURL + "article/unlearned_count",
       data: {"article_id": articleID, "unlearned_count": unlearnedCount});
-  bus.emit('put_unlearned_count_done', response.data);
   return response;
 }

@@ -1,14 +1,15 @@
 import 'dart:async';
 
 import 'package:ebuoy/components/launch_youbube_button.dart';
+import 'package:easy_alert/easy_alert.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../components/article_top_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import '../bus.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/articles.dart';
@@ -203,11 +204,14 @@ class _ArticlePageState extends State<ArticlePage> {
             });
           });
           // 无需学的, 没必要显示级别
-          if (word.level != 0) bus.emit('pop_show', word.level.toString());
+          if (word.level != 0)
+            Alert.toast(context, word.level.toString(),
+                position: ToastPosition.bottom, duration: ToastDuration.long);
           // 实时增加次数的效果
           article.increaseLearnCount(word.text);
           // 记录学习次数
           word.putLearn(context);
+          debugPrint(word.text);
           Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
           // 已经在这个单词页, 就不要跳转了
@@ -236,32 +240,56 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Widget _wrapLoading() {
-    TextStyle textStyle =
-        TextStyle(color: Colors.grey, fontSize: 20, fontFamily: "NotoSans-Medium");
+    //TextStyle textStyle =
+    //   TextStyle(color: Colors.grey, fontSize: 20, fontFamily: "NotoSans-Medium");
     return ModalProgressHUD(
         child: _article == null
             ? Container() //这里可以搞一个动画或者什么效果
-            : SingleChildScrollView(
-                controller: _controller,
-                child: Column(children: [
-                  ArticleTopBar(article: _article),
-                  Padding(
-                      padding: EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
-                      child: Consumer<ArticleTitles>(builder: (context, articleTitles, _) {
-                        if (articleTitles.articleTitles.length != 0) {
-                          return RichText(
-                            text: TextSpan(
-                              text: '   ',
-                              style: textStyle,
-                              children: _article.words.map((d) {
-                                return _getTextSpan(d, articleTitles, _article);
-                              }).toList(),
-                            ),
-                          );
-                        }
-                        return Text('some error!');
-                      })),
-                ])),
+            : Stack(children: [
+                SingleChildScrollView(
+                    controller: _controller,
+                    child: Column(children: [
+                      ArticleTopBar(article: _article),
+                      Padding(
+                          padding: EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
+                          child: Consumer<ArticleTitles>(builder: (context, articleTitles, _) {
+                            if (articleTitles.articleTitles.length != 0) {
+                              return RichText(
+                                text: TextSpan(
+                                  text: '   ',
+                                  //style: textStyle,
+                                  children: _article.words.map((d) {
+                                    return _getTextSpan(d, articleTitles, _article);
+                                  }).toList(),
+                                ),
+                              );
+                            }
+                            return Text('some error!');
+                          })),
+                    ])),
+                _article.youtube == ''
+                    ? Container()
+                    : YoutubePlayer(
+                        context: context,
+                        videoId: YoutubePlayer.convertUrlToId(_article.youtube),
+                        flags: YoutubePlayerFlags(
+                          autoPlay: false,
+                          //不要自动播放
+                          showVideoProgressIndicator: true,
+                          // 下半部分小小的进度条
+                          hideFullScreenButton: true,
+                          // 不要全屏
+                          isLive: true,
+                          forceHideAnnotation: true,
+                        ),
+                        videoProgressIndicatorColor: Colors.teal,
+                        liveUIColor: Colors.teal,
+                        progressColors: ProgressColors(
+                          playedColor: Colors.teal,
+                          handleColor: Colors.tealAccent,
+                        ),
+                      ),
+              ]),
         inAsyncCall: _article == null);
   }
 
@@ -269,7 +297,7 @@ class _ArticlePageState extends State<ArticlePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
-        body: _wrapLoading(),
+        body: Padding(padding: EdgeInsets.only(top: 24), child: _wrapLoading()),
         floatingActionButton: LaunchYoutubeButton(
           youtubeURL: _article == null ? '' : _article.youtube,
         ));

@@ -15,7 +15,7 @@ class ConfigDarkTheme extends StatelessWidget {
           value: setting.isDark,
           onChanged: setting.setIsDark,
           title: Text(
-            'On Dark Theme',
+            'Dark Mode',
           ));
     });
   }

@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../bus.dart';
 
 class Store {
   // static const baseURL = "http://10.0.0.11:3004/api/";
@@ -21,7 +20,7 @@ Dio getDio(BuildContext context) {
     // Do something with response error
     print("bigzhu:" + e.toString());
     if (e.response != null && e.response.statusCode == 401) {
-      bus.emit('pop_show', 'need login');
+      // bus.emit('pop_show', 'need login');
       Navigator.pushNamed(context, '/Sign');
       return null;
     } else

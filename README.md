@@ -3,8 +3,11 @@
 利用 NGSL 来学习的 APP
 
 ## Change Log
-
+### 1.1.7+17
+- youtube 视屏嵌入播放
+- 优化弹出提示
 ### 1.1.6+16
+- remove bus toast
 - 状态管理升级为 Provider
 - loading 计数器
 

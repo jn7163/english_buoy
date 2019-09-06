@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:easy_alert/easy_alert.dart';
 import 'package:provider/provider.dart';
-import './bus.dart';
 import './models/oauth_info.dart';
 import './models/loading.dart';
 import './models/article_titles.dart';
@@ -19,16 +19,15 @@ import './themes/bright.dart';
 import 'models/search.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(AlertProvider(
+    child: MyApp(),
+    config: new AlertConfig(ok: "OK", cancel: "CANCEL"),
+  ));
+  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   void init(BuildContext context) {
-    // 显示 pop 信息
-    bus.on("pop_show", (arg) {
-      Alert.toast(context, arg.toString(),
-          position: ToastPosition.bottom, duration: ToastDuration.long);
-    });
     var oauthInfo = Provider.of<OauthInfo>(context);
     oauthInfo.backFromShared();
   }
