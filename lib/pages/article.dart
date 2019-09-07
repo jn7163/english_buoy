@@ -240,57 +240,63 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Widget _wrapLoading() {
-    //TextStyle textStyle =
-    //   TextStyle(color: Colors.grey, fontSize: 20, fontFamily: "NotoSans-Medium");
     return ModalProgressHUD(
         child: _article == null
             ? Container() //这里可以搞一个动画或者什么效果
-            : Stack(children: [
-                SingleChildScrollView(
-                    controller: _controller,
-                    child: Column(children: [
-                      ArticleTopBar(article: _article),
-                      Padding(
-                          padding: EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
-                          child: Consumer<ArticleTitles>(builder: (context, articleTitles, _) {
-                            if (articleTitles.articleTitles.length != 0) {
-                              return RichText(
-                                text: TextSpan(
-                                  text: '   ',
-                                  //style: textStyle,
-                                  children: _article.words.map((d) {
-                                    return _getTextSpan(d, articleTitles, _article);
-                                  }).toList(),
-                                ),
-                              );
-                            }
-                            return Text('some error!');
-                          })),
-                    ])),
-                _article.youtube == ''
-                    ? Container()
-                    : YoutubePlayer(
-                        context: context,
-                        videoId: YoutubePlayer.convertUrlToId(_article.youtube),
-                        flags: YoutubePlayerFlags(
-                          autoPlay: false,
-                          //不要自动播放
-                          showVideoProgressIndicator: true,
-                          // 下半部分小小的进度条
-                          hideFullScreenButton: true,
-                          // 不要全屏
-                          isLive: true,
-                          forceHideAnnotation: true,
-                        ),
-                        videoProgressIndicatorColor: Colors.teal,
-                        liveUIColor: Colors.teal,
-                        progressColors: ProgressColors(
-                          playedColor: Colors.teal,
-                          handleColor: Colors.tealAccent,
-                        ),
-                      ),
-              ]),
+            : Stack(children: [getScrollView(), getYouTube()]),
         inAsyncCall: _article == null);
+  }
+
+  Widget getScrollView() {
+    // 没有这个样式,会导致单词点击时错位
+    TextStyle textStyle =
+        TextStyle(color: Colors.grey, fontSize: 20, fontFamily: "NotoSans-Medium");
+    return SingleChildScrollView(
+        controller: _controller,
+        child: Column(children: [
+          ArticleTopBar(article: _article),
+          Padding(
+              padding: EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
+              child: Consumer<ArticleTitles>(builder: (context, articleTitles, _) {
+                if (articleTitles.articleTitles.length != 0) {
+                  return RichText(
+                    text: TextSpan(
+                      text: '   ',
+                      style: textStyle,
+                      children: _article.words.map((d) {
+                        return _getTextSpan(d, articleTitles, _article);
+                      }).toList(),
+                    ),
+                  );
+                }
+                return Text('some error!');
+              })),
+        ]));
+  }
+
+  Widget getYouTube() {
+    return _article.youtube == ''
+        ? Container()
+        : YoutubePlayer(
+            context: context,
+            videoId: YoutubePlayer.convertUrlToId(_article.youtube),
+            flags: YoutubePlayerFlags(
+              //不要自动播放
+              autoPlay: false,
+              // 下半部分小小的进度条
+              showVideoProgressIndicator: true,
+              // 不要全屏
+              hideFullScreenButton: false,
+              isLive: false,
+              forceHideAnnotation: true,
+            ),
+            videoProgressIndicatorColor: Colors.teal,
+            liveUIColor: Colors.teal,
+            progressColors: ProgressColors(
+              playedColor: Colors.teal,
+              handleColor: Colors.tealAccent,
+            ),
+          );
   }
 
   @override

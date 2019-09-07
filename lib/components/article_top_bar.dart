@@ -13,7 +13,7 @@ class ArticleTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.only(left: 8, top: this.article.youtube == "" ? 10 : 264),
+        padding: EdgeInsets.only(left: 8, top: this.article.youtube == "" ? 10 : 240),
         color: Theme.of(context).primaryColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
