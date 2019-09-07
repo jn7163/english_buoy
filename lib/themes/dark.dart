@@ -16,6 +16,7 @@ MaterialColor darkMaterialColor = MaterialColor(0xFF282828, darkColorMap);
 
 var darkTextStyle = TextStyle(color: Colors.grey, fontFamily: "NotoSans-Medium");
 var darkArticleContent = darkTextStyle.copyWith(fontSize: 20); //显示文章正文需要放大文字
+
 var darkTextTheme = TextTheme(
     headline:
         darkTextStyle.copyWith(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),

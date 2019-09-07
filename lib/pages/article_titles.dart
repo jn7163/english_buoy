@@ -130,7 +130,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
                         style: TextStyle(
                           color: Colors.blueGrey,
                         )),
-                    title: Text(d.title, style: Theme.of(context).textTheme.subhead),
+                    title: Text(d.title), // 用的 TextTheme.subhead
                   ));
             }).toList(),
           );

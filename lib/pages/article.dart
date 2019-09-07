@@ -248,9 +248,6 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Widget getScrollView() {
-    // 没有这个样式,会导致单词点击时错位
-    TextStyle textStyle =
-        TextStyle(color: Colors.grey, fontSize: 20, fontFamily: "NotoSans-Medium");
     return SingleChildScrollView(
         controller: _controller,
         child: Column(children: [
@@ -262,7 +259,7 @@ class _ArticlePageState extends State<ArticlePage> {
                   return RichText(
                     text: TextSpan(
                       text: '   ',
-                      style: textStyle,
+                      style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
                       children: _article.words.map((d) {
                         return _getTextSpan(d, articleTitles, _article);
                       }).toList(),
@@ -306,7 +303,6 @@ class _ArticlePageState extends State<ArticlePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: getWrapLoading(),
-        // body: getYouTube(),
         floatingActionButton: LaunchYoutubeButton(
           youtubeURL: _article == null ? '' : _article.youtube,
         ));
