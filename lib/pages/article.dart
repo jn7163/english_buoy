@@ -275,7 +275,7 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Widget getYouTube() {
-    return _article.youtube == ''
+    return _article == null || _article.youtube == ''
         ? Container()
         : Container(
             color: Colors.black,
@@ -305,9 +305,9 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        // backgroundColor: Theme.of(context).backgroundColor,
         body: getWrapLoading(),
-        //color: Colors.black, padding: EdgeInsets.only(top: 24), child: _wrapLoading()),
+        // body: getYouTube(),
         floatingActionButton: LaunchYoutubeButton(
           youtubeURL: _article == null ? '' : _article.youtube,
         ));
