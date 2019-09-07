@@ -32,5 +32,5 @@ var brightTheme = ThemeData(
   primarySwatch: darkMaterialColor,
   textTheme: brightTextTheme,
   // 阅读背景色
-  backgroundColor: Colors.white70,
+  scaffoldBackgroundColor: Colors.white70,
 );

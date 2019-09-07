@@ -90,7 +90,6 @@ class _AddArticlePageState extends State<AddArticlePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text("add new article"),
         actions: <Widget>[

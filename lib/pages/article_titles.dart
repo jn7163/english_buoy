@@ -189,7 +189,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       appBar: ArticleListsAppBar(),
       body: Consumer<Loading>(builder: (context, allLoading, _) {
         return ModalProgressHUD(

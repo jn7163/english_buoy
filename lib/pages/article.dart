@@ -305,7 +305,6 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // backgroundColor: Theme.of(context).backgroundColor,
         body: getWrapLoading(),
         // body: getYouTube(),
         floatingActionButton: LaunchYoutubeButton(

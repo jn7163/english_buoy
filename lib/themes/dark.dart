@@ -42,4 +42,4 @@ var darkTheme = ThemeData(
     highlightColor: Colors.black54,
     primaryTextTheme: darkPrimaryTextTheme,
     // 阅读背景色
-    backgroundColor: Color(0XFF3c3f41));
+    scaffoldBackgroundColor: Color(0XFF3c3f41));
