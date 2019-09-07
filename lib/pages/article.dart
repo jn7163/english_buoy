@@ -239,7 +239,7 @@ class _ArticlePageState extends State<ArticlePage> {
     return 0;
   }
 
-  Widget _wrapLoading() {
+  Widget getWrapLoading() {
     return ModalProgressHUD(
         child: _article == null
             ? Container() //这里可以搞一个动画或者什么效果
@@ -277,33 +277,37 @@ class _ArticlePageState extends State<ArticlePage> {
   Widget getYouTube() {
     return _article.youtube == ''
         ? Container()
-        : YoutubePlayer(
-            context: context,
-            videoId: YoutubePlayer.convertUrlToId(_article.youtube),
-            flags: YoutubePlayerFlags(
-              //不要自动播放
-              autoPlay: false,
-              // 下半部分小小的进度条
-              showVideoProgressIndicator: true,
-              // 不要全屏
-              hideFullScreenButton: false,
-              isLive: false,
-              forceHideAnnotation: true,
-            ),
-            videoProgressIndicatorColor: Colors.teal,
-            liveUIColor: Colors.teal,
-            progressColors: ProgressColors(
-              playedColor: Colors.teal,
-              handleColor: Colors.tealAccent,
-            ),
-          );
+        : Container(
+            color: Colors.black,
+            padding: EdgeInsets.only(top: 24),
+            child: YoutubePlayer(
+              context: context,
+              videoId: YoutubePlayer.convertUrlToId(_article.youtube),
+              flags: YoutubePlayerFlags(
+                //不要自动播放
+                autoPlay: false,
+                // 下半部分小小的进度条
+                showVideoProgressIndicator: true,
+                // 不要全屏
+                hideFullScreenButton: false,
+                isLive: false,
+                forceHideAnnotation: true,
+              ),
+              videoProgressIndicatorColor: Colors.teal,
+              liveUIColor: Colors.teal,
+              progressColors: ProgressColors(
+                playedColor: Colors.teal,
+                handleColor: Colors.tealAccent,
+              ),
+            ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
-        body: Padding(padding: EdgeInsets.only(top: 24), child: _wrapLoading()),
+        body: getWrapLoading(),
+        //color: Colors.black, padding: EdgeInsets.only(top: 24), child: _wrapLoading()),
         floatingActionButton: LaunchYoutubeButton(
           youtubeURL: _article == null ? '' : _article.youtube,
         ));
