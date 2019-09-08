@@ -37,6 +37,8 @@ var darkTextTheme = TextTheme(
 // 控制 app bar 之类的
 var darkPrimaryTextTheme = TextTheme(title: darkTextStyle, button: darkTextStyle);
 var darkTheme = ThemeData(
+    // youtube 播放器的弹出框背景颜色
+    cardColor: Color(0XFF3c3f41),
     primarySwatch: darkMaterialColor,
     textTheme: darkTextTheme,
     // 列表被选中的高亮颜色
