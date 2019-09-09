@@ -38,10 +38,10 @@ class ArticleTitles with ChangeNotifier {
     }
   }
 
-  setUnLearndCountByArticleID(int unLearndCount, int articleID) {
+  setUnlearnedCountByArticleID(int unlearnedCount, int articleID) {
     for (int i = 0; i < articleTitles.length; i++) {
       if (articleTitles[i].id == articleID) {
-        articleTitles[i].unlearnedCount = unLearndCount;
+        articleTitles[i].unlearnedCount = unlearnedCount;
         notifyListeners();
         return;
       }

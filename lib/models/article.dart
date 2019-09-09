@@ -9,12 +9,15 @@ import '../store/store.dart';
 class Article {
   int unlearnedCount;
   int articleID;
+
   // 文章中的文字内容
   List words = [];
+
   // 标题
   String title;
   String youtube;
   String avatar;
+
   // 从 json 中设置
   setFromJSON(Map json) {
     this.articleID = json['id'];
@@ -37,8 +40,7 @@ class Article {
   Future getArticleByID(BuildContext context, int articleID) async {
     this.articleID = articleID;
     Dio dio = getDio(context);
-    var response =
-        await dio.get(Store.baseURL + "article/" + this.articleID.toString());
+    var response = await dio.get(Store.baseURL + "article/" + this.articleID.toString());
 
     this.setFromJSON(response.data);
     // 获取以后, 就计算一遍未读数, 然后提交
@@ -46,17 +48,18 @@ class Article {
     return response;
   }
 
-  // 更新提交未学会单词数
+  // 计算未掌握单词数并提交
   Future _putUnlearnedCount(BuildContext context) async {
     if (articleID == null) {
       return null;
     }
+    RegExp regHasLetter = new RegExp(r"[a-zA-Z]+");
     // 重新计算未掌握单词数
     unlearnedCount = this
         .words
         .map((d) {
-          if (!d.learned) {
-            return d.text;
+          if (!d.learned && regHasLetter.hasMatch(d.text)) {
+            return d.text.toLowerCase();
           }
         })
         .toSet()

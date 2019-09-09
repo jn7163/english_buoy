@@ -79,7 +79,6 @@ class _ArticlePageState extends State<ArticlePage> {
     if (_article != null) return;
     var articles = Provider.of<Articles>(context);
     setState(() {
-      // print("loadArticleByID");
       _article = articles.articles[widget.id];
     });
     if (_article == null) {
@@ -91,7 +90,7 @@ class _ArticlePageState extends State<ArticlePage> {
         });
         // 更新本地未学单词数
         var articleTitles = Provider.of<ArticleTitles>(context);
-        articleTitles.setUnLearndCountByArticleID(article.unlearnedCount, article.articleID);
+        articleTitles.setUnlearnedCountByArticleID(article.unlearnedCount, article.articleID);
       });
     }
   }
@@ -177,7 +176,8 @@ class _ArticlePageState extends State<ArticlePage> {
     Article article,
   ) {
     if (word.text == "") return null;
-    bool longTap = false; // 标记是否长按, 长按不要触发单词查询
+    // 标记是否长按, 长按不要触发单词查询
+    bool longTap = false;
     return MultiTapGestureRecognizer()
       ..longTapDelay = Duration(milliseconds: 400)
       ..onLongTapDown = (i, detail) {
@@ -189,7 +189,7 @@ class _ArticlePageState extends State<ArticlePage> {
         article.putLearned(context, word).then((d) {
           //重新计算文章未掌握单词数
           var articleTitles = Provider.of<ArticleTitles>(context);
-          articleTitles.setUnLearndCountByArticleID(article.unlearnedCount, article.articleID);
+          articleTitles.setUnlearnedCountByArticleID(article.unlearnedCount, article.articleID);
         });
       }
       ..onTap = (i) {
