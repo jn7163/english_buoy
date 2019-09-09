@@ -57,6 +57,9 @@ class _ArticlePageState extends State<ArticlePage> {
   Article _article;
   ScrollController _controller;
   Setting _setting;
+  bool _isWrap = false; // 当前字符是否换行符
+  RegExp _startExp = new RegExp(r"00[0-9]+.[0-9]+00");
+  YoutubePlayerController _youtubeController = YoutubePlayerController();
 
   @override
   void initState() {
@@ -151,8 +154,43 @@ class _ArticlePageState extends State<ArticlePage> {
     return processTextStyle;
   }
 
+  // 生成修改播放位置的图标
+  TextSpan getSeekTextSpan(String time) {
+    Duration seekTime = Duration(
+      milliseconds: (double.parse(time) * 1000).round(),
+    );
+    TextStyle style = Theme.of(context).textTheme.display2.copyWith(fontSize: 20);
+    MultiTapGestureRecognizer recognizer = MultiTapGestureRecognizer()
+      ..onTap = (i) {
+        _youtubeController.seekTo(seekTime);
+        /*
+        setState(() {
+          style = style.copyWith(fontSize: 20);
+          print(time);
+        });
+         */
+      };
+    return TextSpan(text: "▷", style: style, recognizer: recognizer);
+  }
+
 // 组装为需要的 textSpan
-  TextSpan _getTextSpan(Word word, ArticleTitles articles, Article article) {
+  TextSpan getTextSpan(Word word, ArticleTitles articles, Article article) {
+    if (word.text == "\n") {
+      _isWrap = true;
+    } else {
+      // 是时间格式的字符
+      if (_startExp.hasMatch(word.text)) {
+        if (_isWrap) {
+          // 增加神奇的点击事件, 调整 youtube 视频
+          _isWrap = false;
+          return getSeekTextSpan(word.text);
+        } else {
+          // 返回空白, 不要显示
+          return TextSpan(text: "");
+        }
+      }
+      _isWrap = false;
+    }
     var wordStyle = _defineStyle(word, articles); // 文字样式
 
     TextSpan subscript = TextSpan(); // 显示该单词查询次数的下标
@@ -261,7 +299,7 @@ class _ArticlePageState extends State<ArticlePage> {
                       text: '   ',
                       style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
                       children: _article.words.map((d) {
-                        return _getTextSpan(d, articleTitles, _article);
+                        return getTextSpan(d, articleTitles, _article);
                       }).toList(),
                     ),
                   );
@@ -278,6 +316,7 @@ class _ArticlePageState extends State<ArticlePage> {
             color: Colors.black,
             padding: EdgeInsets.only(top: 24),
             child: YoutubePlayer(
+              onPlayerInitialized: (controller) => _youtubeController = controller,
               context: context,
               videoId: YoutubePlayer.convertUrlToId(_article.youtube),
               flags: YoutubePlayerFlags(
@@ -285,8 +324,9 @@ class _ArticlePageState extends State<ArticlePage> {
                 autoPlay: false,
                 // 下半部分小小的进度条
                 showVideoProgressIndicator: true,
-                // 不要全屏
+                // 允许全屏
                 hideFullScreenButton: false,
+                // 不可能是 live 的视频
                 isLive: false,
                 forceHideAnnotation: true,
               ),
