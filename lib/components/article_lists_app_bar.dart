@@ -19,7 +19,7 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
       if (!isSearching) {
         searchController.text = "";
       }
-      var search = Provider.of<Search>(context);
+      var search = Provider.of<Search>(context, listen: false);
       search.set(searchController.text);
     });
   }

@@ -28,7 +28,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   void init(BuildContext context) {
-    var oauthInfo = Provider.of<OauthInfo>(context);
+    var oauthInfo = Provider.of<OauthInfo>(context, listen: false);
     oauthInfo.backFromShared();
   }
 

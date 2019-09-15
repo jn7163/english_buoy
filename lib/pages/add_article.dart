@@ -42,9 +42,9 @@ class _AddArticlePageState extends State<AddArticlePage> {
     setState(() {
       _isEnable = false;
     });
-    var articleTitles = Provider.of<ArticleTitles>(context);
-    var articles = Provider.of<Articles>(context);
-    var allLoading = Provider.of<Loading>(context);
+    var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    var articles = Provider.of<Articles>(context, listen: false);
+    var allLoading = Provider.of<Loading>(context, listen: false);
     bool showNewArticle = false;
     postArticle(context, _articleController.text, articleTitles, articles, allLoading).then((d) {
       if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
@@ -89,6 +89,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("build add article");
     return Scaffold(
       appBar: AppBar(
         title: Text("add new article"),

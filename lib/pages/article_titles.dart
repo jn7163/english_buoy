@@ -39,7 +39,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
       });
       initReceiveShare();
       // 初始化时候, 如果无数据才自动取
-      var articles = Provider.of<ArticleTitles>(context);
+      var articles = Provider.of<ArticleTitles>(context, listen: false);
       if (articles.articleTitles.length == 0) _syncArticleTitles();
     });
   }
@@ -51,7 +51,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   }
 
   void initReceiveShare() {
-    var isReceiveShare = Provider.of<ReceiveShare>(context);
+    var isReceiveShare = Provider.of<ReceiveShare>(context, listen: false);
     if (isReceiveShare.initialized == false) {
       // For sharing or opening urls/text coming from outside the app while the app is in the memory
       _receiveShareLiveSubscription = ReceiveSharingIntent.getTextStream().listen((String value) {
@@ -72,8 +72,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   void receiveShare(String sharedText) {
     if (sharedText == null) return;
     // 收到分享, 先跳转到 list 页面
-    var articleTitles = Provider.of<ArticleTitles>(context);
-    var articles = Provider.of<Articles>(context);
+    var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    var articles = Provider.of<Articles>(context, listen: false);
     // 先过去, 为了显示 loading
     Navigator.pushNamed(context, '/ArticleTitles');
     postYouTube(context, sharedText, articleTitles, articles).then((d) {
@@ -88,7 +88,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   }
 
   Future _syncArticleTitles() async {
-    var articles = Provider.of<ArticleTitles>(context);
+    var articles = Provider.of<ArticleTitles>(context, listen: false);
     return articles.syncServer(context).catchError((e) {
       if (e.response.statusCode == 401) {
         print("请登录");
@@ -188,6 +188,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("build article titles");
     return Scaffold(
       appBar: ArticleListsAppBar(),
       body: Consumer<Loading>(builder: (context, allLoading, _) {

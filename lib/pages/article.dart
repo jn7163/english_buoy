@@ -66,7 +66,7 @@ class _ArticlePageState extends State<ArticlePage> {
     super.initState();
     _controller = ScrollController();
     Future.delayed(Duration.zero, () {
-      _setting = Provider.of<Setting>(context);
+      _setting = Provider.of<Setting>(context, listen: false);
       loadArticleByID();
     });
   }
@@ -87,7 +87,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
   loadArticleByID() {
     if (_article != null) return;
-    var articles = Provider.of<Articles>(context);
+    var articles = Provider.of<Articles>(context, listen: false);
     setState(() {
       _article = articles.articles[widget.id];
     });
@@ -99,7 +99,7 @@ class _ArticlePageState extends State<ArticlePage> {
           _article = article;
         });
         // 更新本地未学单词数
-        var articleTitles = Provider.of<ArticleTitles>(context);
+        var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
         articleTitles.setUnlearnedCountByArticleID(article.unlearnedCount, article.articleID);
       });
     }
@@ -237,7 +237,7 @@ class _ArticlePageState extends State<ArticlePage> {
         });
         article.putLearned(context, word).then((d) {
           //重新计算文章未掌握单词数
-          var articleTitles = Provider.of<ArticleTitles>(context);
+          var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
           articleTitles.setUnlearnedCountByArticleID(article.unlearnedCount, article.articleID);
         });
       }
@@ -279,7 +279,7 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   int _getIDByTitle(String title) {
-    var articles = Provider.of<ArticleTitles>(context);
+    var articles = Provider.of<ArticleTitles>(context, listen: false);
     var titles =
         articles.articleTitles.where((d) => d.title.toLowerCase() == title.toLowerCase()).toList();
     if (titles.length > 0) {
@@ -352,6 +352,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("build article");
     return Scaffold(
         body: getWrapLoading(),
         floatingActionButton: LaunchYoutubeButton(

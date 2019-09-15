@@ -28,10 +28,9 @@ class SignInPageState extends State<SignInPage> {
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       if (account != null) {
         account.authentication.then((GoogleSignInAuthentication authentication) {
-          //var articles = Provider.of<ArticleTitles>(context);
           // google 用户注册到服务器后, 记录 token
           putAccount(account, authentication).then((d) {
-            var oauthInfo = Provider.of<OauthInfo>(context);
+            var oauthInfo = Provider.of<OauthInfo>(context, listen: false);
             bool needJump = oauthInfo.set(
                 authentication.accessToken, account.email, account.displayName, account.photoUrl);
             //登录后自动跳转
@@ -52,10 +51,10 @@ class SignInPageState extends State<SignInPage> {
   }
 
   Future<void> _handleSignOut() async {
-    var oauthInfo = Provider.of<OauthInfo>(context);
+    var oauthInfo = Provider.of<OauthInfo>(context, listen: false);
     oauthInfo.signOut();
     // 需要清空文章列表
-    var articles = Provider.of<ArticleTitles>(context);
+    var articles = Provider.of<ArticleTitles>(context, listen: false);
     articles.clear();
     _googleSignIn.disconnect();
   }
@@ -97,6 +96,7 @@ class SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("build sign");
     return Scaffold(
         appBar: AppBar(
           title: const Text('Google Sign In'),
