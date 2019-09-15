@@ -35,7 +35,7 @@ class SignInPageState extends State<SignInPage> {
             bool needJump = oauthInfo.set(
                 authentication.accessToken, account.email, account.displayName, account.photoUrl);
             //登录后自动跳转
-            if (needJump) Navigator.pushNamed(context, '/Articles');
+            if (needJump) Navigator.pushNamed(context, '/ArticleTitles');
           });
         });
       }

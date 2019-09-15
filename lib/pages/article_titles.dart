@@ -75,13 +75,13 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     var articleTitles = Provider.of<ArticleTitles>(context);
     var articles = Provider.of<Articles>(context);
     // 先过去, 为了显示 loading
-    Navigator.pushNamed(context, '/Articles');
+    Navigator.pushNamed(context, '/ArticleTitles');
     postYouTube(context, sharedText, articleTitles, articles).then((d) {
       // highlight the new article title
       setState(() {
         this._selectArticleID = d.articleID;
         // 带参数跳转, 用于高亮
-        Navigator.pushNamed(context, '/Articles', arguments: d.articleID);
+        Navigator.pushNamed(context, '/ArticleTitles', arguments: d.articleID);
       });
     });
     // debugPrint(shared.text);

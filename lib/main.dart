@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
 
   Route _getRoute(RouteSettings settings) {
     switch (settings.name) {
-      case '/Articles':
+      case '/ArticleTitles':
         return _buildRoute(settings, ArticleTitlesPage());
       case '/AddArticle':
         return _buildRoute(settings, AddArticlePage());

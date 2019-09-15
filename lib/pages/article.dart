@@ -57,7 +57,7 @@ class _ArticlePageState extends State<ArticlePage> {
   Article _article;
   ScrollController _controller;
   Setting _setting;
-  bool _isWrap = false; // 当前字符是否换行符
+  bool _isWrap = true; // 当前字符是否换行符
   RegExp _startExp = new RegExp(r"00[0-9]+.[0-9]+00");
   YoutubePlayerController _youtubeController = YoutubePlayerController();
 
@@ -69,6 +69,13 @@ class _ArticlePageState extends State<ArticlePage> {
       _setting = Provider.of<Setting>(context);
       loadArticleByID();
     });
+  }
+
+  @override
+  void deactivate() {
+    // This pauses video while navigating to next page.
+    _youtubeController.pause();
+    super.deactivate();
   }
 
   @override
@@ -160,8 +167,8 @@ class _ArticlePageState extends State<ArticlePage> {
       milliseconds: (double.parse(time) * 1000).round(),
     );
     TextStyle style = Theme.of(context).textTheme.display2.copyWith(fontSize: 20);
-    MultiTapGestureRecognizer recognizer = MultiTapGestureRecognizer()
-      ..onTap = (i) {
+    TapGestureRecognizer recognizer = TapGestureRecognizer()
+      ..onTap = () {
         _youtubeController.seekTo(seekTime);
         /*
         setState(() {
@@ -201,7 +208,11 @@ class _ArticlePageState extends State<ArticlePage> {
     }
 
     return TextSpan(text: _getBlank(word.text), children: [
-      TextSpan(text: word.text, style: wordStyle, recognizer: _getTapRecognizer(word, article)),
+      // if not letter no need recognizer
+      hasLetter(word.text)
+          ? TextSpan(
+              text: word.text, style: wordStyle, recognizer: _getTapRecognizer(word, article))
+          : TextSpan(text: word.text, style: wordStyle),
       subscript,
       word.text == "\n" ? TextSpan(text: "   ") : TextSpan(text: ""), //新的一行空3个空格, 和单词原本的前空格凑成4个
     ]);
@@ -328,7 +339,7 @@ class _ArticlePageState extends State<ArticlePage> {
                 hideFullScreenButton: false,
                 // 不可能是 live 的视频
                 isLive: false,
-                forceHideAnnotation: true,
+                forceHideAnnotation: false,
               ),
               videoProgressIndicatorColor: Colors.teal,
               liveUIColor: Colors.teal,

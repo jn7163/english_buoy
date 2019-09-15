@@ -56,7 +56,7 @@ packages:
       name: crypto
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -288,7 +288,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.2"
+    version: "5.1.3"
   uuid:
     dependency: transitive
     description:
@@ -309,13 +309,13 @@ packages:
       name: webview_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.13"
+    version: "0.3.14+1"
   youtube_player_flutter:
     dependency: "direct main"
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "38a87c396053f4c817a1989a935e6252ac4b5251"
+      resolved-ref: e7824280db63c1c2254bf83e7dcdee5d3776cd71
       url: "https://github.com/bigzhu/youtube_player_flutter"
     source: git
     version: "4.1.0"
