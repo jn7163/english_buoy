@@ -11,9 +11,15 @@ import '../models/loading.dart';
 
 class ArticleTitles with ChangeNotifier {
   List<ArticleTitle> articleTitles = [];
+  int selectedArticleID = 0;
 
   // Set 合集, 用于快速查找添加过的单词
   Set setArticleTitles = Set();
+
+  setSelectedArticleID(int id) {
+    this.selectedArticleID = id;
+    notifyListeners();
+  }
 
   // 和服务器同步
   Future syncServer(BuildContext context) async {

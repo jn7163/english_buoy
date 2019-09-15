@@ -27,16 +27,14 @@ class ArticleTitlesPage extends StatefulWidget {
 }
 
 class ArticleTitlesPageState extends State<ArticleTitlesPage> {
-  int _selectArticleID = 0;
+  int _selectedIndex = 0;
+  ScrollController _scrollController = ScrollController();
   StreamSubscription _receiveShareLiveSubscription;
 
   @override
   initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      setState(() {
-        _selectArticleID = ModalRoute.of(context).settings.arguments;
-      });
       initReceiveShare();
       // 初始化时候, 如果无数据才自动取
       var articles = Provider.of<ArticleTitles>(context, listen: false);
@@ -77,12 +75,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     // 先过去, 为了显示 loading
     Navigator.pushNamed(context, '/ArticleTitles');
     postYouTube(context, sharedText, articleTitles, articles).then((d) {
-      // highlight the new article title
-      setState(() {
-        this._selectArticleID = d.articleID;
-        // 带参数跳转, 用于高亮
-        Navigator.pushNamed(context, '/ArticleTitles', arguments: d.articleID);
-      });
+      articleTitles.setSelectedArticleID(d.articleID);
     });
     // debugPrint(shared.text);
   }
@@ -111,28 +104,40 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
         // 判断显示说明文字还是列表
         if (articleTitles.articleTitles.length != 0) {
           return ListView(
-            children: filterTitles.map((d) {
-              return Ink(
-                  color: this._selectArticleID == d.id
-                      ? Theme.of(context).highlightColor
-                      : Colors.transparent,
-                  child: ListTile(
-                    trailing: ArticleYoutubeAvatar(
-                      youtubeURL: d.youtube,
-                      avatar: d.avatar,
-                    ),
-                    dense: false,
-                    onTap: () {
-                      this._selectArticleID = d.id;
-                      Navigator.pushNamed(context, '/Article', arguments: d.id);
-                    },
-                    leading: Text(d.unlearnedCount.toString(),
-                        style: TextStyle(
-                          color: Colors.blueGrey,
-                        )),
-                    title: Text(d.title), // 用的 TextTheme.subhead
-                  ));
-            }).toList(),
+            // 收到分享时候, 把分享显示出来
+            controller: _scrollController,
+            children: filterTitles
+                .asMap()
+                .map((i, d) {
+                  if (articleTitles.selectedArticleID == d.id) {
+                    _selectedIndex = i;
+                    scrollToSharedItem();
+                  }
+                  return MapEntry(
+                      i,
+                      Ink(
+                          color: articleTitles.selectedArticleID == d.id
+                              ? Theme.of(context).highlightColor
+                              : Colors.transparent,
+                          child: ListTile(
+                            trailing: ArticleYoutubeAvatar(
+                              youtubeURL: d.youtube,
+                              avatar: d.avatar,
+                            ),
+                            dense: false,
+                            onTap: () {
+                              articleTitles.setSelectedArticleID(d.id);
+                              Navigator.pushNamed(context, '/Article', arguments: d.id);
+                            },
+                            leading: Text(d.unlearnedCount.toString(),
+                                style: TextStyle(
+                                  color: Colors.blueGrey,
+                                )),
+                            title: Text(d.title), // 用的 TextTheme.subhead
+                          )));
+                })
+                .values
+                .toList(),
           );
         }
         return Center(
@@ -175,21 +180,27 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
                           style: Theme.of(context).textTheme.body1,
                           text: "Or click Add button to add English article"))
                 ])));
-        /*else {
-        return SpinKitChasingDots(
-          color: Colors.blueGrey,
-          size: 50.0,
-        );
-      }
-      */
       });
+    });
+  }
+
+  // EnsureVisible 不支持 ListView 只有用 50 宽度估算的来 scroll 到分享过来的条目
+  Future<void> scrollToSharedItem() async {
+    // 稍微等等, 避免 build 时候滚动
+    Future.delayed(Duration.zero, () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+            (50.0 * _selectedIndex), // 100 is the height of container and index of 6th element is 5
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     print("build article titles");
-    return Scaffold(
+    Scaffold scaffold = Scaffold(
       appBar: ArticleListsAppBar(),
       body: Consumer<Loading>(builder: (context, allLoading, _) {
         return ModalProgressHUD(
@@ -204,6 +215,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
         child: Icon(Icons.add, color: Theme.of(context).primaryTextTheme.title.color),
       ),
     );
+    return scaffold;
   }
 
   Future _refresh() async {
