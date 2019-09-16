@@ -8,6 +8,7 @@ import './models/article_titles.dart';
 import './models/articles.dart';
 import './models/setting.dart';
 import './models/receive_share.dart';
+import './models/article_status.dart';
 
 import './pages/article_titles.dart';
 import './pages/article.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
+          ChangeNotifierProvider(builder: (_) => ArticleStatus()),
           ChangeNotifierProvider(builder: (_) => Loading()),
           ChangeNotifierProvider(builder: (_) => Search()),
           ChangeNotifierProvider(builder: (_) => OauthInfo()),

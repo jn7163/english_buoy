@@ -12,6 +12,7 @@ class Article {
 
   // 文章中的文字内容
   List words = [];
+  List splitWords = [];
 
   // 标题
   String title;
@@ -26,7 +27,25 @@ class Article {
     this.words = json['words'].map((d) => Word.fromJson(d)).toList();
     this.unlearnedCount = json['UnlearnedCount'];
     this.avatar = json['Avatar'];
+    split();
     // notifyListeners();
+  }
+
+  // 分割 大约 200 个单词一组
+  split() {
+    var len = words.length;
+    var size = 200;
+    var i = 0;
+
+    while (i < len) {
+      var end = i + size;
+      while (end < len && words[end] != "\n") {
+        end++;
+      }
+      end = (i + size < len) ? end : len;
+      splitWords.add(words.sublist(i, end));
+      i += end;
+    }
   }
 
   clear() {
