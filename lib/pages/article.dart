@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:ebuoy/components/article_richtext.dart';
-import 'package:ebuoy/components/launch_youbube_button.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -134,9 +133,12 @@ class _ArticlePageState extends State<ArticlePage> {
   Widget build(BuildContext context) {
     print("build article");
     return Scaffold(
-        body: getWrapLoading(),
+      body: getWrapLoading(),
+      /*
         floatingActionButton: LaunchYoutubeButton(
           youtubeURL: _article == null ? '' : _article.youtube,
-        ));
+        )
+        */
+    );
   }
 }

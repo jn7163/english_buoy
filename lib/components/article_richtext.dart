@@ -131,8 +131,8 @@ class ArticleRichTextState extends State<ArticleRichText> {
       milliseconds: (double.parse(time) * 1000).round(),
     );
     TextStyle style = Theme.of(context).textTheme.display2.copyWith(fontSize: 14);
-    TapGestureRecognizer recognizer = TapGestureRecognizer()
-      ..onTap = () {
+    MultiTapGestureRecognizer recognizer = MultiTapGestureRecognizer()
+      ..onTap = (i) {
         articleStatus.youtubeController.seekTo(seekTime);
       };
     return TextSpan(text: "▷", style: style, recognizer: recognizer);
