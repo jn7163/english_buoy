@@ -10,7 +10,7 @@ import 'package:dio/dio.dart';
 import '../models/loading.dart';
 
 class ArticleTitles with ChangeNotifier {
-  List<ArticleTitle> articleTitles = [];
+  List<ArticleTitle> titles = [];
   int selectedArticleID = 0;
 
   // Set 合集, 用于快速查找添加过的单词
@@ -45,9 +45,9 @@ class ArticleTitles with ChangeNotifier {
   }
 
   setUnlearnedCountByArticleID(int unlearnedCount, int articleID) {
-    for (int i = 0; i < articleTitles.length; i++) {
-      if (articleTitles[i].id == articleID) {
-        articleTitles[i].unlearnedCount = unlearnedCount;
+    for (int i = 0; i < titles.length; i++) {
+      if (titles[i].id == articleID) {
+        titles[i].unlearnedCount = unlearnedCount;
         notifyListeners();
         return;
       }
@@ -56,7 +56,7 @@ class ArticleTitles with ChangeNotifier {
 
 // 退出清空数据
   clear() {
-    this.articleTitles.clear();
+    this.titles.clear();
     notifyListeners();
   }
 
@@ -69,19 +69,19 @@ class ArticleTitles with ChangeNotifier {
     articleTitle.youtube = article.youtube;
     articleTitle.avatar = article.avatar;
     // 新增加的插入到第一位
-    this.articleTitles.insert(0, articleTitle);
+    this.titles.insert(0, articleTitle);
     this.setArticleTitles.add(articleTitle.title);
     notifyListeners();
   }
 
   add(ArticleTitle articleTitle) {
-    this.articleTitles.add(articleTitle);
+    this.titles.add(articleTitle);
     this.setArticleTitles.add(articleTitle.title);
   }
 
 // 根据返回的 json 设置到对象
   setFromJSON(List json) {
-    this.articleTitles.clear();
+    this.titles.clear();
     json.forEach((d) {
       ArticleTitle articleTitle = ArticleTitle();
       articleTitle.setFromJSON(d);

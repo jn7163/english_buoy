@@ -88,7 +88,7 @@ class _ArticlePageState extends State<ArticlePage> {
           Padding(
               padding: EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
               child: Consumer<ArticleTitles>(builder: (context, articleTitles, _) {
-                if (articleTitles.articleTitles.length != 0) {
+                if (articleTitles.titles.length != 0) {
                   return Column(
                       children: _article.splitWords.map((d) {
                     return ArticleRichText(article: _article, words: d);

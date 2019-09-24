@@ -30,6 +30,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   int _selectedIndex = 0;
   ScrollController _scrollController = ScrollController();
   StreamSubscription _receiveShareLiveSubscription;
+  ArticleTitles articleTitles;
+  List<ArticleTitle> filterTitles; // now show list
 
   @override
   initState() {
@@ -37,8 +39,17 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     Future.delayed(Duration.zero, () {
       initReceiveShare();
       // if don't have data, get from server
-      var articles = Provider.of<ArticleTitles>(context, listen: false);
-      if (articles.articleTitles.length == 0) _syncArticleTitles();
+      articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+      if (articleTitles.titles.length == 0) _syncArticleTitles();
+
+      String youtubeURL = ModalRoute.of(context).settings.arguments;
+      if (youtubeURL != null) {
+        var articles = Provider.of<Articles>(context, listen: false);
+        postYouTube(context, youtubeURL, articleTitles, articles).then((d) {
+          articleTitles.setSelectedArticleID(d.articleID);
+          scrollToSharedItem(articleTitles.selectedArticleID);
+        });
+      }
     });
   }
 
@@ -70,20 +81,20 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   void receiveShare(String sharedText) {
     if (sharedText == null) return;
     // 收到分享, 先跳转到 list 页面
-    var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    var articles = Provider.of<Articles>(context, listen: false);
-    // 先过去, 为了显示 loading
-    Navigator.pushNamed(context, '/ArticleTitles');
+    // 跳转到 list 页
+    String youtubeURL = sharedText;
+    Navigator.pushNamed(context, '/ArticleTitles', arguments: youtubeURL);
+    /*
     postYouTube(context, sharedText, articleTitles, articles).then((d) {
       articleTitles.setSelectedArticleID(d.articleID);
-      scrollToSharedItem();
+      scrollToSharedItem(articleTitles.selectedArticleID);
     });
+     */
     // debugPrint(shared.text);
   }
 
   Future _syncArticleTitles() async {
-    var articles = Provider.of<ArticleTitles>(context, listen: false);
-    return articles.syncServer(context).catchError((e) {
+    return articleTitles.syncServer(context).catchError((e) {
       if (e.response.statusCode == 401) {
         print("请登录");
         Navigator.pushNamed(context, '/Sign');
@@ -94,52 +105,42 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   Widget getArticleTitles() {
     return Consumer<Search>(builder: (context, search, child) {
       return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
-        List<ArticleTitle> filterTitles;
+        // List<ArticleTitle> filterTitles;
         if (search.key != "") {
-          filterTitles = articleTitles.articleTitles
+          filterTitles = articleTitles.titles
               .where((d) => d.title.toLowerCase().contains(search.key.toLowerCase()))
               .toList();
         } else {
-          filterTitles = articleTitles.articleTitles.where((d) => d.unlearnedCount > 0).toList();
+          // filterTitles = articleTitles.titles.where((d) => d.unlearnedCount > 0).toList();
+          filterTitles = articleTitles.titles;
         }
         // 判断显示说明文字还是列表
-        if (articleTitles.articleTitles.length != 0) {
+        if (articleTitles.titles.length != 0) {
           return ListView(
             // 收到分享时候, 把分享显示出来
             controller: _scrollController,
-            children: filterTitles
-                .asMap()
-                .map((i, d) {
-                  // set index to _selectedIndex, used by scrollToSharedItem
-                  if (articleTitles.selectedArticleID == d.id) {
-                    _selectedIndex = i;
-                    //scrollToSharedItem();
-                  }
-                  return MapEntry(
-                      i,
-                      Ink(
-                          color: articleTitles.selectedArticleID == d.id
-                              ? Theme.of(context).highlightColor
-                              : Colors.transparent,
-                          child: ListTile(
-                            trailing: ArticleYoutubeAvatar(
-                              youtubeURL: d.youtube,
-                              avatar: d.avatar,
-                            ),
-                            dense: false,
-                            onTap: () {
-                              articleTitles.setSelectedArticleID(d.id);
-                              Navigator.pushNamed(context, '/Article', arguments: d.id);
-                            },
-                            leading: Text(d.unlearnedCount.toString(),
-                                style: TextStyle(
-                                  color: Colors.blueGrey,
-                                )),
-                            title: Text(d.title), // 用的 TextTheme.subhead
-                          )));
-                })
-                .values
-                .toList(),
+            children: filterTitles.map((d) {
+              return Ink(
+                  color: articleTitles.selectedArticleID == d.id
+                      ? Theme.of(context).highlightColor
+                      : Colors.transparent,
+                  child: ListTile(
+                    trailing: ArticleYoutubeAvatar(
+                      youtubeURL: d.youtube,
+                      avatar: d.avatar,
+                    ),
+                    dense: false,
+                    onTap: () {
+                      articleTitles.setSelectedArticleID(d.id);
+                      Navigator.pushNamed(context, '/Article', arguments: d.id);
+                    },
+                    leading: Text(d.unlearnedCount.toString(),
+                        style: TextStyle(
+                          color: Colors.blueGrey,
+                        )),
+                    title: Text(d.title), // 用的 TextTheme.subhead
+                  ));
+            }).toList(),
           );
         }
         return Center(
@@ -187,13 +188,21 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   }
 
   // EnsureVisible 不支持 ListView 只有用 50 宽度估算的来 scroll 到分享过来的条目
-  Future<void> scrollToSharedItem() async {
+  Future<void> scrollToSharedItem(int articleID) async {
+    if (articleID == 0) return;
+    //找到 id
+    for (var i = 0; i < filterTitles.length; i++) {
+      if (filterTitles[i].id == articleID) {
+        _selectedIndex = i;
+        break;
+      }
+    }
     // 稍微等等, 避免 build 时候滚动
     Future.delayed(Duration.zero, () {
       if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-            (50.0 * _selectedIndex), // 100 is the height of container and index of 6th element is 5
-            duration: const Duration(milliseconds: 300),
+        _scrollController.animateTo((60.0 * _selectedIndex),
+            // 100 is the height of container and index of 6th element is 5
+            duration: const Duration(milliseconds: 500),
             curve: Curves.easeOut);
       }
     });
@@ -211,7 +220,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/AddArticle');
+          // Navigator.pushNamed(context, '/AddArticle');
+          scrollToSharedItem(3754);
         },
         tooltip: 'add article',
         child: Icon(Icons.add, color: Theme.of(context).primaryTextTheme.title.color),
@@ -221,9 +231,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   }
 
   Future _refresh() async {
-    // print("刷新了");
     await _syncArticleTitles();
-    // print("刷新完成");
     return;
   }
 }

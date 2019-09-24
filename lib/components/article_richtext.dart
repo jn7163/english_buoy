@@ -62,7 +62,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
   int _getIDByTitle(String title) {
     var articles = Provider.of<ArticleTitles>(context, listen: false);
     var titles =
-        articles.articleTitles.where((d) => d.title.toLowerCase() == title.toLowerCase()).toList();
+        articles.titles.where((d) => d.title.toLowerCase() == title.toLowerCase()).toList();
     if (titles.length > 0) {
       return titles[0].id;
     }
