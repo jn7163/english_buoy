@@ -130,7 +130,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
     Duration seekTime = Duration(
       milliseconds: (double.parse(time) * 1000).round(),
     );
-    TextStyle style = Theme.of(context).textTheme.display2.copyWith(fontSize: 14);
+    TextStyle style = Theme.of(context).textTheme.display2.copyWith(fontSize: 20);
     MultiTapGestureRecognizer recognizer = MultiTapGestureRecognizer()
       ..onTap = (i) {
         articleStatus.youtubeController.seekTo(seekTime);

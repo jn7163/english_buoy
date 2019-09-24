@@ -36,7 +36,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     super.initState();
     Future.delayed(Duration.zero, () {
       initReceiveShare();
-      // 初始化时候, 如果无数据才自动取
+      // if don't have data, get from server
       var articles = Provider.of<ArticleTitles>(context, listen: false);
       if (articles.articleTitles.length == 0) _syncArticleTitles();
     });
@@ -76,6 +76,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     Navigator.pushNamed(context, '/ArticleTitles');
     postYouTube(context, sharedText, articleTitles, articles).then((d) {
       articleTitles.setSelectedArticleID(d.articleID);
+      scrollToSharedItem();
     });
     // debugPrint(shared.text);
   }
@@ -109,9 +110,10 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
             children: filterTitles
                 .asMap()
                 .map((i, d) {
+                  // set index to _selectedIndex, used by scrollToSharedItem
                   if (articleTitles.selectedArticleID == d.id) {
                     _selectedIndex = i;
-                    scrollToSharedItem();
+                    //scrollToSharedItem();
                   }
                   return MapEntry(
                       i,
