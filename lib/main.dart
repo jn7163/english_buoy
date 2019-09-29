@@ -7,9 +7,9 @@ import './models/loading.dart';
 import './models/article_titles.dart';
 import './models/articles.dart';
 import './models/setting.dart';
-import './models/receive_share.dart';
 import './models/article_status.dart';
 
+import './pages/waiting.dart';
 import './pages/article_titles.dart';
 import './pages/article.dart';
 import './pages/sign.dart';
@@ -45,14 +45,13 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(builder: (_) => ArticleTitles()),
           ChangeNotifierProvider(builder: (_) => Articles()),
           ChangeNotifierProvider(builder: (_) => Setting()),
-          ChangeNotifierProvider(builder: (_) => ReceiveShare()),
         ],
         child: Consumer<Setting>(builder: (context, setting, child) {
           init(context);
           return MaterialApp(
             title: 'English Buoy',
             theme: setting.isDark ? darkTheme : brightTheme,
-            home: ArticleTitlesPage(),
+            home: WaitingPage(),
             onGenerateRoute: _getRoute,
           );
         }));
@@ -60,6 +59,8 @@ class MyApp extends StatelessWidget {
 
   Route _getRoute(RouteSettings settings) {
     switch (settings.name) {
+      case '/Waiting':
+        return _buildRoute(settings, WaitingPage());
       case '/ArticleTitles':
         return _buildRoute(settings, ArticleTitlesPage());
       case '/AddArticle':

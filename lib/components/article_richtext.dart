@@ -23,6 +23,8 @@ class ArticleRichText extends StatefulWidget {
 }
 
 class ArticleRichTextState extends State<ArticleRichText> {
+  Map seekTextSpanTapStatus = Map<String, bool>();
+
   // 这些符号前面不要加空格
   final List _noNeedBlank = const [
     "'ll",
@@ -127,15 +129,25 @@ class ArticleRichTextState extends State<ArticleRichText> {
 
   // 生成修改播放位置的图标
   TextSpan getSeekTextSpan(BuildContext context, String time) {
+    if (seekTextSpanTapStatus[time] == null) seekTextSpanTapStatus[time] = false;
     Duration seekTime = Duration(
       milliseconds: (double.parse(time) * 1000).round(),
     );
-    TextStyle style = Theme.of(context).textTheme.display2.copyWith(fontSize: 20);
+    TextStyle style = Theme.of(context).textTheme.display3.copyWith(fontSize: 16);
     MultiTapGestureRecognizer recognizer = MultiTapGestureRecognizer()
       ..onTap = (i) {
         articleStatus.youtubeController.seekTo(seekTime);
+        setState(() {
+          seekTextSpanTapStatus[time] = true;
+        });
+        Future.delayed(Duration(milliseconds: 800), () {
+          setState(() {
+            seekTextSpanTapStatus[time] = false;
+          });
+        });
       };
-    return TextSpan(text: "▷", style: style, recognizer: recognizer);
+    return TextSpan(
+        text: seekTextSpanTapStatus[time] ? "▶" : "▷", style: style, recognizer: recognizer);
   }
 
 // 根据规则, 判断单词前是否需要添加空白

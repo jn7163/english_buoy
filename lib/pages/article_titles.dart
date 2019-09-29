@@ -9,13 +9,11 @@ import '../components/article_youtube_avatar.dart';
 import '../models/articles.dart';
 import '../models/loading.dart';
 import 'package:ebuoy/store/article.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/article_titles.dart';
-import '../models/receive_share.dart';
 import '../models/article_title.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
@@ -37,8 +35,9 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      initReceiveShare();
+      //initReceiveShare();
       // if don't have data, get from server
+      // sync from the waiting page, this no need, maybe delete
       articleTitles = Provider.of<ArticleTitles>(context, listen: false);
       if (articleTitles.titles.length == 0) _syncArticleTitles();
 
@@ -59,38 +58,12 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     super.dispose();
   }
 
-  void initReceiveShare() {
-    var isReceiveShare = Provider.of<ReceiveShare>(context, listen: false);
-    if (isReceiveShare.initialized == false) {
-      // For sharing or opening urls/text coming from outside the app while the app is in the memory
-      _receiveShareLiveSubscription = ReceiveSharingIntent.getTextStream().listen((String value) {
-        receiveShare(value);
-        debugPrint("share from app in memory text=" + value);
-      }, onError: (err) {
-        print("getLinkStream error: $err");
-      });
-      // For sharing or opening urls/text coming from outside the app while the app is closed
-      ReceiveSharingIntent.getInitialText().then((String value) {
-        // debugPrint("closed share=" + value);
-        receiveShare(value);
-      });
-      isReceiveShare.done();
-    }
-  }
-
   void receiveShare(String sharedText) {
     if (sharedText == null) return;
     // 收到分享, 先跳转到 list 页面
     // 跳转到 list 页
     String youtubeURL = sharedText;
     Navigator.pushNamed(context, '/ArticleTitles', arguments: youtubeURL);
-    /*
-    postYouTube(context, sharedText, articleTitles, articles).then((d) {
-      articleTitles.setSelectedArticleID(d.articleID);
-      scrollToSharedItem(articleTitles.selectedArticleID);
-    });
-     */
-    // debugPrint(shared.text);
   }
 
   Future _syncArticleTitles() async {
@@ -200,7 +173,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     // 稍微等等, 避免 build 时候滚动
     Future.delayed(Duration.zero, () {
       if (_scrollController.hasClients) {
-        _scrollController.animateTo((60.0 * _selectedIndex),
+        _scrollController.animateTo((54.0 * _selectedIndex),
             // 100 is the height of container and index of 6th element is 5
             duration: const Duration(milliseconds: 500),
             curve: Curves.easeOut);

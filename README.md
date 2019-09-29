@@ -3,6 +3,13 @@
 利用 NGSL 来学习的 APP
 
 ## Change Log
+### v1.2.3+23
+- 优化文章页标题, 保证对齐
+- 播放定位点击响应:▶
+- 通过分享唤醒 app 也能正确同步视频
+- 调整滚动间距, 尽量命中
+### v1.2.1+21
+- fix can't auto scroll to shared youtube item
 ### 1.2.0+20
 - 默认开启视频字幕
 - 解决 Provider 带来的循环 build 问题
