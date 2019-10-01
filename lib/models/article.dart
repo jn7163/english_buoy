@@ -116,4 +116,6 @@ class Article {
     this._setWordIsLearned(word.text, word.learned);
     return word.putLearned(context).then((d) => _putUnlearnedCount(context));
   }
+
+
 }

@@ -53,6 +53,10 @@ class ArticleTitles with ChangeNotifier {
       }
     }
   }
+  removeFromList(ArticleTitle articleTitle) {
+    titles.remove(articleTitle);
+    notifyListeners();
+  }
 
 // 退出清空数据
   clear() {

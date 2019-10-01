@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:ebuoy/components/article_lists_app_bar.dart';
 import 'package:ebuoy/models/search.dart';
-
+import '../scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../components/article_youtube_avatar.dart';
 
 import '../models/articles.dart';
@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import '../models/article_titles.dart';
 import '../models/article_title.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ArticleTitlesPage extends StatefulWidget {
   ArticleTitlesPage({Key key}) : super(key: key);
@@ -26,10 +27,13 @@ class ArticleTitlesPage extends StatefulWidget {
 
 class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   int _selectedIndex = 0;
-  ScrollController _scrollController = ScrollController();
+
+  // ScrollController _scrollController = ScrollController();
   StreamSubscription _receiveShareLiveSubscription;
   ArticleTitles articleTitles;
   List<ArticleTitle> filterTitles; // now show list
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionListener = ItemPositionsListener.create();
 
   @override
   initState() {
@@ -89,6 +93,48 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
         }
         // 判断显示说明文字还是列表
         if (articleTitles.titles.length != 0) {
+          return ScrollablePositionedList.builder(
+            itemCount: articleTitles.titles.length,
+            itemBuilder: (context, index) {
+              var d = articleTitles.titles[index];
+              return Slidable(
+                actionPane: SlidableDrawerActionPane(),
+                actionExtentRatio: 0.25,
+                child: Ink(
+                    color: articleTitles.selectedArticleID == d.id
+                        ? Theme.of(context).highlightColor
+                        : Colors.transparent,
+                    child: ListTile(
+                      trailing: ArticleYoutubeAvatar(
+                        youtubeURL: d.youtube,
+                        avatar: d.avatar,
+                      ),
+                      dense: false,
+                      onTap: () {
+                        articleTitles.setSelectedArticleID(d.id);
+                        Navigator.pushNamed(context, '/Article', arguments: d.id);
+                      },
+                      leading: Text(d.unlearnedCount.toString(),
+                          style: TextStyle(
+                            color: Colors.blueGrey,
+                          )),
+                      title: Text(d.title), // 用的 TextTheme.subhead
+                    )),
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                    caption: 'Delete',
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () => _delete(d),
+                  ),
+                ],
+              );
+            },
+            itemScrollController: itemScrollController,
+            itemPositionsListener: itemPositionListener,
+          );
+
+          /*
           return ListView(
             // 收到分享时候, 把分享显示出来
             controller: _scrollController,
@@ -115,6 +161,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
                   ));
             }).toList(),
           );
+          */
         }
         return Center(
             child: Container(
@@ -172,12 +219,18 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     }
     // 稍微等等, 避免 build 时候滚动
     Future.delayed(Duration.zero, () {
+      itemScrollController.scrollTo(
+          index: _selectedIndex, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic);
+      /*
       if (_scrollController.hasClients) {
-        _scrollController.animateTo((54.0 * _selectedIndex),
+        // 先跳到顶部, 再根据计算滚动
+        _scrollController.jumpTo(0);
+        _scrollController.animateTo((57.0 * _selectedIndex),
             // 100 is the height of container and index of 6th element is 5
             duration: const Duration(milliseconds: 500),
             curve: Curves.easeOut);
       }
+      */
     });
   }
 
@@ -206,5 +259,10 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   Future _refresh() async {
     await _syncArticleTitles();
     return;
+  }
+
+  _delete(ArticleTitle articleTitle) async {
+    await articleTitle.deleteArticle(context);
+    articleTitles.removeFromList(articleTitle);
   }
 }

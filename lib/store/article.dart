@@ -114,7 +114,7 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles, A
 }
 
 // 根据标题查询文章内容
-getArticleByID(BuildContext context, int id) async {
+Future getArticleByID(BuildContext context, int id) async {
   Dio dio = getDio(context);
   print('getArticleByID: ' + id.toString());
   var response = await dio.get(Store.baseURL + "article/" + id.toString());
@@ -133,3 +133,5 @@ Future putUnlearnedCount(BuildContext context, int articleID, int unlearnedCount
       data: {"article_id": articleID, "unlearned_count": unlearnedCount});
   return response;
 }
+
+
