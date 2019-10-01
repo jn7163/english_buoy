@@ -147,7 +147,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
         });
       };
     return TextSpan(
-        text: seekTextSpanTapStatus[time] ? "▶" : "▷", style: style, recognizer: recognizer);
+        text: seekTextSpanTapStatus[time] ? "     ▶" : "     ▷", style: style, recognizer: recognizer);
   }
 
 // 根据规则, 判断单词前是否需要添加空白
@@ -241,7 +241,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
           ? TextSpan(text: word.text, style: wordStyle, recognizer: _getTapRecognizer(word))
           : TextSpan(text: word.text, style: wordStyle),
       subscript,
-      word.text == "\n" ? TextSpan(text: "   ") : TextSpan(text: ""), //新的一行空3个空格, 和单词原本的前空格凑成4个
+      //word.text == "\n" ? TextSpan(text: "   ") : TextSpan(text: ""), //新的一行空3个空格, 和单词原本的前空格凑成4个
     ]);
   }
 
@@ -249,7 +249,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
   Widget build(BuildContext context) {
     return RichText(
       text: TextSpan(
-        text: '   ',
+        text: "",
         style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
         children: widget.words.map((d) {
           return getTextSpan(d);
