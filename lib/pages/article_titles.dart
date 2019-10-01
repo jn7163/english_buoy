@@ -34,16 +34,22 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   List<ArticleTitle> filterTitles; // now show list
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener = ItemPositionsListener.create();
+  Loading loading;
 
   @override
   initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
+    Future.delayed(Duration.zero, () async {
       //initReceiveShare();
       // if don't have data, get from server
       // sync from the waiting page, this no need, maybe delete
+      loading = Provider.of<Loading>(context);
       articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-      if (articleTitles.titles.length == 0) _syncArticleTitles();
+      if (articleTitles.titles.length == 0) {
+        loading.set(true);
+        await _syncArticleTitles();
+        loading.set(false);
+      }
 
       String youtubeURL = ModalRoute.of(context).settings.arguments;
       if (youtubeURL != null) {

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:provider/provider.dart';
 import 'package:easy_alert/easy_alert.dart';
 
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import './article_title.dart';
 import './article.dart';
 import '../store/store.dart';
 import 'package:dio/dio.dart';
-import '../models/loading.dart';
 
 class ArticleTitles with ChangeNotifier {
   List<ArticleTitle> titles = [];
@@ -23,9 +21,9 @@ class ArticleTitles with ChangeNotifier {
 
   // 和服务器同步
   Future syncServer(BuildContext context) async {
-    var allLoading = Provider.of<Loading>(context);
-    allLoading.set(true);
-    debugPrint("set loading=true");
+    //var allLoading = Provider.of<Loading>(context);
+    //allLoading.set(true);
+    //debugPrint("set loading=true");
     Dio dio = getDio(context);
     try {
       var response = await dio.get(Store.baseURL + "article_titles");
@@ -39,8 +37,8 @@ class ArticleTitles with ChangeNotifier {
       }
       return e;
     } finally {
-      allLoading.set(false);
-      debugPrint("set loading=false");
+      //allLoading.set(false);
+      //debugPrint("set loading=false");
     }
   }
 
@@ -53,6 +51,7 @@ class ArticleTitles with ChangeNotifier {
       }
     }
   }
+
   removeFromList(ArticleTitle articleTitle) {
     titles.remove(articleTitle);
     notifyListeners();
