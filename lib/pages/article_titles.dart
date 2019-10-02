@@ -98,11 +98,11 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
           filterTitles = articleTitles.titles;
         }
         // 判断显示说明文字还是列表
-        if (articleTitles.titles.length != 0) {
+        if (filterTitles.length != 0) {
           return ScrollablePositionedList.builder(
-            itemCount: articleTitles.titles.length,
+            itemCount: filterTitles.length,
             itemBuilder: (context, index) {
-              var d = articleTitles.titles[index];
+              var d = filterTitles[index];
               return Slidable(
                 actionPane: SlidableDrawerActionPane(),
                 actionExtentRatio: 0.25,

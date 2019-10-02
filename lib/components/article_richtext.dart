@@ -213,8 +213,13 @@ class ArticleRichTextState extends State<ArticleRichText> {
 
 // 组装为需要的 textSpan
   TextSpan getTextSpan(Word word) {
+    if (word.text == "\n" || _startExp.hasMatch(word.text)) {
+      return TextSpan(text: "");
+    }
+    /*
     if (word.text == "\n") {
       _isWrap = true;
+      return TextSpan(text: "");
     } else {
       // 是时间格式的字符
       if (_startExp.hasMatch(word.text)) {
@@ -229,6 +234,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
       }
       _isWrap = false;
     }
+     */
     var wordStyle = _defineStyle(word); // 文字样式
 
     TextSpan subscript = TextSpan(); // 显示该单词查询次数的下标
@@ -244,20 +250,34 @@ class ArticleRichTextState extends State<ArticleRichText> {
           ? TextSpan(text: word.text, style: wordStyle, recognizer: _getTapRecognizer(word))
           : TextSpan(text: word.text, style: wordStyle),
       subscript,
-      //word.text == "\n" ? TextSpan(text: "   ") : TextSpan(text: ""), //新的一行空3个空格, 和单词原本的前空格凑成4个
     ]);
+  }
+
+  // check is the seek button or just blank
+  TextSpan getStar(BuildContext context, String text) {
+    TextSpan star;
+    if (_startExp.hasMatch(text)) {
+      star = getSeekTextSpan(context, text);
+    } else {
+      star = TextSpan(text: "       ");
+    }
+    return star;
   }
 
   @override
   Widget build(BuildContext context) {
     List<Widget> richTextList = widget.sentences.map((s) {
+      TextSpan star = getStar(context, s.words[0].text);
+      List<TextSpan> words = s.words.map((d) {
+        return getTextSpan(d);
+      }).toList();
+      words.insert(0, star);
+
       return RichText(
         text: TextSpan(
           text: "",
           style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
-          children: s.words.map((d) {
-            return getTextSpan(d);
-          }).toList(),
+          children: words,
         ),
       );
     }).toList();
