@@ -24,7 +24,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   # 依赖 flutter 1.9 现在无法用
   #flutter_widgets: ^0.1.6 # 其中有能按 index scroll 的 list view
-  flutter_slidable: "^0.5.3" # 列表 item 滑动删除
+  flutter_slidable: ^0.5.3 # 列表 item 滑动删除
   font_awesome_flutter: ^8.5.0
   url_launcher: ^5.1.1 # 打开url链接
   cupertino_icons: ^0.1.2
