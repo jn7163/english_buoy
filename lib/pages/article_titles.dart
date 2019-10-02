@@ -252,8 +252,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigator.pushNamed(context, '/AddArticle');
-          scrollToSharedItem(3754);
+          Navigator.pushNamed(context, '/AddArticle');
         },
         tooltip: 'add article',
         child: Icon(Icons.add, color: Theme.of(context).primaryTextTheme.title.color),

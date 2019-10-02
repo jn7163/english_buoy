@@ -133,5 +133,3 @@ Future putUnlearnedCount(BuildContext context, int articleID, int unlearnedCount
       data: {"article_id": articleID, "unlearned_count": unlearnedCount});
   return response;
 }
-
-

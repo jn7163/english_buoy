@@ -90,8 +90,8 @@ class _ArticlePageState extends State<ArticlePage> {
               child: Consumer<ArticleTitles>(builder: (context, articleTitles, _) {
                 if (articleTitles.titles.length != 0) {
                   return Column(
-                      children: _article.splitWords.map((d) {
-                    return ArticleRichText(article: _article, words: d);
+                      children: _article.splitSentences.map((d) {
+                    return ArticleRichText(article: _article, sentences: d);
                   }).toList());
                 }
                 return Text('some error!');

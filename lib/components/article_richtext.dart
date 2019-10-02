@@ -12,11 +12,12 @@ import 'package:easy_alert/easy_alert.dart';
 import 'package:flutter/services.dart';
 import '../models/article.dart';
 import '../models/word.dart';
+import '../models/sentence.dart';
 
 class ArticleRichText extends StatefulWidget {
-  ArticleRichText({Key key, @required this.article, @required this.words}) : super(key: key);
+  ArticleRichText({Key key, @required this.article, @required this.sentences}) : super(key: key);
   final Article article;
-  final List words;
+  final List<Sentence> sentences;
 
   @override
   ArticleRichTextState createState() => ArticleRichTextState();
@@ -147,7 +148,9 @@ class ArticleRichTextState extends State<ArticleRichText> {
         });
       };
     return TextSpan(
-        text: seekTextSpanTapStatus[time] ? "     ▶" : "     ▷", style: style, recognizer: recognizer);
+        text: seekTextSpanTapStatus[time] ? "     ▶" : "     ▷",
+        style: style,
+        recognizer: recognizer);
   }
 
 // 根据规则, 判断单词前是否需要添加空白
@@ -247,14 +250,18 @@ class ArticleRichTextState extends State<ArticleRichText> {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        text: "",
-        style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
-        children: widget.words.map((d) {
-          return getTextSpan(d);
-        }).toList(),
-      ),
-    );
+    List<Widget> richTextList = widget.sentences.map((s) {
+      return RichText(
+        text: TextSpan(
+          text: "",
+          style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
+          children: s.words.map((d) {
+            return getTextSpan(d);
+          }).toList(),
+        ),
+      );
+    }).toList();
+
+    return Column(children: richTextList, crossAxisAlignment: CrossAxisAlignment.start);
   }
 }
