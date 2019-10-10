@@ -3,7 +3,9 @@ import 'dart:async';
 
 import 'package:ebuoy/components/article_lists_app_bar.dart';
 import 'package:ebuoy/models/search.dart';
-import '../scrollable_positioned_list/scrollable_positioned_list.dart';
+//import '../scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:flutter_widgets/flutter_widgets.dart';
+
 import '../components/article_youtube_avatar.dart';
 
 import '../models/articles.dart';
@@ -120,7 +122,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
                         articleTitles.setSelectedArticleID(d.id);
                         Navigator.pushNamed(context, '/Article', arguments: d.id);
                       },
-                      leading: Text(d.unlearnedCount.toString(),
+                      leading: Text(d.percent.toStringAsFixed(d.percent.truncateToDouble() == d.percent ? 0 : 1)+"%",
                           style: TextStyle(
                             color: Colors.blueGrey,
                           )),

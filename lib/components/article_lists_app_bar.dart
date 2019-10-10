@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 import 'oauth_info.dart';
+import '../models/article_titles.dart';
 
 // 顶部那个浮动的 appbar
 class ArticleListsAppBarState extends State<ArticleListsAppBar> {
@@ -51,6 +52,13 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
             setState(() {
               isSearching = !isSearching;
             });
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.sort, color: Theme.of(context).primaryTextTheme.title.color),
+          onPressed: (){
+            ArticleTitles articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+            articleTitles.changeSort();
           },
         ),
         IconButton(

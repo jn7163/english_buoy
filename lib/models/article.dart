@@ -20,6 +20,7 @@ class Article {
   String title;
   String youtube;
   String avatar;
+  int wordCount;
 
   // 从 json 中设置
   setFromJSON(Map json) {
@@ -36,6 +37,7 @@ class Article {
     }).toList();
     this.unlearnedCount = json['UnlearnedCount'];
     this.avatar = json['Avatar'];
+    this.wordCount = json['WordCount'];
     split();
     // notifyListeners();
   }
@@ -76,6 +78,10 @@ class Article {
     return response;
   }
 
+  //计算已经学会百分比
+  computeLearnedPercent() {
+
+  }
   // 计算未掌握单词数并提交
   Future _putUnlearnedCount(BuildContext context) async {
     if (articleID == null) {
