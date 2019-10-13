@@ -1,7 +1,7 @@
 // 文章列表
 import 'dart:async';
 
-import 'package:ebuoy/components/article_lists_app_bar.dart';
+import 'package:ebuoy/components/article_titles_app_bar.dart';
 
 import '../models/loading.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';

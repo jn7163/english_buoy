@@ -1,7 +1,7 @@
 // 文章列表
 import 'dart:async';
 
-import 'package:ebuoy/components/article_lists_app_bar.dart';
+import 'package:ebuoy/components/article_titles_app_bar.dart';
 import 'package:ebuoy/models/search.dart';
 //import '../scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';

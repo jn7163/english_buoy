@@ -56,6 +56,7 @@ class ArticleTitles with ChangeNotifier {
     for (int i = 0; i < titles.length; i++) {
       if (titles[i].id == articleID) {
         titles[i].unlearnedCount = unlearnedCount;
+        titles[i].setPercent();
         notifyListeners();
         return;
       }

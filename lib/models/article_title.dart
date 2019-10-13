@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../store/store.dart';
-import '../models/loading.dart';
-import 'package:provider/provider.dart';
 
 class ArticleTitle with ChangeNotifier {
   String title;
@@ -33,7 +31,7 @@ class ArticleTitle with ChangeNotifier {
 
   // 删除文章
   Future deleteArticle(BuildContext context) async {
-    var allLoading = Provider.of<Loading>(context);
+    //var allLoading = Provider.of<Loading>(context);
     //allLoading.set(true);
 
     Dio dio = getDio(context);
