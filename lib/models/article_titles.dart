@@ -10,12 +10,22 @@ import 'package:dio/dio.dart';
 class ArticleTitles with ChangeNotifier {
   List<ArticleTitle> titles = [];
   int selectedArticleID = 0;
+  bool sortByUnlearned = true;
 
   // Set 合集, 用于快速查找添加过的单词
   Set setArticleTitles = Set();
 
   setSelectedArticleID(int id) {
     this.selectedArticleID = id;
+    notifyListeners();
+  }
+  changeSort() {
+    if(sortByUnlearned) {
+      titles.sort((a,b)=> b.percent.compareTo(a.percent));
+    } else {
+      titles.sort((a,b)=> b.createdAt.compareTo(a.createdAt) );
+    }
+    sortByUnlearned=!sortByUnlearned;
     notifyListeners();
   }
 
@@ -46,6 +56,7 @@ class ArticleTitles with ChangeNotifier {
     for (int i = 0; i < titles.length; i++) {
       if (titles[i].id == articleID) {
         titles[i].unlearnedCount = unlearnedCount;
+        titles[i].setPercent();
         notifyListeners();
         return;
       }
@@ -71,6 +82,8 @@ class ArticleTitles with ChangeNotifier {
     articleTitle.createdAt = DateTime.now();
     articleTitle.youtube = article.youtube;
     articleTitle.avatar = article.avatar;
+    articleTitle.wordCount = article.wordCount;
+    articleTitle.setPercent();
     // 新增加的插入到第一位
     this.titles.insert(0, articleTitle);
     this.setArticleTitles.add(articleTitle.title);

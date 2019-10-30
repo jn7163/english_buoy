@@ -5,21 +5,20 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 import 'oauth_info.dart';
+import '../models/article_titles.dart';
 
 // 顶部那个浮动的 appbar
 class ArticleListsAppBarState extends State<ArticleListsAppBar> {
-  bool isSearching;
-  TextEditingController searchController = new TextEditingController();
-
+  bool isSearching=false;
+  TextEditingController searchController = TextEditingController();
+  Search search;
   @override
   void initState() {
     super.initState();
-    isSearching = false;
+    Future.delayed(Duration.zero, () {
+      search = Provider.of<Search>(context, listen: false);
+    });
     searchController.addListener(() {
-      if (!isSearching) {
-        searchController.text = "";
-      }
-      var search = Provider.of<Search>(context, listen: false);
       search.set(searchController.text);
     });
   }
@@ -50,7 +49,18 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
           onPressed: () {
             setState(() {
               isSearching = !isSearching;
+              if(!isSearching) {
+                searchController.text="";
+                search.set(searchController.text);
+              }
             });
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.sort, color: Theme.of(context).primaryTextTheme.title.color),
+          onPressed: (){
+            ArticleTitles articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+            articleTitles.changeSort();
           },
         ),
         IconButton(

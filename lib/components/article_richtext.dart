@@ -50,7 +50,6 @@ class ArticleRichTextState extends State<ArticleRichText> {
   String _tapedText = ''; // 当前点击的文本
   String _lastTapedText = ''; // 上次点击的文本
   Setting setting;
-  bool _isWrap = true; // 当前字符是否换行符
   ArticleStatus articleStatus;
 
   @override
@@ -134,9 +133,9 @@ class ArticleRichTextState extends State<ArticleRichText> {
     Duration seekTime = Duration(
       milliseconds: (double.parse(time) * 1000).round(),
     );
-    TextStyle style = Theme.of(context).textTheme.display3.copyWith(fontSize: 16);
-    MultiTapGestureRecognizer recognizer = MultiTapGestureRecognizer()
-      ..onTap = (i) {
+    // TextStyle style = Theme.of(context).textTheme.display3.copyWith(fontSize: 16);
+    TapGestureRecognizer recognizer = TapGestureRecognizer()
+      ..onTap = () {
         articleStatus.youtubeController.seekTo(seekTime);
         setState(() {
           seekTextSpanTapStatus[time] = true;
@@ -149,7 +148,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
       };
     return TextSpan(
         text: seekTextSpanTapStatus[time] ? "     ▶" : "     ▷",
-        style: style,
+        // style: style,
         recognizer: recognizer);
   }
 
