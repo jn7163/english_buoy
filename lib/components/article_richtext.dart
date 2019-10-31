@@ -44,7 +44,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
     "…",
   ];
 
-  RegExp _startExp = RegExp(r"00[0-9]+.[0-9]+00");
+  RegExp _startExp = RegExp(r"00[0-9]+\.[0-9]+00");
 
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
