@@ -27,9 +27,7 @@ class ArticleTopBar extends StatelessWidget {
             _launchURL(article.youtube);
           },
           leading: ArticleYoutubeAvatar(
-            youtubeURL: article.youtube,
-            avatar: article.avatar,
-          ),
+              youtubeURL: article.youtube, avatar: article.avatar, loading: false),
           title: (article != null)
               ? Text(article.title + "  🔗", style: Theme.of(context).primaryTextTheme.title)
               : Text(

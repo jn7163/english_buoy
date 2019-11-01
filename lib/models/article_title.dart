@@ -12,6 +12,7 @@ class ArticleTitle with ChangeNotifier {
   String youtube;
   String avatar;
   double percent;
+  bool deleting=false;
 
   setFromJSON(Map json) {
     this.title = json['title'];

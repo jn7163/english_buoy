@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import '../store/article.dart';
 import '../models/article_titles.dart';
@@ -63,28 +63,24 @@ class _AddArticlePageState extends State<AddArticlePage> {
   }
 
   Widget _getLoadingOr() {
-    if (_isEnable) {
-      return SingleChildScrollView(
-        child: Center(
-            child: Column(
-          children: <Widget>[
-            TextField(
-              textInputAction: TextInputAction.newline,
-              enabled: _isEnable,
-              autofocus: false,
-              // 不要默认焦点, 避免键盘弹出来
-              controller: _articleController,
-              maxLines: null,
-              keyboardType: TextInputType.multiline,
-            )
-          ],
-        )),
-      );
-    }
-    return SpinKitChasingDots(
-      color: Colors.blueGrey,
-      size: 50.0,
-    );
+    return ModalProgressHUD(
+        child: SingleChildScrollView(
+          child: Center(
+              child: Column(
+            children: <Widget>[
+              TextField(
+                textInputAction: TextInputAction.newline,
+                enabled: _isEnable,
+                autofocus: false,
+                // 不要默认焦点, 避免键盘弹出来
+                controller: _articleController,
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+              )
+            ],
+          )),
+        ),
+        inAsyncCall: !_isEnable);
   }
 
   @override

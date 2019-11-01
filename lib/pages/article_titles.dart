@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:ebuoy/components/article_titles_app_bar.dart';
 import 'package:ebuoy/models/search.dart';
+
 //import '../scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 
@@ -114,15 +115,16 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
                         : Colors.transparent,
                     child: ListTile(
                       trailing: ArticleYoutubeAvatar(
-                        youtubeURL: d.youtube,
-                        avatar: d.avatar,
-                      ),
+                          youtubeURL: d.youtube, avatar: d.avatar, loading: d.deleting),
                       dense: false,
                       onTap: () {
                         articleTitles.setSelectedArticleID(d.id);
                         Navigator.pushNamed(context, '/Article', arguments: d.id);
                       },
-                      leading: Text(d.percent.toStringAsFixed(d.percent.truncateToDouble() == d.percent ? 0 : 1)+"%",
+                      leading: Text(
+                          d.percent.toStringAsFixed(
+                                  d.percent.truncateToDouble() == d.percent ? 0 : 1) +
+                              "%",
                           style: TextStyle(
                             color: Colors.blueGrey,
                           )),
@@ -269,6 +271,9 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   }
 
   _delete(ArticleTitle articleTitle) async {
+    setState(() {
+      articleTitle.deleting = true;
+    });
     await articleTitle.deleteArticle(context);
     articleTitles.removeFromList(articleTitle);
   }
