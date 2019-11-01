@@ -11,6 +11,7 @@ import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/article_status.dart';
 import '../models/articles.dart';
+import '../models/setting.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
@@ -27,6 +28,7 @@ class _ArticlePageState extends State<ArticlePage> {
   Article _article;
   ScrollController _controller;
   ArticleStatus articleStatus;
+  Setting setting;
 
   @override
   void initState() {
@@ -34,6 +36,7 @@ class _ArticlePageState extends State<ArticlePage> {
     _controller = ScrollController();
     Future.delayed(Duration.zero, () {
       articleStatus = Provider.of<ArticleStatus>(context, listen: false);
+      setting = Provider.of<Setting>(context, listen: false);
       loadArticleByID();
     });
   }
@@ -110,8 +113,8 @@ class _ArticlePageState extends State<ArticlePage> {
               context: context,
               videoId: YoutubePlayer.convertUrlToId(_article.youtube),
               flags: YoutubePlayerFlags(
-                //不要自动播放
-                autoPlay: false,
+                //自动播放
+                autoPlay: setting.isAutoplay,
                 // 下半部分小小的进度条
                 showVideoProgressIndicator: true,
                 // 允许全屏

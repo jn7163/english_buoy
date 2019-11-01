@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:ebuoy/components/config_autoplay.dart';
 import 'package:ebuoy/components/config_dark_theme.dart';
 import 'package:ebuoy/components/config_jump_to_word.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -74,6 +75,7 @@ class SignInPageState extends State<SignInPage> {
             ),
             ConfigJumpToWord(),
             ConfigDarkTheme(),
+            ConfigAutoPlay(),
             RaisedButton(
               child: const Text('Logout'),
               onPressed: _handleSignOut,
