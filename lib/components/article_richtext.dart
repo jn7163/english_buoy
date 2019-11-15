@@ -14,6 +14,24 @@ import '../models/article.dart';
 import '../models/word.dart';
 import '../models/sentence.dart';
 
+// no need learn and no need add blank
+final noNeedBlank = <String>[
+  "'ll",
+  "'s",
+  "'re",
+  "'m",
+  "'d",
+  "'ve",
+  "n't",
+  ".",
+  "!",
+  ",",
+  ":",
+  "?",
+  "?",
+  "…",
+];
+
 class ArticleRichText extends StatefulWidget {
   ArticleRichText({Key key, @required this.article, @required this.sentences}) : super(key: key);
   final Article article;
@@ -25,24 +43,6 @@ class ArticleRichText extends StatefulWidget {
 
 class ArticleRichTextState extends State<ArticleRichText> {
   Map seekTextSpanTapStatus = Map<String, bool>();
-
-  // 这些符号前面不要加空格
-  final List _noNeedBlank = const [
-    "'ll",
-    "'s",
-    "'re",
-    "'m",
-    "'d",
-    "'ve",
-    "n't",
-    ".",
-    "!",
-    ",",
-    ":",
-    "?",
-    "?",
-    "…",
-  ];
 
   RegExp _startExp = RegExp(r"00[0-9]+\.[0-9]+00");
 
@@ -156,7 +156,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
   String _getBlank(String text) {
     String blank = " ";
     //if (_noNeedExp.hasMatch(text)) blank = "";
-    if (_noNeedBlank.contains(text)) blank = "";
+    if (noNeedBlank.contains(text)) blank = "";
     return blank;
   }
 
@@ -186,7 +186,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
     // 如果是词中没有字母, 默认样式
     if (!hasLetter(word.text)) return defaultTextStyle;
     // 无需前置空格的单词, 默认样式
-    if (this._noNeedBlank.contains(word.text)) return defaultTextStyle;
+    if (noNeedBlank.contains(word.text)) return defaultTextStyle;
     // 已经学会且没有选中, 不用任何修改
     if (word.learned == true && !isSelected) return defaultTextStyle;
 

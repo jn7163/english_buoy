@@ -254,6 +254,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
             child: RefreshIndicator(onRefresh: _refresh, child: getArticleTitles()),
             inAsyncCall: allLoading.loading);
       }),
+      /*
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/AddArticle');
@@ -261,6 +262,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
         tooltip: 'add article',
         child: Icon(Icons.add, color: Theme.of(context).primaryTextTheme.title.color),
       ),
+       */
     );
     return scaffold;
   }

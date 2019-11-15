@@ -6,6 +6,7 @@ import './word.dart';
 import 'package:dio/dio.dart';
 import '../store/store.dart';
 import './sentence.dart';
+import '../components/article_richtext.dart';
 
 class Article {
   int unlearnedCount;
@@ -92,13 +93,14 @@ class Article {
     List<String> allWords = [];
     for (int i = 0; i < this.sentences.length; i++) {
       List<String> l = this.sentences[i].words.map((d) {
-        if (!d.learned && regHasLetter.hasMatch(d.text)) {
+        if (!d.learned && regHasLetter.hasMatch(d.text) && !noNeedBlank.contains(d.text)) {
           return d.text.toLowerCase();
         }
         return "";
       }).toList();
       allWords = List.from(allWords)..addAll(l);
     }
+    debugPrint("unleard words="+allWords.toSet().toString());
     unlearnedCount = allWords.toSet().length;
     unlearnedCount--;
     // 设置本地的列表
