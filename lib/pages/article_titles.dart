@@ -141,7 +141,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
                   itemScrollController: itemScrollController,
                   itemPositionsListener: itemPositionListener,
                 )
-              : Container(),
+              : [ListTile(leading: Text("loading"))],
           OutlineButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/Guid');
