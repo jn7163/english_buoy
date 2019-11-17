@@ -68,7 +68,9 @@ class SignInPageState extends State<SignInPage> {
           children: [
             ListTile(
               leading: CircleAvatar(
-                backgroundImage: NetworkImage(oauthInfo.avatarURL),
+                backgroundImage: NetworkImage(oauthInfo.avatarURL == null
+                    ? "https://www.bigzhu.net/images/gou.jpg"
+                    : oauthInfo.avatarURL),
               ),
               title: Text(oauthInfo.name),
               subtitle: Text(oauthInfo.email),

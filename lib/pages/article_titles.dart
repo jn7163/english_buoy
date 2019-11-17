@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:ebuoy/components/article_titles_app_bar.dart';
 import 'package:ebuoy/models/search.dart';
 
-//import '../scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 
 import '../components/article_youtube_avatar.dart';
@@ -12,7 +11,6 @@ import '../components/article_youtube_avatar.dart';
 import '../models/articles.dart';
 import '../models/loading.dart';
 import 'package:ebuoy/store/article.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -100,119 +98,56 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
           // filterTitles = articleTitles.titles.where((d) => d.unlearnedCount > 0).toList();
           filterTitles = articleTitles.titles;
         }
-        // 判断显示说明文字还是列表
-        if (filterTitles.length != 0) {
-          return ScrollablePositionedList.builder(
-            itemCount: filterTitles.length,
-            itemBuilder: (context, index) {
-              var d = filterTitles[index];
-              return Slidable(
-                actionPane: SlidableDrawerActionPane(),
-                actionExtentRatio: 0.25,
-                child: Ink(
-                    color: articleTitles.selectedArticleID == d.id
-                        ? Theme.of(context).highlightColor
-                        : Colors.transparent,
-                    child: ListTile(
-                      trailing: ArticleYoutubeAvatar(
-                          youtubeURL: d.youtube, avatar: d.avatar, loading: d.deleting),
-                      dense: false,
-                      onTap: () {
-                        articleTitles.setSelectedArticleID(d.id);
-                        Navigator.pushNamed(context, '/Article', arguments: d.id);
-                      },
-                      leading: Text(
-                          d.percent.toStringAsFixed(
-                                  d.percent.truncateToDouble() == d.percent ? 0 : 1) +
-                              "%",
-                          style: TextStyle(
-                            color: Colors.blueGrey,
+        return Column(children: [
+          filterTitles.length > 0
+              ? ScrollablePositionedList.builder(
+                  itemCount: filterTitles.length,
+                  itemBuilder: (context, index) {
+                    var d = filterTitles[index];
+                    return Slidable(
+                      actionPane: SlidableDrawerActionPane(),
+                      actionExtentRatio: 0.25,
+                      child: Ink(
+                          color: articleTitles.selectedArticleID == d.id
+                              ? Theme.of(context).highlightColor
+                              : Colors.transparent,
+                          child: ListTile(
+                            trailing: ArticleYoutubeAvatar(
+                                youtubeURL: d.youtube, avatar: d.avatar, loading: d.deleting),
+                            dense: false,
+                            onTap: () {
+                              articleTitles.setSelectedArticleID(d.id);
+                              Navigator.pushNamed(context, '/Article', arguments: d.id);
+                            },
+                            leading: Text(
+                                d.percent.toStringAsFixed(
+                                        d.percent.truncateToDouble() == d.percent ? 0 : 1) +
+                                    "%",
+                                style: TextStyle(
+                                  color: Colors.blueGrey,
+                                )),
+                            title: Text(d.title), // 用的 TextTheme.subhead
                           )),
-                      title: Text(d.title), // 用的 TextTheme.subhead
-                    )),
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                    caption: 'Delete',
-                    color: Colors.red,
-                    icon: Icons.delete,
-                    onTap: () => _delete(d),
-                  ),
-                ],
-              );
-            },
-            itemScrollController: itemScrollController,
-            itemPositionsListener: itemPositionListener,
-          );
-
-          /*
-          return ListView(
-            // 收到分享时候, 把分享显示出来
-            controller: _scrollController,
-            children: filterTitles.map((d) {
-              return Ink(
-                  color: articleTitles.selectedArticleID == d.id
-                      ? Theme.of(context).highlightColor
-                      : Colors.transparent,
-                  child: ListTile(
-                    trailing: ArticleYoutubeAvatar(
-                      youtubeURL: d.youtube,
-                      avatar: d.avatar,
-                    ),
-                    dense: false,
-                    onTap: () {
-                      articleTitles.setSelectedArticleID(d.id);
-                      Navigator.pushNamed(context, '/Article', arguments: d.id);
-                    },
-                    leading: Text(d.unlearnedCount.toString(),
-                        style: TextStyle(
-                          color: Colors.blueGrey,
-                        )),
-                    title: Text(d.title), // 用的 TextTheme.subhead
-                  ));
-            }).toList(),
-          );
-          */
-        }
-        return Center(
-            child: Container(
-                margin: EdgeInsets.only(top: 5.0, left: 5.0, bottom: 5, right: 5),
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Image.asset(
-                    'assets/images/logo.png',
-                    width: 96.0,
-                    height: 96.0,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(20.0),
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          style: Theme.of(context).textTheme.body1,
-                          text: "You can share YouTube ",
-                        ),
-                        WidgetSpan(
-                          child: Icon(
-                            FontAwesomeIcons.youtube,
-                            color: Colors.red,
-                          ),
-                        ),
-                        TextSpan(
-                          style: Theme.of(context).textTheme.body1,
-                          text: "  video to here",
+                      secondaryActions: <Widget>[
+                        IconSlideAction(
+                          caption: 'Delete',
+                          color: Colors.red,
+                          icon: Icons.delete,
+                          onTap: () => _delete(d),
                         ),
                       ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(20.0),
-                  ),
-                  RichText(
-                      text: TextSpan(
-                          style: Theme.of(context).textTheme.body1,
-                          text: "Or click Add button to add English article"))
-                ])));
+                    );
+                  },
+                  itemScrollController: itemScrollController,
+                  itemPositionsListener: itemPositionListener,
+                )
+              : Container(),
+          OutlineButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/Guid');
+              },
+              child: Text("want more..."))
+        ]);
       });
     });
   }

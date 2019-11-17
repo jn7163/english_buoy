@@ -25,7 +25,9 @@ class OauthInfoWidget extends StatelessWidget {
             child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CircleAvatar(
-                  backgroundImage: NetworkImage(oauthInfo.avatarURL),
+                  backgroundImage: NetworkImage(oauthInfo.avatarURL == null
+                      ? "https://www.bigzhu.net/images/gou.jpg"
+                      : oauthInfo.avatarURL),
                 )));
       }
     });

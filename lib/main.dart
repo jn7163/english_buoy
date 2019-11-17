@@ -14,6 +14,7 @@ import './pages/article_titles.dart';
 import './pages/article.dart';
 import './pages/sign.dart';
 import './pages/add_article.dart';
+import './pages/guid.dart';
 
 import './themes/dark.dart';
 import './themes/bright.dart';
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
             title: 'English Buoy',
             theme: setting.isDark ? darkTheme : brightTheme,
             home: WaitingPage(),
+            //home: GuidPage(),
             onGenerateRoute: _getRoute,
           );
         }));
@@ -59,6 +61,8 @@ class MyApp extends StatelessWidget {
 
   Route _getRoute(RouteSettings settings) {
     switch (settings.name) {
+      case '/Guid':
+        return _buildRoute(settings, GuidPage());
       case '/Waiting':
         return _buildRoute(settings, WaitingPage());
       case '/ArticleTitles':

@@ -28,7 +28,6 @@ final noNeedBlank = <String>[
   ",",
   ":",
   "?",
-  "?",
   "…",
 ];
 
