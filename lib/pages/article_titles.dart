@@ -41,9 +41,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      //initReceiveShare();
-      // if don't have data, get from server
-      // sync from the waiting page, this no need, maybe delete
       loading = Provider.of<Loading>(context);
       articleTitles = Provider.of<ArticleTitles>(context, listen: false);
       if (articleTitles.titles.length == 0) {
@@ -98,56 +95,49 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
           // filterTitles = articleTitles.titles.where((d) => d.unlearnedCount > 0).toList();
           filterTitles = articleTitles.titles;
         }
-        return Column(children: [
-          filterTitles.length > 0
-              ? ScrollablePositionedList.builder(
-                  itemCount: filterTitles.length,
-                  itemBuilder: (context, index) {
-                    var d = filterTitles[index];
-                    return Slidable(
-                      actionPane: SlidableDrawerActionPane(),
-                      actionExtentRatio: 0.25,
-                      child: Ink(
-                          color: articleTitles.selectedArticleID == d.id
-                              ? Theme.of(context).highlightColor
-                              : Colors.transparent,
-                          child: ListTile(
-                            trailing: ArticleYoutubeAvatar(
-                                youtubeURL: d.youtube, avatar: d.avatar, loading: d.deleting),
-                            dense: false,
-                            onTap: () {
-                              articleTitles.setSelectedArticleID(d.id);
-                              Navigator.pushNamed(context, '/Article', arguments: d.id);
-                            },
-                            leading: Text(
-                                d.percent.toStringAsFixed(
-                                        d.percent.truncateToDouble() == d.percent ? 0 : 1) +
-                                    "%",
-                                style: TextStyle(
-                                  color: Colors.blueGrey,
-                                )),
-                            title: Text(d.title), // 用的 TextTheme.subhead
-                          )),
-                      secondaryActions: <Widget>[
-                        IconSlideAction(
-                          caption: 'Delete',
-                          color: Colors.red,
-                          icon: Icons.delete,
-                          onTap: () => _delete(d),
-                        ),
-                      ],
-                    );
-                  },
-                  itemScrollController: itemScrollController,
-                  itemPositionsListener: itemPositionListener,
-                )
-              : [ListTile(leading: Text("loading"))],
-          OutlineButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/Guid');
-              },
-              child: Text("want more..."))
-        ]);
+        return filterTitles.length > 0
+            ? ScrollablePositionedList.builder(
+                itemCount: filterTitles.length,
+                itemBuilder: (context, index) {
+                  var d = filterTitles[index];
+                  return Slidable(
+                    actionPane: SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.25,
+                    child: Ink(
+                        color: articleTitles.selectedArticleID == d.id
+                            ? Theme.of(context).highlightColor
+                            : Colors.transparent,
+                        child: ListTile(
+                          trailing: ArticleYoutubeAvatar(
+                              youtubeURL: d.youtube, avatar: d.avatar, loading: d.deleting),
+                          dense: false,
+                          onTap: () {
+                            articleTitles.setSelectedArticleID(d.id);
+                            Navigator.pushNamed(context, '/Article', arguments: d.id);
+                          },
+                          leading: Text(
+                              d.percent.toStringAsFixed(
+                                      d.percent.truncateToDouble() == d.percent ? 0 : 1) +
+                                  "%",
+                              style: TextStyle(
+                                color: Colors.blueGrey,
+                              )),
+                          title: Text(d.title), // 用的 TextTheme.subhead
+                        )),
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: 'Delete',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () => _delete(d),
+                      ),
+                    ],
+                  );
+                },
+                itemScrollController: itemScrollController,
+                itemPositionsListener: itemPositionListener,
+              )
+            : Container();
       });
     });
   }
@@ -181,6 +171,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
 
   @override
   Widget build(BuildContext context) {
+    articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     print("build article titles");
     Scaffold scaffold = Scaffold(
       appBar: ArticleListsAppBar(),
@@ -189,15 +180,15 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
             child: RefreshIndicator(onRefresh: _refresh, child: getArticleTitles()),
             inAsyncCall: allLoading.loading);
       }),
-      /*
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/AddArticle');
-        },
-        tooltip: 'add article',
-        child: Icon(Icons.add, color: Theme.of(context).primaryTextTheme.title.color),
-      ),
-       */
+      floatingActionButton: Visibility(
+          visible: articleTitles.titles.length > 10 ? false : true,
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/Guid');
+            },
+            tooltip: 'need more',
+            child: Icon(Icons.help_outline, color: Theme.of(context).primaryTextTheme.title.color),
+          )),
     );
     return scaffold;
   }

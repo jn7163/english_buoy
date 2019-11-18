@@ -3,6 +3,11 @@
 利用 NGSL 来学习的 APP
 
 ## Change Log
+### v1.2.7+2
+- fixbug: sometime google user don't have avatar, avoid app throw error
+- fixbug: all words tag to leared but leared percent still not 100%
+- Auto add some example video to new user
+- add how to add YouTube to Ebuoy image tutorial
 ### v1.2.7+1
 - 默认自动播放, 并增加自动播放选项
 - 删除时候加入删除 spin 动画
