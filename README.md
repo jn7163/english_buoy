@@ -3,6 +3,8 @@
 利用 NGSL 来学习的 APP
 
 ## Change Log
+### v1.2.8
+- default autoplay
 ### v1.2.7+2
 - fixbug: sometime google user don't have avatar, avoid app throw error
 - fixbug: all words tag to leared but leared percent still not 100%

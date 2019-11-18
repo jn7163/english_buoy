@@ -36,6 +36,7 @@ class Setting with ChangeNotifier {
     bool dark = await getLocalBool(isDarkKey);
     setIsDark(dark);
     bool autoplay = await getLocalBool(isAutoplayKey);
-    setIsAutoplay(autoplay);
+    // default is true, so when local not set or false, make it is true
+    setIsAutoplay(!autoplay);
   }
 }
