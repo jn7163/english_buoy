@@ -9,3 +9,11 @@ getLocalBool(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getBool(key) ?? false;
 }
+
+getLocalBoolDefaultTrue(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (prefs.containsKey(key))
+    return prefs.getBool(key);
+  else
+    return true;
+}

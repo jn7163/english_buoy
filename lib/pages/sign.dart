@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:ebuoy/components/config_autoplay.dart';
 import 'package:ebuoy/components/config_dark_theme.dart';
-import 'package:ebuoy/components/config_jump_to_word.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -75,7 +74,7 @@ class SignInPageState extends State<SignInPage> {
               title: Text(oauthInfo.name),
               subtitle: Text(oauthInfo.email),
             ),
-            ConfigJumpToWord(),
+            //ConfigJumpToWord(),
             ConfigDarkTheme(),
             ConfigAutoPlay(),
             RaisedButton(
@@ -103,7 +102,7 @@ class SignInPageState extends State<SignInPage> {
     print("build sign");
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Google Sign In'),
+          title: const Text('Google Sign In And Config'),
         ),
         body: ConstrainedBox(
           constraints: const BoxConstraints.expand(),

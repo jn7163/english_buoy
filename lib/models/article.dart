@@ -43,10 +43,10 @@ class Article {
     // notifyListeners();
   }
 
-  // 分割 大约 10 个句子一组
+  // 分割 大约 1000 个句子一组, 关闭这个功能看是否会慢->遇到没分段的文章, 卡死了->改不改这里都会卡死
   split() {
     var len = sentences.length;
-    var size = 10;
+    var size = 1000;
     var i = 0;
 
     while (i < len) {

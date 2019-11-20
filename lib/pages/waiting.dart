@@ -29,15 +29,20 @@ class WaitingPageState extends State<WaitingPage> {
     super.initState();
     //注册分享监听
     initReceiveShare();
+    youtubeURL = null; //avoid repeating synchronization
     Future.delayed(Duration.zero, () {
-      // if don't have data, get from server
       articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+      syncArticleTitles()
+          .then((d) => Navigator.pushNamed(context, '/ArticleTitles', arguments: null));
+      /*
+      // if don't have data, get from server
       if (articleTitles.titles.length == 0) {
         syncArticleTitles()
             .then((d) => Navigator.pushNamed(context, '/ArticleTitles', arguments: youtubeURL));
       } else {
         Navigator.pushNamed(context, '/ArticleTitles', arguments: youtubeURL);
       }
+       */
     });
   }
 
@@ -64,7 +69,6 @@ class WaitingPageState extends State<WaitingPage> {
   void receiveShare(String sharedText) {
     if (sharedText == null) return;
     // 收到分享, 先跳转到 list 页面
-    // 跳转到 list 页
     youtubeURL = sharedText;
     Navigator.pushNamed(context, '/ArticleTitles', arguments: youtubeURL);
   }
@@ -72,7 +76,7 @@ class WaitingPageState extends State<WaitingPage> {
   Future syncArticleTitles() async {
     return articleTitles.syncServer(context).then((d) {}).catchError((e) {
       if (e.response.statusCode == 401) {
-        print("请登录");
+        print("must login");
         Navigator.pushNamed(context, '/Sign');
       }
     });
@@ -114,10 +118,12 @@ class WaitingPageState extends State<WaitingPage> {
               Padding(
                 padding: EdgeInsets.all(20.0),
               ),
+              /*
               RichText(
                   text: TextSpan(
                       style: Theme.of(context).textTheme.body1,
                       text: "Or click Add button to add English article"))
+               */
             ])));
   }
 

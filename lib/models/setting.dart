@@ -11,7 +11,7 @@ class Setting with ChangeNotifier {
 
   // 构造函数从缓存获取
   Setting() {
-    setFromLocal();
+    getFromLocal();
   }
   setIsAutoplay(bool v) async {
     await setLocalBool(isAutoplayKey, v);
@@ -30,13 +30,12 @@ class Setting with ChangeNotifier {
     notifyListeners();
   }
 
-  setFromLocal() async {
+  getFromLocal() async {
     bool jump = await getLocalBool(isJumpKey);
     setIsJump(jump);
     bool dark = await getLocalBool(isDarkKey);
     setIsDark(dark);
-    bool autoplay = await getLocalBool(isAutoplayKey);
-    // default is true, so when local not set or false, make it is true
-    setIsAutoplay(!autoplay);
+    bool autoplay = await getLocalBoolDefaultTrue(isAutoplayKey);
+    setIsAutoplay(autoplay);
   }
 }

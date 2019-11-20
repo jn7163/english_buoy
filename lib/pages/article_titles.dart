@@ -77,7 +77,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   Future _syncArticleTitles() async {
     return articleTitles.syncServer(context).catchError((e) {
       if (e.response.statusCode == 401) {
-        print("请登录");
+        print("must login");
         Navigator.pushNamed(context, '/Sign');
       }
     });

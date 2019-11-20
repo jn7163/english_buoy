@@ -3,16 +3,27 @@
 利用 NGSL 来学习的 APP
 
 ## Change Log
-### v1.2.8
-- default autoplay
-### v1.2.7+2
-- fixbug: sometime google user don't have avatar, avoid app throw error
-- fixbug: all words tag to leared but leared percent still not 100%
-- Auto add some example video to new user
-- add how to add YouTube to Ebuoy image tutorial
-### v1.2.7+1
-- 默认自动播放, 并增加自动播放选项
-- 删除时候加入删除 spin 动画
+
+v1.2.9+v1.2.9
+- Successfully avoid Flutter bug make the app crash
+- Make sure autoplay
+
+v1.2.8+v1.2.8
+- Default autoplay
+- Avoid the flutter pit and reduce the number of crashes
+- Don't sync the last article when restarting the app
+- Remove jump to word config
+
+v1.2.7+2
+- Fix bug: sometimes google user doesn't have an avatar, avoid app throw error
+- Fix bug: all words tag to learned but learned percent still not 100%
+- Auto-add some example video to a new user
+- Add how-to add YouTube to Ebuoy image tutorial
+
+v1.2.7+1
+- autoplay video and add autoplay config
+- show spin when deleting the article
+
 ### v1.2.6+26
 - 标记单词后，重新计算百分比
 - 调整播放图标样式
