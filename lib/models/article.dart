@@ -74,15 +74,12 @@ class Article {
     var response = await dio.get(Store.baseURL + "article/" + this.articleID.toString());
 
     this.setFromJSON(response.data);
-    // 获取以后, 就计算一遍未读数, 然后提交
-    // this._putUnlearnedCount(context);
     return response;
   }
 
   //计算已经学会百分比
-  computeLearnedPercent() {
+  computeLearnedPercent() {}
 
-  }
   // 计算未掌握单词数并提交
   Future _putUnlearnedCount(BuildContext context) async {
     if (articleID == null) {
@@ -93,14 +90,17 @@ class Article {
     List<String> allWords = [];
     for (int i = 0; i < this.sentences.length; i++) {
       List<String> l = this.sentences[i].words.map((d) {
-        if (!d.learned && regHasLetter.hasMatch(d.text) && !noNeedBlank.contains(d.text)) {
+        if (!d.learned &&
+            regHasLetter.hasMatch(d.text) &&
+            !noNeedBlank.contains(d.text) &&
+            d.text.length > 1) {
           return d.text.toLowerCase();
         }
         return "";
       }).toList();
       allWords = List.from(allWords)..addAll(l);
     }
-    debugPrint("unleard words="+allWords.toSet().toString());
+    debugPrint("unleard words=" + allWords.toSet().toString());
     unlearnedCount = allWords.toSet().length;
     unlearnedCount--;
     // 设置本地的列表

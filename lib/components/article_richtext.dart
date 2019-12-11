@@ -146,7 +146,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
         });
       };
     return TextSpan(
-        text: seekTextSpanTapStatus[time] ? "     ▶" : "     ▷",
+        text: seekTextSpanTapStatus[time] ? "   ▶" : "   ▷",
         // style: style,
         recognizer: recognizer);
   }
@@ -186,6 +186,8 @@ class ArticleRichTextState extends State<ArticleRichText> {
     if (!hasLetter(word.text)) return defaultTextStyle;
     // 无需前置空格的单词, 默认样式
     if (noNeedBlank.contains(word.text)) return defaultTextStyle;
+    // 只有一个字母, 默认样式
+    if (word.text.length == 1) return defaultTextStyle;
     // 已经学会且没有选中, 不用任何修改
     if (word.learned == true && !isSelected) return defaultTextStyle;
 
@@ -257,7 +259,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
     if (_startExp.hasMatch(text)) {
       star = getSeekTextSpan(context, text);
     } else {
-      star = TextSpan(text: "       ");
+      star = TextSpan(text: "");
     }
     return star;
   }

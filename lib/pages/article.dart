@@ -56,23 +56,21 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   loadArticleByID() {
-    if (_article != null) return;
     var articles = Provider.of<Articles>(context, listen: false);
     setState(() {
       _article = articles.articles[widget.id];
     });
-    if (_article == null) {
-      var article = Article();
-      article.getArticleByID(context, widget.id).then((d) {
-        articles.set(article);
-        setState(() {
-          _article = article;
-        });
-        // 更新本地未学单词数
-        var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-        articleTitles.setUnlearnedCountByArticleID(article.unlearnedCount, article.articleID);
+    // always update from server
+    var article = Article();
+    article.getArticleByID(context, widget.id).then((d) {
+      articles.set(article);
+      setState(() {
+        _article = article;
       });
-    }
+      // 更新本地未学单词数
+      var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+      articleTitles.setUnlearnedCountByArticleID(article.unlearnedCount, article.articleID);
+    });
   }
 
   Widget getWrapLoading() {
