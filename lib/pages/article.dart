@@ -94,9 +94,10 @@ class _ArticlePageState extends State<ArticlePage> {
           Padding(
               padding: EdgeInsets.only(top: 5.0, left: 5.0, bottom: 5, right: 5),
               child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: _article.sentences.map((d) {
-                return ArticleRichText(article: _article, sentence: d);
-              }).toList()))
+                    return ArticleRichText(article: _article, sentence: d);
+                  }).toList()))
         ]));
   }
 

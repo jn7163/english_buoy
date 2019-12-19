@@ -35,53 +35,91 @@ class NotMasteredVocabulary extends StatelessWidget {
       });
     });
     // 排序
-    mustLearnWords.sort((a, b) => a.level.toString().compareTo(b.level.toString()));
-    return Column(children: [
-      Table(
-          border: TableBorder.all(color: Colors.black12),
-          columnWidths: {1: FlexColumnWidth(2)},
-          children: mustLearnWords.map((d) {
-            var sentence = Sentence('', [d]);
-            return TableRow(children: [
-              Center(
-                  child: Text(
-                d.level.toString(),
-                style: Theme.of(context).textTheme.display3,
-              )),
-              Center(child: ArticleRichText(article: article, sentence: sentence)),
-              IconButton(
-                onPressed: () => Scrollable.ensureVisible(d.belongSentence.c),
-                icon: Icon(Icons.find_in_page),
-              )
-            ]);
-          }).toList()),
-      Table(
-          border: TableBorder.all(color: Colors.black12),
-          columnWidths: {1: FlexColumnWidth(2)},
-          children: needLearnWords.map((d) {
-            var sentence = Sentence('', [d]);
-            return TableRow(children: [
-              Center(
-                  child: Text(
-                "--",
-                style: Theme.of(context).textTheme.display3,
-              )),
-              Center(child: ArticleRichText(article: article, sentence: sentence)),
-              IconButton(
-                onPressed: () => Scrollable.ensureVisible(d.belongSentence.c),
-                icon: Icon(Icons.find_in_page),
-              ),
-            ]);
-          }).toList()),
+    mustLearnWords.sort((b, a) => a.level.toString().compareTo(b.level.toString()));
+    List<Word> allWords = mustLearnWords + needLearnWords;
+    bool hideSome = false;
+    if (allWords.length > 10) {
+      hideSome = true;
+      allWords = allWords.sublist(0, 10);
+    }
+
+    TableRow titleRow = TableRow(children: [
+      Container(
+          height: 34,
+          child: Center(
+              child: Text(
+            "NESL",
+            style: Theme.of(context).textTheme.display2,
+          ))),
+      Container(
+          height: 34,
+          child: Center(
+              child: Text(
+            "VOCABULARIES",
+            style: Theme.of(context).textTheme.display2,
+          ))),
+      Container(
+          height: 34,
+          child: Center(
+              child: Text(
+            "FIND IN",
+            style: Theme.of(context).textTheme.display2,
+          ))),
     ]);
-    /*
-    return Consumer<NotMasteredVocabularies>(builder: (context, notMasteredVocabularies, child) {
-      return Column(
-          children: notMasteredVocabularies.notMasteredVocabularies.entries.map((d) {
-        var sentence = Sentence('', [d.value["word"]]);
-        return ArticleRichText(article: article, sentence: sentence);
-      }).toList());
-    });
-     */
+
+    List<TableRow> allWordRows = allWords.map((d) {
+      var sentence = Sentence('', [d]);
+      return TableRow(children: [
+        Container(
+            height: 34,
+            child: Center(
+                child: Text(
+              d.level == 0 ? "-" : d.level.toString(),
+              style: Theme.of(context).textTheme.display2,
+            ))),
+        Container(
+            height: 34,
+            child: Center(child: ArticleRichText(article: article, sentence: sentence))),
+        Container(
+            height: 34,
+            child: GestureDetector(
+                onTap: () => Scrollable.ensureVisible(d.belongSentence.c),
+                child: Icon(
+                  Icons.find_in_page,
+                  color: Color(0xFF5F8A8B),
+                ))),
+      ]);
+    }).toList();
+    TableRow moreRow = TableRow(children: [
+      Container(
+          height: 34,
+          child: Center(
+              child: Text(
+            "...",
+            style: Theme.of(context).textTheme.display2,
+          ))),
+      Container(
+          height: 34,
+          child: Center(
+              child: Text(
+            "...",
+            style: Theme.of(context).textTheme.display2,
+          ))),
+      Container(
+          height: 34,
+          child: Center(
+              child: Text(
+            "...",
+            style: Theme.of(context).textTheme.display2,
+          ))),
+    ]);
+
+    List<TableRow> renderWordRows = [titleRow] + allWordRows;
+    if (hideSome) renderWordRows = renderWordRows + [moreRow];
+
+    return Table(
+        border: TableBorder.all(color: Colors.teal),
+        columnWidths: {1: FlexColumnWidth(2)},
+        children: renderWordRows);
   }
 }
