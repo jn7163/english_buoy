@@ -20,7 +20,7 @@ class ArticleTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 8, top: this.article.youtube == "" ? 10 : 260),
+      padding: EdgeInsets.only(left: 8, top: this.article.youtube == "" ? 10 : 10),
       color: Theme.of(context).primaryColor,
       child: ListTile(
           onTap: () {

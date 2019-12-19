@@ -21,11 +21,13 @@ class NotMasteredVocabulary extends StatelessWidget {
         // not mastered words
         if (!w.learned && w.text.length > 1 && !noNeedBlank.contains(w.text) && hasLetter(w.text)) {
           if (w.level != null && w.level != 0 && !mustLearnUnique.contains(w.text.toLowerCase())) {
-            w.belongSentence=s;
+            w.belongSentence = s;
             mustLearnWords.add(w);
             mustLearnUnique.add(w.text.toLowerCase());
-          } else if (!needLearnUnique.contains(w.text.toLowerCase())) {
-            w.belongSentence=s;
+          } else if ((w.level == null || w.level == 0) &&
+              !needLearnUnique.contains(w.text.toLowerCase())) {
+            if (w.text == "panic") print(w.level);
+            w.belongSentence = s;
             needLearnWords.add(w);
             needLearnUnique.add(w.text.toLowerCase());
           }
@@ -47,7 +49,10 @@ class NotMasteredVocabulary extends StatelessWidget {
                 style: Theme.of(context).textTheme.display3,
               )),
               Center(child: ArticleRichText(article: article, sentence: sentence)),
-              Center(child: Text("⤵", style: Theme.of(context).textTheme.display3)),
+              IconButton(
+                onPressed: () => Scrollable.ensureVisible(d.belongSentence.c),
+                icon: Icon(Icons.find_in_page),
+              )
             ]);
           }).toList()),
       Table(
@@ -62,13 +67,10 @@ class NotMasteredVocabulary extends StatelessWidget {
                 style: Theme.of(context).textTheme.display3,
               )),
               Center(child: ArticleRichText(article: article, sentence: sentence)),
-              Center(
-                  child: FlatButton(
-                      onPressed: () => Scrollable.ensureVisible(d.belongSentence.c),
-                      child: Text(
-                        "↙",
-                        style: Theme.of(context).textTheme.display3,
-                      ))),
+              IconButton(
+                onPressed: () => Scrollable.ensureVisible(d.belongSentence.c),
+                icon: Icon(Icons.find_in_page),
+              ),
             ]);
           }).toList()),
     ]);

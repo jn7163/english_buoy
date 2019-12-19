@@ -78,7 +78,8 @@ class _ArticlePageState extends State<ArticlePage> {
     return ModalProgressHUD(
         child: _article == null
             ? Container() //这里可以搞一个动画或者什么效果
-            : Stack(children: [getScrollView(), getYouTube()]),
+            //: Stack(children: [getScrollView(), getYouTube()]),
+            : Column(children: [getYouTube(), Expanded(child: getScrollView())]),
         inAsyncCall: _article == null);
   }
 
