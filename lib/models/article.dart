@@ -6,7 +6,7 @@ import './word.dart';
 import 'package:dio/dio.dart';
 import '../store/store.dart';
 import './sentence.dart';
-import '../components/article_richtext.dart';
+import '../components/article_sentences.dart';
 
 class Article with ChangeNotifier {
   int unlearnedCount;

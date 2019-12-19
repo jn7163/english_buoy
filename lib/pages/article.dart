@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:ebuoy/components/article_richtext.dart';
+import 'package:ebuoy/components/article_sentences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -93,11 +93,7 @@ class _ArticlePageState extends State<ArticlePage> {
               child: NotMasteredVocabulary(article: _article)),
           Padding(
               padding: EdgeInsets.only(top: 5.0, left: 5.0, bottom: 5, right: 5),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _article.sentences.map((d) {
-                    return ArticleRichText(article: _article, sentence: d);
-                  }).toList()))
+              child: ArticleSentences(article: _article, sentences: _article.sentences))
         ]));
   }
 

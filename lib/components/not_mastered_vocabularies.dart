@@ -1,5 +1,5 @@
 import 'package:ebuoy/models/article.dart';
-import 'package:ebuoy/components/article_richtext.dart';
+import 'package:ebuoy/components/article_sentences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/sentence.dart';
@@ -9,6 +9,33 @@ import '../models/word.dart';
 class NotMasteredVocabulary extends StatelessWidget {
   const NotMasteredVocabulary({Key key, @required this.article}) : super(key: key);
   final Article article;
+
+  TableRow getTableRow(BuildContext context, String one, String two, String three) {
+    TableRow row = TableRow(children: [
+      Container(
+          height: 34,
+          child: Center(
+              child: Text(
+            one,
+            style: Theme.of(context).textTheme.display2,
+          ))),
+      Container(
+          height: 34,
+          child: Center(
+              child: Text(
+            two,
+            style: Theme.of(context).textTheme.display2,
+          ))),
+      Container(
+          height: 34,
+          child: Center(
+              child: Text(
+            three,
+            style: Theme.of(context).textTheme.display2,
+          ))),
+    ]);
+    return row;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,29 +70,7 @@ class NotMasteredVocabulary extends StatelessWidget {
       allWords = allWords.sublist(0, 10);
     }
 
-    TableRow titleRow = TableRow(children: [
-      Container(
-          height: 34,
-          child: Center(
-              child: Text(
-            "NESL",
-            style: Theme.of(context).textTheme.display2,
-          ))),
-      Container(
-          height: 34,
-          child: Center(
-              child: Text(
-            "VOCABULARIES",
-            style: Theme.of(context).textTheme.display2,
-          ))),
-      Container(
-          height: 34,
-          child: Center(
-              child: Text(
-            "FIND IN",
-            style: Theme.of(context).textTheme.display2,
-          ))),
-    ]);
+    TableRow titleRow = getTableRow(context, "NGSL", "WORDS", "FIND");
 
     List<TableRow> allWordRows = allWords.map((d) {
       var sentence = Sentence('', [d]);
@@ -79,7 +84,7 @@ class NotMasteredVocabulary extends StatelessWidget {
             ))),
         Container(
             height: 34,
-            child: Center(child: ArticleRichText(article: article, sentence: sentence))),
+            child: Center(child: ArticleSentences(article: article, sentences: [sentence]))),
         Container(
             height: 34,
             child: GestureDetector(
@@ -90,31 +95,10 @@ class NotMasteredVocabulary extends StatelessWidget {
                 ))),
       ]);
     }).toList();
-    TableRow moreRow = TableRow(children: [
-      Container(
-          height: 34,
-          child: Center(
-              child: Text(
-            "...",
-            style: Theme.of(context).textTheme.display2,
-          ))),
-      Container(
-          height: 34,
-          child: Center(
-              child: Text(
-            "...",
-            style: Theme.of(context).textTheme.display2,
-          ))),
-      Container(
-          height: 34,
-          child: Center(
-              child: Text(
-            "...",
-            style: Theme.of(context).textTheme.display2,
-          ))),
-    ]);
+    TableRow moreRow = getTableRow(context, "...", "...", "...");
 
-    List<TableRow> renderWordRows = [titleRow] + allWordRows;
+    List<TableRow> renderWordRows =
+        allWordRows.length != 0 ? [titleRow] + allWordRows : allWordRows;
     if (hideSome) renderWordRows = renderWordRows + [moreRow];
 
     return Table(
