@@ -5,6 +5,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../components/article_top_bar.dart';
+import '../components/not_mastered_vocabularies.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import '../models/article_titles.dart';
@@ -86,17 +87,13 @@ class _ArticlePageState extends State<ArticlePage> {
         controller: _controller,
         child: Column(children: [
           ArticleTopBar(article: _article),
+          NotMasteredVocabulary(article: _article),
           Padding(
               padding: EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
-              child: Consumer<ArticleTitles>(builder: (context, articleTitles, _) {
-                if (articleTitles.titles.length != 0) {
-                  return Column(
-                      children: _article.splitSentences.map((d) {
-                    return ArticleRichText(article: _article, sentences: d);
-                  }).toList());
-                }
-                return Text('some error!');
-              }))
+              child: Column(
+                  children: _article.sentences.map((d) {
+                return ArticleRichText(article: _article, sentence: d);
+              }).toList()))
         ]));
   }
 

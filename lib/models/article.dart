@@ -8,14 +8,13 @@ import '../store/store.dart';
 import './sentence.dart';
 import '../components/article_richtext.dart';
 
-class Article {
+class Article with ChangeNotifier {
   int unlearnedCount;
   int articleID;
 
   // 文章中的文字内容
   // List words = [];
   List<Sentence> sentences;
-  List<List<Sentence>> splitSentences = [];
 
   // 标题
   String title;
@@ -39,25 +38,7 @@ class Article {
     this.unlearnedCount = json['UnlearnedCount'];
     this.avatar = json['Avatar'];
     this.wordCount = json['WordCount'];
-    split();
     // notifyListeners();
-  }
-
-  // 分割 大约 1000 个句子一组, 关闭这个功能看是否会慢->遇到没分段的文章, 卡死了->改不改这里都会卡死
-  split() {
-    var len = sentences.length;
-    var size = 1000;
-    var i = 0;
-
-    while (i < len) {
-      var end = i + size;
-      while (end < len) {
-        end++;
-      }
-      end = (i + size < len) ? end : len;
-      splitSentences.add(sentences.sublist(i, end));
-      i += end;
-    }
   }
 
   clear() {

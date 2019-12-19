@@ -8,6 +8,7 @@ import './models/article_titles.dart';
 import './models/articles.dart';
 import './models/setting.dart';
 import './models/article_status.dart';
+import './models/not_mastered_vocabularis.dart';
 
 import './pages/waiting.dart';
 import './pages/article_titles.dart';
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(builder: (_) => ArticleTitles()),
           ChangeNotifierProvider(builder: (_) => Articles()),
           ChangeNotifierProvider(builder: (_) => Setting()),
+          ChangeNotifierProvider(builder: (_) => NotMasteredVocabularies()),
         ],
         child: Consumer<Setting>(builder: (context, setting, child) {
           init(context);

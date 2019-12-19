@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import '../models/article.dart';
 import '../models/word.dart';
 import '../models/sentence.dart';
+import '../models/not_mastered_vocabularis.dart';
 
 // no need learn and no need add blank
 final noNeedBlank = <String>[
@@ -32,9 +33,9 @@ final noNeedBlank = <String>[
 ];
 
 class ArticleRichText extends StatefulWidget {
-  ArticleRichText({Key key, @required this.article, @required this.sentences}) : super(key: key);
+  ArticleRichText({Key key, @required this.article, @required this.sentence}) : super(key: key);
   final Article article;
-  final List<Sentence> sentences;
+  final Sentence sentence;
 
   @override
   ArticleRichTextState createState() => ArticleRichTextState();
@@ -50,6 +51,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
   String _lastTapedText = ''; // 上次点击的文本
   Setting setting;
   ArticleStatus articleStatus;
+  NotMasteredVocabularies notMasteredVocabularies;
 
   @override
   initState() {
@@ -57,6 +59,8 @@ class ArticleRichTextState extends State<ArticleRichText> {
     Future.delayed(Duration.zero, () {
       articleStatus = Provider.of<ArticleStatus>(context, listen: false);
       setting = Provider.of<Setting>(context, listen: false);
+      notMasteredVocabularies = Provider.of<NotMasteredVocabularies>(context, listen: false);
+      //notMasteredVocabularies.clear();
     });
   }
 
@@ -83,6 +87,11 @@ class ArticleRichTextState extends State<ArticleRichText> {
         setState(() {
           word.learned = !word.learned;
         });
+        // save or remove  to notMasteredVocabulary map
+        if (word.learned)
+          notMasteredVocabularies.unset(word.text);
+        else if (notMasteredVocabularies != null) notMasteredVocabularies.set(word, widget.key);
+
         widget.article.putLearned(context, word).then((d) {
           //重新计算文章未掌握单词数
           var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
@@ -238,10 +247,17 @@ class ArticleRichTextState extends State<ArticleRichText> {
     var wordStyle = _defineStyle(word); // 文字样式
 
     TextSpan subscript = TextSpan(); // 显示该单词查询次数的下标
-    if (word.learned == false && hasLetter(word.text) && word.count != 0) {
-      subscript = TextSpan(
-          text: word.count.toString(),
-          style: wordStyle.copyWith(fontSize: 12)); // 数字样式和原本保持一致, 只是变小
+
+    //需要学习的单词
+    if (word.learned == false && hasLetter(word.text) && word.text.length > 1) {
+      //未学会的加入列表
+      if (notMasteredVocabularies != null) notMasteredVocabularies.set(word, widget.key);
+      //有查询下标则显示
+      if (word.count != 0) {
+        subscript = TextSpan(
+            text: word.count.toString(),
+            style: wordStyle.copyWith(fontSize: 12)); // 数字样式和原本保持一致, 只是变小
+      }
     }
 
     return TextSpan(text: _getBlank(word.text), children: [
@@ -266,6 +282,22 @@ class ArticleRichTextState extends State<ArticleRichText> {
 
   @override
   Widget build(BuildContext context) {
+    var s = widget.sentence;
+    TextSpan star = getStar(context, s.words[0].text);
+    List<TextSpan> words = s.words.map((d) {
+      return getTextSpan(d);
+    }).toList();
+    words.insert(0, star);
+
+    return RichText(
+      text: TextSpan(
+        text: "",
+        style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
+        children: words,
+      ),
+    );
+
+    /*
     List<Widget> richTextList = widget.sentences.map((s) {
       TextSpan star = getStar(context, s.words[0].text);
       List<TextSpan> words = s.words.map((d) {
@@ -283,5 +315,6 @@ class ArticleRichTextState extends State<ArticleRichText> {
     }).toList();
 
     return Column(children: richTextList, crossAxisAlignment: CrossAxisAlignment.start);
+     */
   }
 }

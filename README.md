@@ -3,6 +3,10 @@
 利用 NGSL 来学习的 APP
 
 ## Change Log
+v1.2.11+v1.2.11
+- 
+- remove no need code
+
 v1.2.10+v1.2.10
 - If word length is 1, no need to learn
 - Always get article details from the server for updates even if it is already cached
