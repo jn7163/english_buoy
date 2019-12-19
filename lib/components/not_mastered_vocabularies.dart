@@ -1,10 +1,9 @@
 import 'package:ebuoy/models/article.dart';
 import 'package:ebuoy/components/article_richtext.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import '../models/sentence.dart';
-import '../models/not_mastered_vocabularis.dart';
+import '../models/word.dart';
 
 // 文章对应的 youtube 图标或者头像
 class NotMasteredVocabulary extends StatelessWidget {
@@ -13,6 +12,51 @@ class NotMasteredVocabulary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Word> mustLearnWords = List(); // in NESL
+    List<String> mustLearnUnique = List();
+    List<Word> needLearnWords = List(); // not in NESL
+    List<String> needLearnUnique = List();
+    article.sentences.forEach((s) {
+      s.words.forEach((w) {
+        // not mastered words
+        if (!w.learned && w.text.length > 1 && !noNeedBlank.contains(w.text) && hasLetter(w.text)) {
+          if (w.level != null && w.level != 0 && !mustLearnUnique.contains(w.text.toLowerCase())) {
+            mustLearnWords.add(w);
+            mustLearnUnique.add(w.text.toLowerCase());
+          } else if (!needLearnUnique.contains(w.text.toLowerCase())) {
+            needLearnWords.add(w);
+            needLearnUnique.add(w.text.toLowerCase());
+          }
+        }
+      });
+    });
+    // 排序
+    mustLearnWords.sort((a, b) => a.level.toString().compareTo(b.level.toString()));
+    return Column(children: [
+      Table(
+          border: TableBorder.all(color: Colors.black12),
+          columnWidths: {1: FlexColumnWidth(2)},
+          children: mustLearnWords.map((d) {
+            var sentence = Sentence('', [d]);
+            return TableRow(children: [
+              Center(child: Text(d.level.toString())),
+              Center(child: ArticleRichText(article: article, sentence: sentence)),
+              Center(child: Text("⤵")),
+            ]);
+          }).toList()),
+      Table(
+          border: TableBorder.all(color: Colors.black12),
+          columnWidths: {1: FlexColumnWidth(2)},
+          children: needLearnWords.map((d) {
+            var sentence = Sentence('', [d]);
+            return TableRow(children: [
+              Center(child: Text("--")),
+              Center(child: ArticleRichText(article: article, sentence: sentence)),
+              Center(child: Text("↙")),
+            ]);
+          }).toList()),
+    ]);
+    /*
     return Consumer<NotMasteredVocabularies>(builder: (context, notMasteredVocabularies, child) {
       return Column(
           children: notMasteredVocabularies.notMasteredVocabularies.entries.map((d) {
@@ -20,5 +64,6 @@ class NotMasteredVocabulary extends StatelessWidget {
         return ArticleRichText(article: article, sentence: sentence);
       }).toList());
     });
+     */
   }
 }

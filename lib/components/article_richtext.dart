@@ -13,7 +13,6 @@ import 'package:flutter/services.dart';
 import '../models/article.dart';
 import '../models/word.dart';
 import '../models/sentence.dart';
-import '../models/not_mastered_vocabularis.dart';
 
 // no need learn and no need add blank
 final noNeedBlank = <String>[
@@ -31,6 +30,11 @@ final noNeedBlank = <String>[
   "?",
   "…",
 ];
+// 字符串是否包含字母
+bool hasLetter(String str) {
+  RegExp regHasLetter = new RegExp(r"[a-zA-Z]+");
+  return regHasLetter.hasMatch(str);
+}
 
 class ArticleRichText extends StatefulWidget {
   ArticleRichText({Key key, @required this.article, @required this.sentence}) : super(key: key);
@@ -51,7 +55,6 @@ class ArticleRichTextState extends State<ArticleRichText> {
   String _lastTapedText = ''; // 上次点击的文本
   Setting setting;
   ArticleStatus articleStatus;
-  NotMasteredVocabularies notMasteredVocabularies;
 
   @override
   initState() {
@@ -59,8 +62,6 @@ class ArticleRichTextState extends State<ArticleRichText> {
     Future.delayed(Duration.zero, () {
       articleStatus = Provider.of<ArticleStatus>(context, listen: false);
       setting = Provider.of<Setting>(context, listen: false);
-      notMasteredVocabularies = Provider.of<NotMasteredVocabularies>(context, listen: false);
-      //notMasteredVocabularies.clear();
     });
   }
 
@@ -87,10 +88,6 @@ class ArticleRichTextState extends State<ArticleRichText> {
         setState(() {
           word.learned = !word.learned;
         });
-        // save or remove  to notMasteredVocabulary map
-        if (word.learned)
-          notMasteredVocabularies.unset(word.text);
-        else if (notMasteredVocabularies != null) notMasteredVocabularies.set(word, widget.key);
 
         widget.article.putLearned(context, word).then((d) {
           //重新计算文章未掌握单词数
@@ -166,12 +163,6 @@ class ArticleRichTextState extends State<ArticleRichText> {
     //if (_noNeedExp.hasMatch(text)) blank = "";
     if (noNeedBlank.contains(text)) blank = "";
     return blank;
-  }
-
-  // 字符串是否包含字母
-  bool hasLetter(String str) {
-    RegExp regHasLetter = new RegExp(r"[a-zA-Z]+");
-    return regHasLetter.hasMatch(str);
   }
 
   // 定义应该的 style
@@ -250,8 +241,6 @@ class ArticleRichTextState extends State<ArticleRichText> {
 
     //需要学习的单词
     if (word.learned == false && hasLetter(word.text) && word.text.length > 1) {
-      //未学会的加入列表
-      if (notMasteredVocabularies != null) notMasteredVocabularies.set(word, widget.key);
       //有查询下标则显示
       if (word.count != 0) {
         subscript = TextSpan(
