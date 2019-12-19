@@ -62,6 +62,7 @@ class ArticleRichTextState extends State<ArticleRichText> {
     Future.delayed(Duration.zero, () {
       articleStatus = Provider.of<ArticleStatus>(context, listen: false);
       setting = Provider.of<Setting>(context, listen: false);
+      widget.sentence.c=context;
     });
   }
 

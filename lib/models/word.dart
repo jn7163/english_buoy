@@ -3,8 +3,10 @@ import 'dart:async';
 import '../store/store.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import './sentence.dart';
 
 class Word with ChangeNotifier {
+  Sentence belongSentence; // 属于哪一个句子
   final String text;
   final int level;
   bool learned;

@@ -21,9 +21,11 @@ class NotMasteredVocabulary extends StatelessWidget {
         // not mastered words
         if (!w.learned && w.text.length > 1 && !noNeedBlank.contains(w.text) && hasLetter(w.text)) {
           if (w.level != null && w.level != 0 && !mustLearnUnique.contains(w.text.toLowerCase())) {
+            w.belongSentence=s;
             mustLearnWords.add(w);
             mustLearnUnique.add(w.text.toLowerCase());
           } else if (!needLearnUnique.contains(w.text.toLowerCase())) {
+            w.belongSentence=s;
             needLearnWords.add(w);
             needLearnUnique.add(w.text.toLowerCase());
           }
@@ -39,9 +41,13 @@ class NotMasteredVocabulary extends StatelessWidget {
           children: mustLearnWords.map((d) {
             var sentence = Sentence('', [d]);
             return TableRow(children: [
-              Center(child: Text(d.level.toString())),
+              Center(
+                  child: Text(
+                d.level.toString(),
+                style: Theme.of(context).textTheme.display3,
+              )),
               Center(child: ArticleRichText(article: article, sentence: sentence)),
-              Center(child: Text("⤵")),
+              Center(child: Text("⤵", style: Theme.of(context).textTheme.display3)),
             ]);
           }).toList()),
       Table(
@@ -50,9 +56,19 @@ class NotMasteredVocabulary extends StatelessWidget {
           children: needLearnWords.map((d) {
             var sentence = Sentence('', [d]);
             return TableRow(children: [
-              Center(child: Text("--")),
+              Center(
+                  child: Text(
+                "--",
+                style: Theme.of(context).textTheme.display3,
+              )),
               Center(child: ArticleRichText(article: article, sentence: sentence)),
-              Center(child: Text("↙")),
+              Center(
+                  child: FlatButton(
+                      onPressed: () => Scrollable.ensureVisible(d.belongSentence.c),
+                      child: Text(
+                        "↙",
+                        style: Theme.of(context).textTheme.display3,
+                      ))),
             ]);
           }).toList()),
     ]);

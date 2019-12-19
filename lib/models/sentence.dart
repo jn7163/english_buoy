@@ -2,9 +2,10 @@
 import './word.dart';
 import 'package:flutter/material.dart';
 
-class Sentence with ChangeNotifier {
+class Sentence {
   final String starTime;
   final List<Word> words;
+  BuildContext c;
 
   Sentence(this.starTime, this.words);
 
