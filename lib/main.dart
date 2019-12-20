@@ -39,13 +39,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(builder: (_) => ArticleStatus()),
-          ChangeNotifierProvider(builder: (_) => Loading()),
-          ChangeNotifierProvider(builder: (_) => Search()),
-          ChangeNotifierProvider(builder: (_) => OauthInfo()),
-          ChangeNotifierProvider(builder: (_) => ArticleTitles()),
-          ChangeNotifierProvider(builder: (_) => Articles()),
-          ChangeNotifierProvider(builder: (_) => Setting()),
+          ChangeNotifierProvider(create: (_) => ArticleStatus()),
+          ChangeNotifierProvider(create: (_) => Loading()),
+          ChangeNotifierProvider(create: (_) => Search()),
+          ChangeNotifierProvider(create: (_) => OauthInfo()),
+          ChangeNotifierProvider(create: (_) => ArticleTitles()),
+          ChangeNotifierProvider(create: (_) => Articles()),
+          ChangeNotifierProvider(create: (_) => Setting()),
         ],
         child: Consumer<Setting>(builder: (context, setting, child) {
           init(context);

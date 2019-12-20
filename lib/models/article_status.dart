@@ -5,7 +5,7 @@ class ArticleStatus with ChangeNotifier {
   //String tapedText = ''; // 当前点击的文本
   //String lastTapedText = ''; // 上次点击的文本
   //bool isWrap = true; // 当前字符是否换行符
-  YoutubePlayerController youtubeController = YoutubePlayerController();
+  YoutubePlayerController youtubeController;
 
   /*
   setTapedText(String v) {

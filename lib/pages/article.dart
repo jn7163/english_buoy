@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ebuoy/components/article_sentences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+//import 'package:flutter_youtube_view/flutter_youtube_view.dart';
 
 import '../components/article_top_bar.dart';
 import '../components/not_mastered_vocabularies.dart';
@@ -98,12 +99,45 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Widget getYouTube() {
+    /* new
+    YoutubePlayerController youtubeController = YoutubePlayerController(
+      initialVideoId: YoutubePlayer.convertUrlToId(_article.youtube),
+      flags: YoutubePlayerFlags(
+        hideControls: false,
+        controlsVisibleAtStart: false,
+        //自动播放
+        autoPlay: setting.isAutoplay,
+        mute: false,
+        isLive: false,
+        forceHideAnnotation: false,
+        hideThumbnail: false,
+        disableDragSeek: false,
+        enableCaption: true,
+        captionLanguage: 'en',
+        loop: false,
+      ),
+    );
+    articleStatus.setYouTube(youtubeController);
+     */
     return _article == null || _article.youtube == ''
         ? Container()
         : Container(
             color: Colors.black,
             padding: EdgeInsets.only(top: 24),
-            child: YoutubePlayer(
+            child:
+
+                /* new
+            YoutubePlayer(
+                controller: youtubeController,
+                showVideoProgressIndicator: true,
+                progressIndicatorColor: Colors.teal,
+                liveUIColor: Colors.teal,
+                progressColors: ProgressBarColors(
+                  playedColor: Colors.teal,
+                  handleColor: Colors.tealAccent,
+                ))
+                 */
+                YoutubePlayer(
               onPlayerInitialized: (controller) => articleStatus.setYouTube(controller),
               context: context,
               videoId: YoutubePlayer.convertUrlToId(_article.youtube),
