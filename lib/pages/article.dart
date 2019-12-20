@@ -90,7 +90,7 @@ class _ArticlePageState extends State<ArticlePage> {
         child: Column(children: [
           ArticleTopBar(article: _article),
           Padding(
-              padding: EdgeInsets.only(top: 15.0, left: 5.0, bottom: 5, right: 5),
+              padding: EdgeInsets.only(top: 0, left: 0, bottom: 0, right: 0),
               child: NotMasteredVocabulary(article: _article)),
           Padding(
               padding: EdgeInsets.only(top: 5.0, left: 5.0, bottom: 5, right: 5),

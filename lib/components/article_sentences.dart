@@ -38,9 +38,15 @@ bool hasLetter(String str) {
 }
 
 class ArticleSentences extends StatefulWidget {
-  ArticleSentences({Key key, @required this.article, @required this.sentences}) : super(key: key);
-  final Article article;
-  final List<Sentence> sentences;
+  ArticleSentences(
+      {Key key,
+      @required this.article,
+      @required this.sentences,
+      this.crossAxisAlignment = CrossAxisAlignment.start})
+      : super(key: key);
+  final Article article; // 用于计算文章的未掌握数目
+  final List<Sentence> sentences; // 需要渲染的多条句子
+  final CrossAxisAlignment crossAxisAlignment; // 句子的位置
 
   @override
   ArticleSentencesState createState() => ArticleSentencesState();
@@ -154,8 +160,11 @@ class ArticleSentencesState extends State<ArticleSentences> {
         });
       };
     return TextSpan(
-        text: seekTextSpanTapStatus[time] ? "   ▶" : "   ▷",
-        // style: style,
+        //text: seekTextSpanTapStatus[time] ? "   ▶" : "   ▷",
+        text: "   ▷",
+        style: seekTextSpanTapStatus[time]
+            ? Theme.of(context).textTheme.display1.copyWith(fontWeight: FontWeight.bold)
+            : Theme.of(context).textTheme.display3,
         recognizer: recognizer);
   }
 
@@ -271,6 +280,21 @@ class ArticleSentencesState extends State<ArticleSentences> {
     return star;
   }
 
+  ArticleRichText buildArticleRichText(Sentence s) {
+    TextSpan star = getStar(context, s.words[0].text);
+    List<TextSpan> words = s.words.map((d) {
+      return getTextSpan(d);
+    }).toList();
+    words.insert(0, star);
+    return ArticleRichText(
+        textSpan: TextSpan(
+          text: "",
+          style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
+          children: words,
+        ),
+        sentence: s);
+  }
+
   @override
   Widget build(BuildContext context) {
     /*
@@ -289,30 +313,10 @@ class ArticleSentencesState extends State<ArticleSentences> {
     );
      */
 
+    //只有一个单词时候不要用 Column封装,避免位置上移
+    if(widget.sentences.length==1) return buildArticleRichText(widget.sentences[0]);
     List<Widget> richTextList = widget.sentences.map((s) {
-      TextSpan star = getStar(context, s.words[0].text);
-      List<TextSpan> words = s.words.map((d) {
-        return getTextSpan(d);
-      }).toList();
-      words.insert(0, star);
-      return ArticleRichText(
-          textSpan: TextSpan(
-            text: "",
-            style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
-            children: words,
-          ),
-          sentence: s);
-
-      /*
-      RichText sentenceRichText = RichText(
-        text: TextSpan(
-          text: "",
-          style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
-          children: words,
-        ),
-      );
-      return sentenceRichText;
-       */
+      return buildArticleRichText(s);
     }).toList();
 
     return Column(children: richTextList, crossAxisAlignment: CrossAxisAlignment.start);

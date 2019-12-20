@@ -42,7 +42,7 @@ class NotMasteredVocabulary extends StatelessWidget {
     List<Word> mustLearnWords = List(); // in NESL
     List<String> mustLearnUnique = List();
     List<Word> needLearnWords = List(); // not in NESL
-    List<String> needLearnUnique = List();
+    //List<String> needLearnUnique = List();
     article.sentences.forEach((s) {
       s.words.forEach((w) {
         // not mastered words
@@ -52,47 +52,51 @@ class NotMasteredVocabulary extends StatelessWidget {
             mustLearnWords.add(w);
             mustLearnUnique.add(w.text.toLowerCase());
           } else if ((w.level == null || w.level == 0) &&
-              !needLearnUnique.contains(w.text.toLowerCase())) {
-            if (w.text == "panic") print(w.level);
+              !mustLearnUnique.contains(w.text.toLowerCase())) {
             w.belongSentence = s;
-            needLearnWords.add(w);
-            needLearnUnique.add(w.text.toLowerCase());
+            //needLearnWords.add(w);
+            //needLearnUnique.add(w.text.toLowerCase());
+            mustLearnWords.add(w);
+            mustLearnUnique.add(w.text.toLowerCase());
           }
         }
       });
     });
-    // 排序
-    mustLearnWords.sort((b, a) => a.level.toString().compareTo(b.level.toString()));
     List<Word> allWords = mustLearnWords + needLearnWords;
+    TableRow titleRow =
+        getTableRow(context, "NGSL", "WORDS(" + allWords.length.toString() + ")", "FIND");
     bool hideSome = false;
-    if (allWords.length > 10) {
+    if (allWords.length > 100) {
       hideSome = true;
-      allWords = allWords.sublist(0, 10);
+      allWords = allWords.sublist(0, 100);
     }
-
-    TableRow titleRow = getTableRow(context, "NGSL", "WORDS", "FIND");
 
     List<TableRow> allWordRows = allWords.map((d) {
       var sentence = Sentence('', [d]);
       return TableRow(children: [
         Container(
-            height: 34,
+            height: 35,
             child: Center(
                 child: Text(
               d.level == 0 ? "-" : d.level.toString(),
               style: Theme.of(context).textTheme.display2,
             ))),
         Container(
-            height: 34,
-            child: Center(child: ArticleSentences(article: article, sentences: [sentence]))),
+            height: 35,
+            child: Center(
+                child: ArticleSentences(
+                    article: article,
+                    sentences: [sentence],
+                    crossAxisAlignment: CrossAxisAlignment.baseline))),
         Container(
-            height: 34,
-            child: GestureDetector(
-                onTap: () => Scrollable.ensureVisible(d.belongSentence.c),
-                child: Icon(
-                  Icons.find_in_page,
-                  color: Color(0xFF5F8A8B),
-                ))),
+            height: 35,
+            child: Center(
+                child: GestureDetector(
+                    onTap: () => Scrollable.ensureVisible(d.belongSentence.c),
+                    child: Icon(
+                      Icons.find_in_page,
+                      color: Color(0xFF5F8A8B),
+                    )))),
       ]);
     }).toList();
     TableRow moreRow = getTableRow(context, "...", "...", "...");
