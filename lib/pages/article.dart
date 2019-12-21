@@ -80,11 +80,11 @@ class _ArticlePageState extends State<ArticlePage> {
         child: _article == null
             ? Container() //这里可以搞一个动画或者什么效果
             //: Stack(children: [getScrollView(), getYouTube()]),
-            : Column(children: [getYouTube(), Expanded(child: getScrollView())]),
+            : Column(children: [getYouTube(), Expanded(child: articleBody())]),
         inAsyncCall: _article == null);
   }
 
-  Widget getScrollView() {
+  Widget articleBody() {
     return SingleChildScrollView(
         controller: _controller,
         child: Column(children: [
@@ -94,7 +94,10 @@ class _ArticlePageState extends State<ArticlePage> {
               child: NotMasteredVocabulary(article: _article)),
           Padding(
               padding: EdgeInsets.only(top: 5.0, left: 5.0, bottom: 5, right: 5),
-              child: ArticleSentences(article: _article, sentences: _article.sentences))
+              child: ArticleSentences(article: _article, sentences: _article.sentences)),
+          Padding(
+              padding: EdgeInsets.only(top: 0, left: 0, bottom: 0, right: 0),
+              child: NotMasteredVocabulary(article: _article)),
         ]));
   }
 

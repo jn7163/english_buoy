@@ -28,7 +28,7 @@ class WaitingPageState extends State<WaitingPage> {
   initState() {
     super.initState();
     //注册分享监听
-    initReceiveShare();
+    //initReceiveShare();
     youtubeURL = null; //avoid repeating synchronization
     Future.delayed(Duration.zero, () {
       articleTitles = Provider.of<ArticleTitles>(context, listen: false);
@@ -62,6 +62,7 @@ class WaitingPageState extends State<WaitingPage> {
     });
     // For sharing or opening urls/text coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialText().then((String value) {
+
       receiveShare(value);
     });
   }

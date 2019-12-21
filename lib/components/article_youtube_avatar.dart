@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // 文章对应的 youtube 图标或者头像
+// 删除时候显示 loading 动画
 class ArticleYoutubeAvatar extends StatelessWidget {
   const ArticleYoutubeAvatar({
     Key key,

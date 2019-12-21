@@ -4,8 +4,10 @@
 
 ## Change Log
 v1.2.11+v1.2.11
-- 
-- remove no need code
+- Make sharing is work while app is closed
+- Add not mastered words table at the begin and the end of the article
+- Show progress animation when tap login button
+- Remove no need code
 
 v1.2.10+v1.2.10
 - If word length is 1, no need to learn

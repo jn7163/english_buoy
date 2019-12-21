@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:ebuoy/components/article_titles_app_bar.dart';
 import 'package:ebuoy/models/search.dart';
+import 'package:ebuoy/models/youtube.dart';
 
 import 'package:flutter_widgets/flutter_widgets.dart';
 
@@ -51,12 +52,18 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
 
       String youtubeURL = ModalRoute.of(context).settings.arguments;
       if (youtubeURL != null) {
-        var articles = Provider.of<Articles>(context, listen: false);
-        postYouTube(context, youtubeURL, articleTitles, articles).then((d) {
-          articleTitles.setSelectedArticleID(d.articleID);
-          scrollToSharedItem(articleTitles.selectedArticleID);
-        });
+        print("youtubeURL=" + youtubeURL);
+        syncFromServer(youtubeURL);
       }
+    });
+  }
+
+  syncFromServer(url) {
+    print("url=" + url);
+    var articles = Provider.of<Articles>(context, listen: false);
+    postYouTube(context, url, articleTitles, articles).then((d) {
+      articleTitles.setSelectedArticleID(d.articleID);
+      scrollToSharedItem(articleTitles.selectedArticleID);
     });
   }
 
@@ -171,15 +178,20 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
 
   @override
   Widget build(BuildContext context) {
+    YouTube youtube = Provider.of<YouTube>(context, listen: true);
+    if (youtube.newURL != "") {
+      print("youtubeURL=" + youtube.newURL);
+      syncFromServer(youtube.newURL);
+      youtube.clean();
+    }
+
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     print("build article titles");
     Scaffold scaffold = Scaffold(
       appBar: ArticleListsAppBar(),
-      body: Consumer<Loading>(builder: (context, allLoading, _) {
-        return ModalProgressHUD(
-            child: RefreshIndicator(onRefresh: _refresh, child: getArticleTitles()),
-            inAsyncCall: allLoading.loading);
-      }),
+      body: ModalProgressHUD(
+          child: RefreshIndicator(onRefresh: _refresh, child: getArticleTitles()),
+          inAsyncCall: articleTitles.titles.length == 0),
       floatingActionButton: Visibility(
           visible: articleTitles.titles.length > 10 ? false : true,
           child: FloatingActionButton(
