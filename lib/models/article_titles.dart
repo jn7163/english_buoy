@@ -1,6 +1,7 @@
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_alert/easy_alert.dart';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import './article_title.dart';
 import './article.dart';
@@ -19,25 +20,36 @@ class ArticleTitles with ChangeNotifier {
     this.selectedArticleID = id;
     notifyListeners();
   }
+
   changeSort() {
-    if(sortByUnlearned) {
-      titles.sort((a,b)=> b.percent.compareTo(a.percent));
+    if (sortByUnlearned) {
+      titles.sort((a, b) => b.percent.compareTo(a.percent));
     } else {
-      titles.sort((a,b)=> b.createdAt.compareTo(a.createdAt) );
+      titles.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     }
-    sortByUnlearned=!sortByUnlearned;
+    sortByUnlearned = !sortByUnlearned;
     notifyListeners();
   }
-
+  saveToLocal(String data) async {
+    // 登录后存储到临时缓存中
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('article_titles', data);
+  }
+  getFromLocal() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String data = prefs.getString('article_titles');
+    if (data != null) {
+      this.setFromJSON(json.decode(data));
+    }
+  }
   // 和服务器同步
   Future syncServer(BuildContext context) async {
-    //var allLoading = Provider.of<Loading>(context);
-    //allLoading.set(true);
-    //debugPrint("set loading=true");
     Dio dio = getDio(context);
     try {
       var response = await dio.get(Store.baseURL + "article_titles");
       this.setFromJSON(response.data);
+      // save to local for cache
+      saveToLocal(json.encode(response.data));
       return response;
     } on DioError catch (e) {
       if (e.response != null && e.response.statusCode == 401) {
@@ -46,10 +58,7 @@ class ArticleTitles with ChangeNotifier {
             position: ToastPosition.bottom, duration: ToastDuration.long);
       }
       return e;
-    } finally {
-      //allLoading.set(false);
-      //debugPrint("set loading=false");
-    }
+    } finally {}
   }
 
   setUnlearnedCountByArticleID(int unlearnedCount, int articleID) {

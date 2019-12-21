@@ -30,7 +30,6 @@ class ArticleTitlesPage extends StatefulWidget {
 class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   int _selectedIndex = 0;
 
-  // ScrollController _scrollController = ScrollController();
   StreamSubscription _receiveShareLiveSubscription;
   ArticleTitles articleTitles;
   List<ArticleTitle> filterTitles; // now show list
@@ -45,9 +44,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
       loading = Provider.of<Loading>(context);
       articleTitles = Provider.of<ArticleTitles>(context, listen: false);
       if (articleTitles.titles.length == 0) {
-        loading.set(true);
         await _syncArticleTitles();
-        loading.set(false);
       }
 
       String youtubeURL = ModalRoute.of(context).settings.arguments;
@@ -82,6 +79,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   }
 
   Future _syncArticleTitles() async {
+    articleTitles.getFromLocal();
     return articleTitles.syncServer(context).catchError((e) {
       if (e.response.statusCode == 401) {
         print("must login");
@@ -163,16 +161,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     Future.delayed(Duration.zero, () {
       itemScrollController.scrollTo(
           index: _selectedIndex, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic);
-      /*
-      if (_scrollController.hasClients) {
-        // 先跳到顶部, 再根据计算滚动
-        _scrollController.jumpTo(0);
-        _scrollController.animateTo((57.0 * _selectedIndex),
-            // 100 is the height of container and index of 6th element is 5
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOut);
-      }
-      */
     });
   }
 
