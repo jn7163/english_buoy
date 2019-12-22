@@ -17,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/article_titles.dart';
 import '../models/article_title.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ArticleTitlesPage extends StatefulWidget {
@@ -30,7 +29,6 @@ class ArticleTitlesPage extends StatefulWidget {
 class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   int _selectedIndex = 0;
 
-  StreamSubscription _receiveShareLiveSubscription;
   ArticleTitles articleTitles;
   List<ArticleTitle> filterTitles; // now show list
   final ItemScrollController itemScrollController = ItemScrollController();
@@ -44,12 +42,13 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
       loading = Provider.of<Loading>(context);
       articleTitles = Provider.of<ArticleTitles>(context, listen: false);
       if (articleTitles.titles.length == 0) {
+        articleTitles.getFromLocal();
         await _syncArticleTitles();
       }
-
       String youtubeURL = ModalRoute.of(context).settings.arguments;
       if (youtubeURL != null) {
         print("youtubeURL=" + youtubeURL);
+        articleTitles.showLoadingItem();
         syncFromServer(youtubeURL);
       }
     });
@@ -62,24 +61,15 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
       articleTitles.setSelectedArticleID(d.articleID);
       scrollToSharedItem(articleTitles.selectedArticleID);
     });
+    //.catchError(() => articleTitles.removeLoadingItem());
   }
 
   @override
   void dispose() {
-    _receiveShareLiveSubscription.cancel();
     super.dispose();
   }
 
-  void receiveShare(String sharedText) {
-    if (sharedText == null) return;
-    // 收到分享, 先跳转到 list 页面
-    // 跳转到 list 页
-    String youtubeURL = sharedText;
-    Navigator.pushNamed(context, '/ArticleTitles', arguments: youtubeURL);
-  }
-
   Future _syncArticleTitles() async {
-    articleTitles.getFromLocal();
     return articleTitles.syncServer(context).catchError((e) {
       if (e.response.statusCode == 401) {
         print("must login");
@@ -88,7 +78,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     });
   }
 
-  Widget getArticleTitles() {
+  Widget getArticleTitlesBody() {
     return Consumer<Search>(builder: (context, search, child) {
       return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
         // List<ArticleTitle> filterTitles;
@@ -171,15 +161,15 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
       print("youtubeURL=" + youtube.newURL);
       syncFromServer(youtube.newURL);
       youtube.clean();
+      articleTitles.showLoadingItem();
+      itemScrollController.scrollTo(index: 0, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic);
     }
 
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     print("build article titles");
     Scaffold scaffold = Scaffold(
       appBar: ArticleListsAppBar(),
-      body: ModalProgressHUD(
-          child: RefreshIndicator(onRefresh: _refresh, child: getArticleTitles()),
-          inAsyncCall: articleTitles.titles.length == 0),
+      body: RefreshIndicator(onRefresh: _refresh, child: getArticleTitlesBody()),
       floatingActionButton: Visibility(
           visible: articleTitles.titles.length > 10 ? false : true,
           child: FloatingActionButton(

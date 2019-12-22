@@ -1,5 +1,7 @@
 // 文章详情内容
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
 import './word.dart';
@@ -47,7 +49,20 @@ class Article with ChangeNotifier {
     this.sentences.clear();
     // notifyListeners();
   }
-
+  saveToLocal(String data) async {
+    // 登录后存储到临时缓存中
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('article_'+this.articleID.toString(), data);
+  }
+  Future getFromLocal(int articleID) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String data = prefs.getString('article_'+articleID.toString());
+    if (data != null) {
+      this.setFromJSON(json.decode(data));
+      return true;
+    }
+    return false;
+  }
   // 从服务器获取
   Future getArticleByID(BuildContext context, int articleID) async {
     this.articleID = articleID;
@@ -55,6 +70,7 @@ class Article with ChangeNotifier {
     var response = await dio.get(Store.baseURL + "article/" + this.articleID.toString());
 
     this.setFromJSON(response.data);
+    saveToLocal(json.encode(response.data));
     return response;
   }
 

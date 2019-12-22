@@ -21,6 +21,25 @@ class ArticleTitles with ChangeNotifier {
     notifyListeners();
   }
 
+  showLoadingItem() {
+    var loadingArticleTitle = ArticleTitle();
+    loadingArticleTitle.id = -1;
+    loadingArticleTitle.title = "loading new youtube article ......";
+    loadingArticleTitle.unlearnedCount = 1;
+    loadingArticleTitle.unlearnedCount = 1;
+    loadingArticleTitle.wordCount = 1;
+    loadingArticleTitle.deleting = true;
+    loadingArticleTitle.setPercent();
+    this.titles.insert(0, loadingArticleTitle);
+
+    notifyListeners();
+  }
+
+  removeLoadingItem() {
+    this.titles.removeAt(0);
+    notifyListeners();
+  }
+
   changeSort() {
     if (sortByUnlearned) {
       titles.sort((a, b) => b.percent.compareTo(a.percent));
@@ -30,11 +49,13 @@ class ArticleTitles with ChangeNotifier {
     sortByUnlearned = !sortByUnlearned;
     notifyListeners();
   }
+
   saveToLocal(String data) async {
     // 登录后存储到临时缓存中
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('article_titles', data);
   }
+
   getFromLocal() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String data = prefs.getString('article_titles');
@@ -42,6 +63,7 @@ class ArticleTitles with ChangeNotifier {
       this.setFromJSON(json.decode(data));
     }
   }
+
   // 和服务器同步
   Future syncServer(BuildContext context) async {
     Dio dio = getDio(context);
@@ -52,8 +74,7 @@ class ArticleTitles with ChangeNotifier {
       saveToLocal(json.encode(response.data));
       return response;
     } on DioError catch (e) {
-      if (e.response != null && e.response.statusCode == 401) {
-      } else {
+      if (e.response != null && e.response.statusCode == 401) {} else {
         Alert.toast(context, e.message.toString(),
             position: ToastPosition.bottom, duration: ToastDuration.long);
       }

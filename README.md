@@ -4,6 +4,8 @@
 
 ## Change Log
 v1.2.11+v1.2.11
+- Show loading item when add new youtube
+- Cache article and article list
 - Make sharing is work while app is closed
 - Add not mastered words table at the begin and the end of the article
 - Show progress animation when tap login button

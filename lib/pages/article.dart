@@ -58,12 +58,20 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   loadArticleByID() {
+    // from mem cache
     var articles = Provider.of<Articles>(context, listen: false);
     setState(() {
       _article = articles.articles[widget.id];
     });
-    // always update from server
     var article = Article();
+    // from local cache
+    article.getFromLocal(widget.id).then((hasLocal) {
+      if(hasLocal)setState(() {
+        _article = article;
+      });
+    });
+
+    // always update from server
     article.getArticleByID(context, widget.id).then((d) {
       articles.set(article);
       setState(() {

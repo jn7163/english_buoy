@@ -9,19 +9,16 @@ import '../models/loading.dart';
 
 import 'package:dio/dio.dart';
 import './store.dart';
-import 'package:provider/provider.dart';
-// import 'package:easy_alert/easy_alert.dart';
 
 Future<Article> postYouTube(
     BuildContext context, String youtube, ArticleTitles articleTitles, Articles articles) async {
-  var allLoading = Provider.of<Loading>(context);
   Dio dio = getDio(context);
-  allLoading.set(true);
   try {
     var response = await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": youtube});
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
+    articleTitles.removeLoadingItem();
     articles.set(newArticle);
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
@@ -36,6 +33,7 @@ Future<Article> postYouTube(
     // Navigator.pushNamed(context, '/Article', arguments: newArticle.articleID);
     return newArticle;
   } on DioError catch (e) {
+    articleTitles.removeLoadingItem();
     // 如果是已经存在, 那么应该会把 article id 传过来
     if (e.response != null) {
       if (e.response.data is String) {
@@ -64,7 +62,7 @@ Future<Article> postYouTube(
     }
     throw e;
   } finally {
-    allLoading.set(false);
+    //allLoading.set(false);
   }
 }
 
