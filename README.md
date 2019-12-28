@@ -1,14 +1,17 @@
-# learnNGSL
+# Ebuoy
 
-利用 NGSL 来学习的 APP
 
 ## Change Log
 v1.2.11+v1.2.11
-- Show loading item when add new youtube
+- add scroll refresh to article
+- set refresh color
+
+v1.2.11+v1.2.11
+- Show loading item when adding new youtube
 - Cache article and article list
-- Make sharing is work while app is closed
+- Make sharing is work while the app is closed
 - Add not mastered words table at the begin and the end of the article
-- Show progress animation when tap login button
+- Show progress animation when the tap login button
 - Remove no need code
 
 v1.2.10+v1.2.10

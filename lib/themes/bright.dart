@@ -1,6 +1,7 @@
 import 'package:ebuoy/themes/dark.dart';
 import 'package:flutter/material.dart';
 
+var mainColor = Colors.teal[700];
 var brightTextStyle = TextStyle(color: Colors.black87, fontFamily: "NotoSans-Medium");
 var brightArticleContent = brightTextStyle.copyWith(fontSize: 20); //显示文章正文需要放大文字
 var brightTextTheme = TextTheme(
@@ -20,7 +21,7 @@ var brightTextTheme = TextTheme(
     body2: brightArticleContent,
     display3: brightArticleContent,
     //必学单词
-    display1: brightArticleContent.copyWith(color: Colors.teal[700]),
+    display1: brightArticleContent.copyWith(color: mainColor),
     //非必学单词
     display2: brightArticleContent.copyWith(color: Colors.blueGrey));
 

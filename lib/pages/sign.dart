@@ -110,6 +110,7 @@ class SignInPageState extends State<SignInPage> {
             //ConfigJumpToWord(),
             ConfigDarkTheme(),
             ConfigAutoPlay(),
+            Text("version: 1.2.12"),
             RaisedButton(
               child: const Text('Logout'),
               onPressed: _handleSignOut,

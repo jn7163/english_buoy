@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:ebuoy/components/article_sentences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-//import 'package:flutter_youtube_view/flutter_youtube_view.dart';
 
 import '../components/article_top_bar.dart';
 import '../components/not_mastered_vocabularies.dart';
@@ -14,6 +13,7 @@ import '../models/article.dart';
 import '../models/article_status.dart';
 import '../models/articles.dart';
 import '../models/setting.dart';
+import '../themes/bright.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
@@ -66,9 +66,10 @@ class _ArticlePageState extends State<ArticlePage> {
     var article = Article();
     // from local cache
     article.getFromLocal(widget.id).then((hasLocal) {
-      if(hasLocal)setState(() {
-        _article = article;
-      });
+      if (hasLocal)
+        setState(() {
+          _article = article;
+        });
     });
 
     // always update from server
@@ -83,30 +84,37 @@ class _ArticlePageState extends State<ArticlePage> {
     });
   }
 
+  Widget getRefresh() {
+    return RefreshIndicator(
+      onRefresh: _refresh,
+      child: articleBody(),
+      color: mainColor,
+    );
+  }
+
   Widget getWrapLoading() {
     return ModalProgressHUD(
-        child: _article == null
-            ? Container() //这里可以搞一个动画或者什么效果
-            //: Stack(children: [getScrollView(), getYouTube()]),
-            : Column(children: [getYouTube(), Expanded(child: articleBody())]),
+        child: Column(children: [getYouTube(), Expanded(child: getRefresh())]),
         inAsyncCall: _article == null);
   }
 
   Widget articleBody() {
-    return SingleChildScrollView(
-        controller: _controller,
-        child: Column(children: [
-          ArticleTopBar(article: _article),
-          Padding(
-              padding: EdgeInsets.only(top: 0, left: 0, bottom: 0, right: 0),
-              child: NotMasteredVocabulary(article: _article)),
-          Padding(
-              padding: EdgeInsets.only(top: 5.0, left: 5.0, bottom: 5, right: 5),
-              child: ArticleSentences(article: _article, sentences: _article.sentences)),
-          Padding(
-              padding: EdgeInsets.only(top: 0, left: 0, bottom: 0, right: 0),
-              child: NotMasteredVocabulary(article: _article)),
-        ]));
+    return _article != null
+        ? SingleChildScrollView(
+            controller: _controller,
+            child: Column(children: [
+              ArticleTopBar(article: _article),
+              Padding(
+                  padding: EdgeInsets.only(top: 0, left: 0, bottom: 0, right: 0),
+                  child: NotMasteredVocabulary(article: _article)),
+              Padding(
+                  padding: EdgeInsets.only(top: 5.0, left: 5.0, bottom: 5, right: 5),
+                  child: ArticleSentences(article: _article, sentences: _article.sentences)),
+              Padding(
+                  padding: EdgeInsets.only(top: 0, left: 0, bottom: 0, right: 0),
+                  child: NotMasteredVocabulary(article: _article)),
+            ]))
+        : Container();
   }
 
   Widget getYouTube() {
@@ -170,6 +178,11 @@ class _ArticlePageState extends State<ArticlePage> {
                 handleColor: Colors.tealAccent,
               ),
             ));
+  }
+
+  Future _refresh() async {
+    await loadArticleByID();
+    return;
   }
 
   @override

@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:ebuoy/components/article_titles_app_bar.dart';
 import 'package:ebuoy/models/search.dart';
 import 'package:ebuoy/models/youtube.dart';
+import 'package:ebuoy/themes/bright.dart';
 
 import 'package:flutter_widgets/flutter_widgets.dart';
 
@@ -169,7 +170,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     print("build article titles");
     Scaffold scaffold = Scaffold(
       appBar: ArticleListsAppBar(),
-      body: RefreshIndicator(onRefresh: _refresh, child: getArticleTitlesBody()),
+      body: RefreshIndicator(onRefresh: _refresh, child: getArticleTitlesBody(), color: mainColor,),
       floatingActionButton: Visibility(
           visible: articleTitles.titles.length > 10 ? false : true,
           child: FloatingActionButton(
