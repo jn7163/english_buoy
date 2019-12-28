@@ -93,6 +93,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
         }
         return filterTitles.length > 0
             ? ScrollablePositionedList.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: filterTitles.length,
                 itemBuilder: (context, index) {
                   var d = filterTitles[index];
@@ -163,14 +164,19 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
       syncFromServer(youtube.newURL);
       youtube.clean();
       articleTitles.showLoadingItem();
-      itemScrollController.scrollTo(index: 0, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic);
+      itemScrollController.scrollTo(
+          index: 0, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic);
     }
 
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     print("build article titles");
     Scaffold scaffold = Scaffold(
       appBar: ArticleListsAppBar(),
-      body: RefreshIndicator(onRefresh: _refresh, child: getArticleTitlesBody(), color: mainColor,),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: getArticleTitlesBody(),
+        color: mainColor,
+      ),
       floatingActionButton: Visibility(
           visible: articleTitles.titles.length > 10 ? false : true,
           child: FloatingActionButton(

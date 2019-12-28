@@ -88,7 +88,7 @@ class _ArticlePageState extends State<ArticlePage> {
     return await loadFromServer();
   }
 
-  Widget getRefresh() {
+  RefreshIndicator getRefresh() {
     return RefreshIndicator(
       onRefresh: _refresh,
       child: articleBody(),
@@ -105,6 +105,7 @@ class _ArticlePageState extends State<ArticlePage> {
   Widget articleBody() {
     return _article != null
         ? SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             controller: _controller,
             child: Column(children: [
               ArticleTopBar(article: _article),
