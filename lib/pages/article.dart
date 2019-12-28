@@ -28,6 +28,7 @@ class ArticlePage extends StatefulWidget {
 class _ArticlePageState extends State<ArticlePage> {
   // 后台返回的文章结构
   Article _article;
+  Article articleTmp = Article();
   ScrollController _controller;
   ArticleStatus articleStatus;
   Setting setting;
@@ -57,31 +58,34 @@ class _ArticlePageState extends State<ArticlePage> {
     super.dispose();
   }
 
-  loadArticleByID() {
+  Future loadFromServer() async {
+    return articleTmp.getArticleByID(context, widget.id).then((d) {
+      setState(() {
+        _article = articleTmp;
+      });
+      // 更新本地未学单词数
+      var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+      articleTitles.setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);
+      return d;
+    });
+  }
+
+  Future loadArticleByID() async {
     // from mem cache
     var articles = Provider.of<Articles>(context, listen: false);
     setState(() {
       _article = articles.articles[widget.id];
     });
-    var article = Article();
     // from local cache
-    article.getFromLocal(widget.id).then((hasLocal) {
+    articleTmp.getFromLocal(widget.id).then((hasLocal) {
       if (hasLocal)
         setState(() {
-          _article = article;
+          _article = articleTmp;
         });
     });
 
     // always update from server
-    article.getArticleByID(context, widget.id).then((d) {
-      articles.set(article);
-      setState(() {
-        _article = article;
-      });
-      // 更新本地未学单词数
-      var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-      articleTitles.setUnlearnedCountByArticleID(article.unlearnedCount, article.articleID);
-    });
+    return await loadFromServer();
   }
 
   Widget getRefresh() {
@@ -181,7 +185,7 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Future _refresh() async {
-    await loadArticleByID();
+    await loadFromServer();
     return;
   }
 
