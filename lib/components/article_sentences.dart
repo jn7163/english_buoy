@@ -172,7 +172,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
   String _getBlank(String text) {
     String blank = " ";
     //if (_noNeedExp.hasMatch(text)) blank = "";
-    if (noNeedBlank.contains(text)) blank = "";
+    if (noNeedBlank.contains(text.toLowerCase())) blank = "";
     return blank;
   }
 
@@ -196,7 +196,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
     // 如果是词中没有字母, 默认样式
     if (!hasLetter(word.text)) return defaultTextStyle;
     // 无需前置空格的单词, 默认样式
-    if (noNeedBlank.contains(word.text)) return defaultTextStyle;
+    if (noNeedBlank.contains(word.text.toLowerCase())) return defaultTextStyle;
     // 只有一个字母, 默认样式
     if (word.text.length == 1) return defaultTextStyle;
     // 已经学会且没有选中, 不用任何修改
