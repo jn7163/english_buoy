@@ -18,7 +18,6 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      // search = Provider.of<Search>(context, listen: false);
       articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     });
     searchController.addListener(() {

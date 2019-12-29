@@ -103,13 +103,13 @@ class _ArticlePageState extends State<ArticlePage> {
     return GestureDetector(
         onHorizontalDragEnd: (details) {
           print(details.primaryVelocity);
-          if (details.primaryVelocity < -500) {
+          if (details.primaryVelocity < -400) {
             if (nextID != null) {
               id = nextID;
               loadByID();
             }
           }
-          if (details.primaryVelocity > 500) {
+          if (details.primaryVelocity > 400) {
             if (lastID != null) {
               id = lastID;
               loadByID();

@@ -16,6 +16,7 @@ import 'package:ebuoy/store/article.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/article_titles.dart';
+import '../models/oauth_info.dart';
 import '../models/article_title.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -70,9 +71,13 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
 
   Future _syncArticleTitles() async {
     return articleTitles.syncServer(context).catchError((e) {
+      print("_syncArticleTitles get e" + e.toString());
       if (e.response.statusCode == 401) {
-        print("must login");
-        Navigator.pushNamed(context, '/Sign');
+        OauthInfo oauthInfo = Provider.of<OauthInfo>(context, listen: false);
+        oauthInfo.signIn().then((d) {
+          _syncArticleTitles();
+        });
+        // Navigator.pushNamed(context, '/Sign');
       }
     });
   }

@@ -37,11 +37,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   StreamSubscription _intentDataStreamSubscription;
   YouTube youtube;
+  OauthInfo oauthInfo;
+  Setting setting;
 
   @override
   void initState() {
     super.initState();
     youtube = YouTube();
+    oauthInfo = OauthInfo();
+    setting = Setting();
     initReceiveShare();
   }
 
@@ -73,26 +77,23 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    oauthInfo.backFromShared();
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => youtube),
           ChangeNotifierProvider(create: (_) => ArticleStatus()),
           ChangeNotifierProvider(create: (_) => Loading()),
-          ChangeNotifierProvider(create: (_) => OauthInfo()),
+          ChangeNotifierProvider(create: (_) => oauthInfo),
           ChangeNotifierProvider(create: (_) => ArticleTitles()),
           ChangeNotifierProvider(create: (_) => Articles()),
-          ChangeNotifierProvider(create: (_) => Setting()),
+          ChangeNotifierProvider(create: (_) => setting),
         ],
-        child: Consumer<Setting>(builder: (context, setting, child) {
-          var oauthInfo = Provider.of<OauthInfo>(context, listen: false);
-          oauthInfo.backFromShared();
-          return MaterialApp(
-            title: 'English Buoy',
-            theme: setting.isDark ? darkTheme : brightTheme,
-            home: ArticleTitlesPage(),
-            onGenerateRoute: getRoute,
-          );
-        }));
+        child: MaterialApp(
+          title: 'English Buoy',
+          theme: setting.isDark ? darkTheme : brightTheme,
+          home: ArticleTitlesPage(),
+          onGenerateRoute: getRoute,
+        ));
   }
 
   Route getRoute(RouteSettings settings) {

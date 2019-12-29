@@ -21,7 +21,7 @@ class ArticleTitles with ChangeNotifier {
   }
 
   // 根据给出的id，找到在 filterTitles 中的 index
-   findLastNextArticleByID(int id) {
+  findLastNextArticleByID(int id) {
     int index, lastID, nextID;
     for (int i = 0; i < filterTitles.length; i++) {
       if (filterTitles[i].id == id) {
@@ -37,7 +37,7 @@ class ArticleTitles with ChangeNotifier {
       nextID = filterTitles[index + 1].id;
     else
       nextID = null;
-    return [lastID,nextID];
+    return [lastID, nextID];
   }
 
   filter() {
@@ -110,12 +110,13 @@ class ArticleTitles with ChangeNotifier {
       saveToLocal(json.encode(response.data));
       return response;
     } on DioError catch (e) {
-      if (e.response != null && e.response.statusCode == 401) {} else {
+      if (e.response != null && e.response.statusCode == 401) {
+      } else {
         Alert.toast(context, e.message.toString(),
             position: ToastPosition.bottom, duration: ToastDuration.long);
       }
-      return e;
-    } finally {}
+      throw e;
+    }
   }
 
   setUnlearnedCountByArticleID(int unlearnedCount, int articleID) {

@@ -18,13 +18,8 @@ Dio getDio(BuildContext context) {
     return options; //continue
   }, onError: (DioError e) {
     // Do something with response error
-    print("bigzhu:" + e.toString());
-    if (e.response != null && e.response.statusCode == 401) {
-      // bus.emit('pop_show', 'need login');
-      Navigator.pushNamed(context, '/Sign');
-      return null;
-    } else
-      return e; //continue
+    print(e.toString());
+    throw e;
   }));
 
   return dio;
