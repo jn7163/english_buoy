@@ -9,9 +9,26 @@ import '../store/store.dart';
 import 'package:dio/dio.dart';
 
 class ArticleTitles with ChangeNotifier {
+  String searchKey = ''; // 过滤关键字
+  List<ArticleTitle> filterTitles = []; // 过滤好的列表
   List<ArticleTitle> titles = [];
   int selectedArticleID = 0;
   bool sortByUnlearned = true;
+
+  setSearchKey(String v) {
+    searchKey = v;
+    filter();
+  }
+
+  filter() {
+    if (searchKey != "") {
+      filterTitles =
+          titles.where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase())).toList();
+    } else {
+      filterTitles = titles;
+    }
+    notifyListeners();
+  }
 
   // Set 合集, 用于快速查找添加过的单词
   Set setArticleTitles = Set();
@@ -31,13 +48,12 @@ class ArticleTitles with ChangeNotifier {
     loadingArticleTitle.deleting = true;
     loadingArticleTitle.setPercent();
     this.titles.insert(0, loadingArticleTitle);
-
-    notifyListeners();
+    filter();
   }
 
   removeLoadingItem() {
     this.titles.removeAt(0);
-    notifyListeners();
+    filter();
   }
 
   changeSort() {
@@ -47,7 +63,7 @@ class ArticleTitles with ChangeNotifier {
       titles.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     }
     sortByUnlearned = !sortByUnlearned;
-    notifyListeners();
+    filter();
   }
 
   saveToLocal(String data) async {
@@ -74,7 +90,8 @@ class ArticleTitles with ChangeNotifier {
       saveToLocal(json.encode(response.data));
       return response;
     } on DioError catch (e) {
-      if (e.response != null && e.response.statusCode == 401) {} else {
+      if (e.response != null && e.response.statusCode == 401) {
+      } else {
         Alert.toast(context, e.message.toString(),
             position: ToastPosition.bottom, duration: ToastDuration.long);
       }
@@ -87,7 +104,7 @@ class ArticleTitles with ChangeNotifier {
       if (titles[i].id == articleID) {
         titles[i].unlearnedCount = unlearnedCount;
         titles[i].setPercent();
-        notifyListeners();
+        filter();
         return;
       }
     }
@@ -95,13 +112,13 @@ class ArticleTitles with ChangeNotifier {
 
   removeFromList(ArticleTitle articleTitle) {
     titles.remove(articleTitle);
-    notifyListeners();
+    filter();
   }
 
 // 退出清空数据
   clear() {
     this.titles.clear();
-    notifyListeners();
+    filter();
   }
 
   addByArticle(Article article) {
@@ -117,7 +134,7 @@ class ArticleTitles with ChangeNotifier {
     // 新增加的插入到第一位
     this.titles.insert(0, articleTitle);
     this.setArticleTitles.add(articleTitle.title);
-    notifyListeners();
+    filter();
   }
 
   add(ArticleTitle articleTitle) {
@@ -135,6 +152,6 @@ class ArticleTitles with ChangeNotifier {
       // this.articles.add(articleTitle);
       // this.setArticleTitles.add(articleTitle.title);
     });
-    notifyListeners();
+    filter();
   }
 }

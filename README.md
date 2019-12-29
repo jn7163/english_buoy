@@ -2,8 +2,10 @@
 
 
 ## Change Log
-v1.2.11+v1.2.11
-- add scroll refresh to article
+v1.2.12+v1.2.12
+- 
+- filter no blank word need ignore case
+- pull down scroll refresh to article
 - set refresh color
 
 v1.2.11+v1.2.11

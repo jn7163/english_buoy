@@ -31,7 +31,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   int _selectedIndex = 0;
 
   ArticleTitles articleTitles;
-  List<ArticleTitle> filterTitles; // now show list
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener = ItemPositionsListener.create();
   Loading loading;
@@ -82,21 +81,12 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   Widget getArticleTitlesBody() {
     return Consumer<Search>(builder: (context, search, child) {
       return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
-        // List<ArticleTitle> filterTitles;
-        if (search.key != "") {
-          filterTitles = articleTitles.titles
-              .where((d) => d.title.toLowerCase().contains(search.key.toLowerCase()))
-              .toList();
-        } else {
-          // filterTitles = articleTitles.titles.where((d) => d.unlearnedCount > 0).toList();
-          filterTitles = articleTitles.titles;
-        }
-        return filterTitles.length > 0
+        return articleTitles.filterTitles.length > 0
             ? ScrollablePositionedList.builder(
                 physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: filterTitles.length,
+                itemCount: articleTitles.filterTitles.length,
                 itemBuilder: (context, index) {
-                  var d = filterTitles[index];
+                  var d = articleTitles.filterTitles[index];
                   return Slidable(
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
@@ -143,8 +133,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   Future<void> scrollToSharedItem(int articleID) async {
     if (articleID == 0) return;
     //找到 id
-    for (var i = 0; i < filterTitles.length; i++) {
-      if (filterTitles[i].id == articleID) {
+    for (var i = 0; i < articleTitles.filterTitles.length; i++) {
+      if (articleTitles.filterTitles[i].id == articleID) {
         _selectedIndex = i;
         break;
       }

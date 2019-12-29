@@ -1,4 +1,4 @@
-import 'package:ebuoy/models/search.dart';
+// import 'package:ebuoy/models/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
@@ -9,17 +9,21 @@ import '../models/article_titles.dart';
 
 // 顶部那个浮动的 appbar
 class ArticleListsAppBarState extends State<ArticleListsAppBar> {
-  bool isSearching=false;
+  bool isSearching = false;
   TextEditingController searchController = TextEditingController();
-  Search search;
+
+  //Search search;
+  ArticleTitles articleTitles;
+
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      search = Provider.of<Search>(context, listen: false);
+      // search = Provider.of<Search>(context, listen: false);
+      articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     });
     searchController.addListener(() {
-      search.set(searchController.text);
+      articleTitles.setSearchKey(searchController.text);
     });
   }
 
@@ -49,16 +53,17 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
           onPressed: () {
             setState(() {
               isSearching = !isSearching;
-              if(!isSearching) {
-                searchController.text="";
-                search.set(searchController.text);
+              if (!isSearching) {
+                searchController.text = "";
+                articleTitles.setSearchKey(searchController.text);
+                //search.set(searchController.text);
               }
             });
           },
         ),
         IconButton(
           icon: Icon(Icons.sort, color: Theme.of(context).primaryTextTheme.title.color),
-          onPressed: (){
+          onPressed: () {
             ArticleTitles articleTitles = Provider.of<ArticleTitles>(context, listen: false);
             articleTitles.changeSort();
           },

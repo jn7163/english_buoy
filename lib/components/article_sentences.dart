@@ -171,7 +171,6 @@ class ArticleSentencesState extends State<ArticleSentences> {
 // 根据规则, 判断单词前是否需要添加空白
   String _getBlank(String text) {
     String blank = " ";
-    //if (_noNeedExp.hasMatch(text)) blank = "";
     if (noNeedBlank.contains(text.toLowerCase())) blank = "";
     return blank;
   }

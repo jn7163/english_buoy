@@ -88,12 +88,22 @@ class _ArticlePageState extends State<ArticlePage> {
     return await loadFromServer();
   }
 
-  RefreshIndicator getRefresh() {
-    return RefreshIndicator(
-      onRefresh: _refresh,
-      child: articleBody(),
-      color: mainColor,
-    );
+  GestureDetector getRefresh() {
+    return GestureDetector(
+        onHorizontalDragEnd: (details) {
+          print(details.primaryVelocity);
+          if(details.primaryVelocity<0) {
+            print("next article");
+          } else {
+            print("last article");
+          }
+          // Navigator.pushNamed(context, '/Article', arguments: d.id);
+        },
+        child: RefreshIndicator(
+          onRefresh: _refresh,
+          child: articleBody(),
+          color: mainColor,
+        ));
   }
 
   Widget getWrapLoading() {
