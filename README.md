@@ -3,10 +3,10 @@
 
 ## Change Log
 v1.2.12+v1.2.12
-- 
-- filter no blank word need ignore case
-- pull down scroll refresh to article
-- set refresh color
+-In article detail, slider right / left will open last / next article
+-no blank word filter need ignore-case
+-pull down scroll refresh current article
+-set refresh color
 
 v1.2.11+v1.2.11
 - Show loading item when adding new youtube
