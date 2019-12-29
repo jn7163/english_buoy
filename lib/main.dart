@@ -19,7 +19,6 @@ import './pages/guid.dart';
 
 import './themes/dark.dart';
 import './themes/bright.dart';
-import 'models/search.dart';
 import 'dart:async';
 
 void main() {
@@ -79,7 +78,6 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => youtube),
           ChangeNotifierProvider(create: (_) => ArticleStatus()),
           ChangeNotifierProvider(create: (_) => Loading()),
-          ChangeNotifierProvider(create: (_) => Search()),
           ChangeNotifierProvider(create: (_) => OauthInfo()),
           ChangeNotifierProvider(create: (_) => ArticleTitles()),
           ChangeNotifierProvider(create: (_) => Articles()),
@@ -108,7 +106,7 @@ class _MyAppState extends State<MyApp> {
       case '/AddArticle':
         return _buildRoute(settings, AddArticlePage());
       case '/Article':
-        return _buildRoute(settings, ArticlePage(id: settings.arguments));
+        return _buildRoute(settings, ArticlePage(initID: settings.arguments));
       case '/Sign':
         return _buildRoute(settings, SignInPage());
       default:

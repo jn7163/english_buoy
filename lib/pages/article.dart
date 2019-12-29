@@ -17,9 +17,9 @@ import '../themes/bright.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.id}) : super(key: key);
+  ArticlePage({Key key, this.initID}) : super(key: key);
 
-  final int id;
+  final int initID;
 
   @override
   _ArticlePageState createState() => _ArticlePageState();
@@ -31,17 +31,28 @@ class _ArticlePageState extends State<ArticlePage> {
   Article articleTmp = Article();
   ScrollController _controller;
   ArticleStatus articleStatus;
+  ArticleTitles articleTitles;
   Setting setting;
+  int id, lastID, nextID;
 
   @override
   void initState() {
     super.initState();
+    id = widget.initID;
     _controller = ScrollController();
     Future.delayed(Duration.zero, () {
       articleStatus = Provider.of<ArticleStatus>(context, listen: false);
-      setting = Provider.of<Setting>(context, listen: false);
-      loadArticleByID();
+      articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+      loadByID();
     });
+  }
+
+  loadByID() {
+    var a = articleTitles.findLastNextArticleByID(id);
+    lastID = a[0];
+    nextID = a[1];
+    setting = Provider.of<Setting>(context, listen: false);
+    loadArticleByID();
   }
 
   @override
@@ -58,8 +69,8 @@ class _ArticlePageState extends State<ArticlePage> {
     super.dispose();
   }
 
-  Future loadFromServer() async {
-    return articleTmp.getArticleByID(context, widget.id).then((d) {
+  Future loadFromServer(int id) async {
+    return articleTmp.getArticleByID(context, id).then((d) {
       setState(() {
         _article = articleTmp;
       });
@@ -74,10 +85,10 @@ class _ArticlePageState extends State<ArticlePage> {
     // from mem cache
     var articles = Provider.of<Articles>(context, listen: false);
     setState(() {
-      _article = articles.articles[widget.id];
+      _article = articles.articles[id];
     });
     // from local cache
-    articleTmp.getFromLocal(widget.id).then((hasLocal) {
+    articleTmp.getFromLocal(id).then((hasLocal) {
       if (hasLocal)
         setState(() {
           _article = articleTmp;
@@ -85,17 +96,23 @@ class _ArticlePageState extends State<ArticlePage> {
     });
 
     // always update from server
-    return await loadFromServer();
+    return await loadFromServer(id);
   }
 
   GestureDetector getRefresh() {
     return GestureDetector(
         onHorizontalDragEnd: (details) {
           print(details.primaryVelocity);
-          if(details.primaryVelocity<0) {
-            print("next article");
+          if (details.primaryVelocity < 0) {
+            if (nextID != null) {
+              id = nextID;
+              loadByID();
+            }
           } else {
-            print("last article");
+            if (lastID != null) {
+              id = lastID;
+              loadByID();
+            }
           }
           // Navigator.pushNamed(context, '/Article', arguments: d.id);
         },
@@ -196,7 +213,7 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Future _refresh() async {
-    await loadFromServer();
+    await loadFromServer(id);
     return;
   }
 

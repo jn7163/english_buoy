@@ -2,7 +2,6 @@
 import 'dart:async';
 
 import 'package:ebuoy/components/article_titles_app_bar.dart';
-import 'package:ebuoy/models/search.dart';
 import 'package:ebuoy/models/youtube.dart';
 import 'package:ebuoy/themes/bright.dart';
 
@@ -79,53 +78,51 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   }
 
   Widget getArticleTitlesBody() {
-    return Consumer<Search>(builder: (context, search, child) {
-      return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
-        return articleTitles.filterTitles.length > 0
-            ? ScrollablePositionedList.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: articleTitles.filterTitles.length,
-                itemBuilder: (context, index) {
-                  var d = articleTitles.filterTitles[index];
-                  return Slidable(
-                    actionPane: SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.25,
-                    child: Ink(
-                        color: articleTitles.selectedArticleID == d.id
-                            ? Theme.of(context).highlightColor
-                            : Colors.transparent,
-                        child: ListTile(
-                          trailing: ArticleYoutubeAvatar(
-                              youtubeURL: d.youtube, avatar: d.avatar, loading: d.deleting),
-                          dense: false,
-                          onTap: () {
-                            articleTitles.setSelectedArticleID(d.id);
-                            Navigator.pushNamed(context, '/Article', arguments: d.id);
-                          },
-                          leading: Text(
-                              d.percent.toStringAsFixed(
-                                      d.percent.truncateToDouble() == d.percent ? 0 : 1) +
-                                  "%",
-                              style: TextStyle(
-                                color: Colors.blueGrey,
-                              )),
-                          title: Text(d.title), // 用的 TextTheme.subhead
-                        )),
-                    secondaryActions: <Widget>[
-                      IconSlideAction(
-                        caption: 'Delete',
-                        color: Colors.red,
-                        icon: Icons.delete,
-                        onTap: () => _delete(d),
-                      ),
-                    ],
-                  );
-                },
-                itemScrollController: itemScrollController,
-                itemPositionsListener: itemPositionListener,
-              )
-            : Container();
-      });
+    return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
+      return articleTitles.filterTitles.length > 0
+          ? ScrollablePositionedList.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: articleTitles.filterTitles.length,
+              itemBuilder: (context, index) {
+                var d = articleTitles.filterTitles[index];
+                return Slidable(
+                  actionPane: SlidableDrawerActionPane(),
+                  actionExtentRatio: 0.25,
+                  child: Ink(
+                      color: articleTitles.selectedArticleID == d.id
+                          ? Theme.of(context).highlightColor
+                          : Colors.transparent,
+                      child: ListTile(
+                        trailing: ArticleYoutubeAvatar(
+                            youtubeURL: d.youtube, avatar: d.avatar, loading: d.deleting),
+                        dense: false,
+                        onTap: () {
+                          articleTitles.setSelectedArticleID(d.id);
+                          Navigator.pushNamed(context, '/Article', arguments: d.id);
+                        },
+                        leading: Text(
+                            d.percent.toStringAsFixed(
+                                    d.percent.truncateToDouble() == d.percent ? 0 : 1) +
+                                "%",
+                            style: TextStyle(
+                              color: Colors.blueGrey,
+                            )),
+                        title: Text(d.title), // 用的 TextTheme.subhead
+                      )),
+                  secondaryActions: <Widget>[
+                    IconSlideAction(
+                      caption: 'Delete',
+                      color: Colors.red,
+                      icon: Icons.delete,
+                      onTap: () => _delete(d),
+                    ),
+                  ],
+                );
+              },
+              itemScrollController: itemScrollController,
+              itemPositionsListener: itemPositionListener,
+            )
+          : Container();
     });
   }
 
