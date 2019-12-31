@@ -2,11 +2,19 @@
 
 
 ## Change Log
+
+v1.2.13+v1.2.13
+- fix bug: always autoplay while sliding to last/next whatever autoplay config is on or  off 
+- remove memory cache
+- make sure move to top when sliding to last/next
+- make share Youtube video to Ebuoy is work fine while the app is closed
+
 v1.2.12+v1.2.12
 -In article detail, slider right / left will open last / next article
 -no blank word filter need ignore-case
 -pull down scroll refresh current article
 -set refresh color
+-Fix some google sign in bug
 
 v1.2.11+v1.2.11
 - Show loading item when adding new youtube

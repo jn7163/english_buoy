@@ -30,6 +30,6 @@ class ArticleStatus with ChangeNotifier {
 
   setYouTube(YoutubePlayerController v) {
     youtubeController = v;
-    notifyListeners();
+    //notifyListeners();
   }
 }

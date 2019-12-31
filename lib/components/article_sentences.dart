@@ -160,7 +160,6 @@ class ArticleSentencesState extends State<ArticleSentences> {
         });
       };
     return TextSpan(
-        //text: seekTextSpanTapStatus[time] ? "   ▶" : "   ▷",
         text: "   ▷",
         style: seekTextSpanTapStatus[time]
             ? Theme.of(context).textTheme.display1.copyWith(fontWeight: FontWeight.bold)
@@ -226,25 +225,6 @@ class ArticleSentencesState extends State<ArticleSentences> {
     if (word.text == "\n" || _startExp.hasMatch(word.text)) {
       return TextSpan(text: "");
     }
-    /*
-    if (word.text == "\n") {
-      _isWrap = true;
-      return TextSpan(text: "");
-    } else {
-      // 是时间格式的字符
-      if (_startExp.hasMatch(word.text)) {
-        if (_isWrap) {
-          // 增加神奇的点击事件, 调整 youtube 视频
-          _isWrap = false;
-          return getSeekTextSpan(context, word.text);
-        } else {
-          // 返回空白, 不要显示
-          return TextSpan(text: "");
-        }
-      }
-      _isWrap = false;
-    }
-     */
     var wordStyle = _defineStyle(word); // 文字样式
 
     TextSpan subscript = TextSpan(); // 显示该单词查询次数的下标
@@ -296,22 +276,6 @@ class ArticleSentencesState extends State<ArticleSentences> {
 
   @override
   Widget build(BuildContext context) {
-    /*
-    TextSpan star = getStar(context, s.words[0].text);
-    List<TextSpan> words = s.words.map((d) {
-      return getTextSpan(d);
-    }).toList();
-    words.insert(0, star);
-
-    return RichText(
-      text: TextSpan(
-        text: "",
-        style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
-        children: words,
-      ),
-    );
-     */
-
     //只有一个单词时候不要用 Column封装,避免位置上移
     if(widget.sentences.length==1) return buildArticleRichText(widget.sentences[0]);
     List<Widget> richTextList = widget.sentences.map((s) {

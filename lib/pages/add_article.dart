@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../store/article.dart';
 import '../models/article_titles.dart';
 import '../models/loading.dart';
-import '../models/articles.dart';
 import 'package:flutter/services.dart';
 import '../components/oauth_info.dart';
 
@@ -43,10 +42,9 @@ class _AddArticlePageState extends State<AddArticlePage> {
       _isEnable = false;
     });
     var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    var articles = Provider.of<Articles>(context, listen: false);
     var allLoading = Provider.of<Loading>(context, listen: false);
     bool showNewArticle = false;
-    postArticle(context, _articleController.text, articleTitles, articles, allLoading).then((d) {
+    postArticle(context, _articleController.text, articleTitles, allLoading).then((d) {
       if (showNewArticle) _loadArticleTitlesAndToArticle(d["id"]);
     });
     // 不等待后台返回, 直接清除内容

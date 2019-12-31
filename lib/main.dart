@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import './models/oauth_info.dart';
 import './models/loading.dart';
 import './models/article_titles.dart';
-import './models/articles.dart';
 import './models/setting.dart';
 import './models/article_status.dart';
 import './models/youtube.dart';
@@ -58,6 +57,7 @@ class _MyAppState extends State<MyApp> {
   void initReceiveShare() {
     // For sharing or opening urls/text coming from outside the app while the app is in the memory
     _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen((String value) {
+      print("shared to run app");
       receiveShare(value);
     }, onError: (err) {
       print("getLinkStream error: $err");
@@ -65,6 +65,7 @@ class _MyAppState extends State<MyApp> {
 
     // For sharing or opening urls/text coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialText().then((String value) {
+      print("shared to closed app");
       receiveShare(value);
     });
   }
@@ -85,7 +86,6 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => Loading()),
           ChangeNotifierProvider(create: (_) => oauthInfo),
           ChangeNotifierProvider(create: (_) => ArticleTitles()),
-          ChangeNotifierProvider(create: (_) => Articles()),
           ChangeNotifierProvider(create: (_) => setting),
         ],
         child: MaterialApp(
@@ -122,62 +122,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-/*
-class MyApp extends StatelessWidget {
-  void init(BuildContext context) {
-    var oauthInfo = Provider.of<OauthInfo>(context, listen: false);
-    oauthInfo.backFromShared();
-  }
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => ArticleStatus()),
-          ChangeNotifierProvider(create: (_) => Loading()),
-          ChangeNotifierProvider(create: (_) => Search()),
-          ChangeNotifierProvider(create: (_) => OauthInfo()),
-          ChangeNotifierProvider(create: (_) => ArticleTitles()),
-          ChangeNotifierProvider(create: (_) => Articles()),
-          ChangeNotifierProvider(create: (_) => Setting()),
-        ],
-        child: Consumer<Setting>(builder: (context, setting, child) {
-          init(context);
-          return MaterialApp(
-            title: 'English Buoy',
-            theme: setting.isDark ? darkTheme : brightTheme,
-            home: WaitingPage(),
-            //home: GuidPage(),
-            onGenerateRoute: _getRoute,
-          );
-        }));
-  }
-
-  Route _getRoute(RouteSettings settings) {
-    switch (settings.name) {
-      case '/Guid':
-        return _buildRoute(settings, GuidPage());
-      case '/Waiting':
-        return _buildRoute(settings, WaitingPage());
-      case '/ArticleTitles':
-        return _buildRoute(settings, ArticleTitlesPage());
-      case '/AddArticle':
-        return _buildRoute(settings, AddArticlePage());
-      case '/Article':
-        return _buildRoute(settings, ArticlePage(id: settings.arguments));
-      case '/Sign':
-        return _buildRoute(settings, SignInPage());
-      default:
-        return null;
-    }
-  }
-
-  MaterialPageRoute _buildRoute(RouteSettings settings, Widget builder) {
-    return new MaterialPageRoute(
-      settings: settings,
-      builder: (BuildContext context) => builder,
-    );
-  }
-}
- */

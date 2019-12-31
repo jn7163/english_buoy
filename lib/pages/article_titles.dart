@@ -9,7 +9,6 @@ import 'package:flutter_widgets/flutter_widgets.dart';
 
 import '../components/article_youtube_avatar.dart';
 
-import '../models/articles.dart';
 import '../models/loading.dart';
 import 'package:ebuoy/store/article.dart';
 
@@ -54,14 +53,12 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     });
   }
 
-  syncFromServer(url) {
+  Future syncFromServer(url) async {
     print("url=" + url);
-    var articles = Provider.of<Articles>(context, listen: false);
-    postYouTube(context, url, articleTitles, articles).then((d) {
+    return postYouTube(context, url, articleTitles).then((d) {
       articleTitles.setSelectedArticleID(d.articleID);
       scrollToSharedItem(articleTitles.selectedArticleID);
     });
-    //.catchError(() => articleTitles.removeLoadingItem());
   }
 
   @override
@@ -150,36 +147,39 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
 
   @override
   Widget build(BuildContext context) {
-    YouTube youtube = Provider.of<YouTube>(context, listen: true);
-    if (youtube.newURL != "") {
-      print("youtubeURL=" + youtube.newURL);
-      syncFromServer(youtube.newURL);
-      youtube.clean();
-      articleTitles.showLoadingItem();
-      itemScrollController.scrollTo(
-          index: 0, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic);
-    }
+    return Consumer<YouTube>(builder: (context, youtube, child) {
+      return Consumer<ArticleTitles>(builder: (context, articleTitlesNow, child) {
+        if (youtube.newURL != "") {
+          print("youtubeURL=" + youtube.newURL);
+          syncFromServer(youtube.newURL);
+          youtube.clean();
+          articleTitlesNow.showLoadingItem();
 
-    articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    print("build article titles");
-    Scaffold scaffold = Scaffold(
-      appBar: ArticleListsAppBar(),
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        child: getArticleTitlesBody(),
-        color: mainColor,
-      ),
-      floatingActionButton: Visibility(
-          visible: articleTitles.titles.length > 10 ? false : true,
-          child: FloatingActionButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/Guid');
-            },
-            tooltip: 'need more',
-            child: Icon(Icons.help_outline, color: Theme.of(context).primaryTextTheme.title.color),
-          )),
-    );
-    return scaffold;
+          Future.delayed(Duration.zero, () {
+            itemScrollController.scrollTo(
+                index: 0, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic);
+          });
+        }
+        return Scaffold(
+          appBar: ArticleListsAppBar(),
+          body: RefreshIndicator(
+            onRefresh: _refresh,
+            child: getArticleTitlesBody(),
+            color: mainColor,
+          ),
+          floatingActionButton: Visibility(
+              visible: articleTitlesNow.titles.length > 10 ? false : true,
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/Guid');
+                },
+                tooltip: 'need more',
+                child:
+                    Icon(Icons.help_outline, color: Theme.of(context).primaryTextTheme.title.color),
+              )),
+        );
+      });
+    });
   }
 
   Future _refresh() async {

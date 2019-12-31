@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_alert/easy_alert.dart' as toast;
 import 'package:rflutter_alert/rflutter_alert.dart';
 import '../models/article_titles.dart';
-import '../models/articles.dart';
 import '../models/article.dart';
 import '../models/loading.dart';
 
@@ -11,15 +10,15 @@ import 'package:dio/dio.dart';
 import './store.dart';
 
 Future<Article> postYouTube(
-    BuildContext context, String youtube, ArticleTitles articleTitles, Articles articles) async {
+    BuildContext context, String youtube, ArticleTitles articleTitles) async {
   Dio dio = getDio(context);
   try {
     var response = await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": youtube});
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
+    newArticle.saveToLocal(response.data);
     articleTitles.removeLoadingItem();
-    articles.set(newArticle);
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
       toast.Alert.toast(context, "update article",
@@ -61,14 +60,12 @@ Future<Article> postYouTube(
       }
     }
     throw e;
-  } finally {
-    //allLoading.set(false);
   }
 }
 
 // 提交新的文章进行分析
-postArticle(BuildContext context, String article, ArticleTitles articleTitles, Articles articles,
-    Loading topLoading) async {
+postArticle(
+    BuildContext context, String article, ArticleTitles articleTitles, Loading topLoading) async {
   Dio dio = getDio(context);
   print("postArticle");
   // 替换奇怪的连写字符串
@@ -82,7 +79,7 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles, A
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
-    articles.set(newArticle);
+    newArticle.saveToLocal(response.data);
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
       toast.Alert.toast(context, "update article",

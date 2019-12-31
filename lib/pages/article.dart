@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/article_status.dart';
-import '../models/articles.dart';
 import '../models/setting.dart';
 import '../themes/bright.dart';
 
@@ -32,7 +31,6 @@ class _ArticlePageState extends State<ArticlePage> {
   ScrollController _controller;
   ArticleStatus articleStatus;
   ArticleTitles articleTitles;
-  Setting setting;
   int id, lastID, nextID;
 
   @override
@@ -51,14 +49,13 @@ class _ArticlePageState extends State<ArticlePage> {
     var a = articleTitles.findLastNextArticleByID(id);
     lastID = a[0];
     nextID = a[1];
-    setting = Provider.of<Setting>(context, listen: false);
     loadArticleByID();
   }
 
   @override
   void deactivate() {
     // This pauses video while navigating to next page.
-    articleStatus.youtubeController.pause();
+    if (articleStatus.youtubeController != null) articleStatus.youtubeController.pause();
     super.deactivate();
   }
 
@@ -71,28 +68,24 @@ class _ArticlePageState extends State<ArticlePage> {
 
   Future loadFromServer(int id) async {
     return articleTmp.getArticleByID(context, id).then((d) {
-      setState(() {
-        _article = articleTmp;
-      });
-      // 更新本地未学单词数
-      var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-      articleTitles.setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);
+      if (this.mounted) {
+        setState(() {
+          _article = articleTmp;
+        });
+
+        // 更新本地未学单词数
+        articleTitles.setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);
+      }
       return d;
     });
   }
 
   Future loadArticleByID() async {
-    // from mem cache
-    var articles = Provider.of<Articles>(context, listen: false);
-    setState(() {
-      _article = articles.articles[id];
-    });
     // from local cache
     articleTmp.getFromLocal(id).then((hasLocal) {
-      if (hasLocal)
-        setState(() {
-          _article = articleTmp;
-        });
+      setState(() {
+        if (hasLocal) _article = articleTmp;
+      });
     });
 
     // always update from server
@@ -106,13 +99,15 @@ class _ArticlePageState extends State<ArticlePage> {
           if (details.primaryVelocity < -400) {
             if (nextID != null) {
               id = nextID;
-              loadByID();
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => ArticlePage(initID: id)));
             }
           }
           if (details.primaryVelocity > 400) {
             if (lastID != null) {
               id = lastID;
-              loadByID();
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => ArticlePage(initID: id)));
             }
           }
           // Navigator.pushNamed(context, '/Article', arguments: d.id);
@@ -151,66 +146,36 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Widget getYouTube() {
-    /* new
-    YoutubePlayerController youtubeController = YoutubePlayerController(
-      initialVideoId: YoutubePlayer.convertUrlToId(_article.youtube),
-      flags: YoutubePlayerFlags(
-        hideControls: false,
-        controlsVisibleAtStart: false,
-        //自动播放
-        autoPlay: setting.isAutoplay,
-        mute: false,
-        isLive: false,
-        forceHideAnnotation: false,
-        hideThumbnail: false,
-        disableDragSeek: false,
-        enableCaption: true,
-        captionLanguage: 'en',
-        loop: false,
-      ),
-    );
-    articleStatus.setYouTube(youtubeController);
-     */
     return _article == null || _article.youtube == ''
         ? Container()
         : Container(
             color: Colors.black,
             padding: EdgeInsets.only(top: 24),
-            child:
-
-                /* new
-            YoutubePlayer(
-                controller: youtubeController,
-                showVideoProgressIndicator: true,
-                progressIndicatorColor: Colors.teal,
+            child: Consumer<Setting>(builder: (context, setting, child) {
+              print(setting.isAutoplay);
+              return YoutubePlayer(
+                onPlayerInitialized: (controller) => articleStatus.setYouTube(controller),
+                context: context,
+                videoId: YoutubePlayer.convertUrlToId(_article.youtube),
+                flags: YoutubePlayerFlags(
+                  //自动播放
+                  autoPlay: setting.isAutoplay,
+                  // 下半部分小小的进度条
+                  showVideoProgressIndicator: true,
+                  // 允许全屏
+                  hideFullScreenButton: false,
+                  // 不可能是 live 的视频
+                  isLive: false,
+                  forceHideAnnotation: false,
+                ),
+                videoProgressIndicatorColor: Colors.teal,
                 liveUIColor: Colors.teal,
-                progressColors: ProgressBarColors(
+                progressColors: ProgressColors(
                   playedColor: Colors.teal,
                   handleColor: Colors.tealAccent,
-                ))
-                 */
-                YoutubePlayer(
-              onPlayerInitialized: (controller) => articleStatus.setYouTube(controller),
-              context: context,
-              videoId: YoutubePlayer.convertUrlToId(_article.youtube),
-              flags: YoutubePlayerFlags(
-                //自动播放
-                autoPlay: setting.isAutoplay,
-                // 下半部分小小的进度条
-                showVideoProgressIndicator: true,
-                // 允许全屏
-                hideFullScreenButton: false,
-                // 不可能是 live 的视频
-                isLive: false,
-                forceHideAnnotation: false,
-              ),
-              videoProgressIndicatorColor: Colors.teal,
-              liveUIColor: Colors.teal,
-              progressColors: ProgressColors(
-                playedColor: Colors.teal,
-                handleColor: Colors.tealAccent,
-              ),
-            ));
+                ),
+              );
+            }));
   }
 
   Future _refresh() async {
