@@ -29,7 +29,9 @@ dependencies:
   #cupertino_icons: ^0.1.2
   dio: ^3.0.7 # http 请求
   easy_alert: ^0.0.2
-  google_sign_in: ^4.1.1 # google 登录
+  #google_sign_in: ^4.1.1 # google 登录
+  #drowngrading to 4.0.7 try avoid crash on iOS
+  google_sign_in: ^4.0.7 # google 登录
   shared_preferences: ^0.5.6 # 数据持久化存储
   provider: ^3.2.0 # 状态管理器
   flutter_spinkit: "^4.0.0" # loading 动画
