@@ -3,6 +3,12 @@
 
 ## Change Log
 
+v1.2.15+v1.2.15
+- fix save local cache error
+
+v1.2.14+v1.2.14
+- fix dark mode malfunction
+
 v1.2.13+v1.2.13
 - fix bug: always autoplay while sliding to last/next whatever autoplay config is on or  off 
 - remove memory cache

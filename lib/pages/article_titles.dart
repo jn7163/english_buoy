@@ -145,6 +145,19 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     });
   }
 
+  Future _refresh() async {
+    await _syncArticleTitles();
+    return;
+  }
+
+  _delete(ArticleTitle articleTitle) async {
+    setState(() {
+      articleTitle.deleting = true;
+    });
+    await articleTitle.deleteArticle(context);
+    articleTitles.removeFromList(articleTitle);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<YouTube>(builder: (context, youtube, child) {
@@ -180,18 +193,5 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
         );
       });
     });
-  }
-
-  Future _refresh() async {
-    await _syncArticleTitles();
-    return;
-  }
-
-  _delete(ArticleTitle articleTitle) async {
-    setState(() {
-      articleTitle.deleting = true;
-    });
-    await articleTitle.deleteArticle(context);
-    articleTitles.removeFromList(articleTitle);
   }
 }

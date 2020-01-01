@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:easy_alert/easy_alert.dart' as toast;
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -17,7 +18,7 @@ Future<Article> postYouTube(
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
-    newArticle.saveToLocal(response.data);
+    newArticle.saveToLocal(json.encode(response.data));
     articleTitles.removeLoadingItem();
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
@@ -79,7 +80,7 @@ postArticle(
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
-    newArticle.saveToLocal(response.data);
+    newArticle.saveToLocal(json.encode(response.data));
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
       toast.Alert.toast(context, "update article",
