@@ -40,7 +40,7 @@ class Article with ChangeNotifier {
     this.unlearnedCount = json['UnlearnedCount'];
     this.avatar = json['Avatar'];
     this.wordCount = json['WordCount'];
-    // notifyListeners();
+    //notifyListeners();
   }
 
   clear() {
@@ -49,20 +49,23 @@ class Article with ChangeNotifier {
     this.sentences.clear();
     // notifyListeners();
   }
+
   saveToLocal(String data) async {
     // 登录后存储到临时缓存中
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('article_'+this.articleID.toString(), data);
+    prefs.setString('article_' + this.articleID.toString(), data);
   }
+
   Future getFromLocal(int articleID) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String data = prefs.getString('article_'+articleID.toString());
+    String data = prefs.getString('article_' + articleID.toString());
     if (data != null) {
       this.setFromJSON(json.decode(data));
       return true;
     }
     return false;
   }
+
   // 从服务器获取
   Future getArticleByID(BuildContext context, int articleID) async {
     this.articleID = articleID;

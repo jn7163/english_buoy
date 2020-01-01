@@ -37,14 +37,12 @@ class _MyAppState extends State<MyApp> {
   StreamSubscription _intentDataStreamSubscription;
   YouTube youtube;
   OauthInfo oauthInfo;
-  Setting setting;
 
   @override
   void initState() {
     super.initState();
     youtube = YouTube();
     oauthInfo = OauthInfo();
-    setting = Setting();
     initReceiveShare();
   }
 
@@ -86,14 +84,16 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (_) => Loading()),
           ChangeNotifierProvider(create: (_) => oauthInfo),
           ChangeNotifierProvider(create: (_) => ArticleTitles()),
-          ChangeNotifierProvider(create: (_) => setting),
+          ChangeNotifierProvider(create: (_) => Setting()),
         ],
-        child: MaterialApp(
-          title: 'English Buoy',
-          theme: setting.isDark ? darkTheme : brightTheme,
-          home: ArticleTitlesPage(),
-          onGenerateRoute: getRoute,
-        ));
+        child: Consumer<Setting>(builder: (context, setting, child) {
+          return MaterialApp(
+            title: 'English Buoy',
+            theme: setting.isDark ? darkTheme : brightTheme,
+            home: ArticleTitlesPage(),
+            onGenerateRoute: getRoute,
+          );
+        }));
   }
 
   Route getRoute(RouteSettings settings) {

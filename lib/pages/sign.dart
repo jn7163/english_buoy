@@ -34,7 +34,7 @@ class SignInPageState extends State<SignInPage> {
             //ConfigJumpToWord(),
             ConfigDarkTheme(),
             ConfigAutoPlay(),
-            Text("version: 1.2.12"),
+            Text("version: 1.2.14"),
             RaisedButton(
               child: const Text('switch user'),
               onPressed: () => oauthInfo.switchUser(),

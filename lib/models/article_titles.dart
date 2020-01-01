@@ -154,6 +154,7 @@ class ArticleTitles with ChangeNotifier {
     // 新增加的插入到第一位
     this.titles.insert(0, articleTitle);
     this.setArticleTitles.add(articleTitle.title);
+    print("addByArticle");
     filter();
   }
 
