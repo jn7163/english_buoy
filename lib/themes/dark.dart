@@ -37,8 +37,13 @@ var darkTextTheme = TextTheme(
 // 控制 app bar 之类的
 var darkPrimaryTextTheme = TextTheme(title: darkTextStyle, button: darkTextStyle);
 var darkTheme = ThemeData(
+    hoverColor: Colors.red,
+    // drawer 的背景颜色
+    canvasColor: Color(0XFF3c3f41),
     // youtube 播放器的弹出框背景颜色
     cardColor: Color(0XFF3c3f41),
+    // 按钮样式
+    buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary, buttonColor: Colors.grey),
     primarySwatch: darkMaterialColor,
     textTheme: darkTextTheme,
     // 列表被选中的高亮颜色

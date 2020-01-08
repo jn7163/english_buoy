@@ -19,9 +19,12 @@ Future<Article> postYouTube(
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
     newArticle.saveToLocal(json.encode(response.data));
-    articleTitles.removeLoadingItem();
+    // 设置高亮, 但是不要通知,等待后续来更新
+    articleTitles.setHighlightArticleNoReset(newArticle.articleID);
+    articleTitles.removeLoadingItemNoNotify();
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
+      articleTitles.justNotifyListeners();
       toast.Alert.toast(context, "update article",
           position: toast.ToastPosition.bottom, duration: toast.ToastDuration.long);
     } else {
@@ -40,8 +43,7 @@ Future<Article> postYouTube(
         toast.Alert.toast(context, e.message.toString(),
             position: toast.ToastPosition.bottom, duration: toast.ToastDuration.long);
       } else if (e.response.data['error'] == "no subtitle") {
-        debugPrint(e.response.data['error']);
-        // return e.response.data;
+        articleTitles.removeLoadingItem();
         Alert(
           context: context,
           type: AlertType.info,

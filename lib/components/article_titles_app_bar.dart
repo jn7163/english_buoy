@@ -28,7 +28,11 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: OauthInfoWidget(),
+      leading: GestureDetector(
+          onTap: () {
+            widget.scaffoldKey.currentState.openDrawer();
+          },
+          child: OauthInfoWidget()),
       automaticallyImplyLeading: false,
       title: isSearching
           ? TextField(
@@ -70,7 +74,8 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
           icon: Icon(Icons.settings, color: Theme.of(context).primaryTextTheme.title.color),
           tooltip: 'go to settings',
           onPressed: () {
-            Navigator.pushNamed(context, '/Sign');
+            widget.scaffoldKey.currentState.openEndDrawer();
+            // Navigator.pushNamed(context, '/Sign');
           },
         ),
       ],
@@ -79,9 +84,13 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
 }
 
 class ArticleListsAppBar extends StatefulWidget implements PreferredSizeWidget {
+  ArticleListsAppBar({Key key, this.scaffoldKey}) : super(key: key);
+
   @override
   ArticleListsAppBarState createState() => ArticleListsAppBarState();
 
   @override
   Size get preferredSize => new Size.fromHeight(kToolbarHeight);
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
 }

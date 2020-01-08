@@ -53,8 +53,17 @@ class ArticleTitles with ChangeNotifier {
   // Set 合集, 用于快速查找添加过的单词
   Set setArticleTitles = Set();
 
+  setHighlightArticleNoReset(int id) {
+    this.selectedArticleID = id;
+  }
+
   setSelectedArticleID(int id) {
     this.selectedArticleID = id;
+    notifyListeners();
+  }
+
+  // 啥事都不干, 只是通知
+  justNotifyListeners() {
     notifyListeners();
   }
 
@@ -67,8 +76,14 @@ class ArticleTitles with ChangeNotifier {
     loadingArticleTitle.wordCount = 1;
     loadingArticleTitle.deleting = true;
     loadingArticleTitle.setPercent();
+    loadingArticleTitle.createdAt = DateTime.now();
+    loadingArticleTitle.updatedAt = DateTime.now();
     this.titles.insert(0, loadingArticleTitle);
     filter();
+  }
+
+  removeLoadingItemNoNotify() {
+    this.titles.removeAt(0);
   }
 
   removeLoadingItem() {

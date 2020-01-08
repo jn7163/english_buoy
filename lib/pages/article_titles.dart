@@ -1,5 +1,8 @@
 // 文章列表
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
+import 'package:ebuoy/components/config_autoplay.dart';
+import 'package:ebuoy/components/config_dark_theme.dart';
 
 import 'package:ebuoy/components/article_titles_app_bar.dart';
 import 'package:ebuoy/models/youtube.dart';
@@ -30,6 +33,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   int _selectedIndex = 0;
 
   ArticleTitles articleTitles;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener = ItemPositionsListener.create();
   Loading loading;
@@ -56,7 +60,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   Future syncFromServer(url) async {
     print("url=" + url);
     return postYouTube(context, url, articleTitles).then((d) {
-      articleTitles.setSelectedArticleID(d.articleID);
       scrollToSharedItem(articleTitles.selectedArticleID);
     });
   }
@@ -174,24 +177,77 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
           });
         }
         return Scaffold(
-          appBar: ArticleListsAppBar(),
-          body: RefreshIndicator(
-            onRefresh: _refresh,
-            child: getArticleTitlesBody(),
-            color: mainColor,
-          ),
-          floatingActionButton: Visibility(
-              visible: articleTitlesNow.titles.length > 10 ? false : true,
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/Guid');
-                },
-                tooltip: 'need more',
-                child:
-                    Icon(Icons.help_outline, color: Theme.of(context).primaryTextTheme.title.color),
-              )),
-        );
+            key: _scaffoldKey,
+            appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
+            drawer: Drawer(child: leftDrawer()),
+            endDrawer: Drawer(child: rightDrawer()),
+            body: RefreshIndicator(
+              onRefresh: _refresh,
+              child: getArticleTitlesBody(),
+              color: mainColor,
+            ),
+            floatingActionButton: Visibility(
+                visible: articleTitlesNow.titles.length > 10 ? false : true,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/Guid');
+                  },
+                  tooltip: 'need more',
+                  child: Icon(Icons.help_outline,
+                      color: Theme.of(context).primaryTextTheme.title.color),
+                )));
       });
     });
+  }
+
+  Widget leftDrawer() {
+    return Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          AppBar(
+              //automaticallyImplyLeading: false,
+              leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(oauthInfo.avatarURL == null
+                        ? "https://ebuoydoc.bigzhu.net/assets/img/ic_launcher_APP.png"
+                        : oauthInfo.avatarURL),
+                  )),
+              actions: <Widget>[Container()],
+              centerTitle: true,
+              title: Text(
+                "Profile",
+              )),
+          ListTile(
+            title: Center(child: Text(oauthInfo.name)),
+            subtitle: Center(child: Text(oauthInfo.email)),
+          ),
+          RaisedButton(
+            child: const Text('switch user'),
+            onPressed: () => oauthInfo.switchUser(),
+          ),
+          Text(""),
+          Text("version: 1.2.15")
+        ],
+      );
+    });
+  }
+
+  Widget rightDrawer() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        AppBar(
+            automaticallyImplyLeading: false,
+            actions: <Widget>[Container()],
+            centerTitle: true,
+            title: Text(
+              "Settings",
+            )),
+        ConfigDarkTheme(),
+        ConfigAutoPlay(),
+      ],
+    );
   }
 }

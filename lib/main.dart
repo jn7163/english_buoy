@@ -37,10 +37,12 @@ class _MyAppState extends State<MyApp> {
   StreamSubscription _intentDataStreamSubscription;
   YouTube youtube;
   OauthInfo oauthInfo;
+  ArticleStatus articleStatus;
 
   @override
   void initState() {
     super.initState();
+    articleStatus = ArticleStatus();
     youtube = YouTube();
     oauthInfo = OauthInfo();
     initReceiveShare();
@@ -80,7 +82,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => youtube),
-          ChangeNotifierProvider(create: (_) => ArticleStatus()),
+          ChangeNotifierProvider(create: (_) => articleStatus),
           ChangeNotifierProvider(create: (_) => Loading()),
           ChangeNotifierProvider(create: (_) => oauthInfo),
           ChangeNotifierProvider(create: (_) => ArticleTitles()),
