@@ -99,6 +99,7 @@ class _ArticlePageState extends State<ArticlePage> {
           if (details.primaryVelocity < -400) {
             if (nextID != null) {
               id = nextID;
+              articleTitles.setSelectedArticleID(id);
               Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (_) => ArticlePage(initID: id)));
             }
@@ -106,6 +107,7 @@ class _ArticlePageState extends State<ArticlePage> {
           if (details.primaryVelocity > 400) {
             if (lastID != null) {
               id = lastID;
+              articleTitles.setSelectedArticleID(id);
               Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (_) => ArticlePage(initID: id)));
             }

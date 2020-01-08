@@ -25,7 +25,7 @@ class SignInPageState extends State<SignInPage> {
             ListTile(
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(oauthInfo.avatarURL == null
-                    ? "https://www.bigzhu.net/images/gou.jpg"
+                    ? "https://ebuoydoc.bigzhu.net/assets/img/ic_launcher_APP.png"
                     : oauthInfo.avatarURL),
               ),
               title: Text(oauthInfo.name),
@@ -34,7 +34,7 @@ class SignInPageState extends State<SignInPage> {
             //ConfigJumpToWord(),
             ConfigDarkTheme(),
             ConfigAutoPlay(),
-            Text("version: 1.2.14"),
+            Text("version: 1.2.15"),
             RaisedButton(
               child: const Text('switch user'),
               onPressed: () => oauthInfo.switchUser(),

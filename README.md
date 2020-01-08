@@ -3,6 +3,14 @@
 
 ## Change Log
 
+v1.2.17+v1.2.17
+- Filter by percent
+
+v1.2.16+v1.2.16
+- Move settings and profile to the drawer
+- When Youtube doesn't have en subtitle still need to remove loading item
+- Even when loading new youtube video make sort works fine
+
 v1.2.15+v1.2.15
 - fix save local cache error
 

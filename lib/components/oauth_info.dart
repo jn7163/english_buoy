@@ -17,18 +17,13 @@ class OauthInfoWidget extends StatelessWidget {
           },
         );
       } else {
-        return GestureDetector(
-            onTap: () {
-              // 点击头像没必要动作
-              // Navigator.pushNamed(context, '/Sign');
-            },
-            child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(oauthInfo.avatarURL == null
-                      ? "https://www.bigzhu.net/images/gou.jpg"
-                      : oauthInfo.avatarURL),
-                )));
+        return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(oauthInfo.avatarURL == null
+                  ? "https://ebuoydoc.bigzhu.net/assets/img/ic_launcher_APP.png"
+                  : oauthInfo.avatarURL),
+            ));
       }
     });
   }
