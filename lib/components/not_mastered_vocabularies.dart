@@ -11,31 +11,33 @@ class NotMasteredVocabulary extends StatelessWidget {
   const NotMasteredVocabulary({Key key, @required this.article}) : super(key: key);
   final Article article;
 
-  TableRow getTableRow(BuildContext context, String one, String two, String three) {
+  TableRow getTableRow({Widget one, Widget two, Widget three}) {
+    /*
     TableRow row = TableRow(children: [
-      Container(
-          height: 34,
-          child: Center(
-              child: Text(
-            one,
-            style: Theme.of(context).textTheme.display2,
-          ))),
-      Container(
-          height: 34,
-          child: Center(
-              child: Text(
-            two,
-            style: Theme.of(context).textTheme.display2,
-          ))),
-      Container(
-          height: 34,
-          child: Center(
-              child: Text(
-            three,
-            style: Theme.of(context).textTheme.display2,
-          ))),
+      Center(
+          child: Text(
+        one,
+        style: Theme.of(context).textTheme.display2,
+      )),
+      Center(
+          child: Text(
+        two,
+        style: Theme.of(context).textTheme.display2,
+      )),
+      Center(
+          child: Text(
+        three,
+        style: Theme.of(context).textTheme.display2,
+      )),
     ]);
     return row;
+     */
+    double p = 6;
+    return TableRow(children: [
+      Center(child: Padding(padding: EdgeInsets.all(p), child: one)),
+      Center(child: Padding(padding: EdgeInsets.all(p), child: two)),
+      Center(child: Padding(padding: EdgeInsets.all(p), child: three)),
+    ]);
   }
 
   @override
@@ -61,8 +63,12 @@ class NotMasteredVocabulary extends StatelessWidget {
       });
     });
     List<Word> allWords = mustLearnWords + needLearnWords;
-    TableRow titleRow =
-        getTableRow(context, "NGSL", "WORDS(" + allWords.length.toString() + ")", "FIND");
+    TextStyle titleStyle = Theme.of(context).textTheme.display2;
+    TableRow titleRow = getTableRow(
+      one: Text("NGSL", style: titleStyle),
+      two: Text("WORDS(" + allWords.length.toString() + ")", style: titleStyle),
+      three: Text("FIND", style: titleStyle),
+    );
     bool hideSome = false;
     if (allWords.length > 100) {
       hideSome = true;
@@ -71,33 +77,29 @@ class NotMasteredVocabulary extends StatelessWidget {
 
     List<TableRow> allWordRows = allWords.map((d) {
       var sentence = Sentence('', [d]);
-      return TableRow(children: [
-        Container(
-            height: 35,
-            child: Center(
-                child: Text(
-              d.level == 0 ? "-" : d.level.toString(),
-              style: Theme.of(context).textTheme.display2,
-            ))),
-        Container(
-            height: 35,
-            child: Center(
-                child: ArticleSentences(
-                    article: article,
-                    sentences: [sentence],
-                    crossAxisAlignment: CrossAxisAlignment.baseline))),
-        Container(
-            height: 35,
-            child: Center(
-                child: GestureDetector(
-                    onTap: () => Scrollable.ensureVisible(d.belongSentence.c),
-                    child: Icon(
-                      Icons.find_in_page,
-                      color: Color(0xFF5F8A8B),
-                    )))),
-      ]);
+      // double p = 6;
+      return getTableRow(
+        one: Text(
+          d.level == 0 ? "-" : d.level.toString(),
+          style: Theme.of(context).textTheme.display2,
+        ),
+        two: ArticleSentences(
+            article: article,
+            sentences: [sentence],
+            crossAxisAlignment: CrossAxisAlignment.baseline),
+        three: GestureDetector(
+            onTap: () => Scrollable.ensureVisible(d.belongSentence.c),
+            child: Icon(
+              Icons.find_in_page,
+              color: Color(0xFF5F8A8B),
+            )),
+      );
     }).toList();
-    TableRow moreRow = getTableRow(context, "...", "...", "...");
+    TableRow moreRow = getTableRow(
+      one: Text("...", style: titleStyle),
+      two: Text("...", style: titleStyle),
+      three: Text("...", style: titleStyle),
+    );
 
     List<TableRow> renderWordRows =
         allWordRows.length != 0 ? [titleRow] + allWordRows : allWordRows;
@@ -105,7 +107,11 @@ class NotMasteredVocabulary extends StatelessWidget {
 
     return Table(
         border: TableBorder.all(color: Colors.teal),
-        columnWidths: {1: FlexColumnWidth(2)},
+        columnWidths: {
+          0: IntrinsicColumnWidth(),
+          1: FlexColumnWidth(8),
+          2: IntrinsicColumnWidth(),
+        },
         children: renderWordRows);
   }
 }
