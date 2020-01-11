@@ -14,28 +14,7 @@ import '../models/article.dart';
 import '../models/word.dart';
 import '../models/sentence.dart';
 import './article_richtext.dart';
-
-// no need learn and no need add blank
-final noNeedBlank = <String>[
-  "'ll",
-  "'s",
-  "'re",
-  "'m",
-  "'d",
-  "'ve",
-  "n't",
-  ".",
-  "!",
-  ",",
-  ":",
-  "?",
-  "…",
-];
-// 字符串是否包含字母
-bool hasLetter(String str) {
-  RegExp regHasLetter = new RegExp(r"[a-zA-Z]+");
-  return regHasLetter.hasMatch(str);
-}
+import '../functions/article.dart';
 
 class ArticleSentences extends StatefulWidget {
   ArticleSentences(
@@ -191,12 +170,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
     //根据条件逐步加工修改的样式
     TextStyle processTextStyle = defaultTextStyle;
 
-    // 如果是词中没有字母, 默认样式
-    if (!hasLetter(word.text)) return defaultTextStyle;
-    // 无需前置空格的单词, 默认样式
-    if (noNeedBlank.contains(word.text.toLowerCase())) return defaultTextStyle;
-    // 只有一个字母, 默认样式
-    if (word.text.length == 1) return defaultTextStyle;
+    if (!isNeedLearn(word)) return defaultTextStyle;
     // 已经学会且没有选中, 不用任何修改
     if (word.learned == true && !isSelected) return defaultTextStyle;
 
@@ -277,7 +251,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
   @override
   Widget build(BuildContext context) {
     //只有一个单词时候不要用 Column封装,避免位置上移
-    if(widget.sentences.length==1) return buildArticleRichText(widget.sentences[0]);
+    if (widget.sentences.length == 1) return buildArticleRichText(widget.sentences[0]);
     List<Widget> richTextList = widget.sentences.map((s) {
       return buildArticleRichText(s);
     }).toList();

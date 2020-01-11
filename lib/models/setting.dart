@@ -5,6 +5,10 @@ class Setting with ChangeNotifier {
   bool isJump = false;
   bool isDark = false;
   bool isAutoplay = true;
+  String fromPercent = "";
+  String toPercent = "";
+  String fromPercentKey = "fromPercent";
+  String toPercentKey = "toPercent";
   String isJumpKey = "isJump";
   String isDarkKey = "isDark";
   String isAutoplayKey = "isAutoplay";
@@ -13,11 +17,13 @@ class Setting with ChangeNotifier {
   Setting() {
     getFromLocal();
   }
+
   setIsAutoplay(bool v) async {
     await setLocalBool(isAutoplayKey, v);
     isAutoplay = v;
     notifyListeners();
   }
+
   setIsJump(bool v) async {
     await setLocalBool(isJumpKey, v);
     isJump = v;
@@ -30,6 +36,16 @@ class Setting with ChangeNotifier {
     notifyListeners();
   }
 
+  setFromPercent(String v) async {
+    await setLocalString(fromPercentKey, v);
+    fromPercent = v;
+  }
+
+  setToPercent(String v) async {
+    await setLocalString(toPercentKey, v);
+    toPercent = v;
+  }
+
   getFromLocal() async {
     bool jump = await getLocalBool(isJumpKey);
     setIsJump(jump);
@@ -37,5 +53,9 @@ class Setting with ChangeNotifier {
     setIsDark(dark);
     bool autoplay = await getLocalBoolDefaultTrue(isAutoplayKey);
     setIsAutoplay(autoplay);
+    String from = await getLocalString(fromPercentKey);
+    setFromPercent(from);
+    String to = await getLocalString(toPercentKey);
+    setToPercent(to);
   }
 }
