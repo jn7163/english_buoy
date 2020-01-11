@@ -5,6 +5,7 @@
 
 v1.2.17+v1.2.17
 - Filter by percent
+- Modify slider parameter
 
 v1.2.16+v1.2.16
 - Move settings and profile to the drawer

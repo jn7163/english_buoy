@@ -33,12 +33,14 @@ dependencies:
   #drowngrading to 4.0.7 try avoid crash on iOS
   google_sign_in: ^4.0.7 # google 登录
   shared_preferences: ^0.5.6 # 数据持久化存储
-  provider: ^3.2.0 # 状态管理器
+  provider: ^4.0.1 # 状态管理器
+
   flutter_spinkit: "^4.0.0" # loading 动画
   receive_sharing_intent: ^1.3.2 # 接收分享过来的内容
   modal_progress_hud: ^0.1.3 # loading 遮盖
   cached_network_image: 2.0.0-rc.1 # 缓存网络图片
   rflutter_alert: ^1.0.3 # alert
+  flutter_picker: ^1.1.0 # 选择数字
   youtube_player_flutter:
     git:
       url: https://github.com/bigzhu/youtube_player_flutter

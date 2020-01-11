@@ -1,5 +1,4 @@
 // 文章列表
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:async';
 import 'package:ebuoy/components/config_autoplay.dart';
 import 'package:ebuoy/components/config_dark_theme.dart';
@@ -11,6 +10,7 @@ import 'package:ebuoy/themes/bright.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 
 import '../components/article_youtube_avatar.dart';
+import '../components/config_filter_by_percent.dart';
 
 import '../models/loading.dart';
 import 'package:ebuoy/store/article.dart';
@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 import '../models/article_titles.dart';
 import '../models/oauth_info.dart';
 import '../models/article_title.dart';
+import '../models/setting.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ArticleTitlesPage extends StatefulWidget {
@@ -37,12 +38,14 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener = ItemPositionsListener.create();
   Loading loading;
+  Setting setting;
 
   @override
   initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      loading = Provider.of<Loading>(context);
+      setting = Provider.of<Setting>(context, listen: false);
+      loading = Provider.of<Loading>(context, listen: false);
       articleTitles = Provider.of<ArticleTitles>(context, listen: false);
       if (articleTitles.titles.length == 0) {
         articleTitles.getFromLocal();
@@ -247,6 +250,15 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
             )),
         ConfigDarkTheme(),
         ConfigAutoPlay(),
+        ConfigFilterByPercent(),
+        RaisedButton(
+          child: const Text('fliter by percent'),
+          onPressed: () {
+            print(setting.fromPercent);
+            articleTitles.filterByPercent(setting.fromPercent, setting.toPercent);
+            Navigator.of(context).pop();
+          },
+        )
       ],
     );
   }

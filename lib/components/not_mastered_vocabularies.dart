@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/sentence.dart';
 import '../models/word.dart';
+import '../functions/article.dart';
 
 // 文章对应的 youtube 图标或者头像
 class NotMasteredVocabulary extends StatelessWidget {
@@ -42,11 +43,10 @@ class NotMasteredVocabulary extends StatelessWidget {
     List<Word> mustLearnWords = List(); // in NESL
     List<String> mustLearnUnique = List();
     List<Word> needLearnWords = List(); // not in NESL
-    //List<String> needLearnUnique = List();
     article.sentences.forEach((s) {
       s.words.forEach((w) {
         // not mastered words
-        if (!w.learned && w.text.length > 1 && !noNeedBlank.contains(w.text) && hasLetter(w.text)) {
+        if (!w.learned && isNeedLearn(w)) {
           if (w.level != null && w.level != 0 && !mustLearnUnique.contains(w.text.toLowerCase())) {
             w.belongSentence = s;
             mustLearnWords.add(w);
@@ -54,8 +54,6 @@ class NotMasteredVocabulary extends StatelessWidget {
           } else if ((w.level == null || w.level == 0) &&
               !mustLearnUnique.contains(w.text.toLowerCase())) {
             w.belongSentence = s;
-            //needLearnWords.add(w);
-            //needLearnUnique.add(w.text.toLowerCase());
             mustLearnWords.add(w);
             mustLearnUnique.add(w.text.toLowerCase());
           }

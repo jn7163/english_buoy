@@ -7,6 +7,7 @@ import './article_title.dart';
 import './article.dart';
 import '../store/store.dart';
 import 'package:dio/dio.dart';
+import './setting.dart';
 
 class ArticleTitles with ChangeNotifier {
   String searchKey = ''; // 过滤关键字
@@ -15,9 +16,17 @@ class ArticleTitles with ChangeNotifier {
   int selectedArticleID = 0;
   bool sortByUnlearned = true;
 
+  // show article percent
+  Setting setting;
+
   setSearchKey(String v) {
     searchKey = v;
     filter();
+  }
+
+  // init
+  ArticleTitles() {
+    setting = Setting();
   }
 
   // 根据给出的id，找到在 filterTitles 中的 index
@@ -41,13 +50,24 @@ class ArticleTitles with ChangeNotifier {
   }
 
   filter() {
-    if (searchKey != "") {
-      filterTitles =
-          titles.where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase())).toList();
-    } else {
-      filterTitles = titles;
-    }
+    filterTitles = titles;
+    if (searchKey != "")
+      filterTitles = filterTitles
+          .where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase()))
+          .toList();
+    if (setting.fromPercent != "" && setting.toPercent != "")
+      filterTitles = filterTitles
+          .where((d) =>
+              d.percent > double.parse(setting.fromPercent) &&
+              d.percent < double.parse(setting.toPercent))
+          .toList();
     notifyListeners();
+  }
+
+  filterByPercent(String from, String to) async {
+    await setting.setFromPercent(from);
+    await setting.setToPercent(to);
+    filter();
   }
 
   // Set 合集, 用于快速查找添加过的单词

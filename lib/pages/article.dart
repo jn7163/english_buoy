@@ -95,8 +95,7 @@ class _ArticlePageState extends State<ArticlePage> {
   GestureDetector getRefresh() {
     return GestureDetector(
         onHorizontalDragEnd: (details) {
-          print(details.primaryVelocity);
-          if (details.primaryVelocity < -400) {
+          if (details.primaryVelocity < -800) {
             if (nextID != null) {
               id = nextID;
               articleTitles.setSelectedArticleID(id);
@@ -104,7 +103,7 @@ class _ArticlePageState extends State<ArticlePage> {
                   context, MaterialPageRoute(builder: (_) => ArticlePage(initID: id)));
             }
           }
-          if (details.primaryVelocity > 400) {
+          if (details.primaryVelocity > 800) {
             if (lastID != null) {
               id = lastID;
               articleTitles.setSelectedArticleID(id);

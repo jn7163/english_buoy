@@ -1,5 +1,6 @@
 // 文章详情内容
 import 'dart:convert';
+import 'package:ebuoy/functions/article.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
@@ -8,7 +9,6 @@ import './word.dart';
 import 'package:dio/dio.dart';
 import '../store/store.dart';
 import './sentence.dart';
-import '../components/article_sentences.dart';
 
 class Article with ChangeNotifier {
   int unlearnedCount;
@@ -85,15 +85,11 @@ class Article with ChangeNotifier {
     if (articleID == null) {
       return null;
     }
-    RegExp regHasLetter = new RegExp(r"[a-zA-Z]+");
     // 重新计算未掌握单词数
     List<String> allWords = [];
     for (int i = 0; i < this.sentences.length; i++) {
       List<String> l = this.sentences[i].words.map((d) {
-        if (!d.learned &&
-            regHasLetter.hasMatch(d.text) &&
-            !noNeedBlank.contains(d.text) &&
-            d.text.length > 1) {
+        if (!d.learned && isNeedLearn(d)) {
           return d.text.toLowerCase();
         }
         return "";
