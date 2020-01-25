@@ -1,10 +1,13 @@
-# Ebuoy
+# ebuoy
 
+Learn English by reading YouTube subtitle article.
 
-## Change Log
+## Version
 
 v1.2.17+v1.2.17
-- Filter by percent
+- Quick back not mastered words table 
+- Highlight word when finds in article 
+- Filter by percent(not done)
 - Modify slider parameter
 - Adjust table width
 
@@ -131,12 +134,9 @@ v1.2.7+1
 - 修改详情页的 top bar, 取消使用 app bar; 取消跳转按钮, 取消 oauth 按钮; 只显示 avatar 和 title
 - 收到分享时, 一律先跳转到列表页, 再进入详情页, 保证返回按钮总是返回列表页
 
-## 颜色的种类和定义
+## How to use
 
-### 无需学习
+1. Open YouTube App find favorite video share to Ebuoy.
+2. Watching video meanwhile reading subtitle article tag word to known/unknown.
 
-`Colors.grey[600]`
 
-![灰色](https://flutter.github.io/assets-for-api-docs/assets/material/Colors.grey.png)
-
-### 等待学习
