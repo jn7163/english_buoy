@@ -1,4 +1,4 @@
-package com.example.ebuoy
+package net.bigzhu.english_buoy
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
