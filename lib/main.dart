@@ -19,7 +19,7 @@ class Ebuoy extends StatelessWidget {
             title: 'English Buoy',
             theme: settings.isDark ? darkTheme : brightTheme,
             home: MyHomePage(title: 'Flutter Demo Home Page'),
-          )
+          );
         }));
   }
 }
@@ -95,10 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .display1,
+              style: Theme.of(context).textTheme.display1,
             ),
           ],
         ),

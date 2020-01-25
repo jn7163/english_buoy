@@ -41,25 +41,25 @@ class Settings with ChangeNotifier {
   }
 
   setFromPercent(String v) async {
-    await prefs.setBool(fromPercentKey, v);
+    await prefs.setString(fromPercentKey, v);
     fromPercent = v;
   }
 
   setToPercent(String v) async {
-    await prefs.setBool(toPercentKey, v);
+    await prefs.setString(toPercentKey, v);
     toPercent = v;
   }
 
   getFromLocal() async {
-    bool jump = prefs.getBool(isJumpKey);
+    bool jump = prefs.getBool(isJumpKey) ?? false;
     setIsJump(jump);
-    bool dark = prefs.getBool(isDarkKey);
+    bool dark = prefs.getBool(isDarkKey) ?? false;
     setIsDark(dark);
 
     //if not set, default is true
     bool autoplay;
     if (prefs.containsKey(isAutoplayKey))
-      autoplay = prefs.getBool(isAutoplayKey);
+      autoplay = prefs.getBool(isAutoplayKey) ?? true;
     else
       autoplay = true;
     setIsAutoplay(autoplay);
