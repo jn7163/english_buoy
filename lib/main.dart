@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import './models/settings.dart';
+import './themes/dark.dart';
+import './themes/bright.dart';
 
 void main() => runApp(Ebuoy());
 
@@ -9,13 +12,15 @@ class Ebuoy extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => Setting()),
+          ChangeNotifierProvider(create: (_) => Settings()),
         ],
-        child: MaterialApp(
-      title: 'English Buoy',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    ));
+        child: Consumer<Settings>(builder: (context, settings, child) {
+          return MaterialApp(
+            title: 'English Buoy',
+            theme: settings.isDark ? darkTheme : brightTheme,
+            home: MyHomePage(title: 'Flutter Demo Home Page'),
+          )
+        }));
   }
 }
 
@@ -90,7 +95,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.display1,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .display1,
             ),
           ],
         ),
