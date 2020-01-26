@@ -22,18 +22,18 @@ import 'dart:async';
 
 void main() {
   runApp(AlertProvider(
-    child: MyApp(),
+    child: Ebuoy(),
     config: new AlertConfig(ok: "OK", cancel: "CANCEL"),
   ));
   // runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class Ebuoy extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _EbuoyState createState() => _EbuoyState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
   YouTube youtube;
   OauthInfo oauthInfo;
