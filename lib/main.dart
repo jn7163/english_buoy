@@ -36,17 +36,19 @@ class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
   OauthInfo oauthInfo;
   ArticleTitles articleTitles;
+  ArticleTitlesPage articleTitlesPage;
   @override
   void initState() {
     super.initState();
     oauthInfo = OauthInfo();
     articleTitles = ArticleTitles();
+    articleTitlesPage = ArticleTitlesPage();
     //绑定articleTitles到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
     oauthInfo.articleTitles = articleTitles;
     initReceiveShare();
   }
 
-  void receiveShare(String sharedText) {
+  receiveShare(String sharedText) {
     if (sharedText == null) return;
     // 收到分享, 设置
     articleTitles.newYouTube(sharedText);
@@ -98,7 +100,7 @@ class _EbuoyState extends State<Ebuoy> {
           return MaterialApp(
             title: 'English Buoy',
             theme: settings.isDark ? darkTheme : brightTheme,
-            home: ArticleTitlesPage(),
+            home: articleTitlesPage,
             onGenerateRoute: getRoute,
           );
         }));
@@ -111,7 +113,7 @@ class _EbuoyState extends State<Ebuoy> {
       case '/Waiting':
         return _buildRoute(settings, WaitingPage());
       case '/ArticleTitles':
-        return _buildRoute(settings, ArticleTitlesPage());
+        return _buildRoute(settings, articleTitlesPage);
       case '/AddArticle':
         return _buildRoute(settings, AddArticlePage());
       case '/Article':

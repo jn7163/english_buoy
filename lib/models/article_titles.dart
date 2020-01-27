@@ -14,6 +14,14 @@ class ArticleTitles with ChangeNotifier {
   List<ArticleTitle> titles = [];
   int selectedArticleID = 0;
   bool sortByUnlearned = true;
+  // 完成添加后的回调
+  Function newYouTubeCallBack;
+  // 滚动到顶部
+  Function scrollToArticleTitle;
+
+  static const String exists = "exists";
+  static const String noSubtitle = "no_subtitle";
+  static const String done = "done";
 
   // show article percent
   Settings settings;
@@ -28,39 +36,39 @@ class ArticleTitles with ChangeNotifier {
     settings = Settings();
   }
 
-  Future<String> newYouTube(String url) async {
+  Future newYouTube(String url) async {
+    String result;
     this.showLoadingItem();
-    final String exists = "exists";
-    final String noSubtitle = "no_subtitle";
-    final String done = "done";
+    if (scrollToArticleTitle != null) scrollToArticleTitle(0);
+
     Dio dio = getDio();
     Response response;
     try {
       response =
           await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": url});
+      Article article = Article();
+      // 将新添加的文章添加到缓存中
+      article.setFromJSON(response.data);
+      article.saveToLocal(json.encode(response.data));
+      // 设置高亮, 但是不要通知,等待后续来更新
+      this.setHighlightArticleNoReset(article.articleID);
+      this.removeLoadingItemNoNotify();
+      if (response.data[exists]) {
+        this.justNotifyListeners();
+        result = exists;
+      } else {
+        // 先添加到 titles 加速显示
+        this.addArticleTitleByArticle(article);
+        result = done;
+      }
     } on DioError catch (e) {
       this.removeLoadingItem();
       if (e.response != null && e.response.data['error'] == noSubtitle)
-        return noSubtitle;
+        result = noSubtitle;
       else
         throw e;
     }
-
-    Article article = Article();
-    // 将新添加的文章添加到缓存中
-    article.setFromJSON(response.data);
-    article.saveToLocal(json.encode(response.data));
-    // 设置高亮, 但是不要通知,等待后续来更新
-    this.setHighlightArticleNoReset(article.articleID);
-    this.removeLoadingItemNoNotify();
-    if (response.data[exists]) {
-      this.justNotifyListeners();
-      return exists;
-    } else {
-      // 先添加到 titles 加速显示
-      this.addArticleTitleByArticle(article);
-    }
-    return done;
+    if (newYouTubeCallBack != null) newYouTubeCallBack(result);
   }
 
   // 根据给出的id，找到在 filterTitles 中的 index
