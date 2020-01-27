@@ -18,20 +18,19 @@ class ArticleTitlesSlidable extends StatefulWidget {
 
 class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
   ArticleTitles articleTitles;
-  bool deleting; // is deleting
-  bool selected; // is selected
+  bool deleting = false; // is deleting
+  bool selected = false; // is selected
 
   @override
   initState() {
     super.initState();
-    deleting = false;
-    selected = false;
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
     ArticleTitle articleTitle = widget.articleTitle;
+    print("deleting=" + this.deleting.toString() + " " + articleTitle.title);
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
@@ -64,7 +63,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                   )),
               title: Text(articleTitle.title), // 用的 TextTheme.subhead
             )),
-        secondaryActions: <Widget>[
+        secondaryActions: [
           IconSlideAction(
             caption: 'Delete',
             color: Colors.red,
@@ -73,7 +72,9 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
               setState(() {
                 this.deleting = true;
               });
-              //await articleTitle.deleteArticle();
+              await articleTitle.deleteArticle();
+              // widget 会被上层复用,状态也会保留,loading状态得改回来
+              this.deleting = false;
               articleTitles.removeFromList(articleTitle);
             },
           ),
