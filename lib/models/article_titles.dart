@@ -29,6 +29,7 @@ class ArticleTitles with ChangeNotifier {
   }
 
   Future<String> newYouTube(String url) async {
+    this.showLoadingItem();
     final String exists = "exists";
     final String noSubtitle = "no_subtitle";
     final String done = "done";
