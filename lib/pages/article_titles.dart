@@ -9,7 +9,6 @@ import '../components/article_titles_slidable.dart';
 import '../components/right_drawer.dart';
 import '../components/left_drawer.dart';
 
-import '../models/youtube.dart';
 import '../models/article_titles.dart';
 import '../models/oauth_info.dart';
 import '../models/settings.dart';
@@ -85,13 +84,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
         break;
       }
     }
-    // 稍微等等, 避免 build 时候滚动
-    Future.delayed(Duration.zero, () {
-      itemScrollController.scrollTo(
-          index: _selectedIndex,
-          duration: Duration(seconds: 2),
-          curve: Curves.easeInOutCubic);
-    });
+    scrollToArticleTitle(_selectedIndex);
   }
 
   Future _refresh() async {
@@ -99,45 +92,40 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     return;
   }
 
+  // 滚动到那一条目
+  scrollToArticleTitle(int index) {
+    // 稍微等等, 避免 build 时候滚动
+    Future.delayed(Duration.zero, () {
+      itemScrollController.scrollTo(
+          index: index,
+          duration: Duration(seconds: 2),
+          curve: Curves.easeInOutCubic);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<YouTube>(builder: (context, youtube, child) {
-      return Consumer<ArticleTitles>(
-          builder: (context, articleTitlesNow, child) {
-        if (youtube.newURL != "") {
-          print("youtubeURL=" + youtube.newURL);
-          newYouTube(youtube.newURL);
-          youtube.clean();
-          articleTitlesNow.showLoadingItem();
-
-          Future.delayed(Duration.zero, () {
-            itemScrollController.scrollTo(
-                index: 0,
-                duration: Duration(seconds: 2),
-                curve: Curves.easeInOutCubic);
-          });
-        }
-        return Scaffold(
-            key: _scaffoldKey,
-            appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
-            drawer: LeftDrawer(),
-            endDrawer: RightDrawer(),
-            body: RefreshIndicator(
-              onRefresh: _refresh,
-              child: getArticleTitlesBody(),
-              color: mainColor,
-            ),
-            floatingActionButton: Visibility(
-                visible: articleTitlesNow.titles.length > 10 ? false : true,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/Guid');
-                  },
-                  tooltip: 'need more',
-                  child: Icon(Icons.help_outline,
-                      color: Theme.of(context).primaryTextTheme.title.color),
-                )));
-      });
+    return Consumer<ArticleTitles>(builder: (context, articleTitlesNow, child) {
+      return Scaffold(
+          key: _scaffoldKey,
+          appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
+          drawer: LeftDrawer(),
+          endDrawer: RightDrawer(),
+          body: RefreshIndicator(
+            onRefresh: _refresh,
+            child: getArticleTitlesBody(),
+            color: mainColor,
+          ),
+          floatingActionButton: Visibility(
+              visible: articleTitlesNow.titles.length > 10 ? false : true,
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/Guid');
+                },
+                tooltip: 'need more',
+                child: Icon(Icons.help_outline,
+                    color: Theme.of(context).primaryTextTheme.title.color),
+              )));
     });
   }
 }
