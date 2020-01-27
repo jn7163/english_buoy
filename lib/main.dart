@@ -52,7 +52,8 @@ class _EbuoyState extends State<Ebuoy> {
   void receiveShare(String sharedText) {
     if (sharedText == null) return;
     // 收到分享, 设置
-    youtube.set(sharedText);
+    //youtube.set(sharedText);
+    articleTitles.newYouTube(sharedText);
   }
 
   void initReceiveShare() {

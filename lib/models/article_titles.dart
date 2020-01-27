@@ -28,6 +28,40 @@ class ArticleTitles with ChangeNotifier {
     settings = Settings();
   }
 
+  Future<String> newYouTube(String url) async {
+    final String exists = "exists";
+    final String noSubtitle = "no_subtitle";
+    final String done = "done";
+    Dio dio = getDio();
+    Response response;
+    try {
+      response =
+          await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": url});
+    } on DioError catch (e) {
+      this.removeLoadingItem();
+      if (e.response != null && e.response.data['error'] == noSubtitle)
+        return noSubtitle;
+      else
+        throw e;
+    }
+
+    Article article = Article();
+    // 将新添加的文章添加到缓存中
+    article.setFromJSON(response.data);
+    article.saveToLocal(json.encode(response.data));
+    // 设置高亮, 但是不要通知,等待后续来更新
+    this.setHighlightArticleNoReset(article.articleID);
+    this.removeLoadingItemNoNotify();
+    if (response.data[exists]) {
+      this.justNotifyListeners();
+      return exists;
+    } else {
+      // 先添加到 titles 加速显示
+      this.addArticleTitleByArticle(article);
+    }
+    return done;
+  }
+
   // 根据给出的id，找到在 filterTitles 中的 index
   findLastNextArticleByID(int id) {
     int index, lastID, nextID;
@@ -63,7 +97,6 @@ class ArticleTitles with ChangeNotifier {
               d.percent == 0) // show percent 0 used to show loading item
           .toList();
           */
-    print(filterTitles.toString());
     notifyListeners();
   }
 
@@ -170,7 +203,7 @@ class ArticleTitles with ChangeNotifier {
     filter();
   }
 
-  addByArticle(Article article) {
+  addArticleTitleByArticle(Article article) {
     ArticleTitle articleTitle = ArticleTitle();
     articleTitle.title = article.title;
     articleTitle.id = article.articleID;
