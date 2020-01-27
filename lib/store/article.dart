@@ -31,7 +31,7 @@ Future<Article> postYouTube(
           duration: toast.ToastDuration.long);
     } else {
       // 先添加到 titles 加速显示
-      articleTitles.addByArticle(newArticle);
+      articleTitles.addArticleTitleByArticle(newArticle);
     }
     // 跳转到添加的那个详情
     // debugPrint("to articleID=" + newArticle.articleID.toString());
@@ -96,7 +96,7 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles,
       // await articles.setByID(response.data["id"]);
     } else {
       // 先添加到 titles 加速显示
-      articleTitles.addByArticle(newArticle);
+      articleTitles.addArticleTitleByArticle(newArticle);
     }
     //显示以后, 会计算未读数字, 需要刷新列表
     // await articleTitles.syncServer();

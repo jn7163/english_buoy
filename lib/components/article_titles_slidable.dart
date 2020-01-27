@@ -30,7 +30,6 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
   @override
   Widget build(BuildContext context) {
     ArticleTitle articleTitle = widget.articleTitle;
-    print("deleting=" + this.deleting.toString() + " " + articleTitle.title);
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
