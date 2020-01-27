@@ -7,7 +7,6 @@ import './models/article.dart';
 import './models/loading.dart';
 import './models/article_titles.dart';
 import './models/settings.dart';
-import './models/youtube.dart';
 
 import './pages/waiting.dart';
 import './pages/article_titles.dart';
@@ -35,13 +34,11 @@ class Ebuoy extends StatefulWidget {
 
 class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
-  YouTube youtube;
   OauthInfo oauthInfo;
   ArticleTitles articleTitles;
   @override
   void initState() {
     super.initState();
-    youtube = YouTube();
     oauthInfo = OauthInfo();
     articleTitles = ArticleTitles();
     //绑定articleTitles到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
@@ -52,7 +49,6 @@ class _EbuoyState extends State<Ebuoy> {
   void receiveShare(String sharedText) {
     if (sharedText == null) return;
     // 收到分享, 设置
-    //youtube.set(sharedText);
     articleTitles.newYouTube(sharedText);
   }
 
@@ -84,7 +80,6 @@ class _EbuoyState extends State<Ebuoy> {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => Article()),
-          ChangeNotifierProvider(create: (_) => youtube),
           ChangeNotifierProvider(create: (_) => Loading()),
           ChangeNotifierProvider(create: (_) => oauthInfo),
           ChangeNotifierProvider(create: (_) => articleTitles),
