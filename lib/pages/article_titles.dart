@@ -4,11 +4,10 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:flutter_widgets/flutter_widgets.dart';
 
-import '../components/config_dark_theme.dart';
-import '../components/config_autoplay.dart';
-import '../components/config_filter_by_percent.dart';
 import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
+import '../components/right_drawer.dart';
+import '../components/left_drawer.dart';
 
 import '../models/youtube.dart';
 import '../models/loading.dart';
@@ -124,8 +123,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
         return Scaffold(
             key: _scaffoldKey,
             appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
-            drawer: Drawer(child: leftDrawer()),
-            endDrawer: Drawer(child: rightDrawer()),
+            drawer: LeftDrawer(),
+            endDrawer: RightDrawer(),
             body: RefreshIndicator(
               onRefresh: _refresh,
               child: getArticleTitlesBody(),
@@ -143,65 +142,5 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
                 )));
       });
     });
-  }
-
-  Widget leftDrawer() {
-    return Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          AppBar(
-              //automaticallyImplyLeading: false,
-              leading: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(oauthInfo.avatarURL == null
-                        ? "https://ebuoydoc.bigzhu.net/assets/img/ic_launcher_APP.png"
-                        : oauthInfo.avatarURL),
-                  )),
-              actions: <Widget>[Container()],
-              centerTitle: true,
-              title: Text(
-                "Profile",
-              )),
-          ListTile(
-            title: Center(child: Text(oauthInfo.name)),
-            subtitle: Center(child: Text(oauthInfo.email)),
-          ),
-          RaisedButton(
-            child: const Text('switch user'),
-            onPressed: () => oauthInfo.switchUser(),
-          ),
-          Text(""),
-          Text("version: 1.2.15")
-        ],
-      );
-    });
-  }
-
-  Widget rightDrawer() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        AppBar(
-            automaticallyImplyLeading: false,
-            actions: <Widget>[Container()],
-            centerTitle: true,
-            title: Text(
-              "Settings",
-            )),
-        ConfigDarkTheme(),
-        ConfigAutoPlay(),
-        ConfigFilterByPercent(),
-        RaisedButton(
-          child: const Text('fliter by percent'),
-          onPressed: () {
-            articleTitles.filterByPercent(
-                settings.fromPercent, settings.toPercent);
-            Navigator.of(context).pop();
-          },
-        )
-      ],
-    );
   }
 }
