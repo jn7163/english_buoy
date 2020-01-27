@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:flutter_widgets/flutter_widgets.dart';
+import 'package:easy_alert/easy_alert.dart' as toast;
 
 import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
@@ -42,6 +43,26 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     articleTitles.getFromLocal();
     oauthInfo = Provider.of<OauthInfo>(context, listen: false);
     oauthInfo.backFromShared();
+    //设置回调
+    articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
+    articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;
+  }
+
+  newYouTubeCallBack(String result) {
+    print("newYouTubeCallBack result=" + result);
+    switch (result) {
+      case ArticleTitles.exists:
+        {
+          this.showToast("article is exists");
+        }
+        break;
+    }
+  }
+
+  showToast(String info) {
+    toast.Alert.toast(context, info,
+        position: toast.ToastPosition.bottom,
+        duration: toast.ToastDuration.long);
   }
 
   Future newYouTube(url) async {
