@@ -36,15 +36,13 @@ class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
   OauthInfo oauthInfo;
   ArticleTitles articleTitles;
-  ArticleTitlesPage articleTitlesPage;
   @override
   void initState() {
     super.initState();
     oauthInfo = OauthInfo();
     articleTitles = ArticleTitles();
-    articleTitlesPage = ArticleTitlesPage();
-    //绑定articleTitles到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
-    oauthInfo.articleTitles = articleTitles;
+    //绑定获取列表的函数到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
+    oauthInfo.setAccessTokenCallBack = articleTitles.syncArticleTitles;
     initReceiveShare();
   }
 
@@ -100,7 +98,7 @@ class _EbuoyState extends State<Ebuoy> {
           return MaterialApp(
             title: 'English Buoy',
             theme: settings.isDark ? darkTheme : brightTheme,
-            home: articleTitlesPage,
+            home: ArticleTitlesPage(),
             onGenerateRoute: getRoute,
           );
         }));
@@ -113,7 +111,7 @@ class _EbuoyState extends State<Ebuoy> {
       case '/Waiting':
         return _buildRoute(settings, WaitingPage());
       case '/ArticleTitles':
-        return _buildRoute(settings, articleTitlesPage);
+        return _buildRoute(settings, ArticleTitlesPage());
       case '/AddArticle':
         return _buildRoute(settings, AddArticlePage());
       case '/Article':
