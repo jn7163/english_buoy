@@ -37,12 +37,15 @@ class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
   YouTube youtube;
   OauthInfo oauthInfo;
-
+  ArticleTitles articleTitles;
   @override
   void initState() {
     super.initState();
     youtube = YouTube();
     oauthInfo = OauthInfo();
+    articleTitles = ArticleTitles();
+    //绑定articleTitles到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
+    oauthInfo.articleTitles = articleTitles;
     initReceiveShare();
   }
 
@@ -54,7 +57,8 @@ class _EbuoyState extends State<Ebuoy> {
 
   void initReceiveShare() {
     // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen((String value) {
+    _intentDataStreamSubscription =
+        ReceiveSharingIntent.getTextStream().listen((String value) {
       print("shared to run app");
       receiveShare(value);
     }, onError: (err) {
@@ -76,15 +80,23 @@ class _EbuoyState extends State<Ebuoy> {
 
   @override
   Widget build(BuildContext context) {
-    oauthInfo.backFromShared();
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => Article()),
           ChangeNotifierProvider(create: (_) => youtube),
           ChangeNotifierProvider(create: (_) => Loading()),
           ChangeNotifierProvider(create: (_) => oauthInfo),
-          ChangeNotifierProvider(create: (_) => ArticleTitles()),
+          ChangeNotifierProvider(create: (_) => articleTitles),
           ChangeNotifierProvider(create: (_) => Settings()),
+          /*
+          ProxyProvider<OauthInfo, ArticleTitles>(
+              create: (_) => ArticleTitles(),
+              update: (_, oauthInfo, articleTitle) {
+                print("ProxyProvider ArticleTitles");
+                articleTitle.syncArticleTitles();
+                return articleTitle;
+              }),
+              */
         ],
         child: Consumer<Settings>(builder: (context, settings, child) {
           return MaterialApp(

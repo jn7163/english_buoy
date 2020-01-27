@@ -41,12 +41,12 @@ class Settings with ChangeNotifier {
   }
 
   setFromPercent(String v) async {
-    await prefs.setString(fromPercentKey, v);
+    await prefs.setString(fromPercentKey, v) ?? "";
     fromPercent = v;
   }
 
   setToPercent(String v) async {
-    await prefs.setString(toPercentKey, v);
+    await prefs.setString(toPercentKey, v) ?? "";
     toPercent = v;
   }
 
