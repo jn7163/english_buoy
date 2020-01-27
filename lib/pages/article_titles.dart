@@ -10,7 +10,6 @@ import '../components/right_drawer.dart';
 import '../components/left_drawer.dart';
 
 import '../models/youtube.dart';
-import '../models/loading.dart';
 import '../models/article_titles.dart';
 import '../models/oauth_info.dart';
 import '../models/settings.dart';
@@ -33,7 +32,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
-  Loading loading;
   Settings settings;
   OauthInfo oauthInfo;
   @override
@@ -41,7 +39,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     super.initState();
 
     settings = Provider.of<Settings>(context, listen: false);
-    loading = Provider.of<Loading>(context, listen: false);
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     articleTitles.getFromLocal();
     oauthInfo = Provider.of<OauthInfo>(context, listen: false);
