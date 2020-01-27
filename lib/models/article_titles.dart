@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:easy_alert/easy_alert.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import './article_title.dart';
@@ -64,6 +63,7 @@ class ArticleTitles with ChangeNotifier {
               d.percent == 0) // show percent 0 used to show loading item
           .toList();
           */
+    print(filterTitles.toString());
     notifyListeners();
   }
 
@@ -91,12 +91,12 @@ class ArticleTitles with ChangeNotifier {
   }
 
   showLoadingItem() {
-    var loadingArticleTitle = ArticleTitle();
+    ArticleTitle loadingArticleTitle = ArticleTitle();
     loadingArticleTitle.id = -1;
-    loadingArticleTitle.title = "loading new youtube article ......";
+    loadingArticleTitle.title = "Loading new youtube article ......";
     loadingArticleTitle.unlearnedCount = 1;
     loadingArticleTitle.wordCount = 1;
-    loadingArticleTitle.deleting = true;
+    loadingArticleTitle.loading = true;
     loadingArticleTitle.percent = 0;
     loadingArticleTitle.createdAt = DateTime.now();
     loadingArticleTitle.updatedAt = DateTime.now();
@@ -159,7 +159,8 @@ class ArticleTitles with ChangeNotifier {
   }
 
   removeFromList(ArticleTitle articleTitle) {
-    titles.remove(articleTitle);
+    //titles.remove(articleTitle);
+    titles.removeWhere((item) => item.id == articleTitle.id);
     filter();
   }
 
