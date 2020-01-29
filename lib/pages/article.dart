@@ -61,8 +61,10 @@ class _ArticlePageState extends State<ArticlePage> {
     loadArticleByID();
   }
 
-  Future loadFromServer(int id) async {
-    return article.getArticleByID(id).then((d) {
+  Future loadFromServer({bool justUpdateLocal = false}) async {
+    return article
+        .getArticleByID(articleID: this.id, justUpdateLocal: justUpdateLocal)
+        .then((d) {
       if (this.mounted) {
         // 更新本地未学单词数
         articleTitles.setUnlearnedCountByArticleID(
@@ -82,11 +84,12 @@ class _ArticlePageState extends State<ArticlePage> {
         setState(() {
           loading = true;
         });
+        return loadFromServer();
+      } else {
+        //如果缓存取到, 就不要更新页面内容, 避免后置更新导致页面跳变
+        return loadFromServer(justUpdateLocal: true);
       }
     });
-
-    // always update from server
-    return await loadFromServer(id);
   }
 
   Widget refreshBody() {
@@ -147,7 +150,7 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Future _refresh() async {
-    await loadFromServer(id);
+    await loadFromServer();
     return;
   }
 

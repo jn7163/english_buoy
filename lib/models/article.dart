@@ -92,13 +92,14 @@ class Article with ChangeNotifier {
   }
 
   // 从服务器获取
-  Future getArticleByID(int articleID) async {
+  // justUpdateLocal 仅更新本地缓存, 避免延迟导致页面内容错乱
+  Future getArticleByID({int articleID, bool justUpdateLocal = false}) async {
     this.articleID = articleID;
     Dio dio = getDio();
     var response =
         await dio.get(Store.baseURL + "article/" + this.articleID.toString());
 
-    this.setFromJSON(response.data);
+    if (!justUpdateLocal) this.setFromJSON(response.data);
     saveToLocal(json.encode(response.data));
     return response;
   }
