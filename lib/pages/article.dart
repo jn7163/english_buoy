@@ -92,35 +92,35 @@ class _ArticlePageState extends State<ArticlePage> {
     });
   }
 
+  refreshCurrent() {
+    articleTitles.setSelectedArticleID(this.id); // 高亮列表
+    // 暂停视频, 避免滑动切换后自动播放
+    if (article.youtubeController != null) article.youtubeController.pause();
+    //刷新当前页
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (_) => ArticlePage(initID: this.id)));
+  }
+
   Widget refreshBody() {
     return Expanded(
         child: GestureDetector(
             onHorizontalDragEnd: (details) {
-              if (details.primaryVelocity < -800) {
+              if (details.primaryVelocity < -700) {
                 if (nextID != null) {
-                  id = nextID;
-                  articleTitles.setSelectedArticleID(id); // 高亮列表
-                  //刷新当前页
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => ArticlePage(initID: id)));
+                  this.id = nextID;
+                  this.refreshCurrent();
                 }
               }
-              if (details.primaryVelocity > 800) {
+              if (details.primaryVelocity > 700) {
                 if (lastID != null) {
-                  id = lastID;
-                  articleTitles.setSelectedArticleID(id);
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => ArticlePage(initID: id)));
+                  this.id = lastID;
+                  this.refreshCurrent();
                 }
               }
               // Navigator.pushNamed(context, '/Article', arguments: d.id);
             },
             child: RefreshIndicator(
-              onRefresh: _refresh,
+              onRefresh: () async => await loadFromServer(),
               child: articleBody(),
               color: mainColor,
             )));
@@ -147,11 +147,6 @@ class _ArticlePageState extends State<ArticlePage> {
                     article: article, sentences: article.sentences)),
           ]));
     });
-  }
-
-  Future _refresh() async {
-    await loadFromServer();
-    return;
   }
 
   @override
