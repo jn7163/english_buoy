@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:easy_alert/easy_alert.dart' as toast;
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
@@ -25,8 +26,6 @@ class ArticleTitlesPage extends StatefulWidget {
 }
 
 class ArticleTitlesPageState extends State<ArticleTitlesPage> {
-  int _selectedIndex = 0;
-
   ArticleTitles articleTitles;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final ItemScrollController itemScrollController = ItemScrollController();
@@ -48,6 +47,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;
   }
 
+  //添加新的youtube以后的处理回调
   newYouTubeCallBack(String result) {
     print("newYouTubeCallBack result=" + result);
     switch (result) {
@@ -56,6 +56,35 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
           this.showToast("article is exists");
         }
         break;
+      case ArticleTitles.noSubtitle:
+        {
+          Alert(
+            context: context,
+            type: AlertType.info,
+            title: "Sorry",
+            desc: "This YouTube video don't have any en subtitle!",
+            buttons: [
+              DialogButton(
+                child: Text(
+                  "Ok",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+                onPressed: () => Navigator.pop(context),
+                width: 120,
+              )
+            ],
+          ).show();
+        }
+        break;
+      case ArticleTitles.done:
+        {
+          debugPrint("newYouTubeCallBack done");
+        }
+        break;
+      default:
+        {
+          this.showToast("article is exists");
+        }
     }
   }
 
@@ -63,13 +92,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     toast.Alert.toast(context, info,
         position: toast.ToastPosition.bottom,
         duration: toast.ToastDuration.long);
-  }
-
-  Future newYouTube(url) async {
-    print("url=" + url);
-    return postYouTube(context, url, articleTitles).then((d) {
-      scrollToSharedItem(articleTitles.selectedArticleID);
-    });
   }
 
   Future _syncArticleTitles() async {
@@ -97,15 +119,16 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
 
   // EnsureVisible 不支持 ListView 只有用 50 宽度估算的来 scroll 到分享过来的条目
   Future<void> scrollToSharedItem(int articleID) async {
+    int selectedIndex;
     if (articleID == 0) return;
     //找到 id
-    for (var i = 0; i < articleTitles.filterTitles.length; i++) {
+    for (int i = 0; i < articleTitles.filterTitles.length; i++) {
       if (articleTitles.filterTitles[i].id == articleID) {
-        _selectedIndex = i;
+        selectedIndex = i;
         break;
       }
     }
-    scrollToArticleTitle(_selectedIndex);
+    scrollToArticleTitle(selectedIndex);
   }
 
   Future _refresh() async {
@@ -143,7 +166,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
                 onPressed: () {
                   Navigator.pushNamed(context, '/Guid');
                 },
-                tooltip: 'need more',
                 child: Icon(Icons.help_outline,
                     color: Theme.of(context).primaryTextTheme.title.color),
               )));

@@ -20,7 +20,7 @@ class ArticleTitles with ChangeNotifier {
   Function scrollToArticleTitle;
 
   static const String exists = "exists";
-  static const String noSubtitle = "no_subtitle";
+  static const String noSubtitle = "no subtitle";
   static const String done = "done";
 
   // show article percent
@@ -63,10 +63,14 @@ class ArticleTitles with ChangeNotifier {
       }
     } on DioError catch (e) {
       this.removeLoadingItem();
-      if (e.response != null && e.response.data['error'] == noSubtitle)
-        result = noSubtitle;
-      else
-        throw e;
+      if (e.response != null) {
+        if (e.response.data is String) {
+          result = e.message.toString();
+        } else if (e.response.data['error'] == noSubtitle)
+          result = noSubtitle;
+        else
+          throw e;
+      }
     }
     if (newYouTubeCallBack != null) newYouTubeCallBack(result);
   }
