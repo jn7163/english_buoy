@@ -2,16 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../components/article_sentences.dart';
 import '../components/article_top_bar.dart';
 import '../components/not_mastered_vocabularies.dart';
 import '../components/article_youtube.dart';
+import '../components/article_floating_action_button.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
-import '../models/settings.dart';
 import '../themes/bright.dart';
 
 @immutable
@@ -41,13 +40,6 @@ class _ArticlePageState extends State<ArticlePage> {
     loadByID();
   }
 
-  loadByID() {
-    var a = articleTitles.findLastNextArticleByID(id);
-    lastID = a[0];
-    nextID = a[1];
-    loadArticleByID();
-  }
-
   @override
   void deactivate() {
     // This pauses video while navigating to next page.
@@ -60,6 +52,13 @@ class _ArticlePageState extends State<ArticlePage> {
     //为了避免内存泄露，需要调用_controller.dispose
     _scrollController.dispose();
     super.dispose();
+  }
+
+  loadByID() {
+    var a = articleTitles.findLastNextArticleByID(id);
+    lastID = a[0];
+    nextID = a[1];
+    loadArticleByID();
   }
 
   Future loadFromServer(int id) async {
@@ -126,7 +125,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
   Widget body() {
     return ModalProgressHUD(
-        child: Column(children: [getYouTube(), refreshBody()]),
+        child: Column(children: [ArticleYouTube(), refreshBody()]),
         inAsyncCall: loading);
   }
 
@@ -147,35 +146,9 @@ class _ArticlePageState extends State<ArticlePage> {
     });
   }
 
-  Widget getYouTube() {
-    if (article.title == null || article.youtube == '') return Container();
-    return Consumer<Article>(builder: (context, article, child) {
-      return Container(
-          color: Colors.black,
-          padding: EdgeInsets.only(top: 24),
-          child: ArticleYouTube());
-    });
-  }
-
   Future _refresh() async {
     await loadFromServer(id);
     return;
-  }
-
-  Widget floatingActionButton() {
-    return Visibility(
-        visible: article.notMasteredWord != null,
-        child: Opacity(
-            opacity: 0.4,
-            child: FloatingActionButton(
-              onPressed: () {
-                Scrollable.ensureVisible(article.notMasteredWord.c);
-                article.setFindWord(article.notMasteredWord.words[0].text);
-                article.setNotMasteredWord(null);
-              },
-              child: Icon(Icons.arrow_upward,
-                  color: Theme.of(context).primaryTextTheme.title.color),
-            )));
   }
 
   @override
@@ -184,7 +157,7 @@ class _ArticlePageState extends State<ArticlePage> {
 
     return Consumer<Article>(builder: (context, article, child) {
       return Scaffold(
-          body: body(), floatingActionButton: floatingActionButton());
+          body: body(), floatingActionButton: ArticleFloatingActionButton());
     });
   }
 }

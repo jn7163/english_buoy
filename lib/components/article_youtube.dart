@@ -11,27 +11,31 @@ class ArticleYouTube extends StatelessWidget {
   Widget build(BuildContext context) {
     Settings settings = Provider.of<Settings>(context);
     Article article = Provider.of<Article>(context);
-    return YoutubePlayer(
-      onPlayerInitialized: (controller) => article.setYouTube(controller),
-      context: context,
-      videoId: YoutubePlayer.convertUrlToId(article.youtube),
-      flags: YoutubePlayerFlags(
-        //自动播放
-        autoPlay: settings.isAutoplay,
-        // 下半部分小小的进度条
-        showVideoProgressIndicator: true,
-        // 允许全屏
-        hideFullScreenButton: false,
-        // 不可能是 live 的视频
-        isLive: false,
-        forceHideAnnotation: false,
-      ),
-      videoProgressIndicatorColor: Colors.teal,
-      liveUIColor: Colors.teal,
-      progressColors: ProgressColors(
-        playedColor: Colors.teal,
-        handleColor: Colors.tealAccent,
-      ),
-    );
+    if (article.title == null || article.youtube == '') return Container();
+    return Container(
+        color: Colors.black,
+        padding: EdgeInsets.only(top: 24),
+        child: YoutubePlayer(
+          onPlayerInitialized: (controller) => article.setYouTube(controller),
+          context: context,
+          videoId: YoutubePlayer.convertUrlToId(article.youtube),
+          flags: YoutubePlayerFlags(
+            //自动播放
+            autoPlay: settings.isAutoplay,
+            // 下半部分小小的进度条
+            showVideoProgressIndicator: true,
+            // 允许全屏
+            hideFullScreenButton: false,
+            // 不可能是 live 的视频
+            isLive: false,
+            forceHideAnnotation: false,
+          ),
+          videoProgressIndicatorColor: Colors.teal,
+          liveUIColor: Colors.teal,
+          progressColors: ProgressColors(
+            playedColor: Colors.teal,
+            handleColor: Colors.tealAccent,
+          ),
+        ));
   }
 }
