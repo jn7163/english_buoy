@@ -74,7 +74,7 @@ class Article with ChangeNotifier {
   }
    */
 
-  saveToLocal(String data) async {
+  setToLocal(String data) async {
     // 登录后存储到临时缓存中
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('article_' + this.articleID.toString(), data);
@@ -95,10 +95,11 @@ class Article with ChangeNotifier {
   Future getArticleByID({int articleID, bool justUpdateLocal = false}) async {
     this.articleID = articleID;
     Dio dio = getDio();
-    var response = await dio.get(Store.baseURL + "article/" + this.articleID.toString());
+    var response =
+        await dio.get(Store.baseURL + "article/" + this.articleID.toString());
 
     if (!justUpdateLocal) this.setFromJSON(response.data);
-    saveToLocal(json.encode(response.data));
+    this.setToLocal(json.encode(response.data));
     return response;
   }
 

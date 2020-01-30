@@ -19,7 +19,7 @@ Future<Article> postYouTube(
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
-    newArticle.saveToLocal(json.encode(response.data));
+    newArticle.setToLocal(json.encode(response.data));
     // 设置高亮, 但是不要通知,等待后续来更新
     articleTitles.setHighlightArticleNoReset(newArticle.articleID);
     articleTitles.removeLoadingItemNoNotify();
@@ -86,7 +86,7 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles,
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
-    newArticle.saveToLocal(json.encode(response.data));
+    newArticle.setToLocal(json.encode(response.data));
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
       toast.Alert.toast(context, "update article",

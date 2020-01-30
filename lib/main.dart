@@ -42,7 +42,7 @@ class _EbuoyState extends State<Ebuoy> {
     oauthInfo = OauthInfo();
     articleTitles = ArticleTitles();
     //绑定获取列表的函数到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
-    oauthInfo.setAccessTokenCallBack = articleTitles.syncArticleTitles;
+    oauthInfo.setAccessTokenCallBack = articleTitles.syncArticleTitlesIfNoData;
     initReceiveShare();
   }
 

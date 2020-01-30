@@ -75,6 +75,8 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
               // widget 会被上层复用,状态也会保留,loading状态得改回来
               this.deleting = false;
               articleTitles.removeFromList(articleTitle);
+              //更新本地缓存
+              articleTitles.syncArticleTitles(justSetToLocal: true);
             },
           ),
         ]);

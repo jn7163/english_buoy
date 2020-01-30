@@ -49,7 +49,7 @@ class ArticleTitles with ChangeNotifier {
       Article article = Article();
       // 将新添加的文章添加到缓存中
       article.setFromJSON(response.data);
-      article.saveToLocal(json.encode(response.data));
+      article.setToLocal(json.encode(response.data));
       // 设置高亮, 但是不要通知,等待后续来更新
       this.setHighlightArticleNoReset(article.articleID);
       this.removeLoadingItemNoNotify();
@@ -61,6 +61,8 @@ class ArticleTitles with ChangeNotifier {
         this.addArticleTitleByArticle(article);
         result = done;
       }
+      // 只更新本地缓存, 避免下次打开是老的
+      syncArticleTitles(justSetToLocal: true);
     } on DioError catch (e) {
       this.removeLoadingItem();
       if (e.response != null) {
@@ -169,7 +171,7 @@ class ArticleTitles with ChangeNotifier {
     filter();
   }
 
-  saveToLocal(String data) async {
+  setToLocal(String data) async {
     // 登录后存储到临时缓存中
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('article_titles', data);
@@ -183,13 +185,19 @@ class ArticleTitles with ChangeNotifier {
     }
   }
 
+  syncArticleTitlesIfNoData() {
+    if (this.titles.length == 0) {
+      syncArticleTitles();
+    }
+  }
+
   // 和服务器同步
-  Future syncArticleTitles() async {
+  Future syncArticleTitles({bool justSetToLocal = false}) async {
     Dio dio = getDio();
     var response = await dio.get(Store.baseURL + "article_titles");
-    this.setFromJSON(response.data);
+    if (!justSetToLocal) this.setFromJSON(response.data);
     // save to local for cache
-    saveToLocal(json.encode(response.data));
+    setToLocal(json.encode(response.data));
     return response;
   }
 

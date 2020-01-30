@@ -15,7 +15,6 @@ import '../models/article_titles.dart';
 import '../models/oauth_info.dart';
 import '../models/settings.dart';
 
-import '../store/article.dart';
 import '../themes/bright.dart';
 
 class ArticleTitlesPage extends StatefulWidget {
