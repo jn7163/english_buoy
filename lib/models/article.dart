@@ -1,15 +1,16 @@
 // 文章详情内容
+import 'dart:async';
 import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:ebuoy/functions/article.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'dart:async';
 
-import './word.dart';
-import 'package:dio/dio.dart';
-import '../store/store.dart';
 import './sentence.dart';
+import './word.dart';
+import '../store/store.dart';
+import '../youtube_player_flutter/lib/youtube_player_flutter.dart';
 
 class Article with ChangeNotifier {
   YoutubePlayerController youtubeController;
@@ -52,9 +53,7 @@ class Article with ChangeNotifier {
     this.articleID = json['id'];
     this.title = json['title'];
     this.youtube = json['Youtube'];
-    // this.words = json['words'].map((d) => Word.fromJson(d)).toList();
     this.sentences = (json['Sentences'] as List).map((d) {
-      // ignore: missing_return
       if (d['Words'] != null) {
         return Sentence.fromJson(d);
       }
@@ -96,8 +95,7 @@ class Article with ChangeNotifier {
   Future getArticleByID({int articleID, bool justUpdateLocal = false}) async {
     this.articleID = articleID;
     Dio dio = getDio();
-    var response =
-        await dio.get(Store.baseURL + "article/" + this.articleID.toString());
+    var response = await dio.get(Store.baseURL + "article/" + this.articleID.toString());
 
     if (!justUpdateLocal) this.setFromJSON(response.data);
     saveToLocal(json.encode(response.data));
