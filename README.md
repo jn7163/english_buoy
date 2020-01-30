@@ -3,6 +3,7 @@
 Learn English by reading YouTube subtitle article.
 
 ## Version
+v1.3.00+1
 
 v1.2.17+v1.2.17
 - Quick back not mastered words table 

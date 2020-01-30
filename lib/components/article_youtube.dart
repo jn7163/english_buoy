@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../models/article.dart';
 import '../models/settings.dart';
+import '../youtube_player_flutter/lib/youtube_player_flutter.dart';
 
 class ArticleYouTube extends StatelessWidget {
   const ArticleYouTube({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    Settings settings = Provider.of<Settings>(context);
     Article article = Provider.of<Article>(context);
-    if (article.title == null || article.youtube == '') return Container();
+    if (article.title == null || article.youtube == '') return Container(width: 0.0, height: 0.0);
+    Settings settings = Provider.of<Settings>(context);
     return Container(
         color: Colors.black,
         padding: EdgeInsets.only(top: 24),

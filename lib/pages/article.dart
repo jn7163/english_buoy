@@ -12,6 +12,7 @@ import '../components/article_floating_action_button.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../themes/bright.dart';
+import '../models/settings.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
@@ -27,6 +28,7 @@ class _ArticlePageState extends State<ArticlePage> {
   Article article;
   ScrollController _scrollController;
   ArticleTitles articleTitles;
+  Settings settings;
   int id, lastID, nextID;
   bool loading = false;
 
@@ -35,6 +37,7 @@ class _ArticlePageState extends State<ArticlePage> {
     super.initState();
     id = widget.initID;
     _scrollController = ScrollController();
+    settings = Provider.of<Settings>(context, listen: false);
     article = Provider.of<Article>(context, listen: false);
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     loadByID();
@@ -95,7 +98,8 @@ class _ArticlePageState extends State<ArticlePage> {
   refreshCurrent() {
     articleTitles.setSelectedArticleID(this.id); // 高亮列表
     // 暂停视频, 避免滑动切换后自动播放
-    if (article.youtubeController != null) article.youtubeController.pause();
+    //if (article.youtubeController != null && !this.settings.isAutoplay)
+    // article.youtubeController.pause();
     //刷新当前页
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (_) => ArticlePage(initID: this.id)));
@@ -117,7 +121,6 @@ class _ArticlePageState extends State<ArticlePage> {
                   this.refreshCurrent();
                 }
               }
-              // Navigator.pushNamed(context, '/Article', arguments: d.id);
             },
             child: RefreshIndicator(
               onRefresh: () async => await loadFromServer(),
