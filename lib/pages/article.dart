@@ -97,9 +97,6 @@ class _ArticlePageState extends State<ArticlePage> {
 
   refreshCurrent() {
     articleTitles.setSelectedArticleID(this.id); // 高亮列表
-    // 暂停视频, 避免滑动切换后自动播放
-    //if (article.youtubeController != null && !this.settings.isAutoplay)
-    // article.youtubeController.pause();
     //刷新当前页
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (_) => ArticlePage(initID: this.id)));
