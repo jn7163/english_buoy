@@ -36,7 +36,34 @@ class ArticleTitles with ChangeNotifier {
     settings = Settings();
   }
 
+  // EnsureVisible 不支持 ListView 只有用 50 宽度估算的来 scroll 到分享过来的条目
+  bool scrollToSharedItem(String url) {
+    bool hasShared = false;
+    int selectedIndex;
+    //整个数据中判断是否已经同步过
+    for (int i = 0; i < this.titles.length; i++) {
+      if (this.titles[i].youtube == url) {
+        hasShared = true;
+        break;
+      }
+    }
+    //找到 id
+    if (hasShared) {
+      for (int i = 0; i < this.filterTitles.length; i++) {
+        if (this.filterTitles[i].youtube == url) {
+          selectedIndex = i;
+          this.selectedArticleID = this.filterTitles[i].id;
+          scrollToArticleTitle(selectedIndex);
+          this.justNotifyListeners();
+          break;
+        }
+      }
+    }
+    return hasShared;
+  }
+
   Future newYouTube(String url) async {
+    if (scrollToSharedItem(url)) return;
     String result;
     this.showLoadingItem();
     if (scrollToArticleTitle != null) scrollToArticleTitle(0);

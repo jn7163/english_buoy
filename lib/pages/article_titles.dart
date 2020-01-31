@@ -116,20 +116,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     });
   }
 
-  // EnsureVisible 不支持 ListView 只有用 50 宽度估算的来 scroll 到分享过来的条目
-  Future<void> scrollToSharedItem(int articleID) async {
-    int selectedIndex;
-    if (articleID == 0) return;
-    //找到 id
-    for (int i = 0; i < articleTitles.filterTitles.length; i++) {
-      if (articleTitles.filterTitles[i].id == articleID) {
-        selectedIndex = i;
-        break;
-      }
-    }
-    scrollToArticleTitle(selectedIndex);
-  }
-
   Future _refresh() async {
     await _syncArticleTitles();
     return;
