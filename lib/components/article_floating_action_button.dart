@@ -6,18 +6,21 @@ class ArticleFloatingActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Article article = Provider.of<Article>(context);
-    return Visibility(
-        visible: article.notMasteredWord != null,
-        child: Opacity(
-            opacity: 0.4,
-            child: FloatingActionButton(
-              onPressed: () {
-                Scrollable.ensureVisible(article.notMasteredWord.c);
-                article.setFindWord(article.notMasteredWord.words[0].text);
-                article.setNotMasteredWord(null);
-              },
-              child: Icon(Icons.arrow_upward,
-                  color: Theme.of(context).primaryTextTheme.title.color),
-            )));
+    return Align(
+        alignment: Alignment.centerRight,
+        child: Visibility(
+            visible: article.notMasteredWord != null,
+            child: Opacity(
+                opacity: 0.4,
+                child: FloatingActionButton(
+                  mini: true,
+                  onPressed: () {
+                    Scrollable.ensureVisible(article.notMasteredWord.c);
+                    article.setFindWord(article.notMasteredWord.words[0].text);
+                    article.setNotMasteredWord(null);
+                  },
+                  child: Icon(Icons.arrow_upward,
+                      color: Theme.of(context).primaryTextTheme.title.color),
+                ))));
   }
 }
