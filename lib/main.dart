@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:easy_alert/easy_alert.dart';
 import 'package:provider/provider.dart';
@@ -111,11 +112,16 @@ class _EbuoyState extends State<Ebuoy> {
       case '/Waiting':
         return _buildRoute(settings, WaitingPage());
       case '/ArticleTitles':
-        return _buildRoute(settings, ArticleTitlesPage());
+        //return _buildRoute(settings, ArticleTitlesPage());
+        return CupertinoPageRoute(
+            builder: (_) => ArticleTitlesPage(), settings: settings);
       case '/AddArticle':
         return _buildRoute(settings, AddArticlePage());
       case '/Article':
-        return _buildRoute(settings, ArticlePage(initID: settings.arguments));
+        // return _buildRoute(settings, ArticlePage(initID: settings.arguments));
+        return CupertinoPageRoute(
+            builder: (_) => ArticlePage(initID: settings.arguments),
+            settings: settings);
       case '/Sign':
         return _buildRoute(settings, SignInPage());
       default:
