@@ -2,72 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:easy_alert/easy_alert.dart' as toast;
-import 'package:rflutter_alert/rflutter_alert.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/loading.dart';
 
 import 'package:dio/dio.dart';
 import './store.dart';
-
-Future<Article> postYouTube(
-    BuildContext context, String youtube, ArticleTitles articleTitles) async {
-  Dio dio = getDio();
-  try {
-    var response =
-        await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": youtube});
-    // 将新添加的文章添加到缓存中
-    Article newArticle = Article();
-    newArticle.setFromJSON(response.data);
-    newArticle.setToLocal(json.encode(response.data));
-    // 设置高亮, 但是不要通知,等待后续来更新
-    articleTitles.setHighlightArticleNoReset(newArticle.articleID);
-    articleTitles.removeLoadingItemNoNotify();
-    // 如果是 update exists, 确保更新手机当前数据
-    if (response.data["exists"]) {
-      articleTitles.justNotifyListeners();
-      toast.Alert.toast(context, "update article",
-          position: toast.ToastPosition.bottom,
-          duration: toast.ToastDuration.long);
-    } else {
-      // 先添加到 titles 加速显示
-      articleTitles.addArticleTitleByArticle(newArticle);
-    }
-    // 跳转到添加的那个详情
-    // debugPrint("to articleID=" + newArticle.articleID.toString());
-    // Navigator.pushNamed(context, '/Article', arguments: newArticle.articleID);
-    return newArticle;
-  } on DioError catch (e) {
-    articleTitles.removeLoadingItem();
-    // 如果是已经存在, 那么应该会把 article id 传过来
-    if (e.response != null) {
-      if (e.response.data is String) {
-        toast.Alert.toast(context, e.message.toString(),
-            position: toast.ToastPosition.bottom,
-            duration: toast.ToastDuration.long);
-      } else if (e.response.data['error'] == "no subtitle") {
-        articleTitles.removeLoadingItem();
-        Alert(
-          context: context,
-          type: AlertType.info,
-          title: "Sorry",
-          desc: "This YouTube video don't have any en subtitle!",
-          buttons: [
-            DialogButton(
-              child: Text(
-                "Ok",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-              onPressed: () => Navigator.pop(context),
-              width: 120,
-            )
-          ],
-        ).show();
-      }
-    }
-    throw e;
-  }
-}
 
 // 提交新的文章进行分析
 postArticle(BuildContext context, String article, ArticleTitles articleTitles,

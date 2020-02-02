@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:easy_alert/easy_alert.dart' as toast;
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
@@ -52,11 +51,22 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     switch (result) {
       case ArticleTitles.exists:
         {
-          this.showToast("article is exists");
+          final snackBar = SnackBar(content: Text("Already exists"));
+          _scaffoldKey.currentState.showSnackBar(snackBar);
         }
         break;
       case ArticleTitles.noSubtitle:
         {
+          final snackBar = SnackBar(
+            content: Text("This YouTube video don't have any en subtitle!"),
+            action: SnackBarAction(
+              label: "I known",
+              onPressed: () {},
+            ),
+            duration: Duration(minutes: 1),
+          );
+          _scaffoldKey.currentState.showSnackBar(snackBar);
+          /*
           Alert(
             context: context,
             type: AlertType.info,
@@ -73,6 +83,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
               )
             ],
           ).show();
+          */
         }
         break;
       case ArticleTitles.done:
