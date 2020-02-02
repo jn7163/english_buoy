@@ -155,7 +155,9 @@ class _ArticlePageState extends State<ArticlePage> {
 
     return Consumer<Article>(builder: (context, article, child) {
       return Scaffold(
-          body: body(), floatingActionButton: ArticleFloatingActionButton());
+        body: body(),
+        floatingActionButton: ArticleFloatingActionButton(),
+      );
     });
   }
 }

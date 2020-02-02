@@ -60,6 +60,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
           final snackBar = SnackBar(
             content: Text("This YouTube video don't have any en subtitle!"),
             action: SnackBarAction(
+              textColor: Colors.white,
               label: "I known",
               onPressed: () {},
             ),
