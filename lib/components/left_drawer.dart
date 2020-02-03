@@ -17,10 +17,9 @@ class LeftDrawer extends StatelessWidget {
               leading: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(oauthInfo.avatarURL == null
-                        ? "https://ebuoydoc.bigzhu.net/assets/img/ic_launcher_APP.png"
-                        : oauthInfo.avatarURL),
-                  )),
+                      backgroundImage: oauthInfo.avatarURL != null
+                          ? NetworkImage(oauthInfo.avatarURL)
+                          : AssetImage('assets/images/logo.png'))),
               actions: <Widget>[Container()],
               centerTitle: true,
               title: Text(
@@ -35,7 +34,7 @@ class LeftDrawer extends StatelessWidget {
             onPressed: () => oauthInfo.switchUser(),
           ),
           Text(""),
-          Text("version: 1.2.15")
+          Text("version: 1.3.0")
         ],
       );
     }));
