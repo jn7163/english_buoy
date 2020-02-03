@@ -51,13 +51,18 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     switch (result) {
       case ArticleTitles.exists:
         {
-          final snackBar = SnackBar(content: Text("Already exists"));
+          final snackBar = SnackBar(
+            backgroundColor: mainColor,
+            content: Text("Already exists"),
+            duration: Duration(milliseconds: 500),
+          );
           _scaffoldKey.currentState.showSnackBar(snackBar);
         }
         break;
       case ArticleTitles.noSubtitle:
         {
           final snackBar = SnackBar(
+            backgroundColor: Colors.red,
             content: Text("This YouTube video don't have any en subtitle!"),
             action: SnackBarAction(
               textColor: Colors.white,
@@ -67,34 +72,21 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
             duration: Duration(minutes: 1),
           );
           _scaffoldKey.currentState.showSnackBar(snackBar);
-          /*
-          Alert(
-            context: context,
-            type: AlertType.info,
-            title: "Sorry",
-            desc: "This YouTube video don't have any en subtitle!",
-            buttons: [
-              DialogButton(
-                child: Text(
-                  "Ok",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-                onPressed: () => Navigator.pop(context),
-                width: 120,
-              )
-            ],
-          ).show();
-          */
         }
         break;
       case ArticleTitles.done:
         {
-          debugPrint("newYouTubeCallBack done");
+          final snackBar = SnackBar(
+            backgroundColor: mainColor,
+            content: Text("Success"),
+            duration: Duration(milliseconds: 500),
+          );
+          _scaffoldKey.currentState.showSnackBar(snackBar);
         }
         break;
       default:
         {
-          this.showToast("article is exists");
+          print("Something wrong result=" + result);
         }
     }
   }
