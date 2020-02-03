@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../store/sign.dart';
-import './article_titles.dart';
 
 class OauthInfo with ChangeNotifier {
   String accessToken;
