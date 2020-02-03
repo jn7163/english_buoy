@@ -1,4 +1,8 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
+import 'package:page_transition/page_transition.dart';
+
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -95,11 +99,29 @@ class _ArticlePageState extends State<ArticlePage> {
     });
   }
 
-  refreshCurrent() {
+  refreshCurrentLeftToRight() {
     articleTitles.setSelectedArticleID(this.id); // 高亮列表
     //刷新当前页
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (_) => ArticlePage(initID: this.id)));
+    Navigator.pushReplacement(
+        context,
+        PageTransition(
+          duration: Duration(milliseconds: 500),
+          type: PageTransitionType.leftToRight,
+          child: ArticlePage(initID: this.id),
+        ));
+  }
+
+  refreshCurrentRightToLeft() {
+    articleTitles.setSelectedArticleID(this.id); // 高亮列表
+    //刷新当前页
+    Navigator.pushReplacement(
+      context,
+      PageTransition(
+        duration: Duration(milliseconds: 500),
+        type: PageTransitionType.rightToLeft,
+        child: ArticlePage(initID: this.id),
+      ),
+    );
   }
 
   Widget refreshBody() {
@@ -109,13 +131,13 @@ class _ArticlePageState extends State<ArticlePage> {
               if (details.primaryVelocity < -700) {
                 if (nextID != null) {
                   this.id = nextID;
-                  this.refreshCurrent();
+                  this.refreshCurrentRightToLeft();
                 }
               }
               if (details.primaryVelocity > 700) {
                 if (lastID != null) {
                   this.id = lastID;
-                  this.refreshCurrent();
+                  this.refreshCurrentLeftToRight();
                 }
               }
             },
@@ -127,7 +149,17 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Widget body() {
+    var spinkit = SpinKitRipple(
+      color: mainColor,
+      size: 200.0,
+    );
     return ModalProgressHUD(
+        opacity: 1,
+        progressIndicator: spinkit,
+        // 这里引用 Theme 会导致透明, 奇怪的要死
+        //color: Theme.of(context).backgroundColor,
+        color: Colors.white,
+        dismissible: true,
         child: Column(children: [ArticleYouTube(), refreshBody()]),
         inAsyncCall: loading);
   }
