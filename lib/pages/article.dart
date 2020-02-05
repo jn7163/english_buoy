@@ -15,7 +15,7 @@ import '../components/article_youtube.dart';
 import '../components/article_floating_action_button.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
-import '../themes/bright.dart';
+import '../themes/base.dart';
 import '../models/settings.dart';
 
 @immutable

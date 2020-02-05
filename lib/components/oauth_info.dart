@@ -12,9 +12,7 @@ class OauthInfoWidget extends StatelessWidget {
         return IconButton(
           icon: Icon(Icons.exit_to_app),
           tooltip: 'Sign',
-          onPressed: () {
-            Navigator.pushNamed(context, '/Sign');
-          },
+          onPressed: () {},
         );
       } else {
         return Padding(
