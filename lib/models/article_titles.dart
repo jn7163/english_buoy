@@ -223,6 +223,7 @@ class ArticleTitles with ChangeNotifier {
     Dio dio = getDio();
     var response = await dio.get(Store.baseURL + "article_titles");
     if (!justSetToLocal) this.setFromJSON(response.data);
+    print(response.data);
     // save to local for cache
     setToLocal(json.encode(response.data));
     return response;
