@@ -31,7 +31,10 @@ class LeftDrawer extends StatelessWidget {
           ),
           RaisedButton(
             child: const Text('switch user'),
-            onPressed: () => oauthInfo.switchUser(),
+            onPressed: () {
+              oauthInfo.switchUser();
+              Navigator.of(context).pop();
+            },
           ),
           Text(""),
           Text("version: 1.3.0")
