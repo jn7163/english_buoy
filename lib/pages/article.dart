@@ -184,7 +184,6 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   Widget build(BuildContext context) {
     print("build article");
-
     return Consumer<Article>(builder: (context, article, child) {
       return Scaffold(
         body: body(),

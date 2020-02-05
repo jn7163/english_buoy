@@ -54,7 +54,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
           final snackBar = SnackBar(
             backgroundColor: mainColor,
             content: Text("Already exists"),
-            duration: Duration(milliseconds: 500),
+            //duration: Duration(milliseconds: 500),
           );
           _scaffoldKey.currentState.showSnackBar(snackBar);
         }
@@ -79,7 +79,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
           final snackBar = SnackBar(
             backgroundColor: mainColor,
             content: Text("Success"),
-            duration: Duration(milliseconds: 500),
+            //duration: Duration(milliseconds: 500),
           );
           _scaffoldKey.currentState.showSnackBar(snackBar);
         }
