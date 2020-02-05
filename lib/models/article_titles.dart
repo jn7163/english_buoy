@@ -31,11 +31,6 @@ class ArticleTitles with ChangeNotifier {
     filter();
   }
 
-  // init
-  ArticleTitles() {
-    settings = Settings();
-  }
-
   // EnsureVisible 不支持 ListView 只有用 50 宽度估算的来 scroll 到分享过来的条目
   bool scrollToSharedItem(String url) {
     bool hasShared = false;
@@ -130,21 +125,17 @@ class ArticleTitles with ChangeNotifier {
       filterTitles = filterTitles
           .where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase()))
           .toList();
-    /*
-    if (settings.fromPercent != "" && settings.toPercent != "")
+    if (settings.filertPercent > 70)
       filterTitles = filterTitles
           .where((d) =>
-              (d.percent > double.parse(settings.fromPercent) &&
-                  d.percent < double.parse(settings.toPercent)) ||
+              d.percent >= settings.filertPercent ||
               d.percent == 0) // show percent 0 used to show loading item
           .toList();
-          */
     notifyListeners();
   }
 
-  filterByPercent(String from, String to) async {
-    await settings.setFromPercent(from);
-    await settings.setToPercent(to);
+  filterByPercent(double percent) async {
+    await settings.setFilertPercent(percent);
     filter();
   }
 

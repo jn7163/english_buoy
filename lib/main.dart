@@ -37,11 +37,15 @@ class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
   OauthInfo oauthInfo;
   ArticleTitles articleTitles;
+  Settings settings;
   @override
   void initState() {
     super.initState();
     oauthInfo = OauthInfo();
     articleTitles = ArticleTitles();
+    settings = Settings();
+    // 绑定 setting 迸去
+    articleTitles.settings = settings;
     //绑定获取列表的函数到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
     oauthInfo.setAccessTokenCallBack = articleTitles.syncArticleTitles;
     initReceiveShare();
@@ -84,7 +88,7 @@ class _EbuoyState extends State<Ebuoy> {
           ChangeNotifierProvider(create: (_) => Loading()),
           ChangeNotifierProvider(create: (_) => oauthInfo),
           ChangeNotifierProvider(create: (_) => articleTitles),
-          ChangeNotifierProvider(create: (_) => Settings()),
+          ChangeNotifierProvider(create: (_) => settings),
           /*
           ProxyProvider<OauthInfo, ArticleTitles>(
               create: (_) => ArticleTitles(),
