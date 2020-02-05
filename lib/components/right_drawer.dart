@@ -20,6 +20,7 @@ class RightDrawer extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         AppBar(
+            backgroundColor: Theme.of(context).primaryColorDark,
             automaticallyImplyLeading: false,
             actions: <Widget>[Container()],
             centerTitle: true,
