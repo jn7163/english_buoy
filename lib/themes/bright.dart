@@ -36,7 +36,6 @@ var brightTheme = ThemeData(
   // primarySwatch: Colors.blueGrey, //主色调
   primarySwatch: darkMaterialColor,
   //textTheme: brightTextTheme,
-  // 阅读背景色
   scaffoldBackgroundColor: Colors.white70,
   backgroundColor: Colors.white,
   snackBarTheme: SnackBarThemeData()
@@ -45,13 +44,14 @@ var brightTheme = ThemeData(
 */
 
 var brightTheme = ThemeData(
-  primarySwatch: Colors.teal,
+  primarySwatch: mainColor,
   //primaryColor: mainColor,
-  primaryColorLight: mainColor,
+  primaryColorLight: mainColor[700],
   primaryColorDark: Colors.blueGrey,
   accentColor: mainColor, // loading 动画的颜色
-  brightness: Brightness.light,
+  //brightness: Brightness.light,
   fontFamily: "NotoSans-Medium",
+  scaffoldBackgroundColor: Colors.blueGrey[50], // 阅读背景色
   /*
   textTheme: TextTheme(
       //headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),

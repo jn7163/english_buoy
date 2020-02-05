@@ -13,6 +13,7 @@ class LeftDrawer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           AppBar(
+              backgroundColor: Theme.of(context).primaryColorDark,
               //automaticallyImplyLeading: false,
               leading: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -23,7 +24,7 @@ class LeftDrawer extends StatelessWidget {
               actions: <Widget>[Container()],
               centerTitle: true,
               title: Text(
-                "Profile",
+                "User Profile",
               )),
           ListTile(
             title: Center(child: Text(oauthInfo.name)),
