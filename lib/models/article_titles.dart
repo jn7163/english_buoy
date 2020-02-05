@@ -58,12 +58,16 @@ class ArticleTitles with ChangeNotifier {
   }
 
   Future newYouTube(String url) async {
-    if (scrollToSharedItem(url)) return;
     String result;
+    Dio dio = getDio();
+    if (scrollToSharedItem(url)) {
+      result = exists;
+      dio.post(Store.baseURL + "Subtitle", data: {"Youtube": url});
+      return;
+    }
     this.showLoadingItem();
     if (scrollToArticleTitle != null) scrollToArticleTitle(0);
 
-    Dio dio = getDio();
     Response response;
     try {
       response =
