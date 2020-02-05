@@ -128,15 +128,17 @@ class _ArticlePageState extends State<ArticlePage> {
     return Expanded(
         child: GestureDetector(
             onHorizontalDragEnd: (details) {
-              if (details.primaryVelocity < -700) {
+              if (details.primaryVelocity < -600) {
                 if (nextID != null) {
                   this.id = nextID;
+                  article.setNotMasteredWord(null);
                   this.refreshCurrentRightToLeft();
                 }
               }
-              if (details.primaryVelocity > 700) {
+              if (details.primaryVelocity > 600) {
                 if (lastID != null) {
                   this.id = lastID;
+                  article.setNotMasteredWord(null);
                   this.refreshCurrentLeftToRight();
                 }
               }
