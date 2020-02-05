@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import './sentence.dart';
 import './word.dart';
 import '../store/store.dart';
-import '../youtube_player_flutter/lib/youtube_player_flutter.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Article with ChangeNotifier {
   YoutubePlayerController youtubeController;

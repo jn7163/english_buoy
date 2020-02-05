@@ -455,6 +455,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.5.0"
+  youtube_player_flutter:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "80ddf5107d3d1cf9b55301c13b5ca9373ec31bcd"
+      url: "https://github.com/bigzhu/youtube_player_flutter"
+    source: git
+    version: "4.1.0"
 sdks:
   dart: ">=2.6.0 <3.0.0"
   flutter: ">=1.12.13+hotfix.5 <2.0.0"
