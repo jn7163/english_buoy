@@ -26,7 +26,7 @@ class RightDrawer extends StatelessWidget {
             title: Text(
               "Settings",
             )),
-        ConfigDarkTheme(),
+        //ConfigDarkTheme(),
         ConfigAutoPlay(),
         ConfigFilterByPercent(),
         RaisedButton(

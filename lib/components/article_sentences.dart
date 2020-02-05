@@ -1,5 +1,4 @@
 import 'package:ebuoy/models/word.dart';
-import 'package:ebuoy/themes/base.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:ebuoy/models/article.dart';
@@ -15,6 +14,10 @@ import '../models/word.dart';
 import '../models/sentence.dart';
 import './article_richtext.dart';
 import '../functions/article.dart';
+
+// init text style
+TextStyle bodyTextStyle = TextStyle(
+    color: Colors.black87, fontSize: 20.0, fontFamily: 'NotoSans-Medium');
 
 class ArticleSentences extends StatefulWidget {
   ArticleSentences(
@@ -40,7 +43,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
   String _tapedText = ''; // 当前点击的文本
   String _lastTapedText = ''; // 上次点击的文本
   Settings settings;
-  TextStyle bodyTextStyle;
+
   // 必学的高亮色
   TextStyle needLearnTextStyle;
   // 非必学的高亮色
@@ -50,17 +53,6 @@ class ArticleSentencesState extends State<ArticleSentences> {
   initState() {
     super.initState();
     settings = Provider.of<Settings>(context, listen: false);
-    // init text style
-    Future.delayed(Duration.zero, () {
-      this.bodyTextStyle = TextStyle(
-          color: Colors.black87, fontSize: 20.0, fontFamily: 'NotoSans-Medium');
-      // 必学的高亮色
-      this.needLearnTextStyle =
-          bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
-      // 非必学的高亮色
-      this.noNeedLearnTextStyle =
-          bodyTextStyle.copyWith(color: Theme.of(context).primaryColorDark);
-    });
   }
 
   int _getIDByTitle(String title) {
@@ -152,18 +144,13 @@ class ArticleSentencesState extends State<ArticleSentences> {
           });
         });
       };
+    this.needLearnTextStyle =
+        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
     return TextSpan(
         text: " ▷ ",
         style: seekTextSpanTapStatus[time]
             ? needLearnTextStyle.copyWith(fontWeight: FontWeight.bold)
             : needLearnTextStyle,
-        /*
-            ? Theme.of(context)
-                .textTheme
-                .display1
-                .copyWith(fontWeight: FontWeight.bold)
-            : Theme.of(context).textTheme.display3,
-            */
         recognizer: recognizer);
   }
 
@@ -188,7 +175,12 @@ class ArticleSentencesState extends State<ArticleSentences> {
     if (!isNeedLearn(word)) return bodyTextStyle;
     // 已经学会且没有选中, 不用任何修改
     if (word.learned == true && !isSelected) return bodyTextStyle;
-
+    // 必学的高亮色
+    this.needLearnTextStyle =
+        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
+    // 非必学的高亮色
+    this.noNeedLearnTextStyle =
+        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorDark);
     // 是否必学
     processTextStyle = needLearn ? needLearnTextStyle : noNeedLearnTextStyle;
     // 单词作为文章标题添加

@@ -1,6 +1,6 @@
 import 'package:ebuoy/themes/dark.dart';
 import 'package:flutter/material.dart';
-import './base.dart';
+import 'base.dart';
 
 /*
 var brightTextStyle =
@@ -31,7 +31,7 @@ var brightTextTheme = TextTheme(
 // list 选中高亮 Colors.blueGrey[50]
 // 需要学习的单词 Colors.teal[700]
 // 无需学习的单词 Colors.blueGrey
-var brightTheme2 = ThemeData(
+var brightTheme = ThemeData(
   accentColor: mainColor, // 动画的颜色
   // primarySwatch: Colors.blueGrey, //主色调
   primarySwatch: darkMaterialColor,
@@ -45,7 +45,8 @@ var brightTheme2 = ThemeData(
 */
 
 var brightTheme = ThemeData(
-  primaryColor: mainColor,
+  primarySwatch: Colors.teal,
+  //primaryColor: mainColor,
   primaryColorLight: mainColor,
   primaryColorDark: Colors.blueGrey,
   accentColor: mainColor, // loading 动画的颜色

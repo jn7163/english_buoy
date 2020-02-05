@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../models/sentence.dart';
 import '../models/word.dart';
 import '../functions/article.dart';
+import 'article_sentences.dart';
 
 class NotMasteredVocabulary extends StatelessWidget {
   const NotMasteredVocabulary({Key key, @required this.article})
@@ -46,9 +47,10 @@ class NotMasteredVocabulary extends StatelessWidget {
     });
     List<Word> allWords = mustLearnWords + needLearnWords;
     TableRow titleRow = getTableRow(
-      one: Text("NGSL"),
-      two: Text("WORDS(" + allWords.length.toString() + ")"),
-      three: Text("FIND"),
+      one: Text("NGSL", style: bodyTextStyle),
+      two: Text("words(" + allWords.length.toString() + ")",
+          style: bodyTextStyle),
+      three: Text("find", style: bodyTextStyle),
     );
     bool hideSome = false;
     if (allWords.length > 100) {
@@ -60,7 +62,7 @@ class NotMasteredVocabulary extends StatelessWidget {
       Sentence sentence = Sentence('', [d]);
       return getTableRow(
         one: Text(
-          d.level == 0 ? "-" : d.level.toString(),
+          d.level == 0 ? "-" : d.level.toString(), style: bodyTextStyle,
           //style: Theme.of(context).textTheme.display2,
         ),
         two: ArticleSentences(
