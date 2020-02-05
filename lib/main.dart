@@ -89,15 +89,6 @@ class _EbuoyState extends State<Ebuoy> {
           ChangeNotifierProvider(create: (_) => oauthInfo),
           ChangeNotifierProvider(create: (_) => articleTitles),
           ChangeNotifierProvider(create: (_) => settings),
-          /*
-          ProxyProvider<OauthInfo, ArticleTitles>(
-              create: (_) => ArticleTitles(),
-              update: (_, oauthInfo, articleTitle) {
-                print("ProxyProvider ArticleTitles");
-                articleTitle.syncArticleTitles();
-                return articleTitle;
-              }),
-              */
         ],
         child: Consumer<Settings>(builder: (context, settings, child) {
           return MaterialApp(
@@ -123,14 +114,6 @@ class _EbuoyState extends State<Ebuoy> {
         return _buildRoute(settings, WaitingPage());
       case '/ArticleTitles':
         return _buildRoute(settings, ArticleTitlesPage());
-      /*
-        return PageTransition(
-          duration: Duration(milliseconds: 500),
-          type: PageTransitionType.leftToRight,
-          child: ArticleTitlesPage(),
-          settings: settings,
-        );
-        */
       case '/AddArticle':
         return _buildRoute(settings, AddArticlePage());
       case '/Article':
