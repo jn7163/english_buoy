@@ -5,10 +5,8 @@ class Settings with ChangeNotifier {
   bool isJump = false;
   bool isDark = false;
   bool isAutoplay = true;
-  String fromPercent = "";
-  String toPercent = "";
-  String fromPercentKey = "fromPercent";
-  String toPercentKey = "toPercent";
+  double filertPercent = 0;
+  String filertPercentKey = "filertPercent";
   String isJumpKey = "isJump";
   String isDarkKey = "isDark";
   String isAutoplayKey = "isAutoplay";
@@ -40,33 +38,22 @@ class Settings with ChangeNotifier {
     notifyListeners();
   }
 
-  setFromPercent(String v) async {
-    await prefs.setString(fromPercentKey, v);
-    fromPercent = v;
-  }
-
-  setToPercent(String v) async {
-    await prefs.setString(toPercentKey, v);
-    toPercent = v;
+  Future setFilertPercent(double v) async {
+    filertPercent = v;
+    notifyListeners();
+    await prefs.setDouble(filertPercentKey, v);
   }
 
   getFromLocal() async {
-    bool jump = prefs.getBool(isJumpKey) ?? false;
-    setIsJump(jump);
-    bool dark = prefs.getBool(isDarkKey) ?? false;
-    setIsDark(dark);
+    setIsJump(prefs.getBool(isJumpKey) ?? false);
+    setIsDark(prefs.getBool(isDarkKey) ?? false);
 
-    //if not set, default is true
-    bool autoplay;
     if (prefs.containsKey(isAutoplayKey))
-      autoplay = prefs.getBool(isAutoplayKey) ?? true;
+      isAutoplay = prefs.getBool(isAutoplayKey);
     else
-      autoplay = true;
-    setIsAutoplay(autoplay);
+      isAutoplay = true;
+    setIsAutoplay(isAutoplay);
 
-    String from = prefs.getString(fromPercentKey);
-    setFromPercent(from);
-    String to = prefs.getString(toPercentKey);
-    setToPercent(to);
+    setFilertPercent(prefs.getDouble(filertPercentKey) ?? 0);
   }
 }

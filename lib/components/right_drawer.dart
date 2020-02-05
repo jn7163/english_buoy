@@ -12,9 +12,6 @@ class RightDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ArticleTitles articleTitles =
-        Provider.of<ArticleTitles>(context, listen: false);
-    Settings settings = Provider.of<Settings>(context, listen: false);
     return Drawer(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -31,10 +28,8 @@ class RightDrawer extends StatelessWidget {
         ConfigAutoPlay(),
         ConfigFilterByPercent(),
         RaisedButton(
-          child: const Text('fliter by percent'),
+          child: const Text('Done'),
           onPressed: () {
-            articleTitles.filterByPercent(
-                settings.fromPercent, settings.toPercent);
             Navigator.of(context).pop();
           },
         )
