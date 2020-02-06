@@ -18,8 +18,21 @@ class ArticlePageViewPage extends StatelessWidget {
     return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
       return PageView(
           onPageChanged: (i) {
-            articleTitles
-                .setSelectedArticleID(articleTitles.filterTitles[i].id); // 高亮列表
+            int articleID = articleTitles.filterTitles[i].id;
+            articleTitles.setSelectedArticleID(articleID); // 高亮列表
+            Map instanceArticles = articleTitles.instanceArticles;
+            if (i - 1 > 0) {
+              int lastArticleID = articleTitles.filterTitles[i - 1].id;
+              if (instanceArticles[lastArticleID] != null &&
+                  instanceArticles[lastArticleID].youtubeController != null)
+                instanceArticles[lastArticleID].youtubeController.pause();
+            }
+            if (i + 1 <= articleTitles.filterTitles.length) {
+              int nextArticleID = articleTitles.filterTitles[i + 1].id;
+              if (instanceArticles[nextArticleID] != null &&
+                  instanceArticles[nextArticleID].youtubeController != null)
+                instanceArticles[nextArticleID].youtubeController.pause();
+            }
           },
           controller: PageController(
             initialPage: getPageIndexByArticleID(articleTitles),
