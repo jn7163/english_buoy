@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/article_titles.dart';
 import './article.dart';
+import '../models/controller.dart';
 
 class ArticlePageViewPage extends StatefulWidget {
   ArticlePageViewPage(this.articleID);
@@ -20,11 +21,13 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
+  Controller _controller;
   PageView pageView;
   ArticleTitles articleTitles;
   @override
   void initState() {
+    _controller = Provider.of<Controller>(context, listen: false);
+    _controller.setArticlePageController(PageController());
     super.initState();
   }
 
@@ -54,27 +57,14 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage>
       }).toList();
       this.pageView = PageView(
           onPageChanged: (i) {
-            int articleID = articleTitles.filterTitles[i].id;
-            articleTitles.setSelectedArticleID(articleID); // 高亮列表
+            //int articleID = articleTitles.filterTitles[i].id;
+            // _controller.setSelectedArticleID(articleID); // 高亮列表
             // pause playing youtube video
-            Map instanceArticles = articleTitles.instanceArticles;
-            if (i - 1 > 0) {
-              int lastArticleID = articleTitles.filterTitles[i - 1].id;
-              if (instanceArticles[lastArticleID] != null &&
-                  instanceArticles[lastArticleID].youtubeController != null)
-                instanceArticles[lastArticleID].youtubeController.pause();
-            }
-            if (i + 1 <= articleTitles.filterTitles.length) {
-              int nextArticleID = articleTitles.filterTitles[i + 1].id;
-              if (instanceArticles[nextArticleID] != null &&
-                  instanceArticles[nextArticleID].youtubeController != null)
-                instanceArticles[nextArticleID].youtubeController.pause();
-            }
+            print("i=" + i.toString());
+            articleTitles.currentArticleIndex = i;
+            articleTitles.pauseYouTube();
           },
-          controller: PageController(
-            initialPage: getPageIndexByArticleID(widget.articleID),
-            keepPage: true,
-          ),
+          controller: _controller.articlePageController,
           children: children);
       return this.pageView;
     });

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
-import 'package:page_transition/page_transition.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -55,7 +54,6 @@ class _ArticlePageState extends State<ArticlePage>
 
   @override
   void deactivate() {
-    print("!!!!!!!!!!!!!!!!!!!!!!!!deactivate");
     // This pauses video while navigating to next page.
     if (article.youtubeController != null) article.youtubeController.pause();
     super.deactivate();
@@ -108,6 +106,7 @@ class _ArticlePageState extends State<ArticlePage>
     });
   }
 
+  /*
   refreshCurrentLeftToRight() {
     articleTitles.setSelectedArticleID(this.id); // 高亮列表
     //刷新当前页
@@ -132,6 +131,7 @@ class _ArticlePageState extends State<ArticlePage>
       ),
     );
   }
+  */
 
   Widget refreshBody() {
     return Expanded(

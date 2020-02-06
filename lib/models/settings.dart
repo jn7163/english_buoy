@@ -47,12 +47,15 @@ class Settings with ChangeNotifier {
   getFromLocal() async {
     setIsJump(prefs.getBool(isJumpKey) ?? false);
     setIsDark(prefs.getBool(isDarkKey) ?? false);
+    setIsAutoplay(prefs.getBool(isAutoplayKey) ?? false);
 
+    /*
     if (prefs.containsKey(isAutoplayKey))
       isAutoplay = prefs.getBool(isAutoplayKey);
     else
       isAutoplay = true;
     setIsAutoplay(isAutoplay);
+    */
 
     setFilertPercent(prefs.getDouble(filertPercentKey) ?? 70);
   }

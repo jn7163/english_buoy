@@ -7,13 +7,14 @@ import './article.dart';
 import '../store/store.dart';
 import 'package:dio/dio.dart';
 import './settings.dart';
+import 'controller.dart';
 
 class ArticleTitles with ChangeNotifier {
+  int currentArticleIndex = -1; // current play article index
   Map instanceArticles = Map(); // keep instance article by it's id
   String searchKey = ''; // 过滤关键字
   List<ArticleTitle> filterTitles = []; // 过滤好的列表
   List<ArticleTitle> titles = [];
-  int selectedArticleID = 0;
   bool sortByUnlearned = true;
   // 完成添加后的回调
   Function newYouTubeCallBack;
@@ -26,10 +27,37 @@ class ArticleTitles with ChangeNotifier {
 
   // show article percent
   Settings settings;
+  Controller controller;
+
+  pauseYouTube() {
+    int i = currentArticleIndex;
+    if (i == -1 || i == null) return;
+
+    int currentArticleID = filterTitles[i].id;
+    print(instanceArticles.containsKey(currentArticleID));
+    if (instanceArticles.containsKey(currentArticleID) &&
+        instanceArticles[currentArticleID].youtubeController != null) {
+      instanceArticles[currentArticleID].youtubeController.pause();
+      print("pauseYouTube i=$i");
+    }
+
+    if (i - 1 > 0) {
+      int lastArticleID = filterTitles[i - 1].id;
+      if (instanceArticles.containsKey(lastArticleID) &&
+          instanceArticles[lastArticleID].youtubeController != null)
+        instanceArticles[lastArticleID].youtubeController.pause();
+    }
+    if (i + 1 < filterTitles.length) {
+      int nextArticleID = filterTitles[i + 1].id;
+      if (instanceArticles.containsKey(nextArticleID) &&
+          instanceArticles[nextArticleID].youtubeController != null)
+        instanceArticles[nextArticleID].youtubeController.pause();
+    }
+  }
 
   setInstanceArticles(Article article) {
     this.instanceArticles[article.articleID] = article;
-    notifyListeners();
+    //notifyListeners();
   }
 
   setSearchKey(String v) {
@@ -53,7 +81,8 @@ class ArticleTitles with ChangeNotifier {
       for (int i = 0; i < this.filterTitles.length; i++) {
         if (this.filterTitles[i].youtube == url) {
           selectedIndex = i;
-          this.selectedArticleID = this.filterTitles[i].id;
+          //this.selectedArticleID = this.filterTitles[i].id;
+          controller.selectedArticleID = this.filterTitles[i].id;
           scrollToArticleTitle(selectedIndex);
           this.justNotifyListeners();
           break;
@@ -83,7 +112,7 @@ class ArticleTitles with ChangeNotifier {
       article.setFromJSON(response.data);
       article.setToLocal(json.encode(response.data));
       // 设置高亮, 但是不要通知,等待后续来更新
-      this.setHighlightArticleNoReset(article.articleID);
+      this.controller.selectedArticleID = article.articleID;
       this.removeLoadingItemNoNotify();
       if (response.data[exists]) {
         this.justNotifyListeners();
@@ -152,15 +181,6 @@ class ArticleTitles with ChangeNotifier {
   // Set 合集, 用于快速查找添加过的单词
   Set setArticleTitles = Set();
 
-  setHighlightArticleNoReset(int id) {
-    this.selectedArticleID = id;
-  }
-
-  setSelectedArticleID(int id) {
-    this.selectedArticleID = id;
-    notifyListeners();
-  }
-
   // 啥事都不干, 只是通知
   justNotifyListeners() {
     notifyListeners();
@@ -224,7 +244,6 @@ class ArticleTitles with ChangeNotifier {
     Dio dio = getDio();
     var response = await dio.get(Store.baseURL + "article_titles");
     if (!justSetToLocal) this.setFromJSON(response.data);
-    print(response.data);
     // save to local for cache
     setToLocal(json.encode(response.data));
     return response;
@@ -286,5 +305,12 @@ class ArticleTitles with ChangeNotifier {
       // this.setArticleTitles.add(articleTitle.title);
     });
     filter();
+  }
+
+  int findIndexByArticleID(int articleID) {
+    for (int i = 0; i < this.filterTitles.length; i++) {
+      if (this.filterTitles[i].id == articleID) return i;
+    }
+    return 0;
   }
 }
