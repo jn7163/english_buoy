@@ -47,7 +47,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
               dense: false,
               onTap: () {
                 articleTitles.setSelectedArticleID(articleTitle.id);
-                Navigator.pushNamed(context, '/Article',
+                Navigator.pushNamed(context, '/ArticlePageView',
                     arguments: articleTitle.id);
               },
               leading: Text(
