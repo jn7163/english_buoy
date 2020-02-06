@@ -8,6 +8,7 @@ import './models/article.dart';
 import './models/loading.dart';
 import './models/article_titles.dart';
 import './models/settings.dart';
+import './models/controller.dart';
 
 import './pages/waiting.dart';
 import './pages/article_titles.dart';
@@ -40,14 +41,19 @@ class _EbuoyState extends State<Ebuoy> {
   OauthInfo oauthInfo;
   ArticleTitles articleTitles;
   Settings settings;
+  Controller controller;
   @override
   void initState() {
     super.initState();
     oauthInfo = OauthInfo();
     articleTitles = ArticleTitles();
     settings = Settings();
+    controller = Controller();
     // 绑定 setting 迸去
     articleTitles.settings = settings;
+    // 绑定 controller 迸去
+    articleTitles.controller = controller;
+
     //绑定获取列表的函数到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
     oauthInfo.setAccessTokenCallBack = articleTitles.syncArticleTitles;
     initReceiveShare();
@@ -86,6 +92,7 @@ class _EbuoyState extends State<Ebuoy> {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
+          ChangeNotifierProvider(create: (_) => controller),
           ChangeNotifierProvider(create: (_) => Article()),
           ChangeNotifierProvider(create: (_) => Loading()),
           ChangeNotifierProvider(create: (_) => oauthInfo),

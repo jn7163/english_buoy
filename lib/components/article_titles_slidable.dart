@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/article_title.dart';
 import '../models/article_titles.dart';
 import './article_youtube_avatar.dart';
+import '../models/controller.dart';
 
 class ArticleTitlesSlidable extends StatefulWidget {
   ArticleTitlesSlidable({
@@ -20,11 +21,13 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
   ArticleTitles articleTitles;
   bool deleting = false; // is deleting
   bool selected = false; // is selected
+  Controller _controller;
 
   @override
   initState() {
     super.initState();
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    _controller = Provider.of<Controller>(context, listen: false);
   }
 
   @override
@@ -34,7 +37,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
         child: Ink(
-            color: articleTitles.selectedArticleID == articleTitle.id
+            color: _controller.selectedArticleID == articleTitle.id
                 ? Theme.of(context).highlightColor
                 : Colors.transparent,
             child: ListTile(
@@ -46,9 +49,13 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                           .loading), // data loading to create loading item when add new article
               dense: false,
               onTap: () {
-                articleTitles.setSelectedArticleID(articleTitle.id);
-                Navigator.pushNamed(context, '/ArticlePageView',
-                    arguments: articleTitle.id);
+                setState(() {
+                  _controller.setSelectedArticleID(articleTitle.id);
+                });
+                _controller.setMainSelectedIndex(1);
+                _controller.articlePageController.jumpToPage(
+                    articleTitles.findIndexByArticleID(articleTitle.id));
+                //Navigator.pushNamed(context, '/ArticlePageView', arguments: articleTitle.id);
               },
               leading: Text(
                   articleTitle.percent.toStringAsFixed(
