@@ -13,7 +13,6 @@ import '../models/oauth_info.dart';
 import '../models/settings.dart';
 
 import '../themes/base.dart';
-import './article_page_view.dart';
 
 class ArticleTitlesPage extends StatefulWidget {
   ArticleTitlesPage({Key key}) : super(key: key);
@@ -22,7 +21,10 @@ class ArticleTitlesPage extends StatefulWidget {
   ArticleTitlesPageState createState() => ArticleTitlesPageState();
 }
 
-class ArticleTitlesPageState extends State<ArticleTitlesPage> {
+class ArticleTitlesPageState extends State<ArticleTitlesPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   ArticleTitles articleTitles;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ItemScrollController itemScrollController = ItemScrollController();
@@ -131,26 +133,29 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    print("build article titles page");
     return Consumer<ArticleTitles>(builder: (context, articleTitlesNow, child) {
       return Scaffold(
-          key: _scaffoldKey,
-          appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
-          drawer: LeftDrawer(),
-          endDrawer: RightDrawer(),
-          body: RefreshIndicator(
-            onRefresh: _refresh,
-            child: getArticleTitlesBody(),
-            color: mainColor,
-          ),
-          floatingActionButton: Visibility(
-              visible: articleTitlesNow.titles.length > 10 ? false : true,
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/Guid');
-                },
-                child: Icon(Icons.help_outline,
-                    color: Theme.of(context).primaryTextTheme.title.color),
-              )));
+        key: _scaffoldKey,
+        appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
+        drawer: LeftDrawer(),
+        endDrawer: RightDrawer(),
+        body: RefreshIndicator(
+          onRefresh: _refresh,
+          child: getArticleTitlesBody(),
+          color: mainColor,
+        ),
+        floatingActionButton: Visibility(
+            visible: articleTitlesNow.titles.length > 10 ? false : true,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/Guid');
+              },
+              child: Icon(Icons.help_outline,
+                  color: Theme.of(context).primaryTextTheme.title.color),
+            )),
+      );
     });
   }
 }
