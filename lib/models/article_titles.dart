@@ -9,6 +9,7 @@ import 'package:dio/dio.dart';
 import './settings.dart';
 
 class ArticleTitles with ChangeNotifier {
+  Map instanceArticles = Map(); // keep instance article by it's id
   String searchKey = ''; // 过滤关键字
   List<ArticleTitle> filterTitles = []; // 过滤好的列表
   List<ArticleTitle> titles = [];
@@ -25,6 +26,11 @@ class ArticleTitles with ChangeNotifier {
 
   // show article percent
   Settings settings;
+
+  setInstanceArticles(Article article) {
+    this.instanceArticles[article.articleID] = article;
+    notifyListeners();
+  }
 
   setSearchKey(String v) {
     searchKey = v;

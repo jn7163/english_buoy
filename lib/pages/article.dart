@@ -47,14 +47,9 @@ class _ArticlePageState extends State<ArticlePage>
     //article = Provider.of<Article>(context, listen: false);
     article = Article();
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    article.articleID = id;
+    articleTitles.setInstanceArticles(article);
     loadByID();
-  }
-
-  @override
-  void updateKeepAlive() {
-    print("!!!!!!!!!!!!!!!!!!!!!!!!updateKeepAlive");
-    if (article.youtubeController != null) article.youtubeController.pause();
-    super.updateKeepAlive();
   }
 
   @override

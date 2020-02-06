@@ -54,6 +54,6 @@ class Settings with ChangeNotifier {
       isAutoplay = true;
     setIsAutoplay(isAutoplay);
 
-    setFilertPercent(prefs.getDouble(filertPercentKey) ?? 0);
+    setFilertPercent(prefs.getDouble(filertPercentKey) ?? 70);
   }
 }
