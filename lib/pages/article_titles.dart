@@ -15,6 +15,7 @@ import '../models/oauth_info.dart';
 import '../models/settings.dart';
 
 import '../themes/base.dart';
+import './article.dart';
 
 class ArticleTitlesPage extends StatefulWidget {
   ArticleTitlesPage({Key key}) : super(key: key);
@@ -91,11 +92,13 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
     }
   }
 
+  /*
   showToast(String info) {
     toast.Alert.toast(context, info,
         position: toast.ToastPosition.bottom,
         duration: toast.ToastDuration.long);
   }
+  */
 
   Future _syncArticleTitles() async {
     return articleTitles.syncArticleTitles().catchError((e) {
@@ -144,11 +147,21 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
           appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
           drawer: LeftDrawer(),
           endDrawer: RightDrawer(),
+          body: PageView(
+              onPageChanged: (d) {
+                print(d);
+              },
+              //controller: PageController(keepPage: true),
+              children: articleTitlesNow.titles.map((d) {
+                return ArticlePage(initID: d.id);
+              }).toList()),
+          /*
           body: RefreshIndicator(
             onRefresh: _refresh,
             child: getArticleTitlesBody(),
             color: mainColor,
           ),
+          */
           floatingActionButton: Visibility(
               visible: articleTitlesNow.titles.length > 10 ? false : true,
               child: FloatingActionButton(

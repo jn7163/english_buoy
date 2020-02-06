@@ -28,7 +28,9 @@ class ArticlePage extends StatefulWidget {
   _ArticlePageState createState() => _ArticlePageState();
 }
 
-class _ArticlePageState extends State<ArticlePage> {
+class _ArticlePageState extends State<ArticlePage>
+    with AutomaticKeepAliveClientMixin<ArticlePage> {
+  bool wantKeepAlive = true;
   Article article;
   ScrollController _scrollController;
   ArticleTitles articleTitles;
@@ -42,13 +44,22 @@ class _ArticlePageState extends State<ArticlePage> {
     id = widget.initID;
     _scrollController = ScrollController();
     settings = Provider.of<Settings>(context, listen: false);
-    article = Provider.of<Article>(context, listen: false);
+    //article = Provider.of<Article>(context, listen: false);
+    article = Article();
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     loadByID();
   }
 
   @override
+  void updateKeepAlive() {
+    print("!!!!!!!!!!!!!!!!!!!!!!!!updateKeepAlive");
+    if (article.youtubeController != null) article.youtubeController.pause();
+    super.updateKeepAlive();
+  }
+
+  @override
   void deactivate() {
+    print("!!!!!!!!!!!!!!!!!!!!!!!!deactivate");
     // This pauses video while navigating to next page.
     if (article.youtubeController != null) article.youtubeController.pause();
     super.deactivate();
@@ -85,15 +96,17 @@ class _ArticlePageState extends State<ArticlePage> {
   }
 
   Future loadArticleByID() async {
-    // from local cache
+    setState(() {
+      loading = true;
+    });
     article.getFromLocal(id).then((hasLocal) {
       if (!hasLocal) {
-        setState(() {
-          loading = true;
-        });
         return loadFromServer();
       } else {
         //如果缓存取到, 就不要更新页面内容, 避免后置更新导致页面跳变
+        setState(() {
+          loading = false;
+        });
         return loadFromServer(justUpdateLocal: true);
       }
     });
@@ -126,6 +139,13 @@ class _ArticlePageState extends State<ArticlePage> {
 
   Widget refreshBody() {
     return Expanded(
+        child: RefreshIndicator(
+      onRefresh: () async => await loadFromServer(),
+      child: articleBody(),
+      color: mainColor,
+    ));
+    /*
+    return Expanded(
         child: GestureDetector(
             onHorizontalDragEnd: (details) {
               if (details.primaryVelocity < -600) {
@@ -148,6 +168,7 @@ class _ArticlePageState extends State<ArticlePage> {
               child: articleBody(),
               color: mainColor,
             )));
+            */
   }
 
   Widget body() {
@@ -162,29 +183,33 @@ class _ArticlePageState extends State<ArticlePage> {
         color: Theme.of(context).scaffoldBackgroundColor,
         //color: Colors.white,
         dismissible: true,
-        child: Column(children: [ArticleYouTube(), refreshBody()]),
+        child: Column(children: [
+          ArticleYouTube(
+            article: article,
+          ),
+          refreshBody()
+        ]),
         inAsyncCall: loading);
   }
 
   Widget articleBody() {
-    return Consumer<Article>(builder: (context, article, child) {
-      if (article.title == null) return Container();
-      return SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          controller: _scrollController,
-          child: Column(children: [
-            ArticleTopBar(article: article),
-            NotMasteredVocabulary(article: article),
-            Padding(
-                padding: EdgeInsets.all(5),
-                child: ArticleSentences(
-                    article: article, sentences: article.sentences)),
-          ]));
-    });
+    if (article.title == null) return Container();
+    return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        controller: _scrollController,
+        child: Column(children: [
+          ArticleTopBar(article: article),
+          NotMasteredVocabulary(article: article),
+          Padding(
+              padding: EdgeInsets.all(5),
+              child: ArticleSentences(
+                  article: article, sentences: article.sentences)),
+        ]));
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     print("build article");
     return Consumer<Article>(builder: (context, article, child) {
       return Scaffold(
