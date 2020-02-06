@@ -104,7 +104,13 @@ class _EbuoyState extends State<Ebuoy> {
   Route getRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/ArticlePageView':
-        return _buildRoute(settings, ArticlePageViewPage(settings.arguments));
+        //return _buildRoute(settings, ArticlePageViewPage(settings.arguments));
+        return PageTransition(
+          duration: Duration(milliseconds: 500),
+          type: PageTransitionType.rightToLeft,
+          child: ArticlePageViewPage(settings.arguments),
+          settings: settings,
+        );
       case '/Guid':
         //return _buildRoute(settings, GuidPage());
         return PageTransition(
