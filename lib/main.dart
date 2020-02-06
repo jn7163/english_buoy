@@ -15,6 +15,7 @@ import './pages/article.dart';
 import './pages/sign.dart';
 import './pages/add_article.dart';
 import './pages/guid.dart';
+import './pages/article_page_view.dart';
 
 import './themes/dark.dart';
 import './themes/bright.dart';
@@ -102,6 +103,8 @@ class _EbuoyState extends State<Ebuoy> {
 
   Route getRoute(RouteSettings settings) {
     switch (settings.name) {
+      case '/ArticlePageView':
+        return _buildRoute(settings, ArticlePageViewPage(settings.arguments));
       case '/Guid':
         //return _buildRoute(settings, GuidPage());
         return PageTransition(

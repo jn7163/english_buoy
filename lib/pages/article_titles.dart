@@ -1,4 +1,3 @@
-// 文章列表
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
@@ -147,21 +146,11 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
           appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
           drawer: LeftDrawer(),
           endDrawer: RightDrawer(),
-          body: PageView(
-              onPageChanged: (d) {
-                print(d);
-              },
-              //controller: PageController(keepPage: true),
-              children: articleTitlesNow.titles.map((d) {
-                return ArticlePage(initID: d.id);
-              }).toList()),
-          /*
           body: RefreshIndicator(
             onRefresh: _refresh,
             child: getArticleTitlesBody(),
             color: mainColor,
           ),
-          */
           floatingActionButton: Visibility(
               visible: articleTitlesNow.titles.length > 10 ? false : true,
               child: FloatingActionButton(
