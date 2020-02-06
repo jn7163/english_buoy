@@ -40,37 +40,39 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Controller>(builder: (context, currentController, child) {
-      return Scaffold(
-        body: PageView(
-          children: _widgetOptions,
-          controller: _controller.mainPageController,
-          onPageChanged: (index) {
-            _articleTitles.pauseYouTube();
-          },
-        ),
+    return Consumer<Controller>(
+      builder: (context, currentController, child) {
+        return Scaffold(
+          body: PageView(
+            children: _widgetOptions,
+            controller: _controller.mainPageController,
+            onPageChanged: (index) {
+              _articleTitles.pauseYouTube();
+            },
+          ),
 
-        //_widgetOptions.elementAt(_selectedIndex),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('Home'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.library_books),
-              title: Text('Article'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.local_library),
-              title: Text('Lib'),
-            ),
-          ],
-          currentIndex: currentController.mainSelectedIndex,
-          //selectedItemColor: Colors.amber[800],
-          onTap: _onItemTapped,
-        ),
-      );
-    });
+          //_widgetOptions.elementAt(_selectedIndex),
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                title: Text('Home'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.library_books),
+                title: Text('Article'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.local_library),
+                title: Text('Lib'),
+              ),
+            ],
+            currentIndex: currentController.mainSelectedIndex,
+            //selectedItemColor: Colors.amber[800],
+            onTap: _onItemTapped,
+          ),
+        );
+      },
+    );
   }
 }
