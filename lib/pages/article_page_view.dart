@@ -17,8 +17,9 @@ class ArticlePageViewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
       return PageView(
-          onPageChanged: (d) {
-            print(d);
+          onPageChanged: (i) {
+            articleTitles
+                .setSelectedArticleID(articleTitles.filterTitles[i].id); // 高亮列表
           },
           controller: PageController(
             initialPage: getPageIndexByArticleID(articleTitles),
