@@ -3,9 +3,12 @@ import 'package:provider/provider.dart';
 import '../models/article.dart';
 
 class ArticleFloatingActionButton extends StatelessWidget {
+  //const ArticleFloatingActionButton({Key key, @required this.article})
+  //   : super(key: key);
+  const ArticleFloatingActionButton(this.article);
+  final Article article;
   @override
   Widget build(BuildContext context) {
-    Article article = Provider.of<Article>(context);
     return Align(
         alignment: Alignment.centerRight,
         child: Visibility(
