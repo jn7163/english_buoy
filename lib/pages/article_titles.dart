@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:flutter_widgets/flutter_widgets.dart';
-import 'package:easy_alert/easy_alert.dart' as toast;
 
 import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
@@ -14,7 +13,7 @@ import '../models/oauth_info.dart';
 import '../models/settings.dart';
 
 import '../themes/base.dart';
-import './article.dart';
+import './article_page_view.dart';
 
 class ArticleTitlesPage extends StatefulWidget {
   ArticleTitlesPage({Key key}) : super(key: key);
@@ -25,7 +24,7 @@ class ArticleTitlesPage extends StatefulWidget {
 
 class ArticleTitlesPageState extends State<ArticleTitlesPage> {
   ArticleTitles articleTitles;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
@@ -90,14 +89,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> {
         }
     }
   }
-
-  /*
-  showToast(String info) {
-    toast.Alert.toast(context, info,
-        position: toast.ToastPosition.bottom,
-        duration: toast.ToastDuration.long);
-  }
-  */
 
   Future _syncArticleTitles() async {
     return articleTitles.syncArticleTitles().catchError((e) {
