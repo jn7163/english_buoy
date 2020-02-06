@@ -18,6 +18,8 @@ class Article with ChangeNotifier {
   int unlearnedCount;
   int articleID;
   Sentence notMasteredWord; // 尚未掌握的table中的单词, 用来滚回去
+  Function notifyListeners2 =
+      () {}; //beacause notifyListeners2 not work, must use callBack replace
 
   // 文章中的文字内容
   // List words = [];
@@ -31,7 +33,7 @@ class Article with ChangeNotifier {
 
   setNotMasteredWord(Sentence v) {
     notMasteredWord = v;
-    notifyListeners();
+    notifyListeners2();
   }
 
   setYouTube(YoutubePlayerController v) {
@@ -40,11 +42,11 @@ class Article with ChangeNotifier {
 
   setFindWord(String findWord) {
     this.findWord = findWord;
-    notifyListeners();
+    notifyListeners2();
     // just show 1 seconds
     Future.delayed(Duration(seconds: 1), () {
       this.findWord = "";
-      notifyListeners();
+      notifyListeners2();
     });
   }
 
@@ -63,7 +65,7 @@ class Article with ChangeNotifier {
     this.avatar = json['Avatar'];
     this.wordCount = json['WordCount'];
     notMasteredWord = null;
-    notifyListeners();
+    notifyListeners2();
   }
 
   /*
@@ -71,7 +73,7 @@ class Article with ChangeNotifier {
     this.youtube = '';
     this.title = '';
     this.sentences.clear();
-    // notifyListeners();
+    // notifyListeners2();
   }
    */
 
@@ -142,7 +144,7 @@ class Article with ChangeNotifier {
         }
       });
     }
-    // notifyListeners();
+    notifyListeners2();
   }
 
 // 增加学习次数

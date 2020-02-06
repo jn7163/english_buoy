@@ -46,6 +46,9 @@ class _ArticlePageState extends State<ArticlePage>
     settings = Provider.of<Settings>(context, listen: false);
     //article = Provider.of<Article>(context, listen: false);
     article = Article();
+    article.notifyListeners2 = () {
+      setState(() {});
+    };
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     article.articleID = id;
     articleTitles.setInstanceArticles(article);
@@ -207,11 +210,9 @@ class _ArticlePageState extends State<ArticlePage>
   Widget build(BuildContext context) {
     super.build(context);
     print("build article");
-    return Consumer<Article>(builder: (context, article, child) {
-      return Scaffold(
-        body: body(),
-        floatingActionButton: ArticleFloatingActionButton(this.article),
-      );
-    });
+    return Scaffold(
+      body: body(),
+      floatingActionButton: ArticleFloatingActionButton(article),
+    );
   }
 }
