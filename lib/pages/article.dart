@@ -20,7 +20,8 @@ import '../models/settings.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.initID}) : super(key: key);
+  //ArticlePage({Key key, this.initID}) : super(key: key);
+  ArticlePage(this.initID);
 
   final int initID;
 
@@ -29,7 +30,7 @@ class ArticlePage extends StatefulWidget {
 }
 
 class _ArticlePageState extends State<ArticlePage>
-    with AutomaticKeepAliveClientMixin<ArticlePage> {
+    with AutomaticKeepAliveClientMixin {
   bool wantKeepAlive = true;
   Article article;
   ScrollController _scrollController;
@@ -115,7 +116,7 @@ class _ArticlePageState extends State<ArticlePage>
         PageTransition(
           duration: Duration(milliseconds: 500),
           type: PageTransitionType.leftToRight,
-          child: ArticlePage(initID: this.id),
+          child: ArticlePage(this.id),
         ));
   }
 
@@ -127,7 +128,7 @@ class _ArticlePageState extends State<ArticlePage>
       PageTransition(
         duration: Duration(milliseconds: 500),
         type: PageTransitionType.rightToLeft,
-        child: ArticlePage(initID: this.id),
+        child: ArticlePage(this.id),
       ),
     );
   }

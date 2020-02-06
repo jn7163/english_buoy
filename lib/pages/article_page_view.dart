@@ -2,21 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/article_titles.dart';
 import './article.dart';
-import 'article_titles.dart';
 
 class ArticlePageViewPage extends StatefulWidget {
   ArticlePageViewPage(this.articleID);
   final int articleID;
   final _ArticlePageViewPage _articlePageViewPage = _ArticlePageViewPage();
   @override
-  _ArticlePageViewPage createState() => _articlePageViewPage;
+  //_ArticlePageViewPage createState() => _articlePageViewPage;
+  _ArticlePageViewPage createState() => _ArticlePageViewPage();
 
   void setShowArticle(int articleID) {
     _articlePageViewPage.setShowArticle(articleID);
   }
 }
 
-class _ArticlePageViewPage extends State<ArticlePageViewPage> {
+class _ArticlePageViewPage extends State<ArticlePageViewPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   PageView pageView;
   ArticleTitles articleTitles;
   @override
@@ -41,11 +45,12 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
       this.articleTitles = articleTitles;
       print("build ArticlePageViewPage");
       List<Widget> children = articleTitles.filterTitles.map((d) {
-        return ArticlePage(initID: d.id);
+        return ArticlePage(d.id);
       }).toList();
       this.pageView = PageView(
           onPageChanged: (i) {

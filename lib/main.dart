@@ -16,6 +16,7 @@ import './pages/sign.dart';
 import './pages/add_article.dart';
 import './pages/guid.dart';
 import './pages/article_page_view.dart';
+import './pages/home.dart';
 
 import './themes/dark.dart';
 import './themes/bright.dart';
@@ -95,8 +96,8 @@ class _EbuoyState extends State<Ebuoy> {
           return MaterialApp(
             title: 'English Buoy',
             theme: settings.isDark ? darkTheme : brightTheme,
-            home: ArticleTitlesPage(),
-            onGenerateRoute: getRoute,
+            home: HomePage(),
+            //onGenerateRoute: getRoute,
           );
         }));
   }
@@ -129,7 +130,7 @@ class _EbuoyState extends State<Ebuoy> {
         return PageTransition(
           duration: Duration(milliseconds: 500),
           type: PageTransitionType.rightToLeft,
-          child: ArticlePage(initID: settings.arguments),
+          child: ArticlePage(settings.arguments),
           settings: settings,
         );
       case '/Sign':
