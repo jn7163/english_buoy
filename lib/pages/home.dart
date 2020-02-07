@@ -57,11 +57,13 @@ class HomePageState extends State<HomePage> {
               _articleTitles.pauseYouTube();
             },
           ),
+          /*
           bottomNavigationBar: BottomNavigationBar(
             items: bottomNavigationBarItem,
             currentIndex: currentController.mainSelectedIndex,
             onTap: _onItemTapped,
           ),
+          */
         );
       },
     );
