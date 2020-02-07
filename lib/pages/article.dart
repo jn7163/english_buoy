@@ -28,7 +28,7 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends State<ArticlePage>
     with AutomaticKeepAliveClientMixin {
-  bool wantKeepAlive = true;
+  bool wantKeepAlive = false;
   Article article;
   ScrollController _scrollController;
   ArticleTitles articleTitles;

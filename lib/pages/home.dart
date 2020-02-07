@@ -14,17 +14,21 @@ class HomePageState extends State<HomePage> {
   Controller _controller;
   ArticleTitles _articleTitles;
 
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static List<Widget> _widgetOptions = <Widget>[
-    ArticleTitlesPage(),
-    ArticlePageViewPage(0),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
+  static List<BottomNavigationBarItem> bottomNavigationBarItem =
+      <BottomNavigationBarItem>[
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home),
+      title: Text('Home'),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.library_books),
+      title: Text('Article'),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.local_library),
+      title: Text('Lib'),
     ),
   ];
-
   @override
   void initState() {
     super.initState();
@@ -43,31 +47,19 @@ class HomePageState extends State<HomePage> {
       builder: (context, currentController, child) {
         return Scaffold(
           body: PageView(
-            children: _widgetOptions,
+            children: [
+              ArticleTitlesPage(),
+              ArticlePageViewPage(0),
+              Center(child: Text('Developing')),
+            ],
             controller: _controller.mainPageController,
             onPageChanged: (index) {
               _articleTitles.pauseYouTube();
             },
           ),
-
-          //_widgetOptions.elementAt(_selectedIndex),
           bottomNavigationBar: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                title: Text('Home'),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.library_books),
-                title: Text('Article'),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.local_library),
-                title: Text('Lib'),
-              ),
-            ],
+            items: bottomNavigationBarItem,
             currentIndex: currentController.mainSelectedIndex,
-            //selectedItemColor: Colors.amber[800],
             onTap: _onItemTapped,
           ),
         );
