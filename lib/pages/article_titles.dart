@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
 import 'package:flutter_widgets/flutter_widgets.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'dart:async';
 
 import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
@@ -12,6 +13,7 @@ import '../models/article_titles.dart';
 import '../models/oauth_info.dart';
 import '../models/settings.dart';
 
+import '../functions/utility.dart';
 import '../themes/base.dart';
 
 class ArticleTitlesPage extends StatefulWidget {
@@ -92,7 +94,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     }
   }
 
-  Future _syncArticleTitles() async {
+  Future syncArticleTitles() async {
     return articleTitles.syncArticleTitles().catchError((e) {
       if (e.response && e.response.statusCode == 401) oauthInfo.signIn();
     });
@@ -100,23 +102,32 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
 
   Widget getArticleTitlesBody() {
     return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
-      return articleTitles.filterTitles.length > 0
-          ? ScrollablePositionedList.builder(
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: articleTitles.filterTitles.length,
-              itemBuilder: (context, index) {
-                return ArticleTitlesSlidable(
-                    articleTitle: articleTitles.filterTitles[index]);
-              },
-              itemScrollController: itemScrollController,
-              itemPositionsListener: itemPositionListener,
-            )
-          : Container();
+      var body;
+      if (articleTitles.filterTitles.length == 0)
+        body = Container();
+      else
+        body = ScrollablePositionedList.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: articleTitles.filterTitles.length,
+          itemBuilder: (context, index) {
+            return ArticleTitlesSlidable(
+                articleTitle: articleTitles.filterTitles[index]);
+          },
+          itemScrollController: itemScrollController,
+          itemPositionsListener: itemPositionListener,
+        );
+      return ModalProgressHUD(
+          opacity: 1,
+          progressIndicator: getSpinkitProgressIndicator(context),
+          color: Theme.of(context).scaffoldBackgroundColor,
+          dismissible: true,
+          child: body,
+          inAsyncCall: articleTitles.filterTitles.length == 0);
     });
   }
 
-  Future _refresh() async {
-    await _syncArticleTitles();
+  Future refresh() async {
+    await syncArticleTitles();
     return;
   }
 
@@ -142,7 +153,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         drawer: LeftDrawer(),
         endDrawer: RightDrawer(),
         body: RefreshIndicator(
-          onRefresh: _refresh,
+          onRefresh: refresh,
           child: getArticleTitlesBody(),
           color: mainColor,
         ),
@@ -152,8 +163,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
               onPressed: () {
                 Navigator.pushNamed(context, '/Guid');
               },
-              child: Icon(Icons.help_outline,
-                  color: Theme.of(context).primaryTextTheme.title.color),
+              child: Icon(Icons.help_outline),
             )),
       );
     });

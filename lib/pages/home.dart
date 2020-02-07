@@ -11,7 +11,6 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
   Controller _controller;
   ArticleTitles _articleTitles;
 
