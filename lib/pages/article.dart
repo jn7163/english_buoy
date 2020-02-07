@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +12,8 @@ import '../components/article_youtube.dart';
 import '../components/article_floating_action_button.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
-import '../themes/base.dart';
 import '../models/settings.dart';
+import '../functions/utility.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
@@ -35,13 +33,13 @@ class _ArticlePageState extends State<ArticlePage>
   ScrollController _scrollController;
   ArticleTitles articleTitles;
   Settings settings;
-  int id, lastID, nextID;
-  bool loading = false;
+  int _id, lastID, nextID;
+  bool _loading = false;
 
   @override
   void initState() {
     super.initState();
-    id = widget.initID;
+    _id = widget.initID;
     _scrollController = ScrollController();
     settings = Provider.of<Settings>(context, listen: false);
     //article = Provider.of<Article>(context, listen: false);
@@ -50,7 +48,7 @@ class _ArticlePageState extends State<ArticlePage>
       setState(() {});
     };
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    article.articleID = id;
+    article.articleID = _id;
     articleTitles.setInstanceArticles(article);
     loadByID();
   }
@@ -70,7 +68,7 @@ class _ArticlePageState extends State<ArticlePage>
   }
 
   loadByID() {
-    var a = articleTitles.findLastNextArticleByID(id);
+    var a = articleTitles.findLastNextArticleByID(_id);
     lastID = a[0];
     nextID = a[1];
     loadArticleByID();
@@ -78,7 +76,7 @@ class _ArticlePageState extends State<ArticlePage>
 
   Future loadFromServer({bool justUpdateLocal = false}) async {
     return article
-        .getArticleByID(articleID: this.id, justUpdateLocal: justUpdateLocal)
+        .getArticleByID(articleID: this._id, justUpdateLocal: justUpdateLocal)
         .then((d) {
       if (this.mounted) {
         // 更新本地未学单词数
@@ -86,7 +84,7 @@ class _ArticlePageState extends State<ArticlePage>
             article.unlearnedCount, article.articleID);
       }
       setState(() {
-        loading = false;
+        _loading = false;
       });
       return d;
     });
@@ -94,15 +92,15 @@ class _ArticlePageState extends State<ArticlePage>
 
   Future loadArticleByID() async {
     setState(() {
-      loading = true;
+      _loading = true;
     });
-    article.getFromLocal(id).then((hasLocal) {
+    article.getFromLocal(_id).then((hasLocal) {
       if (!hasLocal) {
         return loadFromServer();
       } else {
         //如果缓存取到, 就不要更新页面内容, 避免后置更新导致页面跳变
         setState(() {
-          loading = false;
+          _loading = false;
         });
         return loadFromServer(justUpdateLocal: true);
       }
@@ -141,46 +139,15 @@ class _ArticlePageState extends State<ArticlePage>
         child: RefreshIndicator(
       onRefresh: () async => await loadFromServer(),
       child: articleBody(),
-      color: mainColor,
+      //color: mainColor,
     ));
-    /*
-    return Expanded(
-        child: GestureDetector(
-            onHorizontalDragEnd: (details) {
-              if (details.primaryVelocity < -600) {
-                if (nextID != null) {
-                  this.id = nextID;
-                  article.setNotMasteredWord(null);
-                  this.refreshCurrentRightToLeft();
-                }
-              }
-              if (details.primaryVelocity > 600) {
-                if (lastID != null) {
-                  this.id = lastID;
-                  article.setNotMasteredWord(null);
-                  this.refreshCurrentLeftToRight();
-                }
-              }
-            },
-            child: RefreshIndicator(
-              onRefresh: () async => await loadFromServer(),
-              child: articleBody(),
-              color: mainColor,
-            )));
-            */
   }
 
   Widget body() {
-    var spinkit = SpinKitRipple(
-      color: Theme.of(context).primaryColorLight,
-      size: 200.0,
-    );
     return ModalProgressHUD(
         opacity: 1,
-        progressIndicator: spinkit,
-        // 这里引用 Theme 会导致透明, 奇怪的要死
+        progressIndicator: getSpinkitProgressIndicator(context),
         color: Theme.of(context).scaffoldBackgroundColor,
-        //color: Colors.white,
         dismissible: true,
         child: Column(children: [
           ArticleYouTube(
@@ -188,7 +155,7 @@ class _ArticlePageState extends State<ArticlePage>
           ),
           refreshBody()
         ]),
-        inAsyncCall: loading);
+        inAsyncCall: _loading);
   }
 
   Widget articleBody() {
