@@ -6,6 +6,7 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.0+0
 
+- Speed up almost everything
 - Modify Theme
 - Make filter percent work great
 
