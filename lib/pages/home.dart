@@ -37,9 +37,11 @@ class HomePageState extends State<HomePage> {
     _controller.setMainPageController(PageController());
   }
 
+  /*
   void _onItemTapped(int index) {
     _controller.setMainSelectedIndex(index);
   }
+  */
 
   @override
   Widget build(BuildContext context) {
