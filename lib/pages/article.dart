@@ -165,11 +165,11 @@ class _ArticlePageState extends State<ArticlePage>
         controller: _scrollController,
         child: Column(children: [
           ArticleTopBar(article: article),
-          NotMasteredVocabulary(article: article),
           Padding(
               padding: EdgeInsets.all(5),
               child: ArticleSentences(
                   article: article, sentences: article.sentences)),
+          NotMasteredVocabulary(article: article),
         ]));
   }
 

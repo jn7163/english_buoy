@@ -76,9 +76,12 @@ class ArticleSentencesState extends State<ArticleSentences> {
       ..longTapDelay = Duration(milliseconds: 400)
       ..onLongTapDown = (i, detail) {
         longTap = true;
+        // set current word state for speed up change
+        bool learned = !word.learned;
         setState(() {
-          word.learned = !word.learned;
+          word.learned = learned;
         });
+        // set all sentences word to this state
 
         widget.article.putLearned(word).then((d) {
           //重新计算文章未掌握单词数
