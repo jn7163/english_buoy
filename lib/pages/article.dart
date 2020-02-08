@@ -13,14 +13,15 @@ import '../components/article_floating_action_button.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/settings.dart';
+import '../models/article_inherited.dart';
 import '../functions/utility.dart';
 
 @immutable
 class ArticlePage extends StatefulWidget {
   //ArticlePage({Key key, this.initID}) : super(key: key);
-  ArticlePage(this.initID);
+  ArticlePage(this._articleID);
 
-  final int initID;
+  final int _articleID;
 
   @override
   _ArticlePageState createState() => _ArticlePageState();
@@ -33,24 +34,23 @@ class _ArticlePageState extends State<ArticlePage>
   ScrollController _scrollController;
   ArticleTitles articleTitles;
   Settings settings;
-  int _id, lastID, nextID;
+  int _articleID;
   bool _loading = false;
 
   @override
   void initState() {
     super.initState();
-    _id = widget.initID;
+    _articleID = widget._articleID;
     _scrollController = ScrollController();
     settings = Provider.of<Settings>(context, listen: false);
-    //article = Provider.of<Article>(context, listen: false);
     article = Article();
+    articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    article.articleID = _articleID;
     article.notifyListeners2 = () {
       setState(() {});
     };
-    articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    article.articleID = _id;
     articleTitles.setInstanceArticles(article);
-    loadByID();
+    loadArticleByID();
   }
 
   @override
@@ -67,72 +67,34 @@ class _ArticlePageState extends State<ArticlePage>
     super.dispose();
   }
 
-  loadByID() {
-    var a = articleTitles.findLastNextArticleByID(_id);
-    lastID = a[0];
-    nextID = a[1];
-    loadArticleByID();
-  }
-
-  Future loadFromServer({bool justUpdateLocal = false}) async {
-    return article
-        .getArticleByID(articleID: this._id, justUpdateLocal: justUpdateLocal)
-        .then((d) {
-      if (this.mounted) {
-        // 更新本地未学单词数
-        articleTitles.setUnlearnedCountByArticleID(
-            article.unlearnedCount, article.articleID);
-      }
-      setState(() {
-        _loading = false;
-      });
-      return d;
-    });
+  Future loadFromServer() async {
+    await article.getArticleByID(this._articleID);
+    if (this.mounted) {
+      // 更新本地未学单词数
+      articleTitles.setUnlearnedCountByArticleID(
+          article.unlearnedCount, article.articleID);
+    }
+    _loading = false;
   }
 
   Future loadArticleByID() async {
     setState(() {
       _loading = true;
     });
-    article.getFromLocal(_id).then((hasLocal) {
-      if (!hasLocal) {
-        return loadFromServer();
-      } else {
-        //如果缓存取到, 就不要更新页面内容, 避免后置更新导致页面跳变
-        setState(() {
-          _loading = false;
-        });
-        return loadFromServer(justUpdateLocal: true);
-      }
-    });
+    bool hasLocal = await article.getFromLocal(_articleID);
+    if (hasLocal) {
+      //如果缓存取到, 就不要更新页面内容, 避免后置更新导致页面跳变
+      setState(() {
+        _loading = false;
+      });
+      // 这里从server取只是为了更新本地cache,井不马上刷页面
+      loadFromServer();
+    } else {
+      setState(() {
+        loadFromServer();
+      });
+    }
   }
-
-  /*
-  refreshCurrentLeftToRight() {
-    articleTitles.setSelectedArticleID(this.id); // 高亮列表
-    //刷新当前页
-    Navigator.pushReplacement(
-        context,
-        PageTransition(
-          duration: Duration(milliseconds: 500),
-          type: PageTransitionType.leftToRight,
-          child: ArticlePage(this.id),
-        ));
-  }
-
-  refreshCurrentRightToLeft() {
-    articleTitles.setSelectedArticleID(this.id); // 高亮列表
-    //刷新当前页
-    Navigator.pushReplacement(
-      context,
-      PageTransition(
-        duration: Duration(milliseconds: 500),
-        type: PageTransitionType.rightToLeft,
-        child: ArticlePage(this.id),
-      ),
-    );
-  }
-  */
 
   Widget refreshBody() {
     return Expanded(
@@ -165,11 +127,11 @@ class _ArticlePageState extends State<ArticlePage>
         controller: _scrollController,
         child: Column(children: [
           ArticleTopBar(article: article),
+          NotMasteredVocabulary(),
           Padding(
               padding: EdgeInsets.all(5),
               child: ArticleSentences(
                   article: article, sentences: article.sentences)),
-          NotMasteredVocabulary(article: article),
         ]));
   }
 
@@ -177,9 +139,9 @@ class _ArticlePageState extends State<ArticlePage>
   Widget build(BuildContext context) {
     super.build(context);
     print("build article");
-    return Scaffold(
-      body: body(),
-      floatingActionButton: ArticleFloatingActionButton(article),
-    );
+    return ArticleInherited(
+        article: this.article,
+        child: Scaffold(
+            body: body(), floatingActionButton: ArticleFloatingActionButton()));
   }
 }

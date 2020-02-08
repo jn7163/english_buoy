@@ -74,7 +74,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
     bool longTap = false;
     return MultiTapGestureRecognizer()
       ..longTapDelay = Duration(milliseconds: 400)
-      ..onLongTapDown = (i, detail) {
+      ..onLongTapDown = (i, detail) async {
         longTap = true;
         // set current word state for speed up change
         bool learned = !word.learned;
@@ -82,14 +82,10 @@ class ArticleSentencesState extends State<ArticleSentences> {
           word.learned = learned;
         });
         // set all sentences word to this state
-
-        widget.article.putLearned(word).then((d) {
-          //重新计算文章未掌握单词数
-          var articleTitles =
-              Provider.of<ArticleTitles>(context, listen: false);
-          articleTitles.setUnlearnedCountByArticleID(
-              widget.article.unlearnedCount, widget.article.articleID);
-        });
+        await widget.article.putLearned(word); //重新计算文章未掌握单词数
+        var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+        articleTitles.setUnlearnedCountByArticleID(
+            widget.article.unlearnedCount, widget.article.articleID);
       }
       ..onTap = (i) {
         // 避免长按的同时触发
@@ -134,7 +130,6 @@ class ArticleSentencesState extends State<ArticleSentences> {
     Duration seekTime = Duration(
       milliseconds: (double.parse(time) * 1000).round(),
     );
-    // TextStyle style = Theme.of(context).textTheme.display3.copyWith(fontSize: 16);
     TapGestureRecognizer recognizer = TapGestureRecognizer()
       ..onTap = () {
         widget.article.youtubeController.makeSureSeekTo(seekTime);
@@ -147,13 +142,13 @@ class ArticleSentencesState extends State<ArticleSentences> {
           });
         });
       };
-    this.needLearnTextStyle =
+    TextStyle playTextStyle =
         bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
     return TextSpan(
         text: " ▷ ",
         style: seekTextSpanTapStatus[time]
-            ? needLearnTextStyle.copyWith(fontWeight: FontWeight.bold)
-            : needLearnTextStyle,
+            ? playTextStyle.copyWith(fontWeight: FontWeight.bold)
+            : playTextStyle,
         recognizer: recognizer);
   }
 

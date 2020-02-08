@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../models/article.dart';
+import '../models/article_inherited.dart';
 
-class ArticleFloatingActionButton extends StatelessWidget {
-  //const ArticleFloatingActionButton({Key key, @required this.article})
-  //   : super(key: key);
-  const ArticleFloatingActionButton(this.article);
-  final Article article;
+class ArticleFloatingActionButton extends StatefulWidget {
+  @override
+  ArticleFloatingActionButtonState createState() =>
+      ArticleFloatingActionButtonState();
+}
+
+class ArticleFloatingActionButtonState
+    extends State<ArticleFloatingActionButton> {
   @override
   Widget build(BuildContext context) {
+    Article article = ArticleInherited.of(context).article;
     return Align(
         alignment: Alignment.centerRight,
         child: Visibility(
@@ -20,10 +24,18 @@ class ArticleFloatingActionButton extends StatelessWidget {
                   onPressed: () {
                     Scrollable.ensureVisible(article.notMasteredWord.c);
                     article.setFindWord(article.notMasteredWord.words[0].text);
-                    article.setNotMasteredWord(null);
+                    setState(() {
+                      article.notMasteredWord = null;
+                    });
                   },
-                  child: Icon(Icons.arrow_downward,
-                      color: Theme.of(context).primaryTextTheme.title.color),
+                  child: Icon(Icons.arrow_upward),
                 ))));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // build方法中没有依赖InheritedWidget，此回调不会被调用。
+    print("ArticleFloatingActionButton Dependencies change");
   }
 }
