@@ -83,7 +83,7 @@ class Article with ChangeNotifier {
     prefs.setString('article_' + this.articleID.toString(), data);
   }
 
-  Future getFromLocal(int articleID) async {
+  Future<bool> getFromLocal(int articleID) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String data = prefs.getString('article_' + articleID.toString());
     if (data != null) {
@@ -95,13 +95,13 @@ class Article with ChangeNotifier {
 
   // 从服务器获取
   // justUpdateLocal 仅更新本地缓存, 避免延迟导致页面内容错乱
-  Future getArticleByID({int articleID, bool justUpdateLocal = false}) async {
+  Future getArticleByID(int articleID) async {
     this.articleID = articleID;
     Dio dio = getDio();
     var response =
         await dio.get(Store.baseURL + "article/" + this.articleID.toString());
 
-    if (!justUpdateLocal) this.setFromJSON(response.data);
+    this.setFromJSON(response.data);
     this.setToLocal(json.encode(response.data));
     return response;
   }
