@@ -22,7 +22,7 @@ class ArticleFloatingActionButton extends StatelessWidget {
                     article.setFindWord(article.notMasteredWord.words[0].text);
                     article.setNotMasteredWord(null);
                   },
-                  child: Icon(Icons.arrow_upward,
+                  child: Icon(Icons.arrow_downward,
                       color: Theme.of(context).primaryTextTheme.title.color),
                 ))));
   }

@@ -1,16 +1,16 @@
 // 文章详情内容
 import 'dart:async';
 import 'dart:convert';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'package:dio/dio.dart';
-import 'package:ebuoy/functions/article.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../functions/article.dart';
 import './sentence.dart';
 import './word.dart';
 import '../store/store.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Article with ChangeNotifier {
   YoutubePlayerController youtubeController;

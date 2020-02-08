@@ -4,7 +4,11 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
-v1.4.0+0
+v1.4.1+1.4.1
+
+- move NotMasteredVocabulary to bottom
+
+v1.4.0+1.4.0
 
 - Speed up almost everything
 - Modify Theme
