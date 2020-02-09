@@ -6,7 +6,7 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.1+1.4.1
 
-- move NotMasteredVocabulary to bottom
+- lots of bugs fixed
 
 v1.4.0+1.4.0
 

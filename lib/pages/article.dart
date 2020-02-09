@@ -153,7 +153,6 @@ class _ArticlePageState extends State<ArticlePage>
       print("article.articleID=" + article.title.toString());
       wantKeepAlive = false;
       article.articleID = widget._articleID;
-
       loadArticleByID().then((d) => wantKeepAlive = true);
     }
 
