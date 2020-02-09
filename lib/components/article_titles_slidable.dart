@@ -53,9 +53,8 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                   _controller.setSelectedArticleID(articleTitle.id);
                 });
                 _controller.setMainSelectedIndex(1);
-                _controller.articlePageController.jumpToPage(
-                    articleTitles.findIndexByArticleID(articleTitle.id));
-                //Navigator.pushNamed(context, '/ArticlePageView', arguments: articleTitle.id);
+                int i = articleTitles.findIndexByArticleID(articleTitle.id);
+                _controller.setPageSelectedIndex(i);
               },
               leading: Text(
                   articleTitle.percent.toStringAsFixed(

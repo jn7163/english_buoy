@@ -5,16 +5,10 @@ class Controller with ChangeNotifier {
   int mainSelectedIndex = 0; // 主页当前index
   PageController articlePageController; //article页面切换
   int selectedArticleID = 0;
-
-  //YoutubePlayerController youtubeController;
-  setMainPageController(PageController v) {
-    this.mainPageController = v;
-    //notifyListeners();
-  }
-
-  setArticlePageController(PageController v) {
-    this.articlePageController = v;
-    //notifyListeners();
+  int pageSelectedIndex = 0;
+  Controller() {
+    if (mainPageController == null)
+      mainPageController = PageController(initialPage: 0);
   }
 
   setSelectedArticleID(int id) {
@@ -22,10 +16,18 @@ class Controller with ChangeNotifier {
     //notifyListeners();
   }
 
+  setPageSelectedIndex(int id) {
+    pageSelectedIndex = id;
+    if (articlePageController == null) {
+      articlePageController = PageController(initialPage: pageSelectedIndex);
+      notifyListeners();
+    }
+    articlePageController.jumpToPage(pageSelectedIndex);
+  }
+
   setMainSelectedIndex(int id) {
     this.mainSelectedIndex = id;
     mainPageController.jumpToPage(id);
-    print("setMainSelectedIndex=" + id.toString());
     notifyListeners();
   }
   //setYouTube(YoutubePlayerController v) {
