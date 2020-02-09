@@ -16,9 +16,9 @@ class NotMasteredVocabulary extends StatefulWidget {
 class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
   Article _article;
   List<Word> _mustLearnWords = List(); // in NESL
-  List<String> _mustLearnUnique = List();
   List<Word> _needLearnWords = List(); // not in NESL
   List<Word> _allWords;
+  Map<String, Word> _mustLearnUnique = Map();
   bool _hideSome = false;
 
   @override
@@ -27,28 +27,31 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
   }
 
   filterMustNeedWords() {
+    _mustLearnUnique.clear();
     _article.sentences.forEach((s) {
       s.words.forEach((w) {
         // not mastered words
         if (!w.learned && isNeedLearn(w)) {
           if (w.level != null &&
               w.level != 0 &&
-              !_mustLearnUnique.contains(w.text.toLowerCase())) {
+              !_mustLearnUnique.containsKey(w.text.toLowerCase())) {
             w.belongSentence = s;
             _mustLearnWords.add(w);
-            _mustLearnUnique.add(w.text.toLowerCase());
+            _mustLearnUnique[w.text.toLowerCase()] = w;
           } else if ((w.level == null || w.level == 0) &&
-              !_mustLearnUnique.contains(w.text.toLowerCase())) {
+              !_mustLearnUnique.containsKey(w.text.toLowerCase())) {
             w.belongSentence = s;
             _mustLearnWords.add(w);
-            _mustLearnUnique.add(w.text.toLowerCase());
+            _mustLearnUnique[w.text.toLowerCase()] = w;
           }
         }
       });
     });
+    // if first init
     if (_allWords == null) {
       _allWords = _mustLearnWords + _needLearnWords;
     } else {
+      // if update words
       _allWords = updateAllWords(_allWords, _mustLearnWords + _needLearnWords);
     }
     if (_allWords.length > 40) {
@@ -57,14 +60,17 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
     }
   }
 
-  updateAllWords(List<Word> oldWords, List<Word> newWords) {
+  List<Word> updateAllWords(List<Word> oldWords, List<Word> newWords) {
     //first update to learned then use new update back
     oldWords.forEach((d) {
-      d.learned = false;
+      d.learned = true;
       return d;
     });
 
-    oldWords.addAll(newWords);
+    for (int i = 0; i < oldWords.length; i++) {
+      if (_mustLearnUnique.containsKey(oldWords[i].text.toLowerCase()))
+        oldWords[i].learned = false;
+    }
     return oldWords;
   }
 
