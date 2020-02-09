@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class Controller with ChangeNotifier {
-  PageController mainPageController; //主页面切换
-  int mainSelectedIndex = 0; // 主页当前index
-  PageController articlePageController; //article页面切换
-  int selectedArticleID = 0;
+  PageController mainPageController;
+  int mainSelectedIndex = 0; // current open main page index
+
+  PageController articlePageController;
   int pageSelectedIndex = 0;
+
+  int selectedArticleID = 0; // current seelected article item
   Controller() {
     if (mainPageController == null)
       mainPageController = PageController(initialPage: 0);
@@ -13,6 +15,7 @@ class Controller with ChangeNotifier {
 
   setSelectedArticleID(int id) {
     this.selectedArticleID = id;
+    //notifyListeners will make articleTitlesPage rebuild
     //notifyListeners();
   }
 

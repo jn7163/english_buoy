@@ -27,7 +27,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  ArticleTitles articleTitles;
+  ArticleTitles _articleTitles;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener =
@@ -39,13 +39,13 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     super.initState();
 
     settings = Provider.of<Settings>(context, listen: false);
-    articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    articleTitles.getFromLocal();
+    _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    _articleTitles.getFromLocal();
     oauthInfo = Provider.of<OauthInfo>(context, listen: false);
     oauthInfo.backFromShared();
     //设置回调
-    articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
-    articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;
+    _articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
+    _articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;
   }
 
   //添加新的youtube以后的处理回调
@@ -95,7 +95,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   }
 
   Future syncArticleTitles() async {
-    return articleTitles.syncArticleTitles().catchError((e) {
+    return _articleTitles.syncArticleTitles().catchError((e) {
       if (e.response && e.response.statusCode == 401) oauthInfo.signIn();
     });
   }
@@ -145,27 +145,25 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    print("build article titles page");
-    return Consumer<ArticleTitles>(builder: (context, articleTitlesNow, child) {
-      return Scaffold(
-        key: _scaffoldKey,
-        appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
-        drawer: LeftDrawer(),
-        endDrawer: RightDrawer(),
-        body: RefreshIndicator(
-          onRefresh: refresh,
-          child: getArticleTitlesBody(),
-          color: mainColor,
-        ),
-        floatingActionButton: Visibility(
-            visible: articleTitlesNow.titles.length > 10 ? false : true,
-            child: FloatingActionButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/Guid');
-              },
-              child: Icon(Icons.help_outline),
-            )),
-      );
-    });
+    print("build ArticleTitlesPage");
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
+      drawer: LeftDrawer(),
+      endDrawer: RightDrawer(),
+      body: RefreshIndicator(
+        onRefresh: refresh,
+        child: getArticleTitlesBody(),
+        color: mainColor,
+      ),
+      floatingActionButton: Visibility(
+          visible: _articleTitles.titles.length > 10 ? false : true,
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/Guid');
+            },
+            child: Icon(Icons.help_outline),
+          )),
+    );
   }
 }

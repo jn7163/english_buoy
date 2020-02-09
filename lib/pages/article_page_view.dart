@@ -42,6 +42,9 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage>
             onPageChanged: (i) {
               articleTitles.currentArticleIndex = i;
               articleTitles.pauseYouTube();
+              // used to highlight aritcleTitlePage item
+              _controller
+                  .setSelectedArticleID(articleTitles.filterTitles[i].id);
             },
             controller: _controller.articlePageController,
             children: children);
