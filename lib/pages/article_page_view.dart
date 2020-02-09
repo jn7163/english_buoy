@@ -13,7 +13,6 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  ArticleTitles articleTitles;
   Controller _controller;
   @override
   void initState() {
@@ -34,7 +33,7 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage>
           return true;
       },
       child: Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
-        this.articleTitles = articleTitles;
+        articleTitles = articleTitles;
         print("build ArticlePageViewPage");
         List<Widget> children = articleTitles.filterTitles.map((d) {
           return ArticlePage(d.id);

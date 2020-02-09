@@ -68,7 +68,7 @@ class _ArticlePageState extends State<ArticlePage>
   }
 
   Future loadFromServer() async {
-    await article.getArticleByID(this._articleID);
+    await article.getArticleByID(article.articleID);
     if (this.mounted) {
       // 更新本地未学单词数
       articleTitles.setUnlearnedCountByArticleID(
@@ -81,7 +81,7 @@ class _ArticlePageState extends State<ArticlePage>
     setState(() {
       _loading = true;
     });
-    bool hasLocal = await article.getFromLocal(_articleID);
+    bool hasLocal = await article.getFromLocal(article.articleID);
     if (hasLocal) {
       //如果缓存取到, 就不要更新页面内容, 避免后置更新导致页面跳变
       setState(() {
@@ -136,8 +136,27 @@ class _ArticlePageState extends State<ArticlePage>
   }
 
   @override
+  updateKeepAlive() {
+    super.updateKeepAlive();
+    if (widget._articleID != article.articleID) {
+      article.articleID = widget._articleID;
+      loadArticleByID();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
+    if (widget._articleID != -1 && widget._articleID != article.articleID) {
+      print("widget._articleID=" + widget._articleID.toString());
+      print("article.articleID=" + article.articleID.toString());
+      print("article.articleID=" + article.title.toString());
+      wantKeepAlive = false;
+      article.articleID = widget._articleID;
+
+      loadArticleByID().then((d) => wantKeepAlive = true);
+    }
+
     print("build article");
     return ArticleInherited(
         article: this.article,

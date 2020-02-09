@@ -54,6 +54,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                 });
                 _controller.setMainSelectedIndex(1);
                 int i = articleTitles.findIndexByArticleID(articleTitle.id);
+                print("onTap open i=" + i.toString());
                 _controller.setPageSelectedIndex(i);
               },
               leading: Text(
