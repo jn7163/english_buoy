@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
-import '../themes/bright.dart';
 
 // 文章对应的 youtube 图标或者头像
 // 删除时候显示 loading 动画

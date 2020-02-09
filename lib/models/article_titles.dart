@@ -29,32 +29,6 @@ class ArticleTitles with ChangeNotifier {
   Settings settings;
   Controller controller;
 
-  pauseYouTube() {
-    int i = currentArticleIndex;
-    if (i == -1 || i == null) return;
-
-    int currentArticleID = filterTitles[i].id;
-    print(instanceArticles.containsKey(currentArticleID));
-    if (instanceArticles.containsKey(currentArticleID) &&
-        instanceArticles[currentArticleID].youtubeController != null) {
-      instanceArticles[currentArticleID].youtubeController.pause();
-      print("pauseYouTube i=$i");
-    }
-
-    if (i - 1 > 0) {
-      int lastArticleID = filterTitles[i - 1].id;
-      if (instanceArticles.containsKey(lastArticleID) &&
-          instanceArticles[lastArticleID].youtubeController != null)
-        instanceArticles[lastArticleID].youtubeController.pause();
-    }
-    if (i + 1 < filterTitles.length) {
-      int nextArticleID = filterTitles[i + 1].id;
-      if (instanceArticles.containsKey(nextArticleID) &&
-          instanceArticles[nextArticleID].youtubeController != null)
-        instanceArticles[nextArticleID].youtubeController.pause();
-    }
-  }
-
   setInstanceArticles(Article article) {
     this.instanceArticles[article.articleID] = article;
     //notifyListeners();

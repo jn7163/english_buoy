@@ -54,9 +54,7 @@ class HomePageState extends State<HomePage> {
               Center(child: Text('Developing')),
             ],
             controller: _controller.mainPageController,
-            onPageChanged: (index) {
-              _articleTitles.pauseYouTube();
-            },
+            onPageChanged: (index) {},
           ),
           /*
           bottomNavigationBar: BottomNavigationBar(

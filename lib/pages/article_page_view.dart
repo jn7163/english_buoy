@@ -41,7 +41,6 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage>
         return PageView(
             onPageChanged: (i) {
               articleTitles.currentArticleIndex = i;
-              articleTitles.pauseYouTube();
               // used to highlight aritcleTitlePage item
               _controller
                   .setSelectedArticleID(articleTitles.filterTitles[i].id);
