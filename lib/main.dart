@@ -61,6 +61,7 @@ class _EbuoyState extends State<Ebuoy> {
 
   receiveShare(String sharedText) {
     if (sharedText == null) return;
+    controller.setMainSelectedIndex(0);
     // 收到分享, 设置
     articleTitles.newYouTube(sharedText);
   }
