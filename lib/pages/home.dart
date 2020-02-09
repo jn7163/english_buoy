@@ -34,7 +34,6 @@ class HomePageState extends State<HomePage> {
     super.initState();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _controller = Provider.of<Controller>(context, listen: false);
-    _controller.setMainPageController(PageController());
   }
 
   /*
@@ -51,7 +50,7 @@ class HomePageState extends State<HomePage> {
           body: PageView(
             children: [
               ArticleTitlesPage(),
-              ArticlePageViewPage(0),
+              ArticlePageViewPage(),
               Center(child: Text('Developing')),
             ],
             controller: _controller.mainPageController,

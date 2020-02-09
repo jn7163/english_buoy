@@ -115,7 +115,7 @@ class _EbuoyState extends State<Ebuoy> {
         return PageTransition(
           duration: Duration(milliseconds: 500),
           type: PageTransitionType.rightToLeft,
-          child: ArticlePageViewPage(settings.arguments),
+          child: ArticlePageViewPage(),
           settings: settings,
         );
       case '/Guid':

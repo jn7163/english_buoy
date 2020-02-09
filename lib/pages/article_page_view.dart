@@ -5,8 +5,6 @@ import './article.dart';
 import '../models/controller.dart';
 
 class ArticlePageViewPage extends StatefulWidget {
-  ArticlePageViewPage(this.articleID);
-  final int articleID;
   @override
   _ArticlePageViewPage createState() => _ArticlePageViewPage();
 }
@@ -15,19 +13,18 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  Controller _controller;
   ArticleTitles articleTitles;
+  Controller _controller;
   @override
   void initState() {
     _controller = Provider.of<Controller>(context, listen: false);
-    _controller.setArticlePageController(PageController());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
+    if (_controller.articlePageController == null) return Container();
     return WillPopScope(
       onWillPop: () async {
         if (_controller.mainSelectedIndex == 1) {
@@ -44,8 +41,6 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage>
         }).toList();
         return PageView(
             onPageChanged: (i) {
-              //int articleID = articleTitles.filterTitles[i].id;
-              // _controller.setSelectedArticleID(articleID); // 高亮列表
               articleTitles.currentArticleIndex = i;
               articleTitles.pauseYouTube();
             },
