@@ -26,6 +26,14 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
     super.initState();
   }
 
+  //when change aritcle need clear local list
+  clear() {
+    _mustLearnWords.clear();
+    _needLearnWords.clear();
+    _allWords.clear();
+    _mustLearnUnique.clear();
+  }
+
   filterMustNeedWords() {
     _mustLearnUnique.clear();
     _article.sentences.forEach((s) {
@@ -151,6 +159,9 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (_article != null &&
+        ArticleInherited.of(context).article.articleID != _article.articleID)
+      this.clear();
     _article = ArticleInherited.of(context).article;
     filterMustNeedWords();
   }
