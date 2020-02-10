@@ -14,9 +14,11 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage>
   @override
   bool get wantKeepAlive => true;
   Controller _controller;
+  ArticleTitles _articleTitles;
   @override
   void initState() {
     _controller = Provider.of<Controller>(context, listen: false);
+    _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     super.initState();
   }
 
@@ -32,22 +34,16 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage>
         } else
           return true;
       },
-      child: Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
-        articleTitles = articleTitles;
-        print("build ArticlePageViewPage");
-        List<Widget> children = articleTitles.filterTitles.map((d) {
-          return ArticlePage(d.id);
-        }).toList();
-        return PageView(
-            onPageChanged: (i) {
-              articleTitles.currentArticleIndex = i;
-              // used to highlight aritcleTitlePage item
-              _controller
-                  .setSelectedArticleID(articleTitles.filterTitles[i].id);
-            },
-            controller: _controller.articlePageController,
-            children: children);
-      }),
+      child: PageView(
+          onPageChanged: (i) {
+            _articleTitles.currentArticleIndex = i;
+            // used to highlight aritcleTitlePage item
+            _controller.setSelectedArticleID(_articleTitles.filterTitles[i].id);
+          },
+          controller: _controller.articlePageController,
+          children: _articleTitles.filterTitles.map((d) {
+            return ArticlePage(d.id);
+          }).toList()),
     );
   }
 }
