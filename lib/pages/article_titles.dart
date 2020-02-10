@@ -56,7 +56,10 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         {
           final snackBar = SnackBar(
             backgroundColor: mainColor,
-            content: Text("Already exists"),
+            content: Text(
+              "Already exists",
+              textAlign: TextAlign.center,
+            ),
             //duration: Duration(milliseconds: 500),
           );
           _scaffoldKey.currentState.showSnackBar(snackBar);
@@ -69,7 +72,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
             content: Text("This YouTube video don't have any en subtitle!"),
             action: SnackBarAction(
               textColor: Colors.white,
-              label: "I known",
+              label: "👌I known",
               onPressed: () {},
             ),
             duration: Duration(minutes: 1),
@@ -81,7 +84,10 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         {
           final snackBar = SnackBar(
             backgroundColor: mainColor,
-            content: Text("Success"),
+            content: Text(
+              "Add success",
+              textAlign: TextAlign.center,
+            ),
             //duration: Duration(milliseconds: 500),
           );
           _scaffoldKey.currentState.showSnackBar(snackBar);
@@ -156,6 +162,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         child: getArticleTitlesBody(),
         color: mainColor,
       ),
+
+      /*
       floatingActionButton: Visibility(
           visible: _articleTitles.titles.length > 10 ? false : true,
           child: FloatingActionButton(
@@ -164,6 +172,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
             },
             child: Icon(Icons.help_outline),
           )),
+          */
     );
   }
 }

@@ -94,7 +94,10 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
   TableRow getTitleRow() {
     return getTableRow(
       one: Text("NGSL", style: bodyTextStyle),
-      two: Text("words(" + _allWords.length.toString() + ")",
+      two: Text(
+          "words(" +
+              (_mustLearnWords + _needLearnWords).length.toString() +
+              ")",
           style: bodyTextStyle),
       three: Text("find", style: bodyTextStyle),
     );
