@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:ebuoy/components/article_titles_app_bar.dart';
+import '../components/article_titles_app_bar.dart';
 
 class GuidPage extends StatelessWidget {
   @override

@@ -1,10 +1,10 @@
-import 'package:ebuoy/components/config_autoplay.dart';
-import 'package:ebuoy/components/config_dark_theme.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter/material.dart';
 import '../models/oauth_info.dart';
+import '../components/config_autoplay.dart';
+import '../components/config_dark_theme.dart';
 
 class SignInPage extends StatefulWidget {
   @override
