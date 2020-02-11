@@ -164,16 +164,11 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
       appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
       drawer: LeftDrawer(),
       endDrawer: RightDrawer(),
-      body: getArticleTitlesBody(),
-
-      /*
       body: RefreshIndicator(
-        displacement: 10,
         onRefresh: refresh,
         child: getArticleTitlesBody(),
         color: mainColor,
       ),
-      */
 
       /*
       floatingActionButton: Visibility(
