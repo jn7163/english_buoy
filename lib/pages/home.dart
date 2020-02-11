@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   Controller _controller;
-  ArticleTitles _articleTitles;
+  //ArticleTitles _articleTitles;
 
   static List<BottomNavigationBarItem> bottomNavigationBarItem =
       <BottomNavigationBarItem>[
@@ -32,7 +32,7 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    //_articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _controller = Provider.of<Controller>(context, listen: false);
   }
 
