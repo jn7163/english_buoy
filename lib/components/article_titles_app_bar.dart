@@ -17,9 +17,7 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    });
+    articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     searchController.addListener(() {
       articleTitles.setSearchKey(searchController.text);
     });
