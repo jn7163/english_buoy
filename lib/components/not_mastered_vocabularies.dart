@@ -27,10 +27,16 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
   }
 
   //when change aritcle need clear local list
+  reset() {
+    this.clear();
+    _allWords.clear();
+    _hideSome = false;
+  }
+
+  // keep _allWords state, clear other
   clear() {
     _mustLearnWords.clear();
     _needLearnWords.clear();
-    _allWords.clear();
     _mustLearnUnique.clear();
   }
 
@@ -147,6 +153,7 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
 
   @override
   Widget build(BuildContext context) {
+    print("NotMasteredVocabulary build");
     List<TableRow> renderWordRows = getRenderWordRows();
     return Table(
         border: TableBorder.all(
@@ -161,9 +168,13 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
 
   @override
   void didChangeDependencies() {
+    print("NotMasteredVocabulary didChangeDependencies");
     super.didChangeDependencies();
+    // 更换内容时, 重置所有状态
     if (_article != null &&
         ArticleInherited.of(context).article.articleID != _article.articleID)
+      this.reset();
+    else
       this.clear();
     _article = ArticleInherited.of(context).article;
     filterMustNeedWords();

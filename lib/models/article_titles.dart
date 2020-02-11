@@ -75,7 +75,8 @@ class ArticleTitles with ChangeNotifier {
       return;
     }
     this.showLoadingItem();
-    if (scrollToArticleTitle != null) scrollToArticleTitle(0);
+    if (scrollToArticleTitle != null)
+      scrollToArticleTitle(this.filterTitles.length - 1);
 
     Response response;
     try {
@@ -170,16 +171,19 @@ class ArticleTitles with ChangeNotifier {
     loadingArticleTitle.percent = 0;
     loadingArticleTitle.createdAt = DateTime.now();
     loadingArticleTitle.updatedAt = DateTime.now();
-    this.titles.insert(0, loadingArticleTitle);
+    //this.titles.insert(0, loadingArticleTitle);
+    this.titles.add(loadingArticleTitle);
     filter();
   }
 
   removeLoadingItemNoNotify() {
-    this.titles.removeAt(0);
+    //this.titles.removeAt(0);
+    this.titles.removeLast();
   }
 
   removeLoadingItem() {
-    this.titles.removeAt(0);
+    //this.titles.removeAt(0);
+    this.titles.removeLast();
     filter();
   }
 
@@ -257,7 +261,8 @@ class ArticleTitles with ChangeNotifier {
     articleTitle.wordCount = article.wordCount;
     articleTitle.setPercent();
     // 新增加的插入到第一位
-    this.titles.insert(0, articleTitle);
+    //this.titles.insert(0, articleTitle);
+    this.titles.add(articleTitle);
     this.setArticleTitles.add(articleTitle.title);
     print("addByArticle");
     filter();
