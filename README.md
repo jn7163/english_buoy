@@ -7,6 +7,7 @@ Learn English by reading YouTube subtitle article.
 v1.4.1+1.4.1
 
 - lots of bugs fixed
+- Avoid cached video rebuild when add new article
 
 v1.4.0+1.4.0
 

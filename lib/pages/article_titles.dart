@@ -113,15 +113,17 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         body = Container();
       else
         body = ScrollablePositionedList.builder(
-          reverse: true, // new article at the end of list, so need reverse
+          //reverse: true, // new article at the end of list, so need reverse
           //reverse=true will make init position at bottom need set initialScrollIndex
           //initialScrollIndex work fine but will make: E/AccessibilityBridge( 1727): Scroll index is out of bounds.
-          initialScrollIndex: articleTitles.filterTitles.length - 1,
-          physics: const AlwaysScrollableScrollPhysics(),
+          //initialScrollIndex: articleTitles.filterTitles.length - 1,
+          //initialAlignment: (articleTitles.filterTitles.length - 1).toDouble(),
+          //physics: const AlwaysScrollableScrollPhysics(),
           itemCount: articleTitles.filterTitles.length,
           itemBuilder: (context, index) {
             return ArticleTitlesSlidable(
-                articleTitle: articleTitles.filterTitles[index]);
+                articleTitle:
+                    articleTitles.filterTitles.reversed.toList()[index]);
           },
           itemScrollController: itemScrollController,
           itemPositionsListener: itemPositionListener,
@@ -162,11 +164,16 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
       appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
       drawer: LeftDrawer(),
       endDrawer: RightDrawer(),
+      body: getArticleTitlesBody(),
+
+      /*
       body: RefreshIndicator(
+        displacement: 10,
         onRefresh: refresh,
         child: getArticleTitlesBody(),
         color: mainColor,
       ),
+      */
 
       /*
       floatingActionButton: Visibility(

@@ -54,10 +54,9 @@ class ArticleTitles with ChangeNotifier {
     if (hasShared) {
       for (int i = 0; i < this.filterTitles.length; i++) {
         if (this.filterTitles[i].youtube == url) {
-          selectedIndex = i;
           //this.selectedArticleID = this.filterTitles[i].id;
           controller.selectedArticleID = this.filterTitles[i].id;
-          scrollToArticleTitle(selectedIndex);
+          scrollToArticleTitle(this.filterTitles.length - 1 - i);
           this.justNotifyListeners();
           break;
         }
@@ -75,8 +74,7 @@ class ArticleTitles with ChangeNotifier {
       return;
     }
     this.showLoadingItem();
-    if (scrollToArticleTitle != null)
-      scrollToArticleTitle(this.filterTitles.length - 1);
+    if (scrollToArticleTitle != null) scrollToArticleTitle(0);
 
     Response response;
     try {
