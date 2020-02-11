@@ -125,7 +125,6 @@ class Article with ChangeNotifier {
       }).toList();
       allWords = List.from(allWords)..addAll(l);
     }
-    debugPrint("unleard words=" + allWords.toSet().toString());
     unlearnedCount = allWords.toSet().length;
     unlearnedCount--;
     // 设置本地的列表

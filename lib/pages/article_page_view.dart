@@ -35,6 +35,7 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage>
           return true;
       },
       child: PageView(
+          reverse: true,
           onPageChanged: (i) {
             _articleTitles.currentArticleIndex = i;
             // used to highlight aritcleTitlePage item

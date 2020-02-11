@@ -113,6 +113,10 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         body = Container();
       else
         body = ScrollablePositionedList.builder(
+          reverse: true, // new article at the end of list, so need reverse
+          //reverse=true will make init position at bottom need set initialScrollIndex
+          //initialScrollIndex work fine but will make: E/AccessibilityBridge( 1727): Scroll index is out of bounds.
+          initialScrollIndex: articleTitles.filterTitles.length - 1,
           physics: const AlwaysScrollableScrollPhysics(),
           itemCount: articleTitles.filterTitles.length,
           itemBuilder: (context, index) {
@@ -139,6 +143,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
 
   // 滚动到那一条目
   scrollToArticleTitle(int index) {
+    print("scrollToArticleTitle index=" + index.toString());
     // 稍微等等, 避免 build 时候滚动
     Future.delayed(Duration.zero, () {
       itemScrollController.scrollTo(
