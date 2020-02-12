@@ -103,7 +103,9 @@ class _EbuoyState extends State<Ebuoy> {
         child: Consumer<Settings>(builder: (context, settings, child) {
           return MaterialApp(
             title: 'English Buoy',
-            theme: settings.isDark ? darkTheme : brightTheme,
+            theme: brightTheme,
+            darkTheme: darkTheme,
+            themeMode: settings.isDark ? ThemeMode.dark : ThemeMode.light,
             home: HomePage(),
             //onGenerateRoute: getRoute,
           );

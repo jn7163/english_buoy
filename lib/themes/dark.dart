@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'base.dart';
 
 Map<int, Color> darkColorMap = {
   50: Color.fromRGBO(40, 40, 40, .1),
@@ -12,6 +13,7 @@ Map<int, Color> darkColorMap = {
   800: Color.fromRGBO(40, 40, 40, .9),
   900: Color.fromRGBO(40, 40, 40, 1),
 };
+/*
 MaterialColor darkMaterialColor = MaterialColor(0xFF282828, darkColorMap);
 var darkTextStyle =
     TextStyle(color: Colors.grey, fontFamily: "NotoSans-Medium");
@@ -37,6 +39,7 @@ var darkTextTheme = TextTheme(
 // 控制 app bar 之类的
 var darkPrimaryTextTheme =
     TextTheme(title: darkTextStyle, button: darkTextStyle);
+
 var darkTheme = ThemeData(
     hoverColor: Colors.red,
     // drawer 的背景颜色
@@ -53,3 +56,15 @@ var darkTheme = ThemeData(
     primaryTextTheme: darkPrimaryTextTheme,
     // 阅读背景色
     scaffoldBackgroundColor: Color(0XFF3c3f41));
+    */
+
+MaterialColor darkMaterialColor = MaterialColor(0xFF282828, darkColorMap);
+ThemeData darkTheme = ThemeData(
+  primarySwatch: darkMaterialColor,
+  primaryColorLight: mainColor[700],
+  primaryColorDark: Colors.black,
+  accentColor: mainColor, // loading 动画的颜色
+  fontFamily: "NotoSans-Medium",
+  scaffoldBackgroundColor: Color(0XFF3c3f41), // 阅读背景色
+);
+

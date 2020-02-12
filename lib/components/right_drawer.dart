@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './config_autoplay.dart';
+import './config_dark_theme.dart';
 import './config_filter_by_percent.dart';
 
 // 右边抽屉
@@ -21,7 +22,7 @@ class RightDrawer extends StatelessWidget {
             title: Text(
               "Settings",
             )),
-        //ConfigDarkTheme(),
+        ConfigDarkTheme(),
         ConfigAutoPlay(),
         ConfigFilterByPercent(),
         RaisedButton(
