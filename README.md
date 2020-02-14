@@ -4,10 +4,10 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
-v1.4.1+1.4.1
+v1.4.01+1.4.01
 
 - lots of bugs fixed
-- Avoid cached video rebuild when add new article
+- Avoid cached video rebuild when adding a new article
 
 v1.4.0+1.4.0
 
