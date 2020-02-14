@@ -38,4 +38,4 @@ lib/generated_plugin_registrant.dart
 
 *.jks
 .flutter-plugins-dependencies
-GoogleService-Info.plist
+ios/Runner/GoogleService-Info.plist
