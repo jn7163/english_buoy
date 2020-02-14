@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import './config_dark_theme.dart';
 import './config_autoplay.dart';
+import './config_dark_theme.dart';
 import './config_filter_by_percent.dart';
-import '../models/settings.dart';
-import '../models/article_titles.dart';
 
 // 右边抽屉
 class RightDrawer extends StatelessWidget {
@@ -13,7 +10,8 @@ class RightDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-        child: Column(
+        child: SingleChildScrollView(
+            child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         AppBar(
@@ -24,7 +22,7 @@ class RightDrawer extends StatelessWidget {
             title: Text(
               "Settings",
             )),
-        //ConfigDarkTheme(),
+        ConfigDarkTheme(),
         ConfigAutoPlay(),
         ConfigFilterByPercent(),
         RaisedButton(
@@ -34,6 +32,6 @@ class RightDrawer extends StatelessWidget {
           },
         )
       ],
-    ));
+    )));
   }
 }

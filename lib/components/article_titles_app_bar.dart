@@ -17,9 +17,7 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    });
+    articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     searchController.addListener(() {
       articleTitles.setSearchKey(searchController.text);
     });
@@ -37,13 +35,13 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
       automaticallyImplyLeading: false,
       title: isSearching
           ? TextField(
-              autofocus: true,
               // 自动对焦
-              decoration: null,
+              autofocus: true,
               // 不要有下划线
-              cursorColor: Theme.of(context).primaryTextTheme.title.color,
+              decoration: null,
+              cursorColor: Theme.of(context).primaryTextTheme.headline6.color,
               controller: searchController,
-              //style: Theme.of(context).primaryTextTheme.title,
+              style: Theme.of(context).primaryTextTheme.headline6,
             )
           : Text(
               "English Buoy",
@@ -52,7 +50,6 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
         IconButton(
           icon: Icon(
             isSearching ? Icons.close : Icons.search,
-            color: Theme.of(context).primaryTextTheme.title.color,
           ),
           tooltip: 'go to articles',
           onPressed: () {
@@ -61,27 +58,21 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
               if (!isSearching) {
                 searchController.text = "";
                 articleTitles.setSearchKey(searchController.text);
-                //search.set(searchController.text);
               }
             });
           },
         ),
         IconButton(
-          icon: Icon(Icons.sort,
-              color: Theme.of(context).primaryTextTheme.title.color),
+          icon: Icon(Icons.sort),
           onPressed: () {
-            ArticleTitles articleTitles =
-                Provider.of<ArticleTitles>(context, listen: false);
             articleTitles.changeSort();
           },
         ),
         IconButton(
-          icon: Icon(Icons.settings,
-              color: Theme.of(context).primaryTextTheme.title.color),
+          icon: Icon(Icons.settings),
           tooltip: 'go to settings',
           onPressed: () {
             widget.scaffoldKey.currentState.openEndDrawer();
-            // Navigator.pushNamed(context, '/Sign');
           },
         ),
       ],

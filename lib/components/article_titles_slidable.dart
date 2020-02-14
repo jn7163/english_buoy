@@ -58,21 +58,19 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                 _controller.setPageSelectedIndex(i);
               },
               leading: Text(
-                  articleTitle.percent.toStringAsFixed(
-                          articleTitle.percent.truncateToDouble() ==
-                                  articleTitle.percent
-                              ? 0
-                              : 1) +
-                      "%",
-                  style: TextStyle(
-                    color: Colors.blueGrey,
-                  )),
+                articleTitle.percent.toStringAsFixed(
+                        articleTitle.percent.truncateToDouble() ==
+                                articleTitle.percent
+                            ? 0
+                            : 1) +
+                    "%",
+              ),
               title: Text(articleTitle.title), // 用的 TextTheme.subhead
             )),
         secondaryActions: [
           IconSlideAction(
             caption: 'Delete',
-            color: Colors.red,
+            color: Theme.of(context).primaryColor,
             icon: Icons.delete,
             onTap: () async {
               setState(() {

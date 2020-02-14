@@ -42,7 +42,6 @@ class ArticleTitles with ChangeNotifier {
   // EnsureVisible 不支持 ListView 只有用 50 宽度估算的来 scroll 到分享过来的条目
   bool scrollToSharedItem(String url) {
     bool hasShared = false;
-    int selectedIndex;
     //整个数据中判断是否已经同步过
     for (int i = 0; i < this.titles.length; i++) {
       if (this.titles[i].youtube == url) {
@@ -187,7 +186,7 @@ class ArticleTitles with ChangeNotifier {
 
   changeSort() {
     if (sortByUnlearned) {
-      titles.sort((a, b) => b.percent.compareTo(a.percent));
+      titles.sort((b, a) => b.percent.compareTo(a.percent));
     } else {
       titles.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     }

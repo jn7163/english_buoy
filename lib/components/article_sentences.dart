@@ -1,17 +1,15 @@
-import 'package:ebuoy/models/word.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:ebuoy/models/article.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
-import '../models/article_titles.dart';
-import '../models/settings.dart';
-
 import 'package:easy_alert/easy_alert.dart';
 
-import 'package:flutter/services.dart';
 import '../models/article.dart';
+import '../models/article_titles.dart';
+import '../models/settings.dart';
 import '../models/word.dart';
 import '../models/sentence.dart';
+
 import './article_richtext.dart';
 import '../functions/article.dart';
 

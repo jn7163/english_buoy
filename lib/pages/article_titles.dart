@@ -71,7 +71,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
             backgroundColor: Colors.red,
             content: Text("This YouTube video don't have any en subtitle!"),
             action: SnackBarAction(
-              textColor: Colors.white,
+              textColor: Theme.of(context).textTheme.headline6.color,
               label: "👌I known",
               onPressed: () {},
             ),
@@ -164,16 +164,11 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
       appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
       drawer: LeftDrawer(),
       endDrawer: RightDrawer(),
-      body: getArticleTitlesBody(),
-
-      /*
       body: RefreshIndicator(
-        displacement: 10,
         onRefresh: refresh,
         child: getArticleTitlesBody(),
         color: mainColor,
       ),
-      */
 
       /*
       floatingActionButton: Visibility(

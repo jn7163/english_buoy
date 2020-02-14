@@ -5,7 +5,7 @@ class Settings with ChangeNotifier {
   bool isJump = false;
   bool isDark = false;
   bool isAutoplay = true;
-  double filertPercent = 0;
+  double filertPercent = 70;
   String filertPercentKey = "filertPercent";
   String isJumpKey = "isJump";
   String isDarkKey = "isDark";

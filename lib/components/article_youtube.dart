@@ -21,7 +21,7 @@ class ArticleYouTube extends StatelessWidget {
           if (d.visibleFraction == 0) article.youtubeController.pause();
         },
         child: Container(
-            color: Colors.black,
+            color: Theme.of(context).primaryColorDark,
             child: SafeArea(
                 child: YoutubePlayer(
               onPlayerInitialized: (controller) =>
@@ -39,11 +39,11 @@ class ArticleYouTube extends StatelessWidget {
                 isLive: false,
                 forceHideAnnotation: false,
               ),
-              videoProgressIndicatorColor: Colors.teal,
-              liveUIColor: Colors.teal,
+              videoProgressIndicatorColor: Theme.of(context).primaryColorLight,
+              liveUIColor: Theme.of(context).primaryColorLight,
               progressColors: ProgressColors(
-                playedColor: Colors.teal,
-                handleColor: Colors.tealAccent,
+                playedColor: Theme.of(context).primaryColorLight,
+                handleColor: Theme.of(context).primaryColorDark,
               ),
             ))));
   }

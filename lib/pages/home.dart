@@ -48,6 +48,7 @@ class HomePageState extends State<HomePage> {
       builder: (context, currentController, child) {
         return Scaffold(
           body: PageView(
+            physics: NeverScrollableScrollPhysics(),
             children: [
               ArticleTitlesPage(),
               ArticlePageViewPage(),

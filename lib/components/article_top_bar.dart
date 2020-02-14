@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ebuoy/models/article.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'article_youtube_avatar.dart';
+import '../models/article.dart';
 
 class ArticleTopBar extends StatelessWidget {
   const ArticleTopBar({Key key, @required this.article}) : super(key: key);
