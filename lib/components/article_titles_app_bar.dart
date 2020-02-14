@@ -65,8 +65,6 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
         IconButton(
           icon: Icon(Icons.sort),
           onPressed: () {
-            ArticleTitles articleTitles =
-                Provider.of<ArticleTitles>(context, listen: false);
             articleTitles.changeSort();
           },
         ),
