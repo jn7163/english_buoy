@@ -5,7 +5,9 @@ class Settings with ChangeNotifier {
   bool isJump = false;
   bool isDark = false;
   bool isAutoplay = true;
+  bool isHideFullMastered = false;
   double filertPercent = 70;
+  String isHideFullMasteredKey = "hideFullMastered";
   String filertPercentKey = "filertPercent";
   String isJumpKey = "isJump";
   String isDarkKey = "isDark";
@@ -18,6 +20,12 @@ class Settings with ChangeNotifier {
       prefs = d;
       getFromLocal();
     });
+  }
+
+  setIsHideFullMastered(bool v) async {
+    await prefs.setBool(isHideFullMasteredKey, v);
+    isHideFullMastered = v;
+    notifyListeners();
   }
 
   setIsAutoplay(bool v) async {
@@ -45,6 +53,7 @@ class Settings with ChangeNotifier {
   }
 
   getFromLocal() async {
+    setIsHideFullMastered(prefs.getBool(isHideFullMasteredKey) ?? false);
     setIsJump(prefs.getBool(isJumpKey) ?? false);
     setIsDark(prefs.getBool(isDarkKey) ?? false);
     setIsAutoplay(prefs.getBool(isAutoplayKey) ?? false);

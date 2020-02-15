@@ -142,11 +142,22 @@ class ArticleTitles with ChangeNotifier {
               d.percent >= settings.filertPercent ||
               d.percent == 0) // show percent 0 used to show loading item
           .toList();
+    //hide 100% aritcle
+    if (settings.isHideFullMastered)
+      filterTitles = filterTitles
+          .where((d) =>
+              d.percent != 100) // show percent 0 used to show loading item
+          .toList();
     notifyListeners();
   }
 
   filterByPercent(double percent) async {
     await settings.setFilertPercent(percent);
+    filter();
+  }
+
+  filterHideMastered(bool b) async {
+    await settings.setIsHideFullMastered(b);
     filter();
   }
 
@@ -188,7 +199,7 @@ class ArticleTitles with ChangeNotifier {
     if (sortByUnlearned) {
       titles.sort((b, a) => b.percent.compareTo(a.percent));
     } else {
-      titles.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      titles.sort((b, a) => b.createdAt.compareTo(a.createdAt));
     }
     sortByUnlearned = !sortByUnlearned;
     filter();

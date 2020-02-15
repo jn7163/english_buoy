@@ -15,18 +15,16 @@ class ConfigFilterByPercent extends StatelessWidget {
       return Column(children: [
         setting.filertPercent > 70
             ? Text("Filter by percent: " +
-                setting.filertPercent.toStringAsFixed(2) +
+                setting.filertPercent.toStringAsFixed(0) +
                 "%")
             : Text("Filter less than 70% show all articles"),
         Slider(
-          label: setting.filertPercent.toStringAsFixed(2) + "%",
-          divisions: 1000,
+          label: setting.filertPercent.toStringAsFixed(0) + "%",
+          divisions: 10,
           min: 70,
           max: 100,
           value: setting.filertPercent,
-          onChanged: (d) {
-            articleTitles.filterByPercent(d);
-          },
+          onChanged: articleTitles.filterByPercent,
         ),
       ]);
       /*
