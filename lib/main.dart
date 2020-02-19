@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
+//import 'package:page_transition/page_transition.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:easy_alert/easy_alert.dart';
 import 'package:provider/provider.dart';
@@ -38,14 +38,14 @@ class Ebuoy extends StatefulWidget {
 
 class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
-  OauthInfo oauthInfo;
+  OauthInfo _oauthInfo;
   ArticleTitles articleTitles;
   Settings settings;
   Controller controller;
   @override
   void initState() {
     super.initState();
-    oauthInfo = OauthInfo();
+    _oauthInfo = OauthInfo();
     articleTitles = ArticleTitles();
     settings = Settings();
     controller = Controller();
@@ -55,7 +55,7 @@ class _EbuoyState extends State<Ebuoy> {
     articleTitles.controller = controller;
 
     //绑定获取列表的函数到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
-    oauthInfo.setAccessTokenCallBack = articleTitles.syncArticleTitles;
+    _oauthInfo.setAccessTokenCallBack = articleTitles.syncArticleTitles;
     initReceiveShare();
   }
 
@@ -96,7 +96,7 @@ class _EbuoyState extends State<Ebuoy> {
           ChangeNotifierProvider(create: (_) => controller),
           ChangeNotifierProvider(create: (_) => Article()),
           ChangeNotifierProvider(create: (_) => Loading()),
-          ChangeNotifierProvider(create: (_) => oauthInfo),
+          ChangeNotifierProvider(create: (_) => _oauthInfo),
           ChangeNotifierProvider(create: (_) => articleTitles),
           ChangeNotifierProvider(create: (_) => settings),
         ],
@@ -115,20 +115,25 @@ class _EbuoyState extends State<Ebuoy> {
   Route getRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/ArticlePageView':
+        return _buildRoute(settings, ArticlePageViewPage());
+      /*
         return PageTransition(
           duration: Duration(milliseconds: 500),
           type: PageTransitionType.rightToLeft,
           child: ArticlePageViewPage(),
           settings: settings,
         );
+        */
       case '/Guid':
-        //return _buildRoute(settings, GuidPage());
+        return _buildRoute(settings, GuidPage());
+      /*
         return PageTransition(
           duration: Duration(milliseconds: 500),
           type: PageTransitionType.rightToLeft,
           child: GuidPage(),
           settings: settings,
         );
+        */
       case '/Waiting':
         return _buildRoute(settings, WaitingPage());
       case '/ArticleTitles':
@@ -136,13 +141,15 @@ class _EbuoyState extends State<Ebuoy> {
       case '/AddArticle':
         return _buildRoute(settings, AddArticlePage());
       case '/Article':
-        // return _buildRoute(settings, ArticlePage(initID: settings.arguments));
+        return _buildRoute(settings, ArticlePage(settings.arguments));
+      /*
         return PageTransition(
           duration: Duration(milliseconds: 500),
           type: PageTransitionType.rightToLeft,
           child: ArticlePage(settings.arguments),
           settings: settings,
         );
+        */
       case '/Sign':
         return _buildRoute(settings, SignInPage());
       default:
@@ -151,7 +158,7 @@ class _EbuoyState extends State<Ebuoy> {
   }
 
   MaterialPageRoute _buildRoute(RouteSettings settings, Widget builder) {
-    return new MaterialPageRoute(
+    return MaterialPageRoute(
       settings: settings,
       builder: (BuildContext context) => builder,
     );

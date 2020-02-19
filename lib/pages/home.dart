@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import './article_titles.dart';
 import 'article_page_view.dart';
 import '../models/controller.dart';
-import '../models/article_titles.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -32,18 +31,12 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    //_articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _controller = Provider.of<Controller>(context, listen: false);
   }
 
-  /*
-  void _onItemTapped(int index) {
-    _controller.setMainSelectedIndex(index);
-  }
-  */
-
   @override
   Widget build(BuildContext context) {
+    // need use Consumer Controller make sure tap new article enter correct article detail
     return Consumer<Controller>(
       builder: (context, currentController, child) {
         return Scaffold(
@@ -52,7 +45,7 @@ class HomePageState extends State<HomePage> {
             children: [
               ArticleTitlesPage(),
               ArticlePageViewPage(),
-              Center(child: Text('Developing')),
+              //Center(child: Text('Developing')),
             ],
             controller: _controller.mainPageController,
             onPageChanged: (index) {},
