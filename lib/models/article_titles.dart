@@ -110,8 +110,8 @@ class ArticleTitles with ChangeNotifier {
     if (newYouTubeCallBack != null) newYouTubeCallBack(result);
   }
 
-  // 根据给出的id，找到在 filterTitles 中的 index
-  findLastNextArticleByID(int id) {
+  // 根据给出的articleID，找到在 filterTitles 中的 前后 articleID
+  List<int> findLastNextArticleByID(int id) {
     int index, lastID, nextID;
     for (int i = 0; i < filterTitles.length; i++) {
       if (filterTitles[i].id == id) {

@@ -32,7 +32,7 @@ class _ArticlePageState extends State<ArticlePage>
   bool wantKeepAlive = true;
   Article article;
   ScrollController _scrollController;
-  ArticleTitles articleTitles;
+  ArticleTitles _articleTitles;
   Settings settings;
   int _articleID;
   bool _loading = false;
@@ -44,14 +44,15 @@ class _ArticlePageState extends State<ArticlePage>
     _scrollController = ScrollController();
     settings = Provider.of<Settings>(context, listen: false);
     article = Article();
-    articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     article.articleID = _articleID;
     //send current setState callBack function to article model
     article.notifyListeners2 = () {
       setState(() {});
     };
-    articleTitles.setInstanceArticles(article);
+    _articleTitles.setInstanceArticles(article);
     loadArticleByID();
+    preload();
   }
 
   @override
@@ -68,11 +69,23 @@ class _ArticlePageState extends State<ArticlePage>
     super.dispose();
   }
 
+  // preload last and next article from server save to local
+  preload() {
+    List<int> result =
+        _articleTitles.findLastNextArticleByID(article.articleID);
+    int lastID = result[0];
+    int nextID = result[1];
+
+    Article preArticle = Article();
+    if (lastID != null) preArticle.getArticleByID(lastID);
+    if (nextID != null) preArticle.getArticleByID(nextID);
+  }
+
   Future loadFromServer() async {
     await article.getArticleByID(article.articleID);
     if (this.mounted) {
       // 更新本地未学单词数
-      articleTitles.setUnlearnedCountByArticleID(
+      _articleTitles.setUnlearnedCountByArticleID(
           article.unlearnedCount, article.articleID);
     }
     _loading = false;
@@ -88,8 +101,8 @@ class _ArticlePageState extends State<ArticlePage>
       setState(() {
         _loading = false;
       });
-      // 这里从server取只是为了更新本地cache,井不马上刷页面
-      loadFromServer();
+      // use preload replace loadFromServer even get from local
+      //loadFromServer();
     } else {
       setState(() {
         loadFromServer();
