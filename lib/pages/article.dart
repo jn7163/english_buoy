@@ -46,6 +46,7 @@ class _ArticlePageState extends State<ArticlePage>
     article = Article();
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     article.articleID = _articleID;
+    //send current setState callBack function to article model
     article.notifyListeners2 = () {
       setState(() {});
     };
@@ -99,7 +100,7 @@ class _ArticlePageState extends State<ArticlePage>
   Widget refreshBody() {
     return Expanded(
         child: RefreshIndicator(
-      onRefresh: () async => await loadFromServer(),
+      onRefresh: loadFromServer,
       child: articleBody(),
       //color: mainColor,
     ));

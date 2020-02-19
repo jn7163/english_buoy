@@ -64,7 +64,6 @@ class Article with ChangeNotifier {
     this.unlearnedCount = json['UnlearnedCount'];
     this.avatar = json['Avatar'];
     this.wordCount = json['WordCount'];
-    notMasteredWord = null;
     notifyListeners2();
   }
 
