@@ -129,7 +129,6 @@ class ArticleSentencesState extends State<ArticleSentences> {
     Duration seekTime = toDuration(time);
     TapGestureRecognizer recognizer = TapGestureRecognizer()
       ..onTap = () {
-        s.highLight = true;
         widget.article.youtubeController.makeSureSeekTo(seekTime);
         setState(() {
           seekTextSpanTapStatus[time] = true;
@@ -243,7 +242,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
     //if play to current sentence
     if (s.highLight) {
       playingStyle = TextStyle(
-        backgroundColor: Colors.teal[100],
+        backgroundColor: Colors.teal[50],
       );
     }
     return ArticleRichText(
