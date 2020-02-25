@@ -77,6 +77,8 @@ class _ArticlePageState extends State<ArticlePage>
   }
 
   routineCheckSentenceHighLight() {
+    print("routineCheckSentenceHighLight article=" +
+        widget._articleID.toString());
     if (article.youtubeController == null) return;
     int currentIndex;
     for (int i = 0; i < article.sentences.length; i++) {
