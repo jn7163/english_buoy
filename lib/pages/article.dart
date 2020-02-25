@@ -55,9 +55,6 @@ class _ArticlePageState extends State<ArticlePage>
     _articleTitles.setInstanceArticles(article);
     loadArticleByID();
     preload();
-
-    _timer = Timer.periodic(const Duration(milliseconds: 800),
-        (t) => routineCheckSentenceHighLight());
   }
 
   @override
@@ -76,7 +73,16 @@ class _ArticlePageState extends State<ArticlePage>
     super.dispose();
   }
 
+  //star check sentence highlight routine
+  initRoutine() {
+    if (_timer == null && article.youtube != "") {
+      _timer = Timer.periodic(const Duration(milliseconds: 800),
+          (t) => routineCheckSentenceHighLight());
+    }
+  }
+
   routineCheckSentenceHighLight() {
+    if (!article.checkSentenceHighlight) return;
     print("routineCheckSentenceHighLight article=" +
         widget._articleID.toString());
     if (article.youtubeController == null) return;
@@ -137,10 +143,10 @@ class _ArticlePageState extends State<ArticlePage>
       // use preload replace loadFromServer even get from local
       //loadFromServer();
     } else {
-      setState(() {
-        loadFromServer();
-      });
+      await loadFromServer();
+      setState(() {});
     }
+    this.initRoutine();
   }
 
   Widget refreshBody() {

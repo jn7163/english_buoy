@@ -13,6 +13,7 @@ import './word.dart';
 import '../store/store.dart';
 
 class Article with ChangeNotifier {
+  bool checkSentenceHighlight = true;
   YoutubePlayerController youtubeController;
   String findWord = ""; //在文章中查找的单词
   int unlearnedCount;
