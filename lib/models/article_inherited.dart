@@ -19,6 +19,7 @@ class ArticleInherited extends InheritedWidget {
   @override
   bool updateShouldNotify(ArticleInherited old) {
     // article 有任何变化都会引起通知, 这点很不好
-    return this.article != old.article;
+    return true;
+    //return this.article != old.article;
   }
 }

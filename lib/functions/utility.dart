@@ -18,3 +18,9 @@ Future<String> getDeviceID() async {
   print('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
   return androidInfo.androidId;
 }
+
+Duration toDuration(String time) {
+  return Duration(
+    milliseconds: (double.parse(time) * 1000).round(),
+  );
+}

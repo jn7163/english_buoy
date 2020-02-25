@@ -12,6 +12,7 @@ import '../models/sentence.dart';
 
 import './article_richtext.dart';
 import '../functions/article.dart';
+import '../functions/utility.dart';
 
 // init text style
 TextStyle bodyTextStyle = TextStyle(
@@ -122,14 +123,13 @@ class ArticleSentencesState extends State<ArticleSentences> {
   }
 
   // 生成修改播放位置的图标
-  TextSpan getSeekTextSpan(BuildContext context, String time) {
+  TextSpan getSeekTextSpan(BuildContext context, String time, Sentence s) {
     if (seekTextSpanTapStatus[time] == null)
       seekTextSpanTapStatus[time] = false;
-    Duration seekTime = Duration(
-      milliseconds: (double.parse(time) * 1000).round(),
-    );
+    Duration seekTime = toDuration(time);
     TapGestureRecognizer recognizer = TapGestureRecognizer()
       ..onTap = () {
+        s.highLight = true;
         widget.article.youtubeController.makeSureSeekTo(seekTime);
         setState(() {
           seekTextSpanTapStatus[time] = true;
@@ -158,7 +158,6 @@ class ArticleSentencesState extends State<ArticleSentences> {
   // 定义应该的 style
   TextStyle _defineStyle(Word word) {
     bool isCommandWord = (word.level != null && word.level != 0); // 是否3000常用
-    var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     bool isSelected =
         (_tapedText.toLowerCase() == word.text.toLowerCase()); // 是否选中
     // 常用高亮色
@@ -224,10 +223,10 @@ class ArticleSentencesState extends State<ArticleSentences> {
   }
 
   // check is the seek button or just blank
-  TextSpan getStar(BuildContext context, String text) {
+  TextSpan getSeekButton(BuildContext context, String text, Sentence s) {
     TextSpan star;
     if (_startExp.hasMatch(text)) {
-      star = getSeekTextSpan(context, text);
+      star = getSeekTextSpan(context, text, s);
     } else {
       star = TextSpan(text: "");
     }
@@ -235,15 +234,22 @@ class ArticleSentencesState extends State<ArticleSentences> {
   }
 
   ArticleRichText buildArticleRichText(Sentence s) {
-    TextSpan star = getStar(context, s.words[0].text);
+    TextSpan star = getSeekButton(context, s.words[0].text, s);
     List<TextSpan> words = s.words.map((d) {
       return getTextSpan(d);
     }).toList();
     words.insert(0, star);
+    TextStyle playingStyle = TextStyle();
+    //if play to current sentence
+    if (s.highLight) {
+      playingStyle = TextStyle(
+        backgroundColor: Colors.teal[100],
+      );
+    }
     return ArticleRichText(
         textSpan: TextSpan(
+          style: playingStyle,
           text: "",
-          //style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
           children: words,
         ),
         sentence: s);

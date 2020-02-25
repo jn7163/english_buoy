@@ -6,6 +6,10 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.01+1.4.01
 
+- Highlight playing sentence
+
+v1.4.01+1.4.01
+
 - lots of bugs fixed
 - Avoid cached video rebuild when adding a new article
 

@@ -36,6 +36,8 @@ class _ArticlePageState extends State<ArticlePage>
   Settings settings;
   int _articleID;
   bool _loading = false;
+  Timer _timer;
+  int _highLightSentenceIndex;
 
   @override
   void initState() {
@@ -53,12 +55,16 @@ class _ArticlePageState extends State<ArticlePage>
     _articleTitles.setInstanceArticles(article);
     loadArticleByID();
     preload();
+
+    _timer = Timer.periodic(const Duration(milliseconds: 800),
+        (t) => routineCheckSentenceHighLight());
   }
 
   @override
   void deactivate() {
     // This pauses video while navigating to next page.
     if (article.youtubeController != null) article.youtubeController.pause();
+    _timer?.cancel();
     super.deactivate();
   }
 
@@ -66,7 +72,32 @@ class _ArticlePageState extends State<ArticlePage>
   void dispose() {
     //为了避免内存泄露，需要调用_controller.dispose
     _scrollController.dispose();
+    _timer?.cancel();
     super.dispose();
+  }
+
+  routineCheckSentenceHighLight() {
+    if (article.youtubeController == null) return;
+    int currentIndex;
+    for (int i = 0; i < article.sentences.length; i++) {
+      if (article.sentences[i]
+          .checkPlayToCurrent(article.youtubeController.value.position)) {
+        currentIndex = i;
+
+        while (i + 1 < article.sentences.length &&
+            article.sentences[i + 1].followHighLight()) {
+          i++;
+        }
+        print("find some set index=" + i.toString());
+        break;
+      }
+    }
+    if (currentIndex != null && _highLightSentenceIndex != currentIndex) {
+      print("find some set index=" + currentIndex.toString());
+      setState(() {
+        _highLightSentenceIndex = currentIndex;
+      });
+    }
   }
 
   // preload last and next article from server save to local
@@ -162,9 +193,6 @@ class _ArticlePageState extends State<ArticlePage>
   Widget build(BuildContext context) {
     super.build(context);
     if (widget._articleID != -1 && widget._articleID != article.articleID) {
-      print("widget._articleID=" + widget._articleID.toString());
-      print("article.articleID=" + article.articleID.toString());
-      print("article.articleID=" + article.title.toString());
       wantKeepAlive = false;
       article.articleID = widget._articleID;
       loadArticleByID().then((d) => wantKeepAlive = true);
