@@ -161,9 +161,6 @@ class ArticleTitles with ChangeNotifier {
     filter();
   }
 
-  // Set 合集, 用于快速查找添加过的单词
-  Set setArticleTitles = Set();
-
   // 啥事都不干, 只是通知
   justNotifyListeners() {
     notifyListeners();
@@ -271,14 +268,12 @@ class ArticleTitles with ChangeNotifier {
     // 新增加的插入到第一位
     //this.titles.insert(0, articleTitle);
     this.titles.add(articleTitle);
-    this.setArticleTitles.add(articleTitle.title);
     print("addByArticle");
     filter();
   }
 
   add(ArticleTitle articleTitle) {
     this.titles.add(articleTitle);
-    this.setArticleTitles.add(articleTitle.title);
   }
 
 // 根据返回的 json 设置到对象

@@ -157,39 +157,27 @@ class ArticleSentencesState extends State<ArticleSentences> {
 
   // 定义应该的 style
   TextStyle _defineStyle(Word word) {
-    bool needLearn = (word.level != null && word.level != 0); // 是否需要掌握
+    bool isCommandWord = (word.level != null && word.level != 0); // 是否3000常用
     var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    bool inArticleTitles = articleTitles.setArticleTitles
-        .contains(word.text.toLowerCase()); // 是否添加
-
     bool isSelected =
         (_tapedText.toLowerCase() == word.text.toLowerCase()); // 是否选中
+    // 常用高亮色
+    this.needLearnTextStyle =
+        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
+    // 非常用的高亮色
+    this.noNeedLearnTextStyle =
+        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorDark);
 
     //根据条件逐步加工修改的样式
     TextStyle processTextStyle = bodyTextStyle;
-
-    if (!isNeedLearn(word)) return bodyTextStyle;
+    // 是常用
+    processTextStyle =
+        isCommandWord ? needLearnTextStyle : noNeedLearnTextStyle;
+    //无需学习的非标准单词
+    if (!isNeedLearn(word)) processTextStyle = bodyTextStyle;
     // 已经学会且没有选中, 不用任何修改
-    if (word.learned == true && !isSelected) return bodyTextStyle;
-    // 必学的高亮色
-    this.needLearnTextStyle =
-        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
-    // 非必学的高亮色
-    this.noNeedLearnTextStyle =
-        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorDark);
-    // 是否必学
-    processTextStyle = needLearn ? needLearnTextStyle : noNeedLearnTextStyle;
-    // 单词作为文章标题添加
-    if (inArticleTitles) {
-      //无需掌握的添加单词高亮为需要学习的颜色
-      processTextStyle = needLearnTextStyle.copyWith(
-        //添加下划线区分
-        decoration: TextDecoration.underline,
-        decorationStyle: TextDecorationStyle.dotted,
-      );
-    }
-    // 一旦选中, 还原本来的样式
-    // 长按选中 显示波浪下划线
+    if (word.learned == true) processTextStyle = bodyTextStyle;
+
     if (isSelected)
       processTextStyle = processTextStyle.copyWith(
           //fontWeight: FontWeight.bold,

@@ -112,13 +112,17 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
       if (articleTitles.filterTitles.length == 0)
         body = Container();
       else
+        /*
+        body = ListWheelScrollView(
+          useMagnifier: true,
+          itemExtent: 80,
+          diameterRatio: 4.0,
+          children: articleTitles.filterTitles.reversed.map((d) {
+            return ArticleTitlesSlidable(articleTitle: d);
+          }).toList(),
+        );
+        */
         body = ScrollablePositionedList.builder(
-          //reverse: true, // new article at the end of list, so need reverse
-          //reverse=true will make init position at bottom need set initialScrollIndex
-          //initialScrollIndex work fine but will make: E/AccessibilityBridge( 1727): Scroll index is out of bounds.
-          //initialScrollIndex: articleTitles.filterTitles.length - 1,
-          //initialAlignment: (articleTitles.filterTitles.length - 1).toDouble(),
-          //physics: const AlwaysScrollableScrollPhysics(),
           itemCount: articleTitles.filterTitles.length,
           itemBuilder: (context, index) {
             return ArticleTitlesSlidable(
