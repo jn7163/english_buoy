@@ -49,9 +49,11 @@ class _ArticlePageState extends State<ArticlePage>
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     article.articleID = _articleID;
     //send current setState callBack function to article model
+    /*
     article.notifyListeners2 = () {
       setState(() {});
     };
+    */
     _articleTitles.setInstanceArticles(article);
     loadArticleByID();
     preload();
@@ -59,6 +61,7 @@ class _ArticlePageState extends State<ArticlePage>
 
   @override
   void deactivate() {
+    debugPrint("ArticlePage deactivate");
     // This pauses video while navigating to next page.
     if (article.youtubeController != null) article.youtubeController.pause();
     _timer?.cancel();
@@ -67,6 +70,7 @@ class _ArticlePageState extends State<ArticlePage>
 
   @override
   void dispose() {
+    debugPrint("ArticlePage dispose");
     //为了避免内存泄露，需要调用_controller.dispose
     _scrollController.dispose();
     _timer?.cancel();
@@ -83,8 +87,7 @@ class _ArticlePageState extends State<ArticlePage>
 
   routineCheckSentenceHighLight() {
     if (!article.checkSentenceHighlight) return;
-    print("routineCheckSentenceHighLight article=" +
-        widget._articleID.toString());
+    // debugPrint("routineCheckSentenceHighLight article=" + widget._articleID.toString());
     if (article.youtubeController == null) return;
     int currentIndex;
     for (int i = 0; i < article.sentences.length; i++) {
