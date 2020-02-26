@@ -4,9 +4,9 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
-v1.4.01+1.4.01
+v1.4.02+1.4.02
 
-- Highlight playing sentence
+- Highlight current playing sentence
 
 v1.4.01+1.4.01
 
