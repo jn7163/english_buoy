@@ -49,11 +49,9 @@ class _ArticlePageState extends State<ArticlePage>
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     article.articleID = _articleID;
     //send current setState callBack function to article model
-    /*
     article.notifyListeners2 = () {
-      setState(() {});
+      if (this.mounted) setState(() {});
     };
-    */
     _articleTitles.setInstanceArticles(article);
     loadArticleByID();
     preload();
