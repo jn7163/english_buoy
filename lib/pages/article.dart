@@ -32,10 +32,12 @@ class _ArticlePageState extends State<ArticlePage>
   bool wantKeepAlive = true;
   Article article;
   ScrollController _scrollController;
-  ArticleTitles articleTitles;
+  ArticleTitles _articleTitles;
   Settings settings;
   int _articleID;
   bool _loading = false;
+  Timer _timer;
+  int _highLightSentenceIndex;
 
   @override
   void initState() {
@@ -44,34 +46,86 @@ class _ArticlePageState extends State<ArticlePage>
     _scrollController = ScrollController();
     settings = Provider.of<Settings>(context, listen: false);
     article = Article();
-    articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     article.articleID = _articleID;
+    //send current setState callBack function to article model
     article.notifyListeners2 = () {
-      setState(() {});
+      if (this.mounted) setState(() {});
     };
-    articleTitles.setInstanceArticles(article);
+    _articleTitles.setInstanceArticles(article);
     loadArticleByID();
+    preload();
   }
 
   @override
   void deactivate() {
+    debugPrint("ArticlePage deactivate");
     // This pauses video while navigating to next page.
     if (article.youtubeController != null) article.youtubeController.pause();
+    _timer?.cancel();
     super.deactivate();
   }
 
   @override
   void dispose() {
+    debugPrint("ArticlePage dispose");
     //为了避免内存泄露，需要调用_controller.dispose
     _scrollController.dispose();
+    _timer?.cancel();
     super.dispose();
+  }
+
+  //star check sentence highlight routine
+  initRoutine() {
+    if (_timer == null && article.youtube != "") {
+      _timer = Timer.periodic(const Duration(milliseconds: 800),
+          (t) => routineCheckSentenceHighLight());
+    }
+  }
+
+  routineCheckSentenceHighLight() {
+    if (!article.checkSentenceHighlight) return;
+    // debugPrint("routineCheckSentenceHighLight article=" + widget._articleID.toString());
+    if (article.youtubeController == null) return;
+    int currentIndex;
+    for (int i = 0; i < article.sentences.length; i++) {
+      if (article.sentences[i]
+          .checkPlayToCurrent(article.youtubeController.value.position)) {
+        currentIndex = i;
+
+        while (i + 1 < article.sentences.length &&
+            article.sentences[i + 1].followHighLight()) {
+          i++;
+        }
+        print("find some set index=" + i.toString());
+        break;
+      }
+    }
+    if (currentIndex != null && _highLightSentenceIndex != currentIndex) {
+      print("find some set index=" + currentIndex.toString());
+      setState(() {
+        _highLightSentenceIndex = currentIndex;
+      });
+    }
+  }
+
+  // preload last and next article from server save to local
+  preload() {
+    List<int> result =
+        _articleTitles.findLastNextArticleByID(article.articleID);
+    int lastID = result[0];
+    int nextID = result[1];
+
+    Article preArticle = Article();
+    if (lastID != null) preArticle.getArticleByID(lastID);
+    if (nextID != null) preArticle.getArticleByID(nextID);
   }
 
   Future loadFromServer() async {
     await article.getArticleByID(article.articleID);
     if (this.mounted) {
       // 更新本地未学单词数
-      articleTitles.setUnlearnedCountByArticleID(
+      _articleTitles.setUnlearnedCountByArticleID(
           article.unlearnedCount, article.articleID);
     }
     _loading = false;
@@ -87,19 +141,19 @@ class _ArticlePageState extends State<ArticlePage>
       setState(() {
         _loading = false;
       });
-      // 这里从server取只是为了更新本地cache,井不马上刷页面
-      loadFromServer();
+      // use preload replace loadFromServer even get from local
+      //loadFromServer();
     } else {
-      setState(() {
-        loadFromServer();
-      });
+      await loadFromServer();
+      setState(() {});
     }
+    this.initRoutine();
   }
 
   Widget refreshBody() {
     return Expanded(
         child: RefreshIndicator(
-      onRefresh: () async => await loadFromServer(),
+      onRefresh: loadFromServer,
       child: articleBody(),
       //color: mainColor,
     ));
@@ -148,9 +202,6 @@ class _ArticlePageState extends State<ArticlePage>
   Widget build(BuildContext context) {
     super.build(context);
     if (widget._articleID != -1 && widget._articleID != article.articleID) {
-      print("widget._articleID=" + widget._articleID.toString());
-      print("article.articleID=" + article.articleID.toString());
-      print("article.articleID=" + article.title.toString());
       wantKeepAlive = false;
       article.articleID = widget._articleID;
       loadArticleByID().then((d) => wantKeepAlive = true);

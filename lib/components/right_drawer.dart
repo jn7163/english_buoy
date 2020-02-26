@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './config_autoplay.dart';
 import './config_dark_theme.dart';
 import './config_filter_by_percent.dart';
+import 'config_hide_full_mastered.dart';
 
 // 右边抽屉
 class RightDrawer extends StatelessWidget {
@@ -24,6 +25,7 @@ class RightDrawer extends StatelessWidget {
             )),
         ConfigDarkTheme(),
         ConfigAutoPlay(),
+        ConfigHideFullMastered(),
         ConfigFilterByPercent(),
         RaisedButton(
           child: const Text('Done'),

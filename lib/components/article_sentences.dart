@@ -12,6 +12,7 @@ import '../models/sentence.dart';
 
 import './article_richtext.dart';
 import '../functions/article.dart';
+import '../functions/utility.dart';
 
 // init text style
 TextStyle bodyTextStyle = TextStyle(
@@ -122,12 +123,10 @@ class ArticleSentencesState extends State<ArticleSentences> {
   }
 
   // 生成修改播放位置的图标
-  TextSpan getSeekTextSpan(BuildContext context, String time) {
+  TextSpan getSeekTextSpan(BuildContext context, String time, Sentence s) {
     if (seekTextSpanTapStatus[time] == null)
       seekTextSpanTapStatus[time] = false;
-    Duration seekTime = Duration(
-      milliseconds: (double.parse(time) * 1000).round(),
-    );
+    Duration seekTime = toDuration(time);
     TapGestureRecognizer recognizer = TapGestureRecognizer()
       ..onTap = () {
         widget.article.youtubeController.makeSureSeekTo(seekTime);
@@ -144,7 +143,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
         bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
     return TextSpan(
         text: " ▷ ",
-        style: seekTextSpanTapStatus[time]
+        style: seekTextSpanTapStatus[time] || s.highLight
             ? playTextStyle.copyWith(fontWeight: FontWeight.bold)
             : playTextStyle,
         recognizer: recognizer);
@@ -157,39 +156,26 @@ class ArticleSentencesState extends State<ArticleSentences> {
 
   // 定义应该的 style
   TextStyle _defineStyle(Word word) {
-    bool needLearn = (word.level != null && word.level != 0); // 是否需要掌握
-    var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    bool inArticleTitles = articleTitles.setArticleTitles
-        .contains(word.text.toLowerCase()); // 是否添加
-
+    bool isCommandWord = (word.level != null && word.level != 0); // 是否3000常用
     bool isSelected =
         (_tapedText.toLowerCase() == word.text.toLowerCase()); // 是否选中
+    // 常用高亮色
+    this.needLearnTextStyle =
+        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
+    // 非常用的高亮色
+    this.noNeedLearnTextStyle =
+        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorDark);
 
     //根据条件逐步加工修改的样式
     TextStyle processTextStyle = bodyTextStyle;
-
-    if (!isNeedLearn(word)) return bodyTextStyle;
+    // 是常用
+    processTextStyle =
+        isCommandWord ? needLearnTextStyle : noNeedLearnTextStyle;
+    //无需学习的非标准单词
+    if (!isNeedLearn(word)) processTextStyle = bodyTextStyle;
     // 已经学会且没有选中, 不用任何修改
-    if (word.learned == true && !isSelected) return bodyTextStyle;
-    // 必学的高亮色
-    this.needLearnTextStyle =
-        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
-    // 非必学的高亮色
-    this.noNeedLearnTextStyle =
-        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorDark);
-    // 是否必学
-    processTextStyle = needLearn ? needLearnTextStyle : noNeedLearnTextStyle;
-    // 单词作为文章标题添加
-    if (inArticleTitles) {
-      //无需掌握的添加单词高亮为需要学习的颜色
-      processTextStyle = needLearnTextStyle.copyWith(
-        //添加下划线区分
-        decoration: TextDecoration.underline,
-        decorationStyle: TextDecorationStyle.dotted,
-      );
-    }
-    // 一旦选中, 还原本来的样式
-    // 长按选中 显示波浪下划线
+    if (word.learned == true) processTextStyle = bodyTextStyle;
+
     if (isSelected)
       processTextStyle = processTextStyle.copyWith(
           //fontWeight: FontWeight.bold,
@@ -236,10 +222,10 @@ class ArticleSentencesState extends State<ArticleSentences> {
   }
 
   // check is the seek button or just blank
-  TextSpan getStar(BuildContext context, String text) {
+  TextSpan getSeekButton(BuildContext context, String text, Sentence s) {
     TextSpan star;
     if (_startExp.hasMatch(text)) {
-      star = getSeekTextSpan(context, text);
+      star = getSeekTextSpan(context, text, s);
     } else {
       star = TextSpan(text: "");
     }
@@ -247,15 +233,22 @@ class ArticleSentencesState extends State<ArticleSentences> {
   }
 
   ArticleRichText buildArticleRichText(Sentence s) {
-    TextSpan star = getStar(context, s.words[0].text);
+    TextSpan star = getSeekButton(context, s.words[0].text, s);
     List<TextSpan> words = s.words.map((d) {
       return getTextSpan(d);
     }).toList();
     words.insert(0, star);
+    TextStyle playingStyle = TextStyle();
+    //if play to current sentence
+    if (s.highLight) {
+      playingStyle = TextStyle(
+        backgroundColor: Colors.teal[50],
+      );
+    }
     return ArticleRichText(
         textSpan: TextSpan(
+          style: playingStyle,
           text: "",
-          //style: Theme.of(context).textTheme.display3, // 没有这个样式,会导致单词点击时错位
           children: words,
         ),
         sentence: s);

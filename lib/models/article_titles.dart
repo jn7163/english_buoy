@@ -110,8 +110,8 @@ class ArticleTitles with ChangeNotifier {
     if (newYouTubeCallBack != null) newYouTubeCallBack(result);
   }
 
-  // 根据给出的id，找到在 filterTitles 中的 index
-  findLastNextArticleByID(int id) {
+  // 根据给出的articleID，找到在 filterTitles 中的 前后 articleID
+  List<int> findLastNextArticleByID(int id) {
     int index, lastID, nextID;
     for (int i = 0; i < filterTitles.length; i++) {
       if (filterTitles[i].id == id) {
@@ -142,6 +142,12 @@ class ArticleTitles with ChangeNotifier {
               d.percent >= settings.filertPercent ||
               d.percent == 0) // show percent 0 used to show loading item
           .toList();
+    //hide 100% aritcle
+    if (settings.isHideFullMastered)
+      filterTitles = filterTitles
+          .where((d) =>
+              d.percent != 100) // show percent 0 used to show loading item
+          .toList();
     notifyListeners();
   }
 
@@ -150,8 +156,10 @@ class ArticleTitles with ChangeNotifier {
     filter();
   }
 
-  // Set 合集, 用于快速查找添加过的单词
-  Set setArticleTitles = Set();
+  filterHideMastered(bool b) async {
+    await settings.setIsHideFullMastered(b);
+    filter();
+  }
 
   // 啥事都不干, 只是通知
   justNotifyListeners() {
@@ -188,7 +196,7 @@ class ArticleTitles with ChangeNotifier {
     if (sortByUnlearned) {
       titles.sort((b, a) => b.percent.compareTo(a.percent));
     } else {
-      titles.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      titles.sort((b, a) => b.createdAt.compareTo(a.createdAt));
     }
     sortByUnlearned = !sortByUnlearned;
     filter();
@@ -260,14 +268,12 @@ class ArticleTitles with ChangeNotifier {
     // 新增加的插入到第一位
     //this.titles.insert(0, articleTitle);
     this.titles.add(articleTitle);
-    this.setArticleTitles.add(articleTitle.title);
     print("addByArticle");
     filter();
   }
 
   add(ArticleTitle articleTitle) {
     this.titles.add(articleTitle);
-    this.setArticleTitles.add(articleTitle.title);
   }
 
 // 根据返回的 json 设置到对象
