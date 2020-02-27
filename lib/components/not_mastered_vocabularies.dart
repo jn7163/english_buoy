@@ -1,37 +1,94 @@
-import 'package:ebuoy/models/article.dart';
-import 'package:ebuoy/components/article_sentences.dart';
+import '../models/article.dart';
+import './article_sentences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/sentence.dart';
 import '../models/word.dart';
 import '../functions/article.dart';
+import 'article_sentences.dart';
+import '../models/article_inherited.dart';
 
-// 文章对应的 youtube 图标或者头像
-class NotMasteredVocabulary extends StatelessWidget {
-  const NotMasteredVocabulary({Key key, @required this.article}) : super(key: key);
-  final Article article;
+class NotMasteredVocabulary extends StatefulWidget {
+  @override
+  NotMasteredVocabularyState createState() => NotMasteredVocabularyState();
+}
+
+class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
+  Article _article;
+  List<Word> _mustLearnWords = List(); // in NESL
+  List<Word> _needLearnWords = List(); // not in NESL
+  List<Word> _allWords;
+  Map<String, Word> _mustLearnUnique = Map();
+  bool _hideSome = false;
+
+  @override
+  initState() {
+    super.initState();
+  }
+
+  //when change aritcle need clear local list
+  reset() {
+    this.clear();
+    _allWords.clear();
+    _hideSome = false;
+  }
+
+  // keep _allWords state, clear other
+  clear() {
+    _mustLearnWords.clear();
+    _needLearnWords.clear();
+    _mustLearnUnique.clear();
+  }
+
+  filterMustNeedWords() {
+    _mustLearnUnique.clear();
+    _article.sentences.forEach((s) {
+      s.words.forEach((w) {
+        // not mastered words
+        if (!w.learned && isNeedLearn(w)) {
+          if (w.level != null &&
+              w.level != 0 &&
+              !_mustLearnUnique.containsKey(w.text.toLowerCase())) {
+            w.belongSentence = s;
+            _mustLearnWords.add(w);
+            _mustLearnUnique[w.text.toLowerCase()] = w;
+          } else if ((w.level == null || w.level == 0) &&
+              !_mustLearnUnique.containsKey(w.text.toLowerCase())) {
+            w.belongSentence = s;
+            _mustLearnWords.add(w);
+            _mustLearnUnique[w.text.toLowerCase()] = w;
+          }
+        }
+      });
+    });
+    // if first init
+    if (_allWords == null) {
+      _allWords = _mustLearnWords + _needLearnWords;
+    } else {
+      // if update words
+      _allWords = updateAllWords(_allWords, _mustLearnWords + _needLearnWords);
+    }
+    if (_allWords.length > 40) {
+      _hideSome = true;
+      _allWords = _allWords.sublist(0, 40);
+    }
+  }
+
+  List<Word> updateAllWords(List<Word> oldWords, List<Word> newWords) {
+    //first update to learned then use new update back
+    oldWords.forEach((d) {
+      d.learned = true;
+      return d;
+    });
+
+    for (int i = 0; i < oldWords.length; i++) {
+      if (_mustLearnUnique.containsKey(oldWords[i].text.toLowerCase()))
+        oldWords[i].learned = false;
+    }
+    return oldWords;
+  }
 
   TableRow getTableRow({Widget one, Widget two, Widget three}) {
-    /*
-    TableRow row = TableRow(children: [
-      Center(
-          child: Text(
-        one,
-        style: Theme.of(context).textTheme.display2,
-      )),
-      Center(
-          child: Text(
-        two,
-        style: Theme.of(context).textTheme.display2,
-      )),
-      Center(
-          child: Text(
-        three,
-        style: Theme.of(context).textTheme.display2,
-      )),
-    ]);
-    return row;
-     */
     double p = 6;
     return TableRow(children: [
       Center(child: Padding(padding: EdgeInsets.all(p), child: one)),
@@ -40,78 +97,86 @@ class NotMasteredVocabulary extends StatelessWidget {
     ]);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    List<Word> mustLearnWords = List(); // in NESL
-    List<String> mustLearnUnique = List();
-    List<Word> needLearnWords = List(); // not in NESL
-    article.sentences.forEach((s) {
-      s.words.forEach((w) {
-        // not mastered words
-        if (!w.learned && isNeedLearn(w)) {
-          if (w.level != null && w.level != 0 && !mustLearnUnique.contains(w.text.toLowerCase())) {
-            w.belongSentence = s;
-            mustLearnWords.add(w);
-            mustLearnUnique.add(w.text.toLowerCase());
-          } else if ((w.level == null || w.level == 0) &&
-              !mustLearnUnique.contains(w.text.toLowerCase())) {
-            w.belongSentence = s;
-            mustLearnWords.add(w);
-            mustLearnUnique.add(w.text.toLowerCase());
-          }
-        }
-      });
-    });
-    List<Word> allWords = mustLearnWords + needLearnWords;
-    TextStyle titleStyle = Theme.of(context).textTheme.display2;
-    TableRow titleRow = getTableRow(
-      one: Text("NGSL", style: titleStyle),
-      two: Text("WORDS(" + allWords.length.toString() + ")", style: titleStyle),
-      three: Text("FIND", style: titleStyle),
+  TableRow getTitleRow() {
+    return getTableRow(
+      one: Text("NGSL", style: bodyTextStyle),
+      two: Text(
+          "words(" +
+              (_mustLearnWords + _needLearnWords).length.toString() +
+              ")",
+          style: bodyTextStyle),
+      three: Text("find", style: bodyTextStyle),
     );
-    bool hideSome = false;
-    if (allWords.length > 100) {
-      hideSome = true;
-      allWords = allWords.sublist(0, 100);
-    }
+  }
 
-    List<TableRow> allWordRows = allWords.map((d) {
-      var sentence = Sentence('', [d]);
-      // double p = 6;
+  List<TableRow> getAllWordRows() {
+    return _allWords.map((d) {
+      Sentence sentence = Sentence('', [d]);
       return getTableRow(
         one: Text(
-          d.level == 0 ? "-" : d.level.toString(),
-          style: Theme.of(context).textTheme.display2,
+          d.level == 0 ? "-" : d.level.toString(), style: bodyTextStyle,
+          //style: Theme.of(context).textTheme.display2,
         ),
         two: ArticleSentences(
-            article: article,
+            article: _article,
             sentences: [sentence],
             crossAxisAlignment: CrossAxisAlignment.baseline),
         three: GestureDetector(
-            onTap: () => Scrollable.ensureVisible(d.belongSentence.c),
+            onTap: () {
+              //跳转到文章中这一句
+              Scrollable.ensureVisible(d.belongSentence.c);
+              _article.setFindWord(d.text);
+              _article.setNotMasteredWord(sentence);
+            },
             child: Icon(
               Icons.find_in_page,
-              color: Color(0xFF5F8A8B),
+              color: Theme.of(context).primaryColorLight,
             )),
       );
     }).toList();
+  }
+
+  List<TableRow> getRenderWordRows() {
+    TableRow titleRow = getTitleRow();
+    List<TableRow> allWordRows = getAllWordRows();
     TableRow moreRow = getTableRow(
-      one: Text("...", style: titleStyle),
-      two: Text("...", style: titleStyle),
-      three: Text("...", style: titleStyle),
+      one: Text("..."),
+      two: Text("..."),
+      three: Text("..."),
     );
 
     List<TableRow> renderWordRows =
         allWordRows.length != 0 ? [titleRow] + allWordRows : allWordRows;
-    if (hideSome) renderWordRows = renderWordRows + [moreRow];
+    if (_hideSome) renderWordRows = renderWordRows + [moreRow];
+    return renderWordRows;
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    print("NotMasteredVocabulary build");
+    List<TableRow> renderWordRows = getRenderWordRows();
     return Table(
-        border: TableBorder.all(color: Colors.teal),
+        border: TableBorder.all(
+            color: Theme.of(context).primaryColorDark, width: 0.4),
         columnWidths: {
           0: IntrinsicColumnWidth(),
           1: FlexColumnWidth(8),
           2: IntrinsicColumnWidth(),
         },
         children: renderWordRows);
+  }
+
+  @override
+  void didChangeDependencies() {
+    print("NotMasteredVocabulary didChangeDependencies");
+    super.didChangeDependencies();
+    // 更换内容时, 重置所有状态
+    if (_article != null &&
+        ArticleInherited.of(context).article.articleID != _article.articleID)
+      this.reset();
+    else
+      this.clear();
+    _article = ArticleInherited.of(context).article;
+    filterMustNeedWords();
   }
 }

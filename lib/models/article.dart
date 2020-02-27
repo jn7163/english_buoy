@@ -1,18 +1,26 @@
 // 文章详情内容
+import 'dart:async';
 import 'dart:convert';
-import 'package:ebuoy/functions/article.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:async';
 
-import './word.dart';
-import 'package:dio/dio.dart';
-import '../store/store.dart';
+import '../functions/article.dart';
 import './sentence.dart';
+import './word.dart';
+import '../store/store.dart';
 
 class Article with ChangeNotifier {
+  bool checkSentenceHighlight = false;
+  YoutubePlayerController youtubeController;
+  String findWord = ""; //在文章中查找的单词
   int unlearnedCount;
   int articleID;
+  Sentence notMasteredWord; // 尚未掌握的table中的单词, 用来滚回去
+  Function notifyListeners2 =
+      () {}; //beacause notifyListeners2 not work, must use callBack replace
 
   // 文章中的文字内容
   // List words = [];
@@ -24,14 +32,31 @@ class Article with ChangeNotifier {
   String avatar;
   int wordCount;
 
+  setNotMasteredWord(Sentence v) {
+    notMasteredWord = v;
+    notifyListeners2();
+  }
+
+  setYouTube(YoutubePlayerController v) {
+    youtubeController = v;
+  }
+
+  setFindWord(String findWord) {
+    this.findWord = findWord;
+    notifyListeners2();
+    // just show 1 seconds
+    Future.delayed(Duration(seconds: 1), () {
+      this.findWord = "";
+      notifyListeners2();
+    });
+  }
+
   // 从 json 中设置
   setFromJSON(Map json) {
     this.articleID = json['id'];
     this.title = json['title'];
     this.youtube = json['Youtube'];
-    // this.words = json['words'].map((d) => Word.fromJson(d)).toList();
     this.sentences = (json['Sentences'] as List).map((d) {
-      // ignore: missing_return
       if (d['Words'] != null) {
         return Sentence.fromJson(d);
       }
@@ -40,23 +65,25 @@ class Article with ChangeNotifier {
     this.unlearnedCount = json['UnlearnedCount'];
     this.avatar = json['Avatar'];
     this.wordCount = json['WordCount'];
-    //notifyListeners();
+    //notifyListeners2();
   }
 
+  /*
   clear() {
     this.youtube = '';
     this.title = '';
     this.sentences.clear();
-    // notifyListeners();
+    // notifyListeners2();
   }
+   */
 
-  saveToLocal(String data) async {
+  setToLocal(String data) async {
     // 登录后存储到临时缓存中
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('article_' + this.articleID.toString(), data);
   }
 
-  Future getFromLocal(int articleID) async {
+  Future<bool> getFromLocal(int articleID) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String data = prefs.getString('article_' + articleID.toString());
     if (data != null) {
@@ -67,13 +94,15 @@ class Article with ChangeNotifier {
   }
 
   // 从服务器获取
-  Future getArticleByID(BuildContext context, int articleID) async {
+  // justUpdateLocal 仅更新本地缓存, 避免延迟导致页面内容错乱
+  Future getArticleByID(int articleID) async {
     this.articleID = articleID;
-    Dio dio = getDio(context);
-    var response = await dio.get(Store.baseURL + "article/" + this.articleID.toString());
+    Dio dio = getDio();
+    var response =
+        await dio.get(Store.baseURL + "article/" + this.articleID.toString());
 
     this.setFromJSON(response.data);
-    saveToLocal(json.encode(response.data));
+    this.setToLocal(json.encode(response.data));
     return response;
   }
 
@@ -81,7 +110,7 @@ class Article with ChangeNotifier {
   computeLearnedPercent() {}
 
   // 计算未掌握单词数并提交
-  Future _putUnlearnedCount(BuildContext context) async {
+  Future _putUnlearnedCount() async {
     if (articleID == null) {
       return null;
     }
@@ -96,11 +125,10 @@ class Article with ChangeNotifier {
       }).toList();
       allWords = List.from(allWords)..addAll(l);
     }
-    debugPrint("unleard words=" + allWords.toSet().toString());
     unlearnedCount = allWords.toSet().length;
     unlearnedCount--;
     // 设置本地的列表
-    Dio dio = getDio(context);
+    Dio dio = getDio();
     var response = await dio.put(Store.baseURL + "article/unlearned_count",
         data: {"article_id": articleID, "unlearned_count": unlearnedCount});
     return response;
@@ -115,7 +143,7 @@ class Article with ChangeNotifier {
         }
       });
     }
-    // notifyListeners();
+    notifyListeners2();
   }
 
 // 增加学习次数
@@ -130,9 +158,9 @@ class Article with ChangeNotifier {
   }
 
   // 记录学习状态
-  Future putLearned(BuildContext context, Word word) async {
+  Future putLearned(Word word) async {
     // 标记所有单词为对应状态, 并通知
     this._setWordIsLearned(word.text, word.learned);
-    return word.putLearned(context).then((d) => _putUnlearnedCount(context));
+    return word.putLearned().then((d) => _putUnlearnedCount());
   }
 }

@@ -1,16 +1,17 @@
 // 文章中的每个文字的结构体
-import './word.dart';
 import 'package:flutter/material.dart';
+import './word.dart';
 
 class Sentence {
-  final String starTime;
+  final String startTime;
   final List<Word> words;
   BuildContext c;
+  bool highlight = false;
 
-  Sentence(this.starTime, this.words);
+  Sentence(this.startTime, this.words);
 
   Sentence.fromJson(Map json)
-      : starTime = json['StarTime'],
+      : startTime = json['StarTime'],
         words = (json['Words'] as List).map((d) {
           Word w = Word.fromJson(d);
           return w;

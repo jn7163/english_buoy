@@ -1,14 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Store {
-  // static const baseURL = "http://10.0.0.11:3004/api/";
-  // static const baseURL = "http://123.176.102.187:3004/api/";
   static const baseURL = "https://english.bigzhu.net/api/";
 }
 
-Dio getDio(BuildContext context) {
+Dio getDio() {
   Dio dio = new Dio();
   // 发送请求前加入 token
   dio.interceptors.add(InterceptorsWrapper(onRequest: (Options options) async {

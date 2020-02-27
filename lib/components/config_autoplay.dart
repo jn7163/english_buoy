@@ -3,12 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import '../models/setting.dart';
+import '../models/settings.dart';
 
 class ConfigAutoPlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<Setting>(builder: (context, setting, child) {
+    return Consumer<Settings>(builder: (context, setting, child) {
       return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Text('Autoplay'),
         Switch(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'base.dart';
 
 Map<int, Color> darkColorMap = {
   50: Color.fromRGBO(40, 40, 40, .1),
@@ -12,14 +13,15 @@ Map<int, Color> darkColorMap = {
   800: Color.fromRGBO(40, 40, 40, .9),
   900: Color.fromRGBO(40, 40, 40, 1),
 };
+/*
 MaterialColor darkMaterialColor = MaterialColor(0xFF282828, darkColorMap);
-
-var darkTextStyle = TextStyle(color: Colors.grey, fontFamily: "NotoSans-Medium");
+var darkTextStyle =
+    TextStyle(color: Colors.grey, fontFamily: "NotoSans-Medium");
 var darkArticleContent = darkTextStyle.copyWith(fontSize: 20); //显示文章正文需要放大文字
 
 var darkTextTheme = TextTheme(
-    headline:
-        darkTextStyle.copyWith(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+    headline: darkTextStyle.copyWith(
+        color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
     // login subtitle 文字
     caption: darkTextStyle,
     // article 列表文字
@@ -35,7 +37,9 @@ var darkTextTheme = TextTheme(
     //非必学单词
     display2: darkArticleContent.copyWith(color: Colors.blueGrey));
 // 控制 app bar 之类的
-var darkPrimaryTextTheme = TextTheme(title: darkTextStyle, button: darkTextStyle);
+var darkPrimaryTextTheme =
+    TextTheme(title: darkTextStyle, button: darkTextStyle);
+
 var darkTheme = ThemeData(
     hoverColor: Colors.red,
     // drawer 的背景颜色
@@ -43,7 +47,8 @@ var darkTheme = ThemeData(
     // youtube 播放器的弹出框背景颜色
     cardColor: Color(0XFF3c3f41),
     // 按钮样式
-    buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary, buttonColor: Colors.grey),
+    buttonTheme: ButtonThemeData(
+        textTheme: ButtonTextTheme.primary, buttonColor: Colors.grey),
     primarySwatch: darkMaterialColor,
     textTheme: darkTextTheme,
     // 列表被选中的高亮颜色
@@ -51,3 +56,15 @@ var darkTheme = ThemeData(
     primaryTextTheme: darkPrimaryTextTheme,
     // 阅读背景色
     scaffoldBackgroundColor: Color(0XFF3c3f41));
+    */
+
+MaterialColor darkMaterialColor = MaterialColor(0xFF282828, darkColorMap);
+ThemeData darkTheme = ThemeData(
+  primarySwatch: darkMaterialColor,
+  primaryColorLight: mainColor[700],
+  primaryColorDark: Colors.black,
+  accentColor: mainColor, // loading 动画的颜色
+  fontFamily: "NotoSans-Medium",
+  scaffoldBackgroundColor: Color(0XFF3c3f41), // 阅读背景色
+);
+

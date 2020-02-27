@@ -12,18 +12,15 @@ class OauthInfoWidget extends StatelessWidget {
         return IconButton(
           icon: Icon(Icons.exit_to_app),
           tooltip: 'Sign',
-          onPressed: () {
-            Navigator.pushNamed(context, '/Sign');
-          },
+          onPressed: () {},
         );
       } else {
         return Padding(
             padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
-              backgroundImage: NetworkImage(oauthInfo.avatarURL == null
-                  ? "https://ebuoydoc.bigzhu.net/assets/img/ic_launcher_APP.png"
-                  : oauthInfo.avatarURL),
-            ));
+                backgroundImage: oauthInfo.avatarURL != null
+                    ? NetworkImage(oauthInfo.avatarURL)
+                    : AssetImage('assets/images/logo.png')));
       }
     });
   }

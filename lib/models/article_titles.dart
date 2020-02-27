@@ -1,36 +1,117 @@
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:easy_alert/easy_alert.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import './article_title.dart';
 import './article.dart';
 import '../store/store.dart';
 import 'package:dio/dio.dart';
-import './setting.dart';
+import './settings.dart';
+import 'controller.dart';
 
 class ArticleTitles with ChangeNotifier {
+  int currentArticleIndex = -1; // current play article index
+  Map instanceArticles = Map(); // keep instance article by it's id
   String searchKey = ''; // 过滤关键字
   List<ArticleTitle> filterTitles = []; // 过滤好的列表
   List<ArticleTitle> titles = [];
-  int selectedArticleID = 0;
   bool sortByUnlearned = true;
+  // 完成添加后的回调
+  Function newYouTubeCallBack;
+  // 滚动到顶部
+  Function scrollToArticleTitle;
+
+  static const String exists = "exists";
+  static const String noSubtitle = "no subtitle";
+  static const String done = "done";
 
   // show article percent
-  Setting setting;
+  Settings settings;
+  Controller controller;
+
+  setInstanceArticles(Article article) {
+    this.instanceArticles[article.articleID] = article;
+    //notifyListeners();
+  }
 
   setSearchKey(String v) {
     searchKey = v;
     filter();
   }
 
-  // init
-  ArticleTitles() {
-    setting = Setting();
+  // EnsureVisible 不支持 ListView 只有用 50 宽度估算的来 scroll 到分享过来的条目
+  bool scrollToSharedItem(String url) {
+    bool hasShared = false;
+    //整个数据中判断是否已经同步过
+    for (int i = 0; i < this.titles.length; i++) {
+      if (this.titles[i].youtube == url) {
+        hasShared = true;
+        break;
+      }
+    }
+    //找到 id
+    if (hasShared) {
+      for (int i = 0; i < this.filterTitles.length; i++) {
+        if (this.filterTitles[i].youtube == url) {
+          //this.selectedArticleID = this.filterTitles[i].id;
+          controller.selectedArticleID = this.filterTitles[i].id;
+          scrollToArticleTitle(this.filterTitles.length - 1 - i);
+          this.justNotifyListeners();
+          break;
+        }
+      }
+    }
+    return hasShared;
   }
 
-  // 根据给出的id，找到在 filterTitles 中的 index
-  findLastNextArticleByID(int id) {
+  Future newYouTube(String url) async {
+    String result;
+    Dio dio = getDio();
+    if (scrollToSharedItem(url)) {
+      result = exists;
+      dio.post(Store.baseURL + "Subtitle", data: {"Youtube": url});
+      return;
+    }
+    this.showLoadingItem();
+    if (scrollToArticleTitle != null) scrollToArticleTitle(0);
+
+    Response response;
+    try {
+      response =
+          await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": url});
+      Article article = Article();
+      // 将新添加的文章添加到缓存中
+      article.setFromJSON(response.data);
+      article.setToLocal(json.encode(response.data));
+      // 设置高亮, 但是不要通知,等待后续来更新
+      this.controller.selectedArticleID = article.articleID;
+      this.removeLoadingItemNoNotify();
+      if (response.data[exists]) {
+        this.justNotifyListeners();
+        result = exists;
+      } else {
+        // 先添加到 titles 加速显示
+        this.addArticleTitleByArticle(article);
+        result = done;
+      }
+      // 只更新本地缓存, 避免下次打开是老的
+      syncArticleTitles(justSetToLocal: true);
+    } on DioError catch (e) {
+      this.removeLoadingItem();
+      if (e.response != null) {
+        if (e.response.data is String) {
+          result = e.message.toString();
+        } else if (e.response.data['error'] == noSubtitle)
+          result = noSubtitle;
+        else
+          throw e;
+      }
+    }
+    if (newYouTubeCallBack != null) newYouTubeCallBack(result);
+  }
+
+  // 根据给出的articleID，找到在 filterTitles 中的 前后 articleID
+  List<int> findLastNextArticleByID(int id) {
     int index, lastID, nextID;
     for (int i = 0; i < filterTitles.length; i++) {
       if (filterTitles[i].id == id) {
@@ -55,31 +136,29 @@ class ArticleTitles with ChangeNotifier {
       filterTitles = filterTitles
           .where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase()))
           .toList();
-    if (setting.fromPercent != "" && setting.toPercent != "")
+    if (settings.filertPercent > 70)
       filterTitles = filterTitles
           .where((d) =>
-              d.percent > double.parse(setting.fromPercent) &&
-              d.percent < double.parse(setting.toPercent))
+              d.percent >= settings.filertPercent ||
+              d.percent == 0) // show percent 0 used to show loading item
+          .toList();
+    //hide 100% aritcle
+    if (settings.isHideFullMastered)
+      filterTitles = filterTitles
+          .where((d) =>
+              d.percent != 100) // show percent 0 used to show loading item
           .toList();
     notifyListeners();
   }
 
-  filterByPercent(String from, String to) async {
-    await setting.setFromPercent(from);
-    await setting.setToPercent(to);
+  filterByPercent(double percent) async {
+    await settings.setFilertPercent(percent);
     filter();
   }
 
-  // Set 合集, 用于快速查找添加过的单词
-  Set setArticleTitles = Set();
-
-  setHighlightArticleNoReset(int id) {
-    this.selectedArticleID = id;
-  }
-
-  setSelectedArticleID(int id) {
-    this.selectedArticleID = id;
-    notifyListeners();
+  filterHideMastered(bool b) async {
+    await settings.setIsHideFullMastered(b);
+    filter();
   }
 
   // 啥事都不干, 只是通知
@@ -88,40 +167,42 @@ class ArticleTitles with ChangeNotifier {
   }
 
   showLoadingItem() {
-    var loadingArticleTitle = ArticleTitle();
+    ArticleTitle loadingArticleTitle = ArticleTitle();
     loadingArticleTitle.id = -1;
-    loadingArticleTitle.title = "loading new youtube article ......";
-    loadingArticleTitle.unlearnedCount = 1;
+    loadingArticleTitle.title = "Loading new youtube article ......";
     loadingArticleTitle.unlearnedCount = 1;
     loadingArticleTitle.wordCount = 1;
-    loadingArticleTitle.deleting = true;
-    loadingArticleTitle.setPercent();
+    loadingArticleTitle.loading = true;
+    loadingArticleTitle.percent = 0;
     loadingArticleTitle.createdAt = DateTime.now();
     loadingArticleTitle.updatedAt = DateTime.now();
-    this.titles.insert(0, loadingArticleTitle);
+    //this.titles.insert(0, loadingArticleTitle);
+    this.titles.add(loadingArticleTitle);
     filter();
   }
 
   removeLoadingItemNoNotify() {
-    this.titles.removeAt(0);
+    //this.titles.removeAt(0);
+    this.titles.removeLast();
   }
 
   removeLoadingItem() {
-    this.titles.removeAt(0);
+    //this.titles.removeAt(0);
+    this.titles.removeLast();
     filter();
   }
 
   changeSort() {
     if (sortByUnlearned) {
-      titles.sort((a, b) => b.percent.compareTo(a.percent));
+      titles.sort((b, a) => b.percent.compareTo(a.percent));
     } else {
-      titles.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      titles.sort((b, a) => b.createdAt.compareTo(a.createdAt));
     }
     sortByUnlearned = !sortByUnlearned;
     filter();
   }
 
-  saveToLocal(String data) async {
+  setToLocal(String data) async {
     // 登录后存储到临时缓存中
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('article_titles', data);
@@ -135,23 +216,20 @@ class ArticleTitles with ChangeNotifier {
     }
   }
 
-  // 和服务器同步
-  Future syncServer(BuildContext context) async {
-    Dio dio = getDio(context);
-    try {
-      var response = await dio.get(Store.baseURL + "article_titles");
-      this.setFromJSON(response.data);
-      // save to local for cache
-      saveToLocal(json.encode(response.data));
-      return response;
-    } on DioError catch (e) {
-      if (e.response != null && e.response.statusCode == 401) {
-      } else {
-        Alert.toast(context, e.message.toString(),
-            position: ToastPosition.bottom, duration: ToastDuration.long);
-      }
-      throw e;
+  syncArticleTitlesIfNoData() {
+    if (this.titles.length == 0) {
+      syncArticleTitles();
     }
+  }
+
+  // 和服务器同步
+  Future syncArticleTitles({bool justSetToLocal = false}) async {
+    Dio dio = getDio();
+    var response = await dio.get(Store.baseURL + "article_titles");
+    if (!justSetToLocal) this.setFromJSON(response.data);
+    // save to local for cache
+    setToLocal(json.encode(response.data));
+    return response;
   }
 
   setUnlearnedCountByArticleID(int unlearnedCount, int articleID) {
@@ -166,7 +244,8 @@ class ArticleTitles with ChangeNotifier {
   }
 
   removeFromList(ArticleTitle articleTitle) {
-    titles.remove(articleTitle);
+    //titles.remove(articleTitle);
+    titles.removeWhere((item) => item.id == articleTitle.id);
     filter();
   }
 
@@ -176,7 +255,7 @@ class ArticleTitles with ChangeNotifier {
     filter();
   }
 
-  addByArticle(Article article) {
+  addArticleTitleByArticle(Article article) {
     ArticleTitle articleTitle = ArticleTitle();
     articleTitle.title = article.title;
     articleTitle.id = article.articleID;
@@ -187,15 +266,14 @@ class ArticleTitles with ChangeNotifier {
     articleTitle.wordCount = article.wordCount;
     articleTitle.setPercent();
     // 新增加的插入到第一位
-    this.titles.insert(0, articleTitle);
-    this.setArticleTitles.add(articleTitle.title);
+    //this.titles.insert(0, articleTitle);
+    this.titles.add(articleTitle);
     print("addByArticle");
     filter();
   }
 
   add(ArticleTitle articleTitle) {
     this.titles.add(articleTitle);
-    this.setArticleTitles.add(articleTitle.title);
   }
 
 // 根据返回的 json 设置到对象
@@ -209,5 +287,12 @@ class ArticleTitles with ChangeNotifier {
       // this.setArticleTitles.add(articleTitle.title);
     });
     filter();
+  }
+
+  int findIndexByArticleID(int articleID) {
+    for (int i = 0; i < this.filterTitles.length; i++) {
+      if (this.filterTitles[i].id == articleID) return i;
+    }
+    return 0;
   }
 }

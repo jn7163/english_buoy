@@ -1,7 +1,7 @@
 // 文章列表
 import 'dart:async';
 
-import 'package:ebuoy/components/article_titles_app_bar.dart';
+import '../components/article_titles_app_bar.dart';
 
 import '../models/loading.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -32,8 +32,8 @@ class WaitingPageState extends State<WaitingPage> {
     youtubeURL = null; //avoid repeating synchronization
     Future.delayed(Duration.zero, () {
       articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-      syncArticleTitles()
-          .then((d) => Navigator.pushNamed(context, '/ArticleTitles', arguments: null));
+      syncArticleTitles().then((d) =>
+          Navigator.pushNamed(context, '/ArticleTitles', arguments: null));
       /*
       // if don't have data, get from server
       if (articleTitles.titles.length == 0) {
@@ -54,7 +54,8 @@ class WaitingPageState extends State<WaitingPage> {
 
   void initReceiveShare() {
     // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    _receiveShareLiveSubscription = ReceiveSharingIntent.getTextStream().listen((String value) {
+    _receiveShareLiveSubscription =
+        ReceiveSharingIntent.getTextStream().listen((String value) {
       receiveShare(value);
       debugPrint("share from app in memory text=" + value);
     }, onError: (err) {
@@ -62,7 +63,6 @@ class WaitingPageState extends State<WaitingPage> {
     });
     // For sharing or opening urls/text coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialText().then((String value) {
-
       receiveShare(value);
     });
   }
@@ -75,7 +75,7 @@ class WaitingPageState extends State<WaitingPage> {
   }
 
   Future syncArticleTitles() async {
-    return articleTitles.syncServer(context).then((d) {}).catchError((e) {
+    return articleTitles.syncArticleTitles().then((d) {}).catchError((e) {
       if (e.response.statusCode == 401) {
         print("must login");
         Navigator.pushNamed(context, '/Sign');
@@ -87,7 +87,8 @@ class WaitingPageState extends State<WaitingPage> {
     return Center(
         child: Container(
             margin: EdgeInsets.only(top: 5.0, left: 5.0, bottom: 5, right: 5),
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Image.asset(
                 'assets/images/logo.png',
                 width: 96.0,
@@ -134,7 +135,8 @@ class WaitingPageState extends State<WaitingPage> {
     Scaffold scaffold = Scaffold(
       appBar: ArticleListsAppBar(),
       body: Consumer<Loading>(builder: (context, allLoading, _) {
-        return ModalProgressHUD(child: getDescription(), inAsyncCall: allLoading.loading);
+        return ModalProgressHUD(
+            child: getDescription(), inAsyncCall: allLoading.loading);
       }),
     );
     return scaffold;

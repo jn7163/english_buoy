@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+//import 'package:page_transition/page_transition.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:easy_alert/easy_alert.dart';
 import 'package:provider/provider.dart';
 import './models/oauth_info.dart';
+import './models/article.dart';
 import './models/loading.dart';
 import './models/article_titles.dart';
-import './models/setting.dart';
-import './models/article_status.dart';
-import './models/youtube.dart';
+import './models/settings.dart';
+import './models/controller.dart';
 
 import './pages/waiting.dart';
 import './pages/article_titles.dart';
@@ -15,6 +16,8 @@ import './pages/article.dart';
 import './pages/sign.dart';
 import './pages/add_article.dart';
 import './pages/guid.dart';
+import './pages/article_page_view.dart';
+import './pages/home.dart';
 
 import './themes/dark.dart';
 import './themes/bright.dart';
@@ -22,41 +25,51 @@ import 'dart:async';
 
 void main() {
   runApp(AlertProvider(
-    child: MyApp(),
+    child: Ebuoy(),
     config: new AlertConfig(ok: "OK", cancel: "CANCEL"),
   ));
   // runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class Ebuoy extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _EbuoyState createState() => _EbuoyState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
-  YouTube youtube;
-  OauthInfo oauthInfo;
-  ArticleStatus articleStatus;
-
+  OauthInfo _oauthInfo;
+  ArticleTitles articleTitles;
+  Settings settings;
+  Controller controller;
   @override
   void initState() {
     super.initState();
-    articleStatus = ArticleStatus();
-    youtube = YouTube();
-    oauthInfo = OauthInfo();
+    _oauthInfo = OauthInfo();
+    articleTitles = ArticleTitles();
+    settings = Settings();
+    controller = Controller();
+    // 绑定 setting 迸去
+    articleTitles.settings = settings;
+    // 绑定 controller 迸去
+    articleTitles.controller = controller;
+
+    //绑定获取列表的函数到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
+    _oauthInfo.setAccessTokenCallBack = articleTitles.syncArticleTitles;
     initReceiveShare();
   }
 
-  void receiveShare(String sharedText) {
+  receiveShare(String sharedText) {
     if (sharedText == null) return;
+    controller.setMainSelectedIndex(0);
     // 收到分享, 设置
-    youtube.set(sharedText);
+    articleTitles.newYouTube(sharedText);
   }
 
   void initReceiveShare() {
     // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen((String value) {
+    _intentDataStreamSubscription =
+        ReceiveSharingIntent.getTextStream().listen((String value) {
       print("shared to run app");
       receiveShare(value);
     }, onError: (err) {
@@ -78,30 +91,49 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    oauthInfo.backFromShared();
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => youtube),
-          ChangeNotifierProvider(create: (_) => articleStatus),
+          ChangeNotifierProvider(create: (_) => controller),
+          ChangeNotifierProvider(create: (_) => Article()),
           ChangeNotifierProvider(create: (_) => Loading()),
-          ChangeNotifierProvider(create: (_) => oauthInfo),
-          ChangeNotifierProvider(create: (_) => ArticleTitles()),
-          ChangeNotifierProvider(create: (_) => Setting()),
+          ChangeNotifierProvider(create: (_) => _oauthInfo),
+          ChangeNotifierProvider(create: (_) => articleTitles),
+          ChangeNotifierProvider(create: (_) => settings),
         ],
-        child: Consumer<Setting>(builder: (context, setting, child) {
+        child: Consumer<Settings>(builder: (context, settings, child) {
           return MaterialApp(
             title: 'English Buoy',
-            theme: setting.isDark ? darkTheme : brightTheme,
-            home: ArticleTitlesPage(),
-            onGenerateRoute: getRoute,
+            theme: brightTheme,
+            darkTheme: darkTheme,
+            themeMode: settings.isDark ? ThemeMode.dark : ThemeMode.light,
+            home: HomePage(),
+            //onGenerateRoute: getRoute,
           );
         }));
   }
 
   Route getRoute(RouteSettings settings) {
     switch (settings.name) {
+      case '/ArticlePageView':
+        return _buildRoute(settings, ArticlePageViewPage());
+      /*
+        return PageTransition(
+          duration: Duration(milliseconds: 500),
+          type: PageTransitionType.rightToLeft,
+          child: ArticlePageViewPage(),
+          settings: settings,
+        );
+        */
       case '/Guid':
         return _buildRoute(settings, GuidPage());
+      /*
+        return PageTransition(
+          duration: Duration(milliseconds: 500),
+          type: PageTransitionType.rightToLeft,
+          child: GuidPage(),
+          settings: settings,
+        );
+        */
       case '/Waiting':
         return _buildRoute(settings, WaitingPage());
       case '/ArticleTitles':
@@ -109,7 +141,15 @@ class _MyAppState extends State<MyApp> {
       case '/AddArticle':
         return _buildRoute(settings, AddArticlePage());
       case '/Article':
-        return _buildRoute(settings, ArticlePage(initID: settings.arguments));
+        return _buildRoute(settings, ArticlePage(settings.arguments));
+      /*
+        return PageTransition(
+          duration: Duration(milliseconds: 500),
+          type: PageTransitionType.rightToLeft,
+          child: ArticlePage(settings.arguments),
+          settings: settings,
+        );
+        */
       case '/Sign':
         return _buildRoute(settings, SignInPage());
       default:
@@ -118,7 +158,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   MaterialPageRoute _buildRoute(RouteSettings settings, Widget builder) {
-    return new MaterialPageRoute(
+    return MaterialPageRoute(
       settings: settings,
       builder: (BuildContext context) => builder,
     );
