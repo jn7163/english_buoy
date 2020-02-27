@@ -9,13 +9,12 @@ class ConfigDarkTheme extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<Settings>(builder: (context, setting, child) {
-      return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text('Dark Mode'),
-        Switch(
+      return SwitchListTile(
           value: setting.isDark,
           onChanged: setting.setIsDark,
-        )
-      ]);
+          title: Text(
+            'Dark Mode',
+          ));
     });
   }
 }

@@ -6,6 +6,10 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.02+1.4.02
 
+- add auto scroll with playing config
+
+v1.4.02+1.4.02
+
 - Highlight current playing sentence
 
 v1.4.01+1.4.01

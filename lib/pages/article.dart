@@ -15,6 +15,7 @@ import '../models/article.dart';
 import '../models/settings.dart';
 import '../models/sentence.dart';
 import '../models/article_inherited.dart';
+import '../models/controller.dart';
 import '../functions/utility.dart';
 
 class TimeSentenceIndex {
@@ -48,6 +49,7 @@ class _ArticlePageState extends State<ArticlePage>
   bool _loading = false;
   Timer _timer;
   int _highlightSentenceIndex;
+  Controller _controller;
   // keep {int timeSecond: [SentenceIndex1, SentenceIndex2, ...]}
   List<TimeSentenceIndex> _timeSentenceIndexs = List();
 
@@ -55,6 +57,8 @@ class _ArticlePageState extends State<ArticlePage>
   void initState() {
     super.initState();
     _articleID = widget._articleID;
+
+    _controller = Provider.of<Controller>(context, listen: false);
     _scrollController = ScrollController();
     settings = Provider.of<Settings>(context, listen: false);
     _article = Article();
@@ -81,7 +85,7 @@ class _ArticlePageState extends State<ArticlePage>
   @override
   void dispose() {
     debugPrint("ArticlePage dispose");
-    //为了避免内存泄露，需要调用_controller.dispose
+    //为了避免内存泄露，需要调用_scrollController.dispose
     _scrollController.dispose();
     _timer?.cancel();
     super.dispose();
@@ -116,6 +120,16 @@ class _ArticlePageState extends State<ArticlePage>
     if (currentIndex != null && _highlightSentenceIndex != currentIndex) {
       print("find some set index=" + currentIndex.toString());
       setState(() {
+        //auto scroll sentence to top
+        // if change page don't run ensureVisible
+        if (settings.isScrollWithPlay &&
+            _controller.mainSelectedIndex == 1 &&
+            _controller.selectedArticleID == _article.articleID) {
+          int sentenceIndex = _timeSentenceIndexs[currentIndex].indexs[0];
+          Scrollable.ensureVisible(_article.sentences[sentenceIndex].c,
+              duration: Duration(milliseconds: 1400), alignment: 0.0);
+        }
+        //alignment: 0.0);
         _highlightSentenceIndex = currentIndex;
       });
     }

@@ -6,7 +6,10 @@ class Settings with ChangeNotifier {
   bool isDark = false;
   bool isAutoplay = true;
   bool isHideFullMastered = false;
+  bool isScrollWithPlay = false;
+
   double filertPercent = 70;
+  String isScrollWithPlayKey = "scrollWithPlay";
   String isHideFullMasteredKey = "hideFullMastered";
   String filertPercentKey = "filertPercent";
   String isJumpKey = "isJump";
@@ -20,6 +23,11 @@ class Settings with ChangeNotifier {
       prefs = d;
       getFromLocal();
     });
+  }
+  setIsScrollWithPlay(bool v) async {
+    await prefs.setBool(isScrollWithPlayKey, v);
+    isScrollWithPlay = v;
+    notifyListeners();
   }
 
   setIsHideFullMastered(bool v) async {
@@ -53,18 +61,11 @@ class Settings with ChangeNotifier {
   }
 
   getFromLocal() async {
+    setIsScrollWithPlay(prefs.getBool(isScrollWithPlayKey) ?? false);
     setIsHideFullMastered(prefs.getBool(isHideFullMasteredKey) ?? false);
     setIsJump(prefs.getBool(isJumpKey) ?? false);
     setIsDark(prefs.getBool(isDarkKey) ?? false);
     setIsAutoplay(prefs.getBool(isAutoplayKey) ?? false);
-
-    /*
-    if (prefs.containsKey(isAutoplayKey))
-      isAutoplay = prefs.getBool(isAutoplayKey);
-    else
-      isAutoplay = true;
-    setIsAutoplay(isAutoplay);
-    */
 
     setFilertPercent(prefs.getDouble(filertPercentKey) ?? 70);
   }

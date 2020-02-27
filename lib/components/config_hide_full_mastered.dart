@@ -10,12 +10,12 @@ class ConfigHideFullMastered extends StatelessWidget {
   Widget build(BuildContext context) {
     ArticleTitles articleTitles =
         Provider.of<ArticleTitles>(context, listen: false);
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text('Hide Mastered'),
-      Switch(
+
+    return SwitchListTile(
         value: articleTitles.settings.isHideFullMastered,
         onChanged: articleTitles.filterHideMastered,
-      )
-    ]);
+        title: Text(
+          'Hide Mastered',
+        ));
   }
 }

@@ -5,15 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/settings.dart';
 
-class ConfigAutoPlay extends StatelessWidget {
+class ConfigScrollWithPlaying extends StatelessWidget {
+  //const ConfigJumpToWord({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Consumer<Settings>(builder: (context, setting, child) {
       return SwitchListTile(
-          value: setting.isAutoplay,
-          onChanged: setting.setIsAutoplay,
+          value: setting.isScrollWithPlay,
+          onChanged: setting.setIsScrollWithPlay,
           title: Text(
-            'Autoplay',
+            'Scroll with playing',
           ));
     });
   }
