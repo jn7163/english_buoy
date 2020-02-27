@@ -13,8 +13,18 @@ import '../components/article_floating_action_button.dart';
 import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/settings.dart';
+import '../models/sentence.dart';
 import '../models/article_inherited.dart';
 import '../functions/utility.dart';
+
+class TimeSentenceIndex {
+  int startSeconds = 0;
+  int endSeconds = 0;
+  List<int> indexs = List();
+  setHighlight(bool highlight, List<Sentence> sentences) {
+    indexs.forEach((i) => sentences[i].highlight = highlight);
+  }
+}
 
 @immutable
 class ArticlePage extends StatefulWidget {
@@ -30,14 +40,16 @@ class ArticlePage extends StatefulWidget {
 class _ArticlePageState extends State<ArticlePage>
     with AutomaticKeepAliveClientMixin {
   bool wantKeepAlive = true;
-  Article article;
+  Article _article;
   ScrollController _scrollController;
   ArticleTitles _articleTitles;
   Settings settings;
   int _articleID;
   bool _loading = false;
   Timer _timer;
-  int _highLightSentenceIndex;
+  int _highlightSentenceIndex;
+  // keep {int timeSecond: [SentenceIndex1, SentenceIndex2, ...]}
+  List<TimeSentenceIndex> _timeSentenceIndexs = List();
 
   @override
   void initState() {
@@ -45,14 +57,14 @@ class _ArticlePageState extends State<ArticlePage>
     _articleID = widget._articleID;
     _scrollController = ScrollController();
     settings = Provider.of<Settings>(context, listen: false);
-    article = Article();
+    _article = Article();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    article.articleID = _articleID;
+    _article.articleID = _articleID;
     //send current setState callBack function to article model
-    article.notifyListeners2 = () {
+    _article.notifyListeners2 = () {
       if (this.mounted) setState(() {});
     };
-    _articleTitles.setInstanceArticles(article);
+    _articleTitles.setInstanceArticles(_article);
     loadArticleByID();
     preload();
   }
@@ -61,7 +73,7 @@ class _ArticlePageState extends State<ArticlePage>
   void deactivate() {
     debugPrint("ArticlePage deactivate");
     // This pauses video while navigating to next page.
-    if (article.youtubeController != null) article.youtubeController.pause();
+    if (_article.youtubeController != null) _article.youtubeController.pause();
     _timer?.cancel();
     super.deactivate();
   }
@@ -77,34 +89,34 @@ class _ArticlePageState extends State<ArticlePage>
 
   //star check sentence highlight routine
   initRoutine() {
-    if (_timer == null && article.youtube != "") {
+    if (_timer == null && _article.youtube != "") {
       _timer = Timer.periodic(const Duration(milliseconds: 800),
           (t) => routineCheckSentenceHighLight());
     }
   }
 
   routineCheckSentenceHighLight() {
-    if (!article.checkSentenceHighlight) return;
-    // debugPrint("routineCheckSentenceHighLight article=" + widget._articleID.toString());
-    if (article.youtubeController == null) return;
+    //if leave this article page no need checkSentenceHighlight
+    if (!_article.checkSentenceHighlight) return;
+    debugPrint("routineCheckSentenceHighLight article=" +
+        widget._articleID.toString());
+    if (_article.youtubeController == null) return;
     int currentIndex;
-    for (int i = 0; i < article.sentences.length; i++) {
-      if (article.sentences[i]
-          .checkPlayToCurrent(article.youtubeController.value.position)) {
+    for (int i = 0; i < _timeSentenceIndexs.length; i++) {
+      int currentSeconds = _article.youtubeController.value.position.inSeconds;
+      // current playing time between start and end then highlight it
+      if (currentSeconds >= _timeSentenceIndexs[i].startSeconds &&
+          currentSeconds < _timeSentenceIndexs[i].endSeconds) {
+        _timeSentenceIndexs[i].setHighlight(true, _article.sentences);
         currentIndex = i;
-
-        while (i + 1 < article.sentences.length &&
-            article.sentences[i + 1].followHighLight()) {
-          i++;
-        }
-        print("find some set index=" + i.toString());
-        break;
-      }
+      } else
+        _timeSentenceIndexs[i].setHighlight(false, _article.sentences);
     }
-    if (currentIndex != null && _highLightSentenceIndex != currentIndex) {
+    // trigger setState if set new highlight sentence
+    if (currentIndex != null && _highlightSentenceIndex != currentIndex) {
       print("find some set index=" + currentIndex.toString());
       setState(() {
-        _highLightSentenceIndex = currentIndex;
+        _highlightSentenceIndex = currentIndex;
       });
     }
   }
@@ -112,7 +124,7 @@ class _ArticlePageState extends State<ArticlePage>
   // preload last and next article from server save to local
   preload() {
     List<int> result =
-        _articleTitles.findLastNextArticleByID(article.articleID);
+        _articleTitles.findLastNextArticleByID(_article.articleID);
     int lastID = result[0];
     int nextID = result[1];
 
@@ -122,11 +134,11 @@ class _ArticlePageState extends State<ArticlePage>
   }
 
   Future loadFromServer() async {
-    await article.getArticleByID(article.articleID);
+    await _article.getArticleByID(_article.articleID);
     if (this.mounted) {
       // 更新本地未学单词数
       _articleTitles.setUnlearnedCountByArticleID(
-          article.unlearnedCount, article.articleID);
+          _article.unlearnedCount, _article.articleID);
     }
     _loading = false;
   }
@@ -135,7 +147,7 @@ class _ArticlePageState extends State<ArticlePage>
     setState(() {
       _loading = true;
     });
-    bool hasLocal = await article.getFromLocal(article.articleID);
+    bool hasLocal = await _article.getFromLocal(_article.articleID);
     if (hasLocal) {
       //如果缓存取到, 就不要更新页面内容, 避免后置更新导致页面跳变
       setState(() {
@@ -147,7 +159,36 @@ class _ArticlePageState extends State<ArticlePage>
       await loadFromServer();
       setState(() {});
     }
+    this.splitSentencesByTime();
     this.initRoutine();
+  }
+
+  //split article sentences by time
+  void splitSentencesByTime() {
+    _timeSentenceIndexs = List();
+    for (int i = 0; i < _article.sentences.length; i++) {
+      String startTime = _article.sentences[i].startTime;
+      if (startTime != "") {
+        int iStartTime = toDuration(startTime).inSeconds;
+        if (_timeSentenceIndexs.length > 0)
+          _timeSentenceIndexs[_timeSentenceIndexs.length - 1].endSeconds =
+              iStartTime;
+        TimeSentenceIndex timeSentenceIndex = TimeSentenceIndex();
+        timeSentenceIndex.startSeconds = iStartTime;
+        timeSentenceIndex.indexs.add(i);
+
+        while (i + 1 < _article.sentences.length &&
+            _article.sentences[i + 1].startTime == "") {
+          i++;
+          timeSentenceIndex.indexs.add(i);
+        }
+        _timeSentenceIndexs.add(timeSentenceIndex);
+      }
+    }
+    //make sure last sentence has endtime
+    _timeSentenceIndexs[_timeSentenceIndexs.length - 1].endSeconds =
+        _timeSentenceIndexs[_timeSentenceIndexs.length - 1].startSeconds +
+            10000;
   }
 
   Widget refreshBody() {
@@ -167,7 +208,7 @@ class _ArticlePageState extends State<ArticlePage>
         dismissible: true,
         child: Column(children: [
           ArticleYouTube(
-            article: article,
+            article: _article,
           ),
           refreshBody()
         ]),
@@ -175,25 +216,25 @@ class _ArticlePageState extends State<ArticlePage>
   }
 
   Widget articleBody() {
-    if (article.title == null) return Container();
+    if (_article.title == null) return Container();
     return SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         controller: _scrollController,
         child: Column(children: [
-          ArticleTopBar(article: article),
+          ArticleTopBar(article: _article),
           NotMasteredVocabulary(),
           Padding(
               padding: EdgeInsets.all(5),
               child: ArticleSentences(
-                  article: article, sentences: article.sentences)),
+                  article: _article, sentences: _article.sentences)),
         ]));
   }
 
   @override
   updateKeepAlive() {
     super.updateKeepAlive();
-    if (widget._articleID != article.articleID) {
-      article.articleID = widget._articleID;
+    if (widget._articleID != _article.articleID) {
+      _article.articleID = widget._articleID;
       loadArticleByID();
     }
   }
@@ -201,15 +242,15 @@ class _ArticlePageState extends State<ArticlePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (widget._articleID != -1 && widget._articleID != article.articleID) {
+    if (widget._articleID != -1 && widget._articleID != _article.articleID) {
       wantKeepAlive = false;
-      article.articleID = widget._articleID;
+      _article.articleID = widget._articleID;
       loadArticleByID().then((d) => wantKeepAlive = true);
     }
 
     print("build article");
     return ArticleInherited(
-        article: this.article,
+        article: this._article,
         child: Scaffold(
             body: body(), floatingActionButton: ArticleFloatingActionButton()));
   }

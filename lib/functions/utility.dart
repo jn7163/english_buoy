@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:device_info/device_info.dart';
+//import 'package:device_info/device_info.dart';
 
 Widget getSpinkitProgressIndicator(BuildContext context) {
   return SpinKitRipple(
@@ -9,6 +9,7 @@ Widget getSpinkitProgressIndicator(BuildContext context) {
   );
 }
 
+/*
 Future<String> getDeviceID() async {
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
@@ -18,6 +19,7 @@ Future<String> getDeviceID() async {
   print('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
   return androidInfo.androidId;
 }
+*/
 
 Duration toDuration(String time) {
   return Duration(
