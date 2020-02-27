@@ -143,7 +143,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
         bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
     return TextSpan(
         text: " ▷ ",
-        style: seekTextSpanTapStatus[time] || s.highLight
+        style: seekTextSpanTapStatus[time] || s.highlight
             ? playTextStyle.copyWith(fontWeight: FontWeight.bold)
             : playTextStyle,
         recognizer: recognizer);
@@ -240,7 +240,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
     words.insert(0, star);
     TextStyle playingStyle = TextStyle();
     //if play to current sentence
-    if (s.highLight) {
+    if (s.highlight) {
       playingStyle = TextStyle(
         backgroundColor: Colors.teal[50],
       );
