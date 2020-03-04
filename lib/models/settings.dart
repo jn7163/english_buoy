@@ -60,12 +60,12 @@ class Settings with ChangeNotifier {
     await prefs.setDouble(filertPercentKey, v);
   }
 
-  getFromLocal() async {
-    setIsScrollWithPlay(prefs.getBool(isScrollWithPlayKey) ?? false);
-    setIsHideFullMastered(prefs.getBool(isHideFullMasteredKey) ?? false);
-    setIsJump(prefs.getBool(isJumpKey) ?? false);
-    setIsDark(prefs.getBool(isDarkKey) ?? false);
-    setIsAutoplay(prefs.getBool(isAutoplayKey) ?? false);
-    setFilertPercent(prefs.getDouble(filertPercentKey) ?? 70);
+  Future getFromLocal() async {
+    isScrollWithPlay = prefs.getBool(isScrollWithPlayKey) ?? false;
+    isHideFullMastered = (prefs.getBool(isHideFullMasteredKey) ?? false);
+    isJump = prefs.getBool(isJumpKey) ?? false;
+    isDark = prefs.getBool(isDarkKey) ?? false;
+    isAutoplay = prefs.getBool(isAutoplayKey) ?? false;
+    filertPercent = prefs.getDouble(filertPercentKey) ?? filertPercent;
   }
 }

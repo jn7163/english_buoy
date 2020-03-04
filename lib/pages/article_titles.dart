@@ -36,6 +36,9 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   initState() {
     super.initState();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+
+    //make sure already load
+    //if (settings.filertPercent == 70) await settings.getFromLocal();
     _articleTitles.getFromLocal();
     oauthInfo = Provider.of<OauthInfo>(context, listen: false);
     oauthInfo.backFromShared();

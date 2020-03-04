@@ -24,11 +24,15 @@ class ArticleTitles with ChangeNotifier {
   static const String exists = "exists";
   static const String noSubtitle = "no subtitle";
   static const String done = "done";
-
+  SharedPreferences _prefs;
   // show article percent
   Settings settings;
   Controller controller;
-
+  ArticleTitles() {
+    SharedPreferences.getInstance().then((d) {
+      _prefs = d;
+    });
+  }
   setInstanceArticles(Article article) {
     this.instanceArticles[article.articleID] = article;
     //notifyListeners();
@@ -202,15 +206,14 @@ class ArticleTitles with ChangeNotifier {
     filter();
   }
 
-  setToLocal(String data) async {
+  setToLocal(String data) {
     // 登录后存储到临时缓存中
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('article_titles', data);
+    _prefs.setString('article_titles', data);
   }
 
   getFromLocal() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String data = prefs.getString('article_titles');
+    if (_prefs == null) _prefs = await SharedPreferences.getInstance();
+    String data = _prefs.getString('article_titles');
     if (data != null) {
       this.setFromJSON(json.decode(data));
     }
