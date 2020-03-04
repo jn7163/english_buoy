@@ -66,7 +66,6 @@ class Settings with ChangeNotifier {
     setIsJump(prefs.getBool(isJumpKey) ?? false);
     setIsDark(prefs.getBool(isDarkKey) ?? false);
     setIsAutoplay(prefs.getBool(isAutoplayKey) ?? false);
-
     setFilertPercent(prefs.getDouble(filertPercentKey) ?? 70);
   }
 }

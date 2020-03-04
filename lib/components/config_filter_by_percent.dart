@@ -6,50 +6,54 @@ import 'package:provider/provider.dart';
 import '../models/settings.dart';
 import '../models/article_titles.dart';
 
-class ConfigFilterByPercent extends StatelessWidget {
+class ConfigFilterByPercent extends StatefulWidget {
+  @override
+  ConfigFilterByPercentState createState() => ConfigFilterByPercentState();
+}
+
+class ConfigFilterByPercentState extends State<ConfigFilterByPercent> {
+  Settings _settings;
+  ArticleTitles articleTitles;
+  @override
+  void initState() {
+    articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    _settings = Settings();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    ArticleTitles articleTitles =
-        Provider.of<ArticleTitles>(context, listen: false);
-    return Consumer<Settings>(builder: (context, setting, child) {
-      return Column(children: [
-        setting.filertPercent > 70
-            ? Text("Filter by percent: " +
-                setting.filertPercent.toStringAsFixed(0) +
-                "%")
-            : Text("Filter less than 70% show all articles"),
-        Slider(
-          label: setting.filertPercent.toStringAsFixed(0) + "%",
-          divisions: 30,
-          min: 70,
-          max: 100,
-          value: setting.filertPercent,
-          onChanged: articleTitles.filterByPercent,
-        ),
-      ]);
-      /*
-      return Row(children: [
-        Flexible(
-            child: Padding(
-                padding: EdgeInsets.all(30),
-                child: TextField(
-                  controller: TextEditingController(text: from),
-                  onChanged: setting.setFromPercent,
-                  decoration: new InputDecoration(labelText: "From"),
-                  keyboardType: TextInputType.number,
-                ))),
-        Text("Percent"),
-        Flexible(
-            child: Padding(
-                padding: EdgeInsets.all(30),
-                child: TextField(
-                  controller: TextEditingController(text: to),
-                  onChanged: setting.setToPercent,
-                  decoration: new InputDecoration(labelText: "To"),
-                  keyboardType: TextInputType.number,
-                ))),
-      ]);
-      */
-    });
+    return FutureBuilder(
+        future: _settings.getFromLocal(),
+        builder: (BuildContext context, _) {
+          return Column(children: [
+            _settings.filertPercent > 70
+                ? Text("Filter by percent: " +
+                    _settings.filertPercent.toStringAsFixed(0) +
+                    "%")
+                : Text("Filter less than 70% show all articles"),
+            Slider(
+              label: _settings.filertPercent.toStringAsFixed(0) + "%",
+              divisions: 30,
+              min: 70,
+              max: 100,
+              //value: articleTitles.settings.filertPercent,
+              value: _settings.filertPercent,
+              //onChanged: articleTitles.filterByPercent,
+              onChanged: (double newValue) {
+                setState(() {
+                  _settings.setFilertPercent(newValue);
+                });
+              },
+            ),
+            RaisedButton(
+              child: const Text('Done'),
+              onPressed: () {
+                articleTitles.filterByPercent(_settings.filertPercent);
+                Navigator.of(context).pop();
+              },
+            )
+          ]);
+        });
   }
 }

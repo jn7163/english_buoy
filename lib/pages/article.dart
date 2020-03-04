@@ -102,8 +102,7 @@ class _ArticlePageState extends State<ArticlePage>
   routineCheckSentenceHighLight() {
     //if leave this article page no need checkSentenceHighlight
     if (!_article.checkSentenceHighlight) return;
-    debugPrint("routineCheckSentenceHighLight article=" +
-        widget._articleID.toString());
+    //debugPrint("routineCheckSentenceHighLight article=" + widget._articleID.toString());
     if (_article.youtubeController == null) return;
     int currentIndex;
     for (int i = 0; i < _timeSentenceIndexs.length; i++) {
@@ -121,10 +120,27 @@ class _ArticlePageState extends State<ArticlePage>
       print("find some set index=" + currentIndex.toString());
       setState(() {
         //auto scroll sentence to top
-        // if change page don't run ensureVisible
+        // if slide to another page,  last page ensureVisible will pull back to last page, so just current page can ensureVisible
+        // if video pause don't run
+        //print("settings.isScrollWithPlay=" +
+        //    settings.isScrollWithPlay.toString());
+        //print("_controller.mainSelectedIndex=" +
+        //    _controller.mainSelectedIndex.toString());
+        //print("_article.youtubeController.value.isPlaying=" +
+        //    _article.youtubeController.value.isPlaying.toString());
+        //print("_controller.selectedArticleID == _article.articleID " +
+        //    (_controller.selectedArticleID == _article.articleID).toString());
+
+        debugPrint("article=" + widget._articleID.toString());
+        print("_controller.selectedArticleID=" +
+            _controller.selectedArticleID.toString());
+        print("_article.articleID=" + _article.articleID.toString());
+
         if (settings.isScrollWithPlay &&
             _controller.mainSelectedIndex == 1 &&
-            _controller.selectedArticleID == _article.articleID) {
+            _controller.selectedArticleID == _article.articleID &&
+            _article.youtubeController.value.isPlaying) {
+          print("run ensureVisible");
           int sentenceIndex = _timeSentenceIndexs[currentIndex].indexs[0];
           Scrollable.ensureVisible(_article.sentences[sentenceIndex].c,
               duration: Duration(milliseconds: 1400), alignment: 0.0);

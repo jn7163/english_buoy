@@ -11,7 +11,6 @@ import '../components/left_drawer.dart';
 
 import '../models/article_titles.dart';
 import '../models/oauth_info.dart';
-import '../models/settings.dart';
 
 import '../functions/utility.dart';
 import '../themes/base.dart';
@@ -32,13 +31,10 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
-  Settings settings;
   OauthInfo oauthInfo;
   @override
   initState() {
     super.initState();
-
-    settings = Provider.of<Settings>(context, listen: false);
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _articleTitles.getFromLocal();
     oauthInfo = Provider.of<OauthInfo>(context, listen: false);

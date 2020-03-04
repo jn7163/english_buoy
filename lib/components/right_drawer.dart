@@ -29,12 +29,6 @@ class RightDrawer extends StatelessWidget {
         ConfigScrollWithPlaying(),
         ConfigHideFullMastered(),
         ConfigFilterByPercent(),
-        RaisedButton(
-          child: const Text('Done'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        )
       ],
     )));
   }

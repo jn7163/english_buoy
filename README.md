@@ -1,11 +1,12 @@
-# ebuoy
+# English Buoy
 
 Learn English by reading YouTube subtitle article.
 
 ## Version
 
-v1.4.02+1.4.02
+v1.4.03+1.4.03
 
+- speedup filter by percent slider
 - add auto scroll with playing config
 
 v1.4.02+1.4.02

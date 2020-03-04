@@ -14,6 +14,7 @@ class Controller with ChangeNotifier {
   }
 
   setSelectedArticleID(int id) {
+    debugPrint("setSelectedArticleID=" + id.toString());
     this.selectedArticleID = id;
     //notifyListeners will make articleTitlesPage rebuild
     //notifyListeners();
