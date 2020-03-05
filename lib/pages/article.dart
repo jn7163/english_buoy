@@ -179,12 +179,13 @@ class _ArticlePageState extends State<ArticlePage>
     });
     bool hasLocal = await _article.getFromLocal(_article.articleID);
     if (hasLocal) {
-      //如果缓存取到, 就不要更新页面内容, 避免后置更新导致页面跳变
       setState(() {
         _loading = false;
       });
       // use preload replace loadFromServer even get from local
-      //loadFromServer();
+      loadFromServer().then((d) {
+        setState(() {});
+      });
     } else {
       await loadFromServer();
       setState(() {});

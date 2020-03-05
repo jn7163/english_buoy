@@ -68,6 +68,20 @@ class Article with ChangeNotifier {
     //notifyListeners2();
   }
 
+  updateLocal() {
+    this.setToLocal(jsonEncode(this));
+  }
+
+  // trans to json string
+  Map<String, dynamic> toJson() => {
+        'id': this.articleID,
+        'title': this.title,
+        'Youtube': this.youtube,
+        'Sentences': this.sentences,
+        'UnlearnedCount': this.unlearnedCount,
+        'Avatar': this.avatar,
+        'WordCount': this.wordCount,
+      };
   /*
   clear() {
     this.youtube = '';
@@ -161,6 +175,8 @@ class Article with ChangeNotifier {
   Future putLearned(Word word) async {
     // 标记所有单词为对应状态, 并通知
     this._setWordIsLearned(word.text, word.learned);
-    return word.putLearned().then((d) => _putUnlearnedCount());
+    var d = await word.putLearned();
+    _putUnlearnedCount();
+    return d;
   }
 }

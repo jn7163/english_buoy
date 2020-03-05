@@ -85,6 +85,8 @@ class ArticleSentencesState extends State<ArticleSentences> {
         var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
         articleTitles.setUnlearnedCountByArticleID(
             widget.article.unlearnedCount, widget.article.articleID);
+        //save to local
+        widget.article.updateLocal();
       }
       ..onTap = (i) {
         // 避免长按的同时触发
