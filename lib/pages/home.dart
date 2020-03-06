@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './article_titles.dart';
+import 'explorer.dart';
 import 'article_page_view.dart';
 import '../models/controller.dart';
 
@@ -45,6 +46,8 @@ class HomePageState extends State<HomePage> {
             children: [
               ArticleTitlesPage(),
               ArticlePageViewPage(),
+              ExplorerPage(),
+
               //Center(child: Text('Developing')),
             ],
             controller: _controller.mainPageController,

@@ -8,6 +8,7 @@ import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
 import '../components/right_drawer.dart';
 import '../components/left_drawer.dart';
+import '../models/controller.dart';
 
 import '../models/article_titles.dart';
 import '../models/oauth_info.dart';
@@ -32,10 +33,12 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
   OauthInfo oauthInfo;
+  Controller _controller;
   @override
   initState() {
     super.initState();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    _controller = Provider.of<Controller>(context, listen: false);
 
     //make sure already load
     //if (settings.filertPercent == 70) await settings.getFromLocal();
@@ -111,16 +114,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
       if (articleTitles.filterTitles.length == 0)
         body = Container();
       else
-        /*
-        body = ListWheelScrollView(
-          useMagnifier: true,
-          itemExtent: 80,
-          diameterRatio: 4.0,
-          children: articleTitles.filterTitles.reversed.map((d) {
-            return ArticleTitlesSlidable(articleTitle: d);
-          }).toList(),
-        );
-        */
         body = ScrollablePositionedList.builder(
           itemCount: articleTitles.filterTitles.length,
           itemBuilder: (context, index) {
@@ -172,17 +165,12 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         child: getArticleTitlesBody(),
         color: mainColor,
       ),
-
-      /*
-      floatingActionButton: Visibility(
-          visible: _articleTitles.titles.length > 10 ? false : true,
-          child: FloatingActionButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/Guid');
-            },
-            child: Icon(Icons.help_outline),
-          )),
-          */
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _controller.setMainSelectedIndex(3);
+        },
+        child: Icon(Icons.explore),
+      ),
     );
   }
 }

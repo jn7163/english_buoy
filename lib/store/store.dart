@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Store {
   static const baseURL = "https://english.bigzhu.net/api/";
+  //static const baseURL = "http://192.168.43.231:3004/api/";
 }
 
 Dio getDio() {

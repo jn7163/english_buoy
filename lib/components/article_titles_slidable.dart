@@ -54,6 +54,12 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                 });
                 _controller.setMainSelectedIndex(1);
                 int i = articleTitles.findIndexByArticleID(articleTitle.id);
+                if (i == -1) {
+                  //use shared flow
+                  _controller.setMainSelectedIndex(0);
+                  articleTitles.newYouTube(articleTitle.youtube);
+                  print("explore");
+                }
                 print("onTap open i=" + i.toString());
                 _controller.setPageSelectedIndex(i);
               },

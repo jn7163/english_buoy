@@ -296,6 +296,6 @@ class ArticleTitles with ChangeNotifier {
     for (int i = 0; i < this.filterTitles.length; i++) {
       if (this.filterTitles[i].id == articleID) return i;
     }
-    return 0;
+    return -1;
   }
 }
