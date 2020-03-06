@@ -9,6 +9,7 @@ import './models/loading.dart';
 import './models/article_titles.dart';
 import './models/settings.dart';
 import './models/controller.dart';
+import './models/global.dart';
 
 import './pages/waiting.dart';
 import './pages/article_titles.dart';
@@ -93,6 +94,7 @@ class _EbuoyState extends State<Ebuoy> {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
+          Provider<Global>(create: (_) => Global()),
           ChangeNotifierProvider(create: (_) => controller),
           ChangeNotifierProvider(create: (_) => Article()),
           ChangeNotifierProvider(create: (_) => Loading()),

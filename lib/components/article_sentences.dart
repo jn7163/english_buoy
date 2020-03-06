@@ -9,6 +9,7 @@ import '../models/article_titles.dart';
 import '../models/settings.dart';
 import '../models/word.dart';
 import '../models/sentence.dart';
+import '../models/global.dart';
 
 import './article_richtext.dart';
 import '../functions/article.dart';
@@ -34,6 +35,7 @@ class ArticleSentences extends StatefulWidget {
 }
 
 class ArticleSentencesState extends State<ArticleSentences> {
+  Global _global;
   Map seekTextSpanTapStatus = Map<String, bool>();
 
   RegExp _startExp = RegExp(r"00[0-9]+\.[0-9]+00");
@@ -41,7 +43,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
   String _lastTapedText = ''; // 上次点击的文本
-  Settings settings;
+  Settings _settings;
 
   // 必学的高亮色
   TextStyle needLearnTextStyle;
@@ -51,7 +53,8 @@ class ArticleSentencesState extends State<ArticleSentences> {
   @override
   initState() {
     super.initState();
-    settings = Provider.of<Settings>(context, listen: false);
+    _settings = Provider.of<Settings>(context, listen: false);
+    _global = Provider.of<Global>(context, listen: false);
   }
 
   int _getIDByTitle(String title) {
@@ -80,6 +83,8 @@ class ArticleSentencesState extends State<ArticleSentences> {
         setState(() {
           word.learned = learned;
         });
+        //update global word status
+        _global.words[word.text.toLowerCase()] = word;
         // set all sentences word to this state
         await widget.article.putLearned(word); //重新计算文章未掌握单词数
         var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
@@ -112,7 +117,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
           // 已经在这个单词页, 就不要跳转了
           if (_lastTapedText.toLowerCase() == word.text.toLowerCase() &&
               word.text.toLowerCase() != widget.article.title.toLowerCase() &&
-              settings.isJump) {
+              _settings.isJump) {
             int id = _getIDByTitle(word.text);
             if (id != 0) {
               Navigator.pushNamed(context, '/Article', arguments: id);
@@ -192,8 +197,15 @@ class ArticleSentencesState extends State<ArticleSentences> {
     return processTextStyle;
   }
 
+  keepWordHasSameStat(Word word) {
+    if (_global.words.containsKey(word.text.toLowerCase()))
+      word.learned = _global.words[word.text.toLowerCase()].learned;
+    return word;
+  }
+
 // 组装为需要的 textSpan
   TextSpan getTextSpan(Word word) {
+    word = keepWordHasSameStat(word);
     if (word.text == "\n" || _startExp.hasMatch(word.text)) {
       return TextSpan(text: "");
     }

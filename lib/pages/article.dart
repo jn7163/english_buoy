@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_widgets/flutter_widgets.dart';
 
 import '../components/article_sentences.dart';
 import '../components/article_top_bar.dart';
@@ -55,6 +55,7 @@ class _ArticlePageState extends State<ArticlePage>
 
   @override
   void initState() {
+    print("ArticlePage initState");
     super.initState();
     _articleID = widget._articleID;
 
@@ -232,7 +233,7 @@ class _ArticlePageState extends State<ArticlePage>
   }
 
   Widget body() {
-    return ModalProgressHUD(
+    ModalProgressHUD hud = ModalProgressHUD(
         opacity: 1,
         progressIndicator: getSpinkitProgressIndicator(context),
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -244,6 +245,12 @@ class _ArticlePageState extends State<ArticlePage>
           refreshBody()
         ]),
         inAsyncCall: _loading);
+    return VisibilityDetector(
+        key: Key(_article.articleID.toString()),
+        onVisibilityChanged: (d) {
+          if (d.visibleFraction == 1) setState(() {});
+        },
+        child: hud);
   }
 
   Widget articleBody() {
@@ -263,6 +270,7 @@ class _ArticlePageState extends State<ArticlePage>
 
   @override
   updateKeepAlive() {
+    print("PageView updateKeepAlive");
     super.updateKeepAlive();
     if (widget._articleID != _article.articleID) {
       _article.articleID = widget._articleID;
