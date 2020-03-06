@@ -6,7 +6,7 @@ class Settings with ChangeNotifier {
   bool isDark = false;
   bool isAutoplay = true;
   bool isHideFullMastered = false;
-  bool isScrollWithPlay = false;
+  bool isScrollWithPlay = true;
 
   double filertPercent = 70;
   String isScrollWithPlayKey = "scrollWithPlay";
@@ -61,7 +61,7 @@ class Settings with ChangeNotifier {
   }
 
   Future getFromLocal() async {
-    isScrollWithPlay = prefs.getBool(isScrollWithPlayKey) ?? false;
+    isScrollWithPlay = prefs.getBool(isScrollWithPlayKey) ?? true;
     isHideFullMastered = (prefs.getBool(isHideFullMasteredKey) ?? false);
     isJump = prefs.getBool(isJumpKey) ?? false;
     isDark = prefs.getBool(isDarkKey) ?? false;

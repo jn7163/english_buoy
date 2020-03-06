@@ -4,10 +4,13 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.08+1.4.08
+
 v1.4.07+1.4.07
 
+- make sure the same word in the different article show the same status
 - speedup filter by percent slider
-- add auto scroll with playing config
+- add auto-scroll with playing config
 
 v1.4.02+1.4.02
 
