@@ -228,11 +228,28 @@ class ArticleTitles with ChangeNotifier {
   // 和服务器同步
   Future syncArticleTitles({bool justSetToLocal = false}) async {
     Dio dio = getDio();
-    var response = await dio.get(Store.baseURL + "article_titles");
-    if (!justSetToLocal) this.setFromJSON(response.data);
-    // save to local for cache
-    setToLocal(json.encode(response.data));
-    return response;
+
+    try {
+      var response = await dio.get(Store.baseURL + "article_titles");
+
+      if (!justSetToLocal) this.setFromJSON(response.data);
+      // save to local for cache
+      setToLocal(json.encode(response.data));
+      return response;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        //need relogin
+        print(e.response.data);
+        print(e.response.statusCode);
+        if (e.response.statusCode == 401) throw e;
+        //print(e.response.headers);
+        //print(e.response.request);
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        print(e.request);
+        print(e.message);
+      }
+    }
   }
 
   setUnlearnedCountByArticleID(int unlearnedCount, int articleID) {

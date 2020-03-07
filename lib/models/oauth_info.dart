@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../store/sign.dart';
@@ -10,7 +11,7 @@ class OauthInfo with ChangeNotifier {
   String avatarURL;
   GoogleSignIn _googleSignIn;
   GoogleSignInAccount _currentUser;
-  Function setAccessTokenCallBack;
+  Future Function() setAccessTokenCallBack;
 
   OauthInfo() {
     // set callback to _googleSignIn
@@ -72,7 +73,8 @@ class OauthInfo with ChangeNotifier {
     this.name = name;
     this.avatarURL = avatarURL;
     await _setToShared();
-    setAccessTokenCallBack();
+    setAccessTokenCallBack().catchError((_) => this.signIn());
+
     notifyListeners();
   }
 
@@ -83,7 +85,7 @@ class OauthInfo with ChangeNotifier {
       this.setAccessToken(prefs.getString('accessToken'), this.email,
           prefs.getString('name'), prefs.getString('avatarURL'));
       //已经登录就同步列表
-      return setAccessTokenCallBack();
+      return setAccessTokenCallBack().catchError((_) => this.signIn());
     } else {
       return this.signIn();
     }

@@ -6,6 +6,7 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.09+1.4.09
 
+- fix check login bug
 - adjust explorer page
 
 v1.4.08+1.4.08
