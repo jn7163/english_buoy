@@ -38,7 +38,7 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           Text(""),
-          Text("version: 1.3.0")
+          Text("version: 1.4.08")
         ],
       );
     }));

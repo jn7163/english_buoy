@@ -4,10 +4,7 @@ import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'dart:async';
 
-import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
-import '../components/right_drawer.dart';
-import '../components/left_drawer.dart';
 import '../models/controller.dart';
 import '../models/explorer.dart';
 
@@ -26,7 +23,6 @@ class ExplorerPageState extends State<ExplorerPage>
   @override
   bool get wantKeepAlive => true;
   Explorer _articleTitles;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
@@ -77,22 +73,27 @@ class ExplorerPageState extends State<ExplorerPage>
   Widget build(BuildContext context) {
     super.build(context);
     print("build ArticleTitlesPage");
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
-      drawer: LeftDrawer(),
-      endDrawer: RightDrawer(),
-      body: RefreshIndicator(
-        onRefresh: refresh,
-        child: getArticleTitlesBody(),
-        color: mainColor,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _controller.setMainSelectedIndex(0);
+    return WillPopScope(
+        onWillPop: () async {
+          if (_controller.mainSelectedIndex == 3) {
+            _controller.setMainSelectedIndex(0);
+            return false;
+          } else
+            return true;
         },
-        child: Icon(Icons.arrow_back),
-      ),
-    );
+        child: SafeArea(
+            child: Scaffold(
+          body: RefreshIndicator(
+            onRefresh: refresh,
+            child: getArticleTitlesBody(),
+            color: mainColor,
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              _controller.setMainSelectedIndex(0);
+            },
+            child: Icon(Icons.arrow_back),
+          ),
+        )));
   }
 }

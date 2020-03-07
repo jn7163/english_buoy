@@ -42,12 +42,12 @@ class HomePageState extends State<HomePage> {
       builder: (context, currentController, child) {
         return Scaffold(
           body: PageView(
+            //disable scroll
             physics: NeverScrollableScrollPhysics(),
             children: [
               ArticleTitlesPage(),
               ArticlePageViewPage(),
               ExplorerPage(),
-
               //Center(child: Text('Developing')),
             ],
             controller: _controller.mainPageController,
