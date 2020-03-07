@@ -4,7 +4,13 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.09+1.4.09
+
+- adjust explorer page
+
 v1.4.08+1.4.08
+
+- add explorer
 
 v1.4.07+1.4.07
 

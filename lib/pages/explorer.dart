@@ -22,7 +22,7 @@ class ExplorerPageState extends State<ExplorerPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  Explorer _articleTitles;
+  Explorer _explorer;
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
@@ -30,13 +30,14 @@ class ExplorerPageState extends State<ExplorerPage>
   @override
   initState() {
     super.initState();
-    _articleTitles = Provider.of<Explorer>(context, listen: false);
+    _explorer = Provider.of<Explorer>(context, listen: false);
     _controller = Provider.of<Controller>(context, listen: false);
-    syncArticleTitles();
+    _explorer.getFromLocal();
+    syncExplorer();
   }
 
-  Future syncArticleTitles() async {
-    return _articleTitles.syncArticleTitles();
+  Future syncExplorer() async {
+    return _explorer.syncExplorer();
   }
 
   Widget getArticleTitlesBody() {
@@ -65,7 +66,7 @@ class ExplorerPageState extends State<ExplorerPage>
   }
 
   Future refresh() async {
-    await syncArticleTitles();
+    await syncExplorer();
     return;
   }
 

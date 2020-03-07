@@ -33,6 +33,10 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
   @override
   Widget build(BuildContext context) {
     ArticleTitle articleTitle = widget.articleTitle;
+    String percent = articleTitle.percent.toStringAsFixed(
+        articleTitle.percent.truncateToDouble() == articleTitle.percent
+            ? 0
+            : 1);
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
@@ -63,14 +67,12 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                 print("onTap open i=" + i.toString());
                 _controller.setPageSelectedIndex(i);
               },
-              leading: Text(
-                articleTitle.percent.toStringAsFixed(
-                        articleTitle.percent.truncateToDouble() ==
-                                articleTitle.percent
-                            ? 0
-                            : 1) +
-                    "%",
-              ),
+              // percent in explorer is 0, no need show
+              leading: percent == "0"
+                  ? null
+                  : Text(
+                      percent + "%",
+                    ),
               title: Text(articleTitle.title), // 用的 TextTheme.subhead
             )),
         secondaryActions: [
