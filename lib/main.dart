@@ -24,6 +24,7 @@ import './pages/home.dart';
 import './themes/dark.dart';
 import './themes/bright.dart';
 import 'dart:async';
+import './store/wordwise.dart';
 
 void main() {
   runApp(AlertProvider(
@@ -47,6 +48,7 @@ class _EbuoyState extends State<Ebuoy> {
   @override
   void initState() {
     super.initState();
+    openDB();
     _oauthInfo = OauthInfo();
     articleTitles = ArticleTitles();
     settings = Settings();

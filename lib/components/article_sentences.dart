@@ -10,6 +10,7 @@ import '../models/settings.dart';
 import '../models/word.dart';
 import '../models/sentence.dart';
 import '../models/global.dart';
+import '../store/wordwise.dart';
 
 import './article_richtext.dart';
 import '../functions/article.dart';
@@ -24,8 +25,10 @@ class ArticleSentences extends StatefulWidget {
       {Key key,
       @required this.article,
       @required this.sentences,
+      this.needWordWise = true,
       this.crossAxisAlignment = CrossAxisAlignment.start})
       : super(key: key);
+  final bool needWordWise;
   final Article article; // 用于计算文章的未掌握数目
   final List<Sentence> sentences; // 需要渲染的多条句子
   final CrossAxisAlignment crossAxisAlignment; // 句子的位置
@@ -85,6 +88,12 @@ class ArticleSentencesState extends State<ArticleSentences> {
         });
         //update global word status
         _global.words[word.text.toLowerCase()] = word;
+
+        print("word.learned=$word.learned");
+        if (word.learned == false) print("run getDefinitionByWord");
+        await getDefinitionByWord(word.text.toLowerCase());
+        setState(() {});
+
         // set all sentences word to this state
         await widget.article.putLearned(word); //重新计算文章未掌握单词数
         var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
@@ -214,13 +223,21 @@ class ArticleSentencesState extends State<ArticleSentences> {
     TextSpan subscript = TextSpan(); // 显示该单词查询次数的下标
 
     //需要学习的单词
-    if (word.learned == false && hasLetter(word.text) && word.text.length > 1) {
-      //有查询下标则显示
-      if (word.count != 0) {
-        subscript = TextSpan(
-            text: word.count.toString(),
-            style: wordStyle.copyWith(fontSize: 12)); // 数字样式和原本保持一致, 只是变小
+    if (word.learned == false && isNeedLearn(word)) {
+      String shortDef = "";
+      if (word.count != 0) shortDef = word.count.toString();
+      if (Store.wordwiseMap[word.text.toLowerCase()] == null) {
+        getDefinitionByWord(word.text.toLowerCase());
+      } else {
+        if (widget.needWordWise)
+          shortDef =
+              "-" + Store.wordwiseMap[word.text.toLowerCase()] + " " + shortDef;
       }
+
+      subscript = TextSpan(
+          text: shortDef,
+          style: wordStyle.copyWith(fontSize: 12)); // 下标样式和原本保持一致, 只是变小
+
     }
 
     return TextSpan(text: _getBlank(word.text), children: [
@@ -230,7 +247,10 @@ class ArticleSentencesState extends State<ArticleSentences> {
               text: word.text,
               style: wordStyle,
               recognizer: _getTapRecognizer(word))
-          : TextSpan(text: word.text, style: wordStyle),
+          : TextSpan(
+              text: word.text,
+              style: wordStyle,
+              recognizer: _getTapRecognizer(word)),
       subscript,
     ]);
   }

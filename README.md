@@ -4,20 +4,24 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.10+1.4.10
+
+- Word wise
+
 v1.4.09+1.4.09
 
-- fix check login bug
-- adjust explorer page
+- Fix check login bug
+- Adjust explorer page
 
 v1.4.08+1.4.08
 
-- add explorer
+- Add explorer
 
 v1.4.07+1.4.07
 
-- make sure the same word in the different article show the same status
-- speedup filter by percent slider
-- add auto-scroll with playing config
+- Make sure the same word in the different article show the same status
+- Speedup filter by percent slider
+- Add auto-scroll with playing config
 
 v1.4.02+1.4.02
 

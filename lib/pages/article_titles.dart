@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'dart:async';
-import 'package:dio/dio.dart';
 
 import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';

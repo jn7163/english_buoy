@@ -120,6 +120,7 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
         two: ArticleSentences(
             article: _article,
             sentences: [sentence],
+            needWordWise: false,
             crossAxisAlignment: CrossAxisAlignment.baseline),
         three: GestureDetector(
             onTap: () {

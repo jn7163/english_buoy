@@ -7,7 +7,7 @@ class Store {
 }
 
 Dio getDio() {
-  Dio dio = new Dio();
+  Dio dio = Dio();
   // 发送请求前加入 token
   dio.interceptors.add(InterceptorsWrapper(onRequest: (Options options) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -17,7 +17,7 @@ Dio getDio() {
   }, onError: (DioError e) {
     // Do something with response error
     print(e.toString());
-    throw e;
+    return e;
   }));
 
   return dio;
