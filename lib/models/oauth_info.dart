@@ -9,7 +9,7 @@ class OauthInfo with ChangeNotifier {
   String email;
   String name;
   String avatarURL;
-  bool loading;
+  bool loading = false;
   GoogleSignIn _googleSignIn;
   GoogleSignInAccount _currentUser;
   Future Function() setAccessTokenCallBack;

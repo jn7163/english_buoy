@@ -32,7 +32,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
-  OauthInfo oauthInfo;
+  OauthInfo _oauthInfo;
   Controller _controller;
   @override
   initState() {
@@ -43,10 +43,24 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     //make sure already load
     //if (settings.filertPercent == 70) await settings.getFromLocal();
     _articleTitles.getFromLocal();
-    oauthInfo = Provider.of<OauthInfo>(context, listen: false);
+    _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
     //设置回调
     _articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
     _articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;
+    _oauthInfo.setAccessTokenCallBack = this.syncArticleTitles;
+    _oauthInfo.backFromShared();
+  }
+
+  showInfo(String info) {
+    final snackBar = SnackBar(
+      backgroundColor: mainColor,
+      content: Text(
+        info,
+        textAlign: TextAlign.center,
+      ),
+      //duration: Duration(milliseconds: 500),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   //添加新的youtube以后的处理回调
@@ -54,57 +68,40 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     print("newYouTubeCallBack result=" + result);
     switch (result) {
       case ArticleTitles.exists:
-        {
-          final snackBar = SnackBar(
-            backgroundColor: mainColor,
-            content: Text(
-              "Already exists",
-              textAlign: TextAlign.center,
-            ),
-            //duration: Duration(milliseconds: 500),
-          );
-          _scaffoldKey.currentState.showSnackBar(snackBar);
-        }
+        this.showInfo("Article already exists");
         break;
       case ArticleTitles.noSubtitle:
-        {
-          final snackBar = SnackBar(
-            backgroundColor: Colors.red,
-            content: Text("This YouTube video don't have any en subtitle!"),
-            action: SnackBarAction(
-              textColor: Theme.of(context).textTheme.headline6.color,
-              label: "👌I known",
-              onPressed: () {},
-            ),
-            duration: Duration(minutes: 1),
-          );
-          _scaffoldKey.currentState.showSnackBar(snackBar);
-        }
+        this.showInfo("This YouTube video don't have any en subtitle!");
         break;
       case ArticleTitles.done:
-        {
-          final snackBar = SnackBar(
-            backgroundColor: mainColor,
-            content: Text(
-              "Add success",
-              textAlign: TextAlign.center,
-            ),
-            //duration: Duration(milliseconds: 500),
-          );
-          _scaffoldKey.currentState.showSnackBar(snackBar);
-        }
+        this.showInfo("Add success");
         break;
       default:
-        {
-          print("Something wrong result=" + result);
-        }
+        this.showInfo("Something wrong: " + result);
     }
   }
 
   Future syncArticleTitles() async {
-    return _articleTitles
-        .syncArticleTitles()
-        .catchError((_) => oauthInfo.signIn());
+    return _articleTitles.syncArticleTitles()
+        //.catchError((_) => oauthInfo.signIn());
+        .catchError((e) {
+      String errorInfo = "";
+      if (isAccessTokenError(e)) {
+        errorInfo = "Login expired";
+        _oauthInfo.signIn();
+      } else
+        errorInfo = e.message;
+
+      final snackBar = SnackBar(
+        backgroundColor: mainColor,
+        content: Text(
+          errorInfo,
+          textAlign: TextAlign.center,
+        ),
+      );
+      _scaffoldKey.currentState.showSnackBar(snackBar);
+      ;
+    });
   }
 
   Widget getArticleTitlesBody() {

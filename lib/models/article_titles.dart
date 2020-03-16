@@ -102,12 +102,10 @@ class ArticleTitles with ChangeNotifier {
     } on DioError catch (e) {
       this.removeLoadingItem();
       if (e.response != null) {
-        if (e.response.data is String) {
-          result = e.message.toString();
-        } else if (e.response.data['error'] == noSubtitle)
-          result = noSubtitle;
+        if (e.response.data is String)
+          result = e.message.toString() + ": " + e.response.data;
         else
-          throw e;
+          result = e.response.data['error'];
       }
     }
     if (newYouTubeCallBack != null) newYouTubeCallBack(result);
@@ -227,27 +225,11 @@ class ArticleTitles with ChangeNotifier {
   // 和服务器同步
   Future syncArticleTitles({bool justSetToLocal = false}) async {
     print("syncArticleTitles");
-    try {
-      var response = await Store.dio.get(Store.baseURL + "article_titles");
-
-      if (!justSetToLocal) this.setFromJSON(response.data);
-      // save to local for cache
-      setToLocal(json.encode(response.data));
-      return response;
-    } on DioError catch (e) {
-      if (e.response != null) {
-        //need relogin
-        print(e.response.data);
-        print(e.response.statusCode);
-        if (e.response.statusCode == 401) throw e;
-        //print(e.response.headers);
-        //print(e.response.request);
-      } else {
-        // Something happened in setting up or sending the request that triggered an Error
-        print(e.request);
-        print(e.message);
-      }
-    }
+    Response response = await Store.dio.get(Store.baseURL + "article_titles");
+    if (!justSetToLocal) this.setFromJSON(response.data);
+    // save to local for cache
+    setToLocal(json.encode(response.data));
+    return response;
   }
 
   setUnlearnedCountByArticleID(int unlearnedCount, int articleID) {

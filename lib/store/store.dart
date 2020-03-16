@@ -32,6 +32,6 @@ class Store {
 
   static recreateDio() {
     _dio = null;
-    print(dio.options.headers);
+    print(dio.toString());
   }
 }

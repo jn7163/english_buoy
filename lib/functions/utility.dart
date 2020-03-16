@@ -26,3 +26,17 @@ Duration toDuration(String time) {
     milliseconds: (double.parse(time) * 1000).round(),
   );
 }
+
+bool isAccessTokenError(dynamic e) {
+  if (e.response != null) {
+    if (e.response.statusCode == 401) return true;
+  }
+  //print(e.response.headers);
+  //print(e.response.request);
+  else {
+    // Something happened in setting up or sending the request that triggered an Error
+    print(e.request);
+    print(e.message);
+  }
+  return false;
+}

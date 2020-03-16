@@ -55,14 +55,14 @@ class _EbuoyState extends State<Ebuoy> {
     _articleTitles = ArticleTitles();
 
     //绑定获取列表的函数到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
-    _oauthInfo.setAccessTokenCallBack = _articleTitles.syncArticleTitles;
+    //_oauthInfo.setAccessTokenCallBack = _articleTitles.syncArticleTitles;
     _settings = Settings();
     _controller = Controller();
     // 绑定 setting 迸去
     _articleTitles.settings = _settings;
     // 绑定 controller 迸去
     _articleTitles.controller = _controller;
-    _oauthInfo.backFromShared();
+    //_oauthInfo.backFromShared();
     initReceiveShare();
   }
 
