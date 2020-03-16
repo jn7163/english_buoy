@@ -33,12 +33,11 @@ class ArticleTitle with ChangeNotifier {
 
   // 删除文章
   Future deleteArticle() async {
-    Dio dio = getDio();
     print('deleteArticle: ' + this.id.toString());
 
     try {
-      var response =
-          await dio.delete(Store.baseURL + "article/" + this.id.toString());
+      var response = await Store.dio
+          .delete(Store.baseURL + "article/" + this.id.toString());
       return response.data;
     } finally {
       //allLoading.set(false);

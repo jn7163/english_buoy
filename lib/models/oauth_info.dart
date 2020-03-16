@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../store/sign.dart';
+import '../store/store.dart';
+import '../store/shared_preferences.dart';
 
 class OauthInfo with ChangeNotifier {
   String accessToken;
   String email;
   String name;
   String avatarURL;
+  bool loading;
   GoogleSignIn _googleSignIn;
   GoogleSignInAccount _currentUser;
   Future Function() setAccessTokenCallBack;
 
   OauthInfo() {
-    // set callback to _googleSignIn
     _googleSignIn = GoogleSignIn(
       scopes: <String>[
         'profile',
@@ -22,88 +22,69 @@ class OauthInfo with ChangeNotifier {
     );
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       _currentUser = account;
-      if (_currentUser != null) {
-        _handleGetContact();
-      }
-    });
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
-      if (account != null) {
-        account.authentication
-            .then((GoogleSignInAuthentication authentication) {
-          // google 用户注册到服务器后, 记录 token
-          putAccount(account, authentication).then((d) {
-            this.setAccessToken(authentication.accessToken, account.email,
-                account.displayName, account.photoUrl);
-          });
-        });
-      }
+      if (_currentUser != null) handleGetContact();
     });
   }
 
-  Future _handleGetContact() async {
-    _currentUser.authentication
-        .then((GoogleSignInAuthentication authentication) {
-      // google 用户注册到服务器后, 记录 token
-      putAccount(_currentUser, authentication).then((d) {
-        this.setAccessToken(authentication.accessToken, _currentUser.email,
-            _currentUser.displayName, _currentUser.photoUrl);
-      });
-    });
+  signoDone() {
+    setAccessTokenCallBack();
+    this.loading = false;
+    notifyListeners();
   }
 
-  Future switchUser() async {
-    try {
-      await _googleSignIn.disconnect();
-    } catch (error) {
-      print(error);
-    }
-    return signIn();
+  handleGetContact() async {
+    GoogleSignInAuthentication authentication =
+        await _currentUser.authentication;
+    //put user info to server
+    await putAccount(_currentUser, authentication);
+    this.setToShared(authentication.accessToken, _currentUser.email,
+        _currentUser.displayName, _currentUser.photoUrl);
+    this.signoDone();
+  }
+
+  switchUser() async {
+    await _googleSignIn.disconnect();
+    signIn();
   }
 
   Future signIn() async {
     print("signIn");
+    this.loading = true;
+    notifyListeners();
     return _googleSignIn.signIn();
   }
 
-  setAccessToken(
-      String accessToken, String email, String name, String avatarURL) async {
+  // set login info to shared
+  setToShared(String accessToken, String email, String name, String avatarURL) {
     // 如果从未登录转换到登录, 那么返回需要跳转
     this.accessToken = accessToken;
     this.email = email;
     this.name = name;
     this.avatarURL = avatarURL;
-    await _setToShared();
-    setAccessTokenCallBack().catchError((_) => this.signIn());
-
-    notifyListeners();
-  }
-
-  Future backFromShared() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    this.email = prefs.getString('email');
-    if (this.email != null) {
-      this.setAccessToken(prefs.getString('accessToken'), this.email,
-          prefs.getString('name'), prefs.getString('avatarURL'));
-      //已经登录就同步列表
-      return setAccessTokenCallBack().catchError((_) => this.signIn());
-    } else {
-      return this.signIn();
-    }
-  }
-
-  _setToShared() async {
-    // 登录后存储到临时缓存中
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs
+    Store.prefs
       ..setString('accessToken', this.accessToken)
       ..setString('email', this.email)
       ..setString('name', this.name)
       ..setString('avatarURL', this.avatarURL);
+    // make sure dio use new access token
+    Store.recreateDio();
   }
 
-  _removeShared() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs
+  backFromShared() async {
+    if (Store.prefs == null) await initSharedPreferences();
+    this.email = Store.prefs.getString('email');
+    this.accessToken = Store.prefs.getString('accessToken');
+    this.name = Store.prefs.getString('name');
+    this.avatarURL = Store.prefs.getString('avatarURL');
+    // if is logined, run callback to get articlelist
+    if (this.accessToken != null)
+      this.signoDone();
+    else
+      this.signIn();
+  }
+
+  removeFromShared() async {
+    Store.prefs
       ..remove('accessToken')
       ..remove('email')
       ..remove('name')
@@ -113,7 +94,6 @@ class OauthInfo with ChangeNotifier {
   signOut() async {
     await _googleSignIn.disconnect();
     this.email = null;
-    _removeShared();
-    notifyListeners();
+    removeFromShared();
   }
 }

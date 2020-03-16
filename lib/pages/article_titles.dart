@@ -44,7 +44,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     //if (settings.filertPercent == 70) await settings.getFromLocal();
     _articleTitles.getFromLocal();
     oauthInfo = Provider.of<OauthInfo>(context, listen: false);
-    oauthInfo.backFromShared();
     //设置回调
     _articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
     _articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;

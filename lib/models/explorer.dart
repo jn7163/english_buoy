@@ -18,8 +18,7 @@ class Explorer with ChangeNotifier {
   }
   // 和服务器同步
   Future syncExplorer() async {
-    Dio dio = getDio();
-    var response = await dio.get(Store.baseURL + _key);
+    var response = await Store.dio.get(Store.baseURL + _key);
     this.setFromJSON(response.data);
     setToLocal(json.encode(response.data));
     return response;

@@ -70,10 +70,9 @@ class ArticleTitles with ChangeNotifier {
 
   Future newYouTube(String url) async {
     String result;
-    Dio dio = getDio();
     if (scrollToSharedItem(url)) {
       result = exists;
-      dio.post(Store.baseURL + "Subtitle", data: {"Youtube": url});
+      Store.dio.post(Store.baseURL + "Subtitle", data: {"Youtube": url});
       return;
     }
     this.showLoadingItem();
@@ -81,8 +80,8 @@ class ArticleTitles with ChangeNotifier {
 
     Response response;
     try {
-      response =
-          await dio.post(Store.baseURL + "Subtitle", data: {"Youtube": url});
+      response = await Store.dio
+          .post(Store.baseURL + "Subtitle", data: {"Youtube": url});
       Article article = Article();
       // 将新添加的文章添加到缓存中
       article.setFromJSON(response.data);
@@ -227,10 +226,9 @@ class ArticleTitles with ChangeNotifier {
 
   // 和服务器同步
   Future syncArticleTitles({bool justSetToLocal = false}) async {
-    Dio dio = getDio();
-
+    print("syncArticleTitles");
     try {
-      var response = await dio.get(Store.baseURL + "article_titles");
+      var response = await Store.dio.get(Store.baseURL + "article_titles");
 
       if (!justSetToLocal) this.setFromJSON(response.data);
       // save to local for cache

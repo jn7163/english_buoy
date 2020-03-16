@@ -25,11 +25,12 @@ import './themes/dark.dart';
 import './themes/bright.dart';
 import 'dart:async';
 import './store/wordwise.dart';
+import './store/shared_preferences.dart';
 
 void main() {
   runApp(AlertProvider(
     child: Ebuoy(),
-    config: new AlertConfig(ok: "OK", cancel: "CANCEL"),
+    config: AlertConfig(),
   ));
   // runApp(MyApp());
 }
@@ -42,32 +43,34 @@ class Ebuoy extends StatefulWidget {
 class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
   OauthInfo _oauthInfo;
-  ArticleTitles articleTitles;
-  Settings settings;
-  Controller controller;
+  ArticleTitles _articleTitles;
+  Settings _settings;
+  Controller _controller;
   @override
   void initState() {
     super.initState();
+    initSharedPreferences();
     openDB();
     _oauthInfo = OauthInfo();
-    articleTitles = ArticleTitles();
-    settings = Settings();
-    controller = Controller();
-    // 绑定 setting 迸去
-    articleTitles.settings = settings;
-    // 绑定 controller 迸去
-    articleTitles.controller = controller;
+    _articleTitles = ArticleTitles();
 
     //绑定获取列表的函数到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
-    _oauthInfo.setAccessTokenCallBack = articleTitles.syncArticleTitles;
+    _oauthInfo.setAccessTokenCallBack = _articleTitles.syncArticleTitles;
+    _settings = Settings();
+    _controller = Controller();
+    // 绑定 setting 迸去
+    _articleTitles.settings = _settings;
+    // 绑定 controller 迸去
+    _articleTitles.controller = _controller;
+    _oauthInfo.backFromShared();
     initReceiveShare();
   }
 
   receiveShare(String sharedText) {
     if (sharedText == null) return;
-    controller.setMainSelectedIndex(0);
+    _controller.setMainSelectedIndex(0);
     // 收到分享, 设置
-    articleTitles.newYouTube(sharedText);
+    _articleTitles.newYouTube(sharedText);
   }
 
   void initReceiveShare() {
@@ -99,12 +102,12 @@ class _EbuoyState extends State<Ebuoy> {
         providers: [
           ChangeNotifierProvider(create: (_) => Explorer()),
           Provider<Global>(create: (_) => Global()),
-          ChangeNotifierProvider(create: (_) => controller),
+          ChangeNotifierProvider(create: (_) => _controller),
           ChangeNotifierProvider(create: (_) => Article()),
           ChangeNotifierProvider(create: (_) => Loading()),
           ChangeNotifierProvider(create: (_) => _oauthInfo),
-          ChangeNotifierProvider(create: (_) => articleTitles),
-          ChangeNotifierProvider(create: (_) => settings),
+          ChangeNotifierProvider(create: (_) => _articleTitles),
+          ChangeNotifierProvider(create: (_) => _settings),
         ],
         child: Consumer<Settings>(builder: (context, settings, child) {
           return MaterialApp(

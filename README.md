@@ -7,6 +7,7 @@ Learn English by reading YouTube subtitle article.
 v1.4.10+1.4.10
 
 - Word wise
+- Show loading animation when login
 
 v1.4.09+1.4.09
 

@@ -10,6 +10,7 @@ import '../models/settings.dart';
 import '../models/word.dart';
 import '../models/sentence.dart';
 import '../models/global.dart';
+import '../store/store.dart';
 import '../store/wordwise.dart';
 
 import './article_richtext.dart';

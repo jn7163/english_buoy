@@ -5,13 +5,7 @@ import 'dart:typed_data';
 import 'package:path/path.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-
-class Store {
-  static const PATH = "assets/db/wordwise.db";
-  static Database database;
-  static Map wordwiseMap = Map<String, String>();
-  static Map noWordwiseMap = Map<String, String>();
-}
+import './store.dart';
 
 Future openDB() async {
 // Construct the path to the app's writable database file:
@@ -55,4 +49,3 @@ Future<String> getDefinitionByWord(String word) async {
   }
   return definition;
 }
-
