@@ -46,7 +46,6 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                 : Colors.transparent,
             child: ListTile(
               trailing: ArticleYoutubeAvatar(
-                  youtubeURL: articleTitle.youtube,
                   avatar: articleTitle.avatar,
                   loading: this.deleting ||
                       articleTitle

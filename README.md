@@ -8,7 +8,7 @@ v1.4.11+1.4.11
 
 - Fix save local cache error
 - Fix some word failure get word wise data
-- Change the YouTube player play/loading button color to the main color
+- Always dim when YouTube player pause make sure play/loading button see clearly
 
 v1.4.10+1.4.10
 

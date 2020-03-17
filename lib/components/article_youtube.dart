@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../models/article.dart';
 import '../models/settings.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+//import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '../youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 
 class ArticleYouTube extends StatelessWidget {
@@ -43,11 +44,11 @@ class ArticleYouTube extends StatelessWidget {
                 isLive: false,
                 forceHideAnnotation: false,
               ),
-              videoProgressIndicatorColor: Theme.of(context).primaryColorLight,
-              liveUIColor: Theme.of(context).primaryColorLight,
+              videoProgressIndicatorColor: Colors.blueGrey,
+              liveUIColor: Colors.blueGrey,
               progressColors: ProgressColors(
-                playedColor: Theme.of(context).primaryColorLight,
-                handleColor: Theme.of(context).primaryColorDark,
+                playedColor: Colors.blueGrey,
+                handleColor: Colors.blueGrey,
               ),
             ))));
   }

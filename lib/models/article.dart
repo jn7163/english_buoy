@@ -1,7 +1,7 @@
 // 文章详情内容
 import 'dart:async';
 import 'dart:convert';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '../youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

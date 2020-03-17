@@ -28,7 +28,7 @@ Future<String> getDefinitionByWord(String word) async {
   //get from https://github.com/xnohat/wordwise-dict
   if (Store.noWordwiseMap[word] == 'no') return null;
   if (Store.wordwiseMap[word] != null) {
-    print("find " + word);
+    //print("find " + word);
     return Store.wordwiseMap[word];
   }
   String definition;
@@ -36,7 +36,7 @@ Future<String> getDefinitionByWord(String word) async {
   if (Store.database == null) return null;
   List<Map> queryResults;
 
-  print("query " + word);
+  //print("query " + word);
   queryResults = await Store.database.rawQuery('''
     SELECT short_def 
     FROM senses s, lemmas l
