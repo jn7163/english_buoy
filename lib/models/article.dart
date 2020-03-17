@@ -71,8 +71,9 @@ class Article with ChangeNotifier {
     for (var i = 0; i < this.sentences.length; i++) {
       for (var j = 0; j < this.sentences[i].words.length; j++) {
         Word word = this.sentences[i].words[j];
-        if (isNeedLearn(word))
+        if (isNeedLearn(word) && word.learned == false) {
           await getDefinitionByWord(word.text.toLowerCase());
+        }
       }
     }
   }

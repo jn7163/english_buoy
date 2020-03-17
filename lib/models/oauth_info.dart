@@ -92,6 +92,7 @@ class OauthInfo with ChangeNotifier {
   }
 
   signOut() async {
+    this.loading = true;
     await _googleSignIn.disconnect();
     this.email = null;
     removeFromShared();

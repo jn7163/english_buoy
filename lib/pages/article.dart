@@ -17,6 +17,7 @@ import '../models/sentence.dart';
 import '../models/article_inherited.dart';
 import '../models/controller.dart';
 import '../functions/utility.dart';
+import '../store/store.dart';
 
 class TimeSentenceIndex {
   int startSeconds = 0;
@@ -191,7 +192,11 @@ class _ArticlePageState extends State<ArticlePage>
       await loadFromServer();
     this.splitSentencesByTime();
     this.initRoutine();
+    print("before Store.wordwiseMap.length=" +
+        Store.wordwiseMap.length.toString());
     await _article.queryWordWise();
+    print("after Store.wordwiseMap.length=" +
+        Store.wordwiseMap.length.toString());
     setState(() {
       _loading = false;
     });
@@ -242,9 +247,11 @@ class _ArticlePageState extends State<ArticlePage>
         color: Theme.of(context).scaffoldBackgroundColor,
         dismissible: true,
         child: Column(children: [
+          /*
           ArticleYouTube(
             article: _article,
           ),
+          */
           refreshBody()
         ]),
         inAsyncCall: _loading);
@@ -285,7 +292,6 @@ class _ArticlePageState extends State<ArticlePage>
   Widget build(BuildContext context) {
     super.build(context);
     if (widget._articleID != -1 && widget._articleID != _article.articleID) {
-      //wantKeepAlive = false;
       _article.articleID = widget._articleID;
       this.loadArticleByID();
     }

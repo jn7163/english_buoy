@@ -27,12 +27,16 @@ Future openDB() async {
 Future<String> getDefinitionByWord(String word) async {
   //get from https://github.com/xnohat/wordwise-dict
   if (Store.noWordwiseMap[word] == 'no') return null;
-  if (Store.wordwiseMap[word] != null) return Store.wordwiseMap[word];
+  if (Store.wordwiseMap[word] != null) {
+    print("find " + word);
+    return Store.wordwiseMap[word];
+  }
   String definition;
   Codec<String, String> stringToBase64 = utf8.fuse(base64);
   if (Store.database == null) return null;
   List<Map> queryResults;
 
+  print("query " + word);
   queryResults = await Store.database.rawQuery('''
     SELECT short_def 
     FROM senses s, lemmas l
