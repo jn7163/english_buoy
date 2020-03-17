@@ -247,11 +247,9 @@ class _ArticlePageState extends State<ArticlePage>
         color: Theme.of(context).scaffoldBackgroundColor,
         dismissible: true,
         child: Column(children: [
-          /*
           ArticleYouTube(
             article: _article,
           ),
-          */
           refreshBody()
         ]),
         inAsyncCall: _loading);

@@ -6,8 +6,9 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.11+1.4.11
 
-- (undo)change the YouTube player play/loading button color to main color
-- (undo) add animation to return button
+- Fix save local cache error
+- Fix some word failure get word wise data
+- Change the YouTube player play/loading button color to the main color
 
 v1.4.10+1.4.10
 
