@@ -171,10 +171,10 @@ class _ArticlePageState extends State<ArticlePage>
       _articleTitles.setUnlearnedCountByArticleID(
           _article.unlearnedCount, _article.articleID);
     }
-    _loading = false;
   }
 
   Future loadArticleByID() async {
+    this.wantKeepAlive = false;
     setState(() {
       _loading = true;
     });
@@ -187,12 +187,15 @@ class _ArticlePageState extends State<ArticlePage>
       loadFromServer().then((d) {
         setState(() {});
       });
-    } else {
+    } else
       await loadFromServer();
-      setState(() {});
-    }
     this.splitSentencesByTime();
     this.initRoutine();
+    await _article.queryWordWise();
+    setState(() {
+      _loading = false;
+    });
+    this.wantKeepAlive = true;
   }
 
   //split article sentences by time
@@ -282,9 +285,9 @@ class _ArticlePageState extends State<ArticlePage>
   Widget build(BuildContext context) {
     super.build(context);
     if (widget._articleID != -1 && widget._articleID != _article.articleID) {
-      wantKeepAlive = false;
+      //wantKeepAlive = false;
       _article.articleID = widget._articleID;
-      loadArticleByID().then((d) => wantKeepAlive = true);
+      this.loadArticleByID();
     }
 
     print("build article");

@@ -68,16 +68,16 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     print("newYouTubeCallBack result=" + result);
     switch (result) {
       case ArticleTitles.exists:
-        this.showInfo("Article already exists");
+        this.showInfo("❦ Article already exists");
         break;
       case ArticleTitles.noSubtitle:
-        this.showInfo("This YouTube video don't have any en subtitle!");
+        this.showInfo("❕ This YouTube video don't have any en subtitle!");
         break;
       case ArticleTitles.done:
-        this.showInfo("Add success");
+        this.showInfo("❦ Add success");
         break;
       default:
-        this.showInfo("Something wrong: " + result);
+        this.showInfo("✗ Something wrong: " + result);
     }
   }
 

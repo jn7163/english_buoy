@@ -4,6 +4,11 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.11+1.4.11
+
+- (undo)change the YouTube player play/loading button color to main color
+- (undo) add animation to return button
+
 v1.4.10+1.4.10
 
 - Word wise

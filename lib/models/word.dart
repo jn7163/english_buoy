@@ -1,7 +1,6 @@
 // 文章中的每个文字的结构体
 import 'dart:async';
 import '../store/store.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import './sentence.dart';
 

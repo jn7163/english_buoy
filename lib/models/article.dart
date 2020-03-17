@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +10,7 @@ import '../functions/article.dart';
 import './sentence.dart';
 import './word.dart';
 import '../store/store.dart';
+import '../store/wordwise.dart';
 
 class Article with ChangeNotifier {
   bool checkSentenceHighlight = false;
@@ -52,7 +52,7 @@ class Article with ChangeNotifier {
   }
 
   // 从 json 中设置
-  setFromJSON(Map json) {
+  setFromJSON(Map json) async {
     this.articleID = json['id'];
     this.title = json['title'];
     this.youtube = json['Youtube'];
@@ -65,7 +65,16 @@ class Article with ChangeNotifier {
     this.unlearnedCount = json['UnlearnedCount'];
     this.avatar = json['Avatar'];
     this.wordCount = json['WordCount'];
-    //notifyListeners2();
+  }
+
+  queryWordWise() async {
+    for (var i = 0; i < this.sentences.length; i++) {
+      for (var j = 0; j < this.sentences[i].words.length; j++) {
+        Word word = this.sentences[i].words[j];
+        if (isNeedLearn(word))
+          await getDefinitionByWord(word.text.toLowerCase());
+      }
+    }
   }
 
   updateLocal() {
@@ -77,7 +86,7 @@ class Article with ChangeNotifier {
         'id': this.articleID,
         'title': this.title,
         'Youtube': this.youtube,
-        'Sentences': this.sentences,
+        'Sentences': jsonEncode(this.sentences),
         'UnlearnedCount': this.unlearnedCount,
         'Avatar': this.avatar,
         'WordCount': this.wordCount,

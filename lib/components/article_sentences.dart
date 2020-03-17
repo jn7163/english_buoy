@@ -90,7 +90,6 @@ class ArticleSentencesState extends State<ArticleSentences> {
         //update global word status
         _global.words[word.text.toLowerCase()] = word;
 
-        print("word.learned=$word.learned");
         if (word.learned == false) print("run getDefinitionByWord");
         await getDefinitionByWord(word.text.toLowerCase());
         setState(() {});
@@ -226,15 +225,10 @@ class ArticleSentencesState extends State<ArticleSentences> {
     //需要学习的单词
     if (word.learned == false && isNeedLearn(word)) {
       String shortDef = "";
-      if (word.count != 0) shortDef = word.count.toString();
-      if (Store.wordwiseMap[word.text.toLowerCase()] == null) {
-        getDefinitionByWord(word.text.toLowerCase());
-      } else {
-        if (widget.needWordWise)
-          shortDef =
-              "-" + Store.wordwiseMap[word.text.toLowerCase()] + " " + shortDef;
-      }
-
+      if (widget.needWordWise &&
+          Store.wordwiseMap[word.text.toLowerCase()] != null)
+        shortDef = "-" + Store.wordwiseMap[word.text.toLowerCase()];
+      if (word.count != 0) shortDef += " " + word.count.toString();
       subscript = TextSpan(
           text: shortDef,
           style: wordStyle.copyWith(fontSize: 12)); // 下标样式和原本保持一致, 只是变小

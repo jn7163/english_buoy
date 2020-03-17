@@ -31,16 +31,19 @@ Future<String> getDefinitionByWord(String word) async {
   String definition;
   Codec<String, String> stringToBase64 = utf8.fuse(base64);
   if (Store.database == null) return null;
-  List<Map> list = await Store.database.rawQuery('''
+  List<Map> queryResults;
+
+  queryResults = await Store.database.rawQuery('''
     SELECT short_def 
     FROM senses s, lemmas l
-    where s.display_lemma_id=l.id
-    and s.sense_number=1
-    and lemma='$word' LIMIT 1
+    WHERE s.display_lemma_id=l.id
+      and s.sense_number=1
+      and lemma='$word' LIMIT 1
   ''');
-  if (list != null) {
-    if (list.length > 0) {
-      definition = stringToBase64.decode(list[0]["short_def"]);
+
+  if (queryResults != null) {
+    if (queryResults.length > 0) {
+      definition = stringToBase64.decode(queryResults[0]["short_def"]);
       Store.wordwiseMap[word] = definition;
     } else
       Store.noWordwiseMap[word] = 'no';
