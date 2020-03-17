@@ -61,7 +61,6 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                   //use shared flow
                   _controller.setMainSelectedIndex(0);
                   articleTitles.newYouTube(articleTitle.youtube);
-                  print("explore");
                 }
                 print("onTap open i=" + i.toString());
                 _controller.setPageSelectedIndex(i);

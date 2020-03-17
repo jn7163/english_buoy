@@ -42,7 +42,6 @@ class Ebuoy extends StatefulWidget {
 
 class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
-  OauthInfo _oauthInfo;
   ArticleTitles _articleTitles;
   Settings _settings;
   Controller _controller;
@@ -51,18 +50,14 @@ class _EbuoyState extends State<Ebuoy> {
     super.initState();
     initSharedPreferences();
     openDB();
-    _oauthInfo = OauthInfo();
     _articleTitles = ArticleTitles();
 
-    //绑定获取列表的函数到oauthInfo里, 为了在登录完成后执行重新获取数据的操作
-    //_oauthInfo.setAccessTokenCallBack = _articleTitles.syncArticleTitles;
     _settings = Settings();
     _controller = Controller();
     // 绑定 setting 迸去
     _articleTitles.settings = _settings;
     // 绑定 controller 迸去
     _articleTitles.controller = _controller;
-    //_oauthInfo.backFromShared();
     initReceiveShare();
   }
 
@@ -105,7 +100,7 @@ class _EbuoyState extends State<Ebuoy> {
           ChangeNotifierProvider(create: (_) => _controller),
           ChangeNotifierProvider(create: (_) => Article()),
           ChangeNotifierProvider(create: (_) => Loading()),
-          ChangeNotifierProvider(create: (_) => _oauthInfo),
+          ChangeNotifierProvider(create: (_) => OauthInfo()),
           ChangeNotifierProvider(create: (_) => _articleTitles),
           ChangeNotifierProvider(create: (_) => _settings),
         ],

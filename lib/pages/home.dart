@@ -37,31 +37,19 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // need use Consumer Controller make sure tap new article enter correct article detail
-    return Consumer<Controller>(
-      builder: (context, currentController, child) {
-        return Scaffold(
-          body: PageView(
-            //disable scroll
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              ArticleTitlesPage(),
-              ArticlePageViewPage(),
-              ExplorerPage(),
-              //Center(child: Text('Developing')),
-            ],
-            controller: _controller.mainPageController,
-            onPageChanged: (index) {},
-          ),
-          /*
-          bottomNavigationBar: BottomNavigationBar(
-            items: bottomNavigationBarItem,
-            currentIndex: currentController.mainSelectedIndex,
-            onTap: _onItemTapped,
-          ),
-          */
-        );
-      },
+    return Scaffold(
+      body: PageView(
+        //disable scroll
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          ArticleTitlesPage(),
+          ArticlePageViewPage(),
+          ExplorerPage(),
+          //Center(child: Text('Developing')),
+        ],
+        controller: _controller.mainPageController,
+        onPageChanged: (index) {},
+      ),
     );
   }
 }

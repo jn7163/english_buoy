@@ -9,6 +9,7 @@ v1.4.11+1.4.11
 - Fix save local cache error
 - Fix some word failure get word wise data
 - Always dim when YouTube player pause make sure play/loading button see clearly
+- Add default avatar to the text article
 
 v1.4.10+1.4.10
 

@@ -43,8 +43,16 @@ class OauthInfo with ChangeNotifier {
   }
 
   switchUser() async {
-    await _googleSignIn.disconnect();
+    await this.disconnect();
     signIn();
+  }
+
+  disconnect() async {
+    try {
+      await _googleSignIn.disconnect();
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future signIn() async {
@@ -93,7 +101,7 @@ class OauthInfo with ChangeNotifier {
 
   signOut() async {
     this.loading = true;
-    await _googleSignIn.disconnect();
+    await this.disconnect();
     this.email = null;
     removeFromShared();
   }

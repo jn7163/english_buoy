@@ -294,7 +294,7 @@ class _ArticlePageState extends State<ArticlePage>
       this.loadArticleByID();
     }
 
-    print("build article");
+    print("build article $_articleID");
     return ArticleInherited(
         article: this._article,
         child: Scaffold(
