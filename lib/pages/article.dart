@@ -155,28 +155,27 @@ class _ArticlePageState extends State<ArticlePage>
   }
 
   Future loadArticleByID() async {
-    this.wantKeepAlive = false;
     bool hasLocal = await _article.getFromLocal(_article.articleID);
     print("hasLocal=$hasLocal");
     if (hasLocal)
       loadFromServer();
     else {
-      setState(() {
-        _loading = true;
-      });
+      if (this.mounted)
+        setState(() {
+          _loading = true;
+        });
       await loadFromServer();
     }
 
     this.splitSentencesByTime();
     this.initRoutine();
-    setState(() {
-      _loading = false;
-    });
+    if (this.mounted)
+      setState(() {
+        _loading = false;
+      });
     await _article.queryWordWise();
     // make sure show word wise
     setState(() {});
-
-    this.wantKeepAlive = true;
   }
 
   //split article sentences by time

@@ -19,6 +19,7 @@ class Explorer with ChangeNotifier {
   Future syncExplorer() async {
     var response = await Store.dio.get(Store.baseURL + _key);
     this.setFromJSON(response.data);
+    notifyListeners();
     setToLocal(json.encode(response.data));
     return response;
   }
@@ -34,11 +35,9 @@ class Explorer with ChangeNotifier {
       ArticleTitle articleTitle = ArticleTitle();
       articleTitle.setFromJSON(d);
       add(articleTitle);
-      // this.articles.add(articleTitle);
-      // this.setArticleTitles.add(articleTitle.title);
     });
 
-    print("syncExplorer this.titles.length=" + this.titles.length.toString());
+    //print("syncExplorer this.titles.length=" + this.titles.length.toString());
     notifyListeners();
   }
 
@@ -46,11 +45,13 @@ class Explorer with ChangeNotifier {
     _prefs.setString(_key, data);
   }
 
-  getFromLocal() async {
-    if (_prefs == null) _prefs = await SharedPreferences.getInstance();
-    String data = _prefs.getString(_key);
+  Future<bool> getFromLocal() async {
+    var prefs = await Store.prefs;
+    String data = prefs.getString(_key);
     if (data != null) {
       this.setFromJSON(json.decode(data));
+      return true;
     }
+    return false;
   }
 }

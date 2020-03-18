@@ -62,6 +62,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
               });
               _controller.setMainSelectedIndex(1);
               int i = articleTitles.findIndexByArticleID(articleTitle.id);
+              print("findIndexByArticleID=$i");
               if (i == -1) {
                 //use shared flow
                 _controller.setMainSelectedIndex(0);

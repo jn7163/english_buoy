@@ -1,13 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
-import './shared_preferences.dart';
 
 class Store {
   static const baseURL = "https://english.bigzhu.net/api/";
   static const PATH = "assets/db/wordwise.db";
   //static const baseURL = "http://192.168.43.231:3004/api/";
-  static SharedPreferences prefs;
+  static SharedPreferences _prefs;
 
   static Database database;
   static Map wordwiseMap = Map<String, String>();
@@ -18,8 +17,8 @@ class Store {
     // 发送请求前加入 token
     _dio.interceptors
         .add(InterceptorsWrapper(onRequest: (Options options) async {
-      if (prefs == null) await initSharedPreferences();
-      String accessTokenShare = prefs.getString('accessToken');
+      if (_prefs == null) await Store.prefs;
+      String accessTokenShare = _prefs.getString('accessToken');
       options.headers["token"] = accessTokenShare;
       return options; //continue
     }, onError: (DioError e) {
@@ -29,4 +28,11 @@ class Store {
     }));
     return _dio;
   }
+
+  static Future<SharedPreferences> get prefs async {
+    if (_prefs != null) return _prefs;
+    _prefs = await SharedPreferences.getInstance();
+    return _prefs;
+  }
 }
+

@@ -36,6 +36,7 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> {
       child: Selector<ArticleTitles, List<ArticleTitle>>(
           selector: (context, articleTitles) => articleTitles.filterTitles,
           builder: (context, filterTitles, child) {
+            print("build $this Selector");
             return PageView(
                 reverse: true,
                 onPageChanged: (i) {

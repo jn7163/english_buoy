@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../store/sign.dart';
 import '../store/store.dart';
-import '../store/shared_preferences.dart';
 
 class OauthInfo with ChangeNotifier {
   String accessToken;
@@ -68,13 +67,14 @@ class OauthInfo with ChangeNotifier {
   }
 
   // set login info to shared
-  setToShared(String accessToken, String email, String name, String avatarURL) {
+  setToShared(
+      String accessToken, String email, String name, String avatarURL) async {
     // 如果从未登录转换到登录, 那么返回需要跳转
     this.accessToken = accessToken;
     this.email = email;
     this.name = name;
     this.avatarURL = avatarURL;
-    Store.prefs
+    await Store.prefs
       ..setString('accessToken', this.accessToken)
       ..setString('email', this.email)
       ..setString('name', this.name)
@@ -82,11 +82,11 @@ class OauthInfo with ChangeNotifier {
   }
 
   backFromShared() async {
-    if (Store.prefs == null) await initSharedPreferences();
-    this.email = Store.prefs.getString('email');
-    this.accessToken = Store.prefs.getString('accessToken');
-    this.name = Store.prefs.getString('name');
-    this.avatarURL = Store.prefs.getString('avatarURL');
+    var prefs = await Store.prefs;
+    this.email = prefs.getString('email');
+    this.accessToken = prefs.getString('accessToken');
+    this.name = prefs.getString('name');
+    this.avatarURL = prefs.getString('avatarURL');
     // if is logined, run callback to get articlelist
     if (this.accessToken != null)
       this.signoDone();
@@ -95,7 +95,7 @@ class OauthInfo with ChangeNotifier {
   }
 
   removeFromShared() async {
-    Store.prefs
+    await Store.prefs
       ..remove('accessToken')
       ..remove('email')
       ..remove('name')

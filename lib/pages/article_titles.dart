@@ -40,7 +40,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _controller = Provider.of<Controller>(context, listen: false);
 
-    //_articleTitles.getFromLocal();
+    _articleTitles.getFromLocal();
     //设置回调
     _articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
     _articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;
@@ -97,10 +97,11 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
 
   Widget getArticleTitlesBody() {
     return Selector<ArticleTitles, List<ArticleTitle>>(
-        shouldRebuild: (previous, next) => previous == next,
+        //shouldRebuild: (previous, next) => previous == next,
         selector: (context, articleTitles) => articleTitles.filterTitles,
         builder: (context, filterTitles, child) {
-          print("run Selector ArticleTitles");
+          print("run Selector ArticleTitles length=" +
+              filterTitles.length.toString());
           if (filterTitles.length == 0)
             return Container();
           else

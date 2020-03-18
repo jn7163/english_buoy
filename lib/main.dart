@@ -25,7 +25,7 @@ import './themes/dark.dart';
 import './themes/bright.dart';
 import 'dart:async';
 import './store/wordwise.dart';
-import './store/shared_preferences.dart';
+import './store/store.dart';
 
 void main() {
   runApp(AlertProvider(
@@ -48,7 +48,7 @@ class _EbuoyState extends State<Ebuoy> {
   @override
   void initState() {
     super.initState();
-    initSharedPreferences();
+    Store.prefs;
     openDB();
     _articleTitles = ArticleTitles();
 
@@ -97,12 +97,15 @@ class _EbuoyState extends State<Ebuoy> {
         providers: [
           ChangeNotifierProvider(create: (_) => Explorer()),
           Provider<Global>(create: (_) => Global()),
-          ChangeNotifierProvider(create: (_) => _controller),
+          //ChangeNotifierProvider(create: (_) => _controller),
+          ChangeNotifierProvider.value(value: _controller),
           ChangeNotifierProvider(create: (_) => Article()),
           ChangeNotifierProvider(create: (_) => Loading()),
           ChangeNotifierProvider(create: (_) => OauthInfo()),
-          ChangeNotifierProvider(create: (_) => _articleTitles),
-          ChangeNotifierProvider(create: (_) => _settings),
+          //ChangeNotifierProvider(create: (_) => _articleTitles),
+          ChangeNotifierProvider.value(value: _articleTitles),
+          //ChangeNotifierProvider(create: (_) => _settings),
+          ChangeNotifierProvider.value(value: _settings),
         ],
         child: Selector<Settings, bool>(
             selector: (context, settings) => settings.isDark,
