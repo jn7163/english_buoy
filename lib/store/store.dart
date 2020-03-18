@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import './shared_preferences.dart';
 
 class Store {
   static const baseURL = "https://english.bigzhu.net/api/";
@@ -19,6 +20,7 @@ class Store {
     // 发送请求前加入 token
     _dio.interceptors
         .add(InterceptorsWrapper(onRequest: (Options options) async {
+      if (prefs == null) await initSharedPreferences();
       String accessTokenShare = prefs.getString('accessToken');
       options.headers["token"] = accessTokenShare;
       return options; //continue

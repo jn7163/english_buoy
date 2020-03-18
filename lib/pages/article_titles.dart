@@ -35,21 +35,21 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
       ItemPositionsListener.create();
   OauthInfo _oauthInfo;
   Controller _controller;
+  bool _loading = false;
   @override
   initState() {
     super.initState();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _controller = Provider.of<Controller>(context, listen: false);
 
-    //make sure already load
-    //if (settings.filertPercent == 70) await settings.getFromLocal();
-    _articleTitles.getFromLocal();
-    _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
+    //_articleTitles.getFromLocal();
     //设置回调
     _articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
     _articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;
+    _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
     _oauthInfo.setAccessTokenCallBack = this.syncArticleTitles;
     _oauthInfo.backFromShared();
+    //this.syncArticleTitles();
   }
 
   showInfo(String info) {
@@ -83,7 +83,10 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   }
 
   Future syncArticleTitles() async {
-    return _articleTitles.syncArticleTitles()
+    setState(() {
+      _loading = true;
+    });
+    var result = await _articleTitles.syncArticleTitles()
         //.catchError((_) => oauthInfo.signIn());
         .catchError((e) {
       String errorInfo = "";
@@ -92,28 +95,23 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         _oauthInfo.signIn();
       } else
         errorInfo = e.message;
-
-      final snackBar = SnackBar(
-        backgroundColor: mainColor,
-        content: Text(
-          errorInfo,
-          textAlign: TextAlign.center,
-        ),
-      );
-      _scaffoldKey.currentState.showSnackBar(snackBar);
+      this.showInfo(errorInfo);
     });
+    setState(() {
+      _loading = false;
+    });
+    return result;
   }
 
   Widget getArticleTitlesBody() {
-    return Selector<ArticleTitles, List<ArticleTitle>>(
+    Widget body = Selector<ArticleTitles, List<ArticleTitle>>(
         selector: (context, articleTitles) => articleTitles.filterTitles,
         builder: (context, filterTitles, child) {
           print("run Selector ArticleTitles");
-          Widget body;
           if (filterTitles.length == 0)
-            body = Container();
+            return Container();
           else
-            body = ScrollablePositionedList.builder(
+            return ScrollablePositionedList.builder(
               itemCount: filterTitles.length,
               itemBuilder: (context, index) {
                 return ArticleTitlesSlidable(
@@ -122,19 +120,14 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
               itemScrollController: itemScrollController,
               itemPositionsListener: itemPositionListener,
             );
-          return ModalProgressHUD(
-              opacity: 1,
-              progressIndicator: getSpinkitProgressIndicator(context),
-              color: Theme.of(context).scaffoldBackgroundColor,
-              dismissible: true,
-              child: body,
-              inAsyncCall: filterTitles.length == 0);
         });
-  }
-
-  Future refresh() async {
-    await syncArticleTitles();
-    return;
+    return ModalProgressHUD(
+        opacity: 1,
+        progressIndicator: getSpinkitProgressIndicator(context),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        dismissible: true,
+        child: body,
+        inAsyncCall: _loading);
   }
 
   // 滚动到那一条目
@@ -151,15 +144,15 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
 
   @override
   Widget build(BuildContext context) {
-    print("build $this");
     super.build(context);
+    print("build $this");
     return Scaffold(
       key: _scaffoldKey,
       appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
       drawer: LeftDrawer(),
       endDrawer: RightDrawer(),
       body: RefreshIndicator(
-        onRefresh: refresh,
+        onRefresh: syncArticleTitles,
         child: getArticleTitlesBody(),
         color: mainColor,
       ),

@@ -41,39 +41,44 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
-        child: Ink(
-            color: _controller.selectedArticleID == articleTitle.id
-                ? Theme.of(context).highlightColor
-                : Colors.transparent,
-            child: ListTile(
-              trailing: ArticleYoutubeAvatar(
-                  avatar: articleTitle.avatar,
-                  loading: this.deleting ||
-                      articleTitle
-                          .loading), // data loading to create loading item when add new article
-              dense: false,
-              onTap: () {
-                setState(() {
-                  _controller.setSelectedArticleID(articleTitle.id);
-                });
-                _controller.setMainSelectedIndex(1);
-                int i = articleTitles.findIndexByArticleID(articleTitle.id);
-                if (i == -1) {
-                  //use shared flow
-                  _controller.setMainSelectedIndex(0);
-                  articleTitles.newYouTube(articleTitle.youtube);
-                }
-                print("onTap open i=" + i.toString());
-                _controller.setPageSelectedIndex(i);
-              },
-              // percent in explorer is 0, no need show
-              leading: percent == "0"
-                  ? null
-                  : Text(
-                      percent + "%",
-                    ),
-              title: Text(articleTitle.title), // 用的 TextTheme.subhead
-            )),
+        child: Consumer<Controller>(
+          builder: (context, controller, child) {
+            return Ink(
+                color: controller.selectedArticleID == articleTitle.id
+                    ? Theme.of(context).highlightColor
+                    : Colors.transparent,
+                child: child);
+          },
+          child: ListTile(
+            trailing: ArticleYoutubeAvatar(
+                avatar: articleTitle.avatar,
+                loading: this.deleting ||
+                    articleTitle
+                        .loading), // data loading to create loading item when add new article
+            dense: false,
+            onTap: () {
+              setState(() {
+                _controller.setSelectedArticleID(articleTitle.id);
+              });
+              _controller.setMainSelectedIndex(1);
+              int i = articleTitles.findIndexByArticleID(articleTitle.id);
+              if (i == -1) {
+                //use shared flow
+                _controller.setMainSelectedIndex(0);
+                articleTitles.newYouTube(articleTitle.youtube);
+              }
+              print("onTap open i=" + i.toString());
+              _controller.setPageSelectedIndex(i);
+            },
+            // percent in explorer is 0, no need show
+            leading: percent == "0"
+                ? null
+                : Text(
+                    percent + "%",
+                  ),
+            title: Text(articleTitle.title), // 用的 TextTheme.subhead
+          ),
+        ),
         secondaryActions: [
           IconSlideAction(
             caption: 'Delete',

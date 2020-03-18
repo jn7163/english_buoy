@@ -12,7 +12,7 @@ import 'controller.dart';
 class ArticleTitles with ChangeNotifier {
   int currentArticleIndex = -1; // current play article index
   String searchKey = ''; // 过滤关键字
-  List<ArticleTitle> filterTitles = []; // 过滤好的列表
+  //List<ArticleTitle> filterTitles = []; // 过滤好的列表
   List<ArticleTitle> titles = [];
   bool sortByUnlearned = true;
   // 完成添加后的回调
@@ -126,8 +126,8 @@ class ArticleTitles with ChangeNotifier {
     return [lastID, nextID];
   }
 
-  filter() {
-    filterTitles = titles;
+  List<ArticleTitle> get filterTitles {
+    List<ArticleTitle> filterTitles = this.titles;
     if (searchKey != "")
       filterTitles = filterTitles
           .where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase()))
@@ -144,6 +144,10 @@ class ArticleTitles with ChangeNotifier {
           .where((d) =>
               d.percent != 100) // show percent 0 used to show loading item
           .toList();
+    return filterTitles;
+  }
+
+  filter() {
     notifyListeners();
   }
 

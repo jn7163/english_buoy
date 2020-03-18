@@ -27,7 +27,7 @@ class OauthInfo with ChangeNotifier {
   }
 
   signoDone() {
-    setAccessTokenCallBack();
+    if (setAccessTokenCallBack != null) setAccessTokenCallBack();
     this.loading = false;
     notifyListeners();
   }
