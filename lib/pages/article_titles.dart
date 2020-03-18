@@ -8,10 +8,11 @@ import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
 import '../components/right_drawer.dart';
 import '../components/left_drawer.dart';
-import '../models/controller.dart';
 
+import '../models/controller.dart';
 import '../models/article_titles.dart';
 import '../models/oauth_info.dart';
+import '../models/article_title.dart';
 
 import '../functions/utility.dart';
 import '../themes/base.dart';
@@ -71,7 +72,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         this.showInfo("❦ Article already exists");
         break;
       case ArticleTitles.noSubtitle:
-        this.showInfo("❕ This YouTube video don't have any en subtitle!");
+        this.showInfo("❕This YouTube video don't have any en subtitle!");
         break;
       case ArticleTitles.done:
         this.showInfo("❦ Add success");
@@ -104,29 +105,31 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   }
 
   Widget getArticleTitlesBody() {
-    return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
-      var body;
-      if (articleTitles.filterTitles.length == 0)
-        body = Container();
-      else
-        body = ScrollablePositionedList.builder(
-          itemCount: articleTitles.filterTitles.length,
-          itemBuilder: (context, index) {
-            return ArticleTitlesSlidable(
-                articleTitle:
-                    articleTitles.filterTitles.reversed.toList()[index]);
-          },
-          itemScrollController: itemScrollController,
-          itemPositionsListener: itemPositionListener,
-        );
-      return ModalProgressHUD(
-          opacity: 1,
-          progressIndicator: getSpinkitProgressIndicator(context),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          dismissible: true,
-          child: body,
-          inAsyncCall: articleTitles.filterTitles.length == 0);
-    });
+    return Selector<ArticleTitles, List<ArticleTitle>>(
+        selector: (context, articleTitles) => articleTitles.filterTitles,
+        builder: (context, filterTitles, child) {
+          print("run Selector ArticleTitles");
+          Widget body;
+          if (filterTitles.length == 0)
+            body = Container();
+          else
+            body = ScrollablePositionedList.builder(
+              itemCount: filterTitles.length,
+              itemBuilder: (context, index) {
+                return ArticleTitlesSlidable(
+                    articleTitle: filterTitles.reversed.toList()[index]);
+              },
+              itemScrollController: itemScrollController,
+              itemPositionsListener: itemPositionListener,
+            );
+          return ModalProgressHUD(
+              opacity: 1,
+              progressIndicator: getSpinkitProgressIndicator(context),
+              color: Theme.of(context).scaffoldBackgroundColor,
+              dismissible: true,
+              child: body,
+              inAsyncCall: filterTitles.length == 0);
+        });
   }
 
   Future refresh() async {
@@ -148,8 +151,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
 
   @override
   Widget build(BuildContext context) {
+    print("build $this");
     super.build(context);
-    print("build ArticleTitlesPage");
     return Scaffold(
       key: _scaffoldKey,
       appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
@@ -162,7 +165,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _controller.setMainSelectedIndex(3);
+          _articleTitles.justNotifyListeners();
+          //_controller.setMainSelectedIndex(3);
         },
         child: Icon(Icons.explore),
       ),

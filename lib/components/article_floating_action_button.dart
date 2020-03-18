@@ -12,6 +12,7 @@ class ArticleFloatingActionButtonState
     extends State<ArticleFloatingActionButton> {
   @override
   Widget build(BuildContext context) {
+    print("build $this");
     Article article = ArticleInherited.of(context).article;
     return Align(
         alignment: Alignment.centerRight,

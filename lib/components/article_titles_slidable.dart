@@ -32,6 +32,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
 
   @override
   Widget build(BuildContext context) {
+    //print("build $this");
     ArticleTitle articleTitle = widget.articleTitle;
     String percent = articleTitle.percent.toStringAsFixed(
         articleTitle.percent.truncateToDouble() == articleTitle.percent

@@ -46,11 +46,10 @@ class _ArticlePageState extends State<ArticlePage>
   ArticleTitles _articleTitles;
   Settings settings;
   int _articleID;
-  bool _loading = false;
+  bool _loading = true;
   Timer _timer;
   int _highlightSentenceIndex;
   Controller _controller;
-  // keep {int timeSecond: [SentenceIndex1, SentenceIndex2, ...]}
   List<TimeSentenceIndex> _timeSentenceIndexs = List();
 
   @override
@@ -120,21 +119,6 @@ class _ArticlePageState extends State<ArticlePage>
       print("find some set index=" + currentIndex.toString());
       setState(() {
         //auto scroll sentence to top
-        // if slide to another page,  last page ensureVisible will pull back to last page, so just current page can ensureVisible
-        // if video pause don't run
-        //print("settings.isScrollWithPlay=" +
-        //    settings.isScrollWithPlay.toString());
-        //print("_controller.mainSelectedIndex=" +
-        //    _controller.mainSelectedIndex.toString());
-        //print("_article.youtubeController.value.isPlaying=" +
-        //    _article.youtubeController.value.isPlaying.toString());
-        //print("_controller.selectedArticleID == _article.articleID " +
-        //    (_controller.selectedArticleID == _article.articleID).toString());
-
-        debugPrint("article=" + widget._articleID.toString());
-        print("_controller.selectedArticleID=" +
-            _controller.selectedArticleID.toString());
-        print("_article.articleID=" + _article.articleID.toString());
 
         if (settings.isScrollWithPlay &&
             _controller.mainSelectedIndex == 1 &&
@@ -176,20 +160,19 @@ class _ArticlePageState extends State<ArticlePage>
     this.wantKeepAlive = false;
     bool hasLocal = await _article.getFromLocal(_article.articleID);
     print("hasLocal=$hasLocal");
-    if (hasLocal) {
+    if (hasLocal)
       loadFromServer();
-    } else {
-      setState(() {
-        _loading = true;
-      });
+    else
       await loadFromServer();
-    }
+
     this.splitSentencesByTime();
     this.initRoutine();
-    await _article.queryWordWise();
     setState(() {
       _loading = false;
     });
+    await _article.queryWordWise();
+    setState(() {});
+
     this.wantKeepAlive = true;
   }
 

@@ -12,6 +12,7 @@ class ArticleYouTube extends StatelessWidget {
   final Article article;
   @override
   Widget build(BuildContext context) {
+    print("build $this");
     //Article article = Provider.of<Article>(context);
     if (article == null || article.title == null || article.youtube == '')
       return Container(width: 0.0, height: 0.0);

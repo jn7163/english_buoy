@@ -10,6 +10,7 @@ class ArticleRichText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("build $this");
     sentence.c = context;
     return RichText(text: textSpan);
   }

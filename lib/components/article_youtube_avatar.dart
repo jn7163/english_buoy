@@ -16,6 +16,7 @@ class ArticleYoutubeAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //print("build $this");
     if (loading) return RefreshProgressIndicator();
     return CircleAvatar(
       backgroundImage: avatar == null || avatar == ''

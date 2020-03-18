@@ -8,21 +8,19 @@ import 'package:flutter/cupertino.dart';
 class OauthInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<OauthInfo>(builder: (context, oauthInfo, child) {
-      if (oauthInfo.loading) return RefreshProgressIndicator();
-      if (oauthInfo.email == null)
-        return IconButton(
-          icon: Icon(Icons.exit_to_app),
-          tooltip: 'Sign',
-          onPressed: () {},
-        );
-
-      return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-              backgroundImage: oauthInfo.avatarURL != null
-                  ? NetworkImage(oauthInfo.avatarURL)
-                  : AssetImage('assets/images/logo.png')));
-    });
+    OauthInfo oauthInfo = Provider.of<OauthInfo>(context);
+    if (oauthInfo.loading) return RefreshProgressIndicator();
+    if (oauthInfo.accessToken == null || oauthInfo.accessToken == '')
+      return IconButton(
+        icon: Icon(Icons.exit_to_app),
+        tooltip: 'Sign',
+        onPressed: () {},
+      );
+    return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: CircleAvatar(
+            backgroundImage: oauthInfo.avatarURL != null
+                ? NetworkImage(oauthInfo.avatarURL)
+                : AssetImage('assets/images/logo.png')));
   }
 }

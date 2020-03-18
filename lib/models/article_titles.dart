@@ -159,6 +159,7 @@ class ArticleTitles with ChangeNotifier {
 
   // 啥事都不干, 只是通知
   justNotifyListeners() {
+    print("justNotifyListeners");
     notifyListeners();
   }
 

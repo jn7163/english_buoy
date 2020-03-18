@@ -18,7 +18,12 @@ class ArticleInherited extends InheritedWidget {
 
   @override
   bool updateShouldNotify(ArticleInherited old) {
-    // article 有任何变化都会引起通知, 这点很不好
-    return this.article != old.article;
+    print("this.article.unlearnedCount=" +
+        this.article.unlearnedCount.toString());
+    print(
+        "old.article.unlearnedCount=" + old.article.unlearnedCount.toString());
+    print(this.article.unlearnedCount != old.article.unlearnedCount);
+    return this.article.unlearnedCount != old.article.unlearnedCount;
+    //return this.article != old.article;
   }
 }

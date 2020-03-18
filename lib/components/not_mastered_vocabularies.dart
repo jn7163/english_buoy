@@ -154,7 +154,7 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
 
   @override
   Widget build(BuildContext context) {
-    print("NotMasteredVocabulary build");
+    print("build $this");
     List<TableRow> renderWordRows = getRenderWordRows();
     return Table(
         border: TableBorder.all(

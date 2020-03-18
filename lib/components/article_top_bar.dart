@@ -18,6 +18,7 @@ class ArticleTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("build $this");
     return Container(
       color: Theme.of(context).primaryColorDark,
       child: ListTile(
