@@ -269,11 +269,11 @@ class ArticleSentencesState extends State<ArticleSentences> {
     words.insert(0, star);
     TextStyle playingStyle = TextStyle();
     //if play to current sentence
-    if (s.highlight) {
+    if (s.highlight)
       playingStyle = TextStyle(
         backgroundColor: Colors.teal[50],
       );
-    }
+
     return ArticleRichText(
         textSpan: TextSpan(
           style: playingStyle,

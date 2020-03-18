@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'dart:async';
 
 import '../components/article_titles_app_bar.dart';
@@ -35,7 +34,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
       ItemPositionsListener.create();
   OauthInfo _oauthInfo;
   Controller _controller;
-  bool _loading = false;
   @override
   initState() {
     super.initState();
@@ -83,9 +81,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   }
 
   Future syncArticleTitles() async {
-    setState(() {
-      _loading = true;
-    });
     var result = await _articleTitles.syncArticleTitles()
         //.catchError((_) => oauthInfo.signIn());
         .catchError((e) {
@@ -97,14 +92,12 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         errorInfo = e.message;
       this.showInfo(errorInfo);
     });
-    setState(() {
-      _loading = false;
-    });
     return result;
   }
 
   Widget getArticleTitlesBody() {
-    Widget body = Selector<ArticleTitles, List<ArticleTitle>>(
+    return Selector<ArticleTitles, List<ArticleTitle>>(
+        shouldRebuild: (previous, next) => previous == next,
         selector: (context, articleTitles) => articleTitles.filterTitles,
         builder: (context, filterTitles, child) {
           print("run Selector ArticleTitles");
@@ -121,13 +114,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
               itemPositionsListener: itemPositionListener,
             );
         });
-    return ModalProgressHUD(
-        opacity: 1,
-        progressIndicator: getSpinkitProgressIndicator(context),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        dismissible: true,
-        child: body,
-        inAsyncCall: _loading);
   }
 
   // 滚动到那一条目

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './article_title.dart';
 import '../store/store.dart';
-import 'package:dio/dio.dart';
 
 import 'dart:convert';
 
@@ -39,6 +38,7 @@ class Explorer with ChangeNotifier {
       // this.setArticleTitles.add(articleTitle.title);
     });
 
+    print("syncExplorer this.titles.length=" + this.titles.length.toString());
     notifyListeners();
   }
 

@@ -79,8 +79,6 @@ class OauthInfo with ChangeNotifier {
       ..setString('email', this.email)
       ..setString('name', this.name)
       ..setString('avatarURL', this.avatarURL);
-    // make sure dio use new access token
-    Store.recreateDio();
   }
 
   backFromShared() async {

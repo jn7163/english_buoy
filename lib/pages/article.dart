@@ -115,21 +115,21 @@ class _ArticlePageState extends State<ArticlePage>
     }
     // trigger setState if set new highlight sentence
     if (currentIndex != null && _highlightSentenceIndex != currentIndex) {
+      //make highlight show
+      setState(() {});
       print("find some set index=" + currentIndex.toString());
-      setState(() {
-        //auto scroll sentence to top
-        if (settings.isScrollWithPlay &&
-            controller.mainSelectedIndex == 1 &&
-            controller.selectedArticleID == _article.articleID &&
-            _article.youtubeController.value.isPlaying) {
-          print("run ensureVisible");
-          int sentenceIndex = _timeSentenceIndexs[currentIndex].indexs[0];
-          Scrollable.ensureVisible(_article.sentences[sentenceIndex].c,
-              duration: Duration(milliseconds: 1400), alignment: 0.0);
-        }
-        //alignment: 0.0);
-        _highlightSentenceIndex = currentIndex;
-      });
+      //auto scroll sentence to top
+      if (settings.isScrollWithPlay &&
+          controller.mainSelectedIndex == 1 &&
+          controller.selectedArticleID == _article.articleID &&
+          _article.youtubeController.value.isPlaying) {
+        print("run ensureVisible");
+        int sentenceIndex = _timeSentenceIndexs[currentIndex].indexs[0];
+        Scrollable.ensureVisible(_article.sentences[sentenceIndex].c,
+            duration: Duration(milliseconds: 1400), alignment: 0.0);
+      }
+      //alignment: 0.0);
+      _highlightSentenceIndex = currentIndex;
     }
   }
 
@@ -160,8 +160,12 @@ class _ArticlePageState extends State<ArticlePage>
     print("hasLocal=$hasLocal");
     if (hasLocal)
       loadFromServer();
-    else
+    else {
+      setState(() {
+        _loading = true;
+      });
       await loadFromServer();
+    }
 
     this.splitSentencesByTime();
     this.initRoutine();
@@ -169,6 +173,7 @@ class _ArticlePageState extends State<ArticlePage>
       _loading = false;
     });
     await _article.queryWordWise();
+    // make sure show word wise
     setState(() {});
 
     this.wantKeepAlive = true;

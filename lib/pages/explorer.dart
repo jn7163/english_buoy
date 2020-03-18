@@ -7,6 +7,7 @@ import 'dart:async';
 import '../components/article_titles_slidable.dart';
 import '../models/controller.dart';
 import '../models/explorer.dart';
+import '../models/article_title.dart';
 
 import '../functions/utility.dart';
 import '../themes/base.dart';
@@ -41,28 +42,31 @@ class ExplorerPageState extends State<ExplorerPage>
   }
 
   Widget getArticleTitlesBody() {
-    return Consumer<Explorer>(builder: (context, articleTitles, child) {
-      var body;
-      if (articleTitles.titles.length == 0)
-        body = Container();
-      else
-        body = ScrollablePositionedList.builder(
-          itemCount: articleTitles.titles.length,
-          itemBuilder: (context, index) {
-            return ArticleTitlesSlidable(
-                articleTitle: articleTitles.titles.reversed.toList()[index]);
-          },
-          itemScrollController: itemScrollController,
-          itemPositionsListener: itemPositionListener,
-        );
-      return ModalProgressHUD(
-          opacity: 1,
-          progressIndicator: getSpinkitProgressIndicator(context),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          dismissible: true,
-          child: body,
-          inAsyncCall: articleTitles.titles.length == 0);
-    });
+    return Selector<Explorer, List<ArticleTitle>>(
+        shouldRebuild: (previous, next) => previous == next,
+        selector: (context, explorer) => explorer.titles,
+        builder: (context, titles, child) {
+          var body;
+          if (titles.length == 0)
+            body = Container();
+          else
+            body = ScrollablePositionedList.builder(
+              itemCount: titles.length,
+              itemBuilder: (context, index) {
+                return ArticleTitlesSlidable(
+                    articleTitle: titles.reversed.toList()[index]);
+              },
+              itemScrollController: itemScrollController,
+              itemPositionsListener: itemPositionListener,
+            );
+          return ModalProgressHUD(
+              opacity: 1,
+              progressIndicator: getSpinkitProgressIndicator(context),
+              color: Theme.of(context).scaffoldBackgroundColor,
+              dismissible: true,
+              child: body,
+              inAsyncCall: titles.length == 0);
+        });
   }
 
   Future refresh() async {
