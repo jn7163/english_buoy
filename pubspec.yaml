@@ -45,9 +45,9 @@ dependencies:
   cached_network_image: ^2.0.0 # 缓存网络图片
   #rflutter_alert: ^1.0.3 # alert
   #flutter_picker: ^1.1.0 # 选择数字
-  #youtube_player_flutter:
-  #  git:
-  #    url: https://github.com/bigzhu/youtube_player_flutter
+  youtube_player_flutter:
+    git:
+      url: https://github.com/bigzhu/youtube_player_flutter
 
 
   # The following adds the Cupertino Icons font to your application.

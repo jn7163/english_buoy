@@ -11,7 +11,6 @@ import 'controller.dart';
 
 class ArticleTitles with ChangeNotifier {
   int currentArticleIndex = -1; // current play article index
-  Map instanceArticles = Map(); // keep instance article by it's id
   String searchKey = ''; // 过滤关键字
   List<ArticleTitle> filterTitles = []; // 过滤好的列表
   List<ArticleTitle> titles = [];
@@ -32,10 +31,6 @@ class ArticleTitles with ChangeNotifier {
     SharedPreferences.getInstance().then((d) {
       _prefs = d;
     });
-  }
-  setInstanceArticles(Article article) {
-    this.instanceArticles[article.articleID] = article;
-    //notifyListeners();
   }
 
   setSearchKey(String v) {
@@ -237,10 +232,10 @@ class ArticleTitles with ChangeNotifier {
       if (titles[i].id == articleID) {
         titles[i].unlearnedCount = unlearnedCount;
         titles[i].setPercent();
-        filter();
         return;
       }
     }
+    //filter();
   }
 
   removeFromList(ArticleTitle articleTitle) {

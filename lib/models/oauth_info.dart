@@ -55,11 +55,16 @@ class OauthInfo with ChangeNotifier {
     }
   }
 
-  Future signIn() async {
+  signIn() async {
     print("signIn");
     this.loading = true;
     notifyListeners();
-    return _googleSignIn.signIn();
+    try {
+      _googleSignIn.signIn();
+    } catch (e) {
+      print("something wrong: $e");
+      this.signIn();
+    }
   }
 
   // set login info to shared

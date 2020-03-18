@@ -17,7 +17,6 @@ import '../models/sentence.dart';
 import '../models/article_inherited.dart';
 import '../models/controller.dart';
 import '../functions/utility.dart';
-import '../store/store.dart';
 
 class TimeSentenceIndex {
   int startSeconds = 0;
@@ -70,7 +69,6 @@ class _ArticlePageState extends State<ArticlePage>
     _article.notifyListeners2 = () {
       if (this.mounted) setState(() {});
     };
-    _articleTitles.setInstanceArticles(_article);
     loadArticleByID();
     preload();
   }
@@ -176,27 +174,19 @@ class _ArticlePageState extends State<ArticlePage>
 
   Future loadArticleByID() async {
     this.wantKeepAlive = false;
-    setState(() {
-      _loading = true;
-    });
     bool hasLocal = await _article.getFromLocal(_article.articleID);
+    print("hasLocal=$hasLocal");
     if (hasLocal) {
+      loadFromServer();
+    } else {
       setState(() {
-        _loading = false;
+        _loading = true;
       });
-      // use preload replace loadFromServer even get from local
-      loadFromServer().then((d) {
-        setState(() {});
-      });
-    } else
       await loadFromServer();
+    }
     this.splitSentencesByTime();
     this.initRoutine();
-    print("before Store.wordwiseMap.length=" +
-        Store.wordwiseMap.length.toString());
     await _article.queryWordWise();
-    print("after Store.wordwiseMap.length=" +
-        Store.wordwiseMap.length.toString());
     setState(() {
       _loading = false;
     });
@@ -256,7 +246,7 @@ class _ArticlePageState extends State<ArticlePage>
     return VisibilityDetector(
         key: Key(_article.articleID.toString()),
         onVisibilityChanged: (d) {
-          if (d.visibleFraction == 1) setState(() {});
+          //if (d.visibleFraction == 1) setState(() {});
         },
         child: hud);
   }

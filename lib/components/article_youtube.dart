@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../models/article.dart';
 import '../models/settings.dart';
-//import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import '../youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+//import '../youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 
 class ArticleYouTube extends StatelessWidget {

@@ -100,7 +100,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         ),
       );
       _scaffoldKey.currentState.showSnackBar(snackBar);
-      ;
     });
   }
 

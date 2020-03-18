@@ -72,15 +72,15 @@ class _EbuoyState extends State<Ebuoy> {
     // For sharing or opening urls/text coming from outside the app while the app is in the memory
     _intentDataStreamSubscription =
         ReceiveSharingIntent.getTextStream().listen((String value) {
-      print("shared to run app");
+      print("shared to run app value=$value");
       receiveShare(value);
-    }, onError: (err) {
-      print("getLinkStream error: $err");
+    }, onError: (e) {
+      print("getLinkStream error: $e");
     });
 
     // For sharing or opening urls/text coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialText().then((String value) {
-      print("shared to closed app");
+      print("shared to closed app value=$value");
       receiveShare(value);
     });
   }
