@@ -8,13 +8,12 @@ import '../models/settings.dart';
 class ConfigAutoPlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<Settings>(builder: (context, setting, child) {
-      return SwitchListTile(
-          value: setting.isAutoplay,
-          onChanged: setting.setIsAutoplay,
-          title: Text(
-            'Autoplay',
-          ));
-    });
+    Settings setting = Provider.of<Settings>(context);
+    return SwitchListTile(
+        value: setting.isAutoplay,
+        onChanged: setting.setIsAutoplay,
+        title: Text(
+          'Autoplay',
+        ));
   }
 }

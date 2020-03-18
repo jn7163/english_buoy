@@ -104,16 +104,18 @@ class _EbuoyState extends State<Ebuoy> {
           ChangeNotifierProvider(create: (_) => _articleTitles),
           ChangeNotifierProvider(create: (_) => _settings),
         ],
-        child: Consumer<Settings>(builder: (context, settings, child) {
-          return MaterialApp(
-            title: 'English Buoy',
-            theme: brightTheme,
-            darkTheme: darkTheme,
-            themeMode: settings.isDark ? ThemeMode.dark : ThemeMode.light,
-            home: HomePage(),
-            //onGenerateRoute: getRoute,
-          );
-        }));
+        child: Selector<Settings, bool>(
+            selector: (context, settings) => settings.isDark,
+            builder: (context, isDark, child) {
+              return MaterialApp(
+                title: 'English Buoy',
+                theme: brightTheme,
+                darkTheme: darkTheme,
+                themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+                home: HomePage(),
+                //onGenerateRoute: getRoute,
+              );
+            }));
   }
 
   Route getRoute(RouteSettings settings) {

@@ -25,7 +25,7 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    print("build $this");
+    //print("build $this");
     return AppBar(
       backgroundColor: Theme.of(context).primaryColorDark,
       leading: GestureDetector(

@@ -8,39 +8,52 @@ class LeftDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(child: Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          AppBar(
-              backgroundColor: Theme.of(context).primaryColorDark,
-              //automaticallyImplyLeading: false,
-              leading: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                      backgroundImage: oauthInfo.avatarURL != null
-                          ? NetworkImage(oauthInfo.avatarURL)
-                          : AssetImage('assets/images/logo.png'))),
-              actions: <Widget>[Container()],
-              centerTitle: true,
-              title: Text(
-                "User Profile",
-              )),
-          ListTile(
-            title: Center(child: Text(oauthInfo.name)),
-            subtitle: Center(child: Text(oauthInfo.email)),
-          ),
-          RaisedButton(
-            child: const Text('switch user'),
-            onPressed: () {
-              oauthInfo.switchUser();
-              Navigator.of(context).pop();
-            },
-          ),
-          Text(""),
-          Text("version: 1.4.08")
-        ],
-      );
-    }));
+    OauthInfo _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
+    Consumer consumerAvatar =
+        Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
+      return CircleAvatar(
+          backgroundImage: oauthInfo.avatarURL != null
+              ? NetworkImage(oauthInfo.avatarURL)
+              : AssetImage('assets/images/logo.png'));
+    });
+
+    Consumer consumerName =
+        Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
+      return Text(oauthInfo.name);
+    });
+    Consumer consumerEmail =
+        Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
+      return Text(oauthInfo.email);
+    });
+
+    return Drawer(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        AppBar(
+            backgroundColor: Theme.of(context).primaryColorDark,
+            //automaticallyImplyLeading: false,
+            leading: Padding(
+                padding: const EdgeInsets.all(8.0), child: consumerAvatar),
+            actions: <Widget>[Container()],
+            centerTitle: true,
+            title: Text(
+              "User Profile",
+            )),
+        ListTile(
+          title: Center(child: consumerName),
+          subtitle: Center(child: consumerEmail),
+        ),
+        RaisedButton(
+          child: const Text('switch user'),
+          onPressed: () {
+            _oauthInfo.switchUser();
+            Navigator.of(context).pop();
+          },
+        ),
+        Text(""),
+        Text("version: 1.4.08")
+      ],
+    ));
   }
 }

@@ -158,8 +158,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _articleTitles.justNotifyListeners();
-          //_controller.setMainSelectedIndex(3);
+          _controller.setMainSelectedIndex(3);
         },
         child: Icon(Icons.explore),
       ),

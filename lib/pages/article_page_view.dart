@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/article_titles.dart';
 import './article.dart';
 import '../models/controller.dart';
+import '../models/article_title.dart';
 
 class ArticlePageViewPage extends StatefulWidget {
   @override
@@ -24,28 +25,28 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> {
   Widget build(BuildContext context) {
     //super.build(context);
     if (_controller.articlePageController == null) return Container();
-    return Consumer<ArticleTitles>(builder: (context, _articleTitles, child) {
-      return WillPopScope(
-        onWillPop: () async {
-          if (_controller.mainSelectedIndex == 1) {
-            _controller.setMainSelectedIndex(0);
-            return false;
-          } else
-            return true;
-        },
-        child: PageView(
-            reverse: true,
-            onPageChanged: (i) {
-              _articleTitles.currentArticleIndex = i;
-              // used to highlight aritcleTitlePage item
-              _controller
-                  .setSelectedArticleID(_articleTitles.filterTitles[i].id);
-            },
-            controller: _controller.articlePageController,
-            children: _articleTitles.filterTitles.map((d) {
-              return ArticlePage(d.id);
-            }).toList()),
-      );
-    });
+    return WillPopScope(
+      onWillPop: () async {
+        if (_controller.mainSelectedIndex == 1) {
+          _controller.setMainSelectedIndex(0);
+          return false;
+        } else
+          return true;
+      },
+      child: Selector<ArticleTitles, List<ArticleTitle>>(
+          selector: (context, articleTitles) => articleTitles.filterTitles,
+          builder: (context, filterTitles, child) {
+            return PageView(
+                reverse: true,
+                onPageChanged: (i) {
+                  // used to highlight aritcleTitlePage item
+                  _controller.setSelectedArticleID(filterTitles[i].id);
+                },
+                controller: _controller.articlePageController,
+                children: filterTitles.map((d) {
+                  return ArticlePage(d.id);
+                }).toList());
+          }),
+    );
   }
 }

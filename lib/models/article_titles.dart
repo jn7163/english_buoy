@@ -10,7 +10,6 @@ import './settings.dart';
 import 'controller.dart';
 
 class ArticleTitles with ChangeNotifier {
-  int currentArticleIndex = -1; // current play article index
   String searchKey = ''; // 过滤关键字
   //List<ArticleTitle> filterTitles = []; // 过滤好的列表
   List<ArticleTitle> titles = [];

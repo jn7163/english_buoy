@@ -49,7 +49,6 @@ class _ArticlePageState extends State<ArticlePage>
   bool _loading = true;
   Timer _timer;
   int _highlightSentenceIndex;
-  Controller _controller;
   List<TimeSentenceIndex> _timeSentenceIndexs = List();
 
   @override
@@ -58,7 +57,6 @@ class _ArticlePageState extends State<ArticlePage>
     super.initState();
     _articleID = widget._articleID;
 
-    _controller = Provider.of<Controller>(context, listen: false);
     _scrollController = ScrollController();
     settings = Provider.of<Settings>(context, listen: false);
     _article = Article();
@@ -99,6 +97,7 @@ class _ArticlePageState extends State<ArticlePage>
   }
 
   routineCheckSentenceHighLight() {
+    Controller controller = Provider.of<Controller>(context, listen: false);
     //if leave this article page no need checkSentenceHighlight
     if (!_article.checkSentenceHighlight) return;
     //debugPrint("routineCheckSentenceHighLight article=" + widget._articleID.toString());
@@ -119,10 +118,9 @@ class _ArticlePageState extends State<ArticlePage>
       print("find some set index=" + currentIndex.toString());
       setState(() {
         //auto scroll sentence to top
-
         if (settings.isScrollWithPlay &&
-            _controller.mainSelectedIndex == 1 &&
-            _controller.selectedArticleID == _article.articleID &&
+            controller.mainSelectedIndex == 1 &&
+            controller.selectedArticleID == _article.articleID &&
             _article.youtubeController.value.isPlaying) {
           print("run ensureVisible");
           int sentenceIndex = _timeSentenceIndexs[currentIndex].indexs[0];
