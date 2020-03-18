@@ -29,9 +29,4 @@ class Store {
     }));
     return _dio;
   }
-
-  static recreateDio() {
-    _dio = null;
-    print(dio.toString());
-  }
 }
