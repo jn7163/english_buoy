@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_widgets/flutter_widgets.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'dart:async';
 
 import '../components/article_titles_app_bar.dart';
@@ -97,7 +97,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
 
   Widget getArticleTitlesBody() {
     return Selector<ArticleTitles, List<ArticleTitle>>(
-        //shouldRebuild: (previous, next) => previous == next,
         selector: (context, articleTitles) => articleTitles.filterTitles,
         builder: (context, filterTitles, child) {
           print("run Selector ArticleTitles length=" +

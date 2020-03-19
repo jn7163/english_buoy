@@ -4,8 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/article.dart';
 import '../models/settings.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-//import '../youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:flutter_widgets/flutter_widgets.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class ArticleYouTube extends StatelessWidget {
   const ArticleYouTube({Key key, this.article}) : super(key: key);

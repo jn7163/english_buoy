@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_widgets/flutter_widgets.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'dart:async';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../components/article_titles_slidable.dart';
 import '../models/controller.dart';
 import '../models/explorer.dart';
 import '../models/article_title.dart';
 
-import '../functions/utility.dart';
 import '../themes/base.dart';
 
 class ExplorerPage extends StatefulWidget {
@@ -39,7 +36,7 @@ class ExplorerPageState extends State<ExplorerPage>
   loadData() async {
     bool hasLocal = await _explorer.getFromLocal();
     if (hasLocal) {
-      setState(() {});
+      //setState(() {});
       _explorer.syncExplorer();
     } else {
       await _explorer.syncExplorer();
@@ -52,28 +49,15 @@ class ExplorerPageState extends State<ExplorerPage>
         selector: (context, explorer) => explorer.titles,
         builder: (context, titles, child) {
           print("Selector $this titles.length=" + titles.length.toString());
-          //var body;
-          if (titles.length == 0)
-            return Container();
-          else
-            return ScrollablePositionedList.builder(
-              itemCount: titles.length,
-              itemBuilder: (context, index) {
-                return ArticleTitlesSlidable(
-                    articleTitle: titles.reversed.toList()[index]);
-              },
-              itemScrollController: itemScrollController,
-              itemPositionsListener: itemPositionListener,
-            );
-          /*
-          return ModalProgressHUD(
-              opacity: 1,
-              progressIndicator: getSpinkitProgressIndicator(context),
-              color: Theme.of(context).scaffoldBackgroundColor,
-              dismissible: true,
-              child: body,
-              inAsyncCall: titles.length == 0);
-              */
+          return ScrollablePositionedList.builder(
+            itemCount: titles.length,
+            itemBuilder: (context, index) {
+              return ArticleTitlesSlidable(
+                  articleTitle: titles.reversed.toList()[index]);
+            },
+            itemScrollController: itemScrollController,
+            itemPositionsListener: itemPositionListener,
+          );
         });
   }
 
