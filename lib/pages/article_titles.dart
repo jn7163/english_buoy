@@ -15,6 +15,7 @@ import '../models/article_title.dart';
 
 import '../functions/utility.dart';
 import '../themes/base.dart';
+import '../pages/home.dart';
 
 class ArticleTitlesPage extends StatefulWidget {
   ArticleTitlesPage({Key key}) : super(key: key);
@@ -33,24 +34,25 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   final ItemPositionsListener itemPositionListener =
       ItemPositionsListener.create();
   OauthInfo _oauthInfo;
-  Controller _controller;
   @override
   initState() {
     super.initState();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    _controller = Provider.of<Controller>(context, listen: false);
-
-    this.loadData();
-    //设置回调
+    //when add new youtube done call this function
     _articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
+    // use witch function srcoll to article item
     _articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;
+    this.loadData();
+
     _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
+    // if new login resync article title
     _oauthInfo.setAccessTokenCallBack = this.syncArticleTitles;
     _oauthInfo.backFromShared();
   }
 
   loadData() async {
     bool hasLocal = await _articleTitles.getFromLocal();
+    // when before data is [] can't trigger data show
     if (hasLocal) setState(() {});
   }
 
@@ -145,7 +147,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _controller.setMainSelectedIndex(3);
+          Provider.of<Controller>(context, listen: false)
+              .setMainSelectedIndex(ExplorerPageIndex);
         },
         child: Icon(Icons.explore),
       ),

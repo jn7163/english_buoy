@@ -5,6 +5,10 @@ import './explorer.dart';
 import './article_page_view.dart';
 import '../models/controller.dart';
 
+const ArticleTitlesPageIndex = 0;
+const ArticlePageViewPageIndex = 1;
+const ExplorerPageIndex = 2;
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

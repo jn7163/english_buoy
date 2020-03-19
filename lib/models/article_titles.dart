@@ -11,7 +11,7 @@ import 'controller.dart';
 
 class ArticleTitles with ChangeNotifier {
   String searchKey = ''; // 过滤关键字
-  List<ArticleTitle> filterTitles = []; // 过滤好的列表
+  //List<ArticleTitle> filterTitles = []; // 过滤好的列表
   List<ArticleTitle> titles = [];
   bool sortByUnlearned = true;
   // 完成添加后的回调
@@ -34,7 +34,7 @@ class ArticleTitles with ChangeNotifier {
 
   setSearchKey(String v) {
     searchKey = v;
-    filter();
+    notifyListeners();
   }
 
   // EnsureVisible 不支持 ListView 只有用 50 宽度估算的来 scroll 到分享过来的条目
@@ -125,8 +125,6 @@ class ArticleTitles with ChangeNotifier {
     return [lastID, nextID];
   }
 
-  // can't use Selector with get
-  /*
   List<ArticleTitle> get filterTitles {
     List<ArticleTitle> filterTitles = this.titles;
     if (searchKey != "")
@@ -147,38 +145,15 @@ class ArticleTitles with ChangeNotifier {
           .toList();
     return filterTitles;
   }
-  */
-
-  filter() {
-    filterTitles = this.titles;
-    if (searchKey != "")
-      filterTitles = filterTitles
-          .where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase()))
-          .toList();
-    if (settings.filertPercent > 70)
-      filterTitles = filterTitles
-          .where((d) =>
-              d.percent >= settings.filertPercent ||
-              d.percent == 0) // show percent 0 used to show loading item
-          .toList();
-    //hide 100% aritcle
-    if (settings.isHideFullMastered)
-      filterTitles = filterTitles
-          .where((d) =>
-              d.percent != 100) // show percent 0 used to show loading item
-          .toList();
-
-    notifyListeners();
-  }
 
   filterByPercent(double percent) async {
     await settings.setFilertPercent(percent);
-    filter();
+    notifyListeners();
   }
 
   filterHideMastered(bool b) async {
     await settings.setIsHideFullMastered(b);
-    filter();
+    notifyListeners();
   }
 
   // 啥事都不干, 只是通知
@@ -199,7 +174,7 @@ class ArticleTitles with ChangeNotifier {
     loadingArticleTitle.updatedAt = DateTime.now();
     //this.titles.insert(0, loadingArticleTitle);
     this.titles.add(loadingArticleTitle);
-    filter();
+    notifyListeners();
   }
 
   removeLoadingItemNoNotify() {
@@ -210,7 +185,7 @@ class ArticleTitles with ChangeNotifier {
   removeLoadingItem() {
     //this.titles.removeAt(0);
     this.titles.removeLast();
-    filter();
+    notifyListeners();
   }
 
   changeSort() {
@@ -220,7 +195,7 @@ class ArticleTitles with ChangeNotifier {
       titles.sort((b, a) => b.createdAt.compareTo(a.createdAt));
     }
     sortByUnlearned = !sortByUnlearned;
-    filter();
+    notifyListeners();
   }
 
   setToLocal(String data) {
@@ -262,19 +237,18 @@ class ArticleTitles with ChangeNotifier {
         return;
       }
     }
-    //filter();
   }
 
   removeFromList(ArticleTitle articleTitle) {
     //titles.remove(articleTitle);
     titles.removeWhere((item) => item.id == articleTitle.id);
-    filter();
+    notifyListeners();
   }
 
 // 退出清空数据
   clear() {
     this.titles.clear();
-    filter();
+    notifyListeners();
   }
 
   addArticleTitleByArticle(Article article) {
@@ -291,7 +265,7 @@ class ArticleTitles with ChangeNotifier {
     //this.titles.insert(0, articleTitle);
     this.titles.add(articleTitle);
     print("addByArticle");
-    filter();
+    notifyListeners();
   }
 
   add(ArticleTitle articleTitle) {
@@ -308,7 +282,7 @@ class ArticleTitles with ChangeNotifier {
       // this.articles.add(articleTitle);
       // this.setArticleTitles.add(articleTitle.title);
     });
-    filter();
+    notifyListeners();
   }
 
   int findIndexByArticleID(int articleID) {
