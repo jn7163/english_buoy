@@ -167,8 +167,10 @@ class _ArticlePageState extends State<ArticlePage>
       await loadFromServer();
     }
 
-    this.splitSentencesByTime();
-    this.initRoutine();
+    if (_article.youtube != null && _article.youtube != "") {
+      this.splitSentencesByTime();
+      this.initRoutine();
+    }
     if (this.mounted)
       setState(() {
         _loading = false;
