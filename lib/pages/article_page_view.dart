@@ -34,6 +34,7 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> {
           return true;
       },
       child: Selector<ArticleTitles, List<ArticleTitle>>(
+          shouldRebuild: (previous, next) => previous.length == next.length,
           selector: (context, articleTitles) => articleTitles.filterTitles,
           builder: (context, filterTitles, child) {
             print("build $this Selector");

@@ -126,24 +126,24 @@ class ArticleTitles with ChangeNotifier {
   }
 
   List<ArticleTitle> get filterTitles {
-    List<ArticleTitle> filterTitles = this.titles;
+    List<ArticleTitle> _filterTitles = this.titles;
     if (searchKey != "")
-      filterTitles = filterTitles
+      _filterTitles = _filterTitles
           .where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase()))
           .toList();
     if (settings.filertPercent > 70)
-      filterTitles = filterTitles
+      _filterTitles = _filterTitles
           .where((d) =>
               d.percent >= settings.filertPercent ||
               d.percent == 0) // show percent 0 used to show loading item
           .toList();
     //hide 100% aritcle
     if (settings.isHideFullMastered)
-      filterTitles = filterTitles
+      _filterTitles = _filterTitles
           .where((d) =>
               d.percent != 100) // show percent 0 used to show loading item
           .toList();
-    return filterTitles;
+    return _filterTitles;
   }
 
   filterByPercent(double percent) async {
@@ -165,7 +165,7 @@ class ArticleTitles with ChangeNotifier {
   showLoadingItem() {
     ArticleTitle loadingArticleTitle = ArticleTitle();
     loadingArticleTitle.id = -1;
-    loadingArticleTitle.title = "Loading new youtube article ......";
+    loadingArticleTitle.title = "☕ 🍕   loading new youtube article ......";
     loadingArticleTitle.unlearnedCount = 1;
     loadingArticleTitle.wordCount = 1;
     loadingArticleTitle.loading = true;

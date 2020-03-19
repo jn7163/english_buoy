@@ -178,6 +178,7 @@ class _ArticlePageState extends State<ArticlePage>
     await _article.queryWordWise();
     // make sure show word wise
     setState(() {});
+    return hasLocal;
   }
 
   //split article sentences by time

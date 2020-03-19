@@ -42,18 +42,11 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     _articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
     // use witch function srcoll to article item
     _articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;
-    this.loadData();
 
     _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
     // if new login resync article title
     _oauthInfo.setAccessTokenCallBack = this.syncArticleTitles;
     _oauthInfo.backFromShared();
-  }
-
-  loadData() async {
-    bool hasLocal = await _articleTitles.getFromLocal();
-    // when before data is [] can't trigger data show
-    if (hasLocal) setState(() {});
   }
 
   showInfo(String info) {
@@ -100,12 +93,14 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
 
   Widget getArticleTitlesBody() {
     return Selector<ArticleTitles, List<ArticleTitle>>(
+        shouldRebuild: (previous, next) => previous.length == next.length,
         selector: (context, articleTitles) => articleTitles.filterTitles,
         builder: (context, filterTitles, child) {
           print("run Selector ArticleTitles length=" +
               filterTitles.length.toString());
+          //if (filterTitles.length == 0)
           if (filterTitles.length == 0)
-            return Container();
+            return getBlankPage();
           else
             return ScrollablePositionedList.builder(
               itemCount: filterTitles.length,
@@ -117,6 +112,10 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
               itemPositionsListener: itemPositionListener,
             );
         });
+  }
+
+  Widget getBlankPage() {
+    return Center(child: Image(image: AssetImage('assets/images/logo.png')));
   }
 
   // 滚动到那一条目
@@ -135,23 +134,28 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   Widget build(BuildContext context) {
     super.build(context);
     print("build $this");
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
-      drawer: LeftDrawer(),
-      endDrawer: RightDrawer(),
-      body: RefreshIndicator(
-        onRefresh: syncArticleTitles,
-        child: getArticleTitlesBody(),
-        color: mainColor,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Provider.of<Controller>(context, listen: false)
-              .setMainSelectedIndex(ExplorerPageIndex);
-        },
-        child: Icon(Icons.explore),
-      ),
-    );
+    return FutureBuilder(
+        future: _articleTitles.getFromLocal(),
+        builder: (BuildContext context, AsyncSnapshot<bool> hasLocal) {
+          return Scaffold(
+            key: _scaffoldKey,
+            appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
+            drawer: LeftDrawer(),
+            endDrawer: RightDrawer(),
+            body: RefreshIndicator(
+              onRefresh: syncArticleTitles,
+              child: getArticleTitlesBody(),
+              color: mainColor,
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                //_articleTitles.showLoadingItem();
+                Provider.of<Controller>(context, listen: false)
+                    .setMainSelectedIndex(ExplorerPageIndex);
+              },
+              child: Icon(Icons.explore),
+            ),
+          );
+        });
   }
 }
