@@ -36,11 +36,11 @@ class ExplorerPageState extends State<ExplorerPage>
   loadData() async {
     bool hasLocal = await _explorer.getFromLocal();
     if (hasLocal) {
-      //setState(() {});
+      setState(() {});
       _explorer.syncExplorer();
     } else {
       await _explorer.syncExplorer();
-      //setState(() {});
+      setState(() {});
     }
   }
 
@@ -52,8 +52,10 @@ class ExplorerPageState extends State<ExplorerPage>
           return ScrollablePositionedList.builder(
             itemCount: titles.length,
             itemBuilder: (context, index) {
-              return ArticleTitlesSlidable(
-                  articleTitle: titles.reversed.toList()[index]);
+              return index == 0
+                  ? Container()
+                  : ArticleTitlesSlidable(
+                      articleTitle: titles.reversed.toList()[index]);
             },
             itemScrollController: itemScrollController,
             itemPositionsListener: itemPositionListener,

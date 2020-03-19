@@ -40,14 +40,18 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _controller = Provider.of<Controller>(context, listen: false);
 
-    _articleTitles.getFromLocal();
+    this.loadData();
     //设置回调
     _articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
     _articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;
     _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
     _oauthInfo.setAccessTokenCallBack = this.syncArticleTitles;
     _oauthInfo.backFromShared();
-    //this.syncArticleTitles();
+  }
+
+  loadData() async {
+    bool hasLocal = await _articleTitles.getFromLocal();
+    if (hasLocal) setState(() {});
   }
 
   showInfo(String info) {
@@ -57,7 +61,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         info,
         textAlign: TextAlign.center,
       ),
-      //duration: Duration(milliseconds: 500),
     );
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
@@ -81,9 +84,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   }
 
   Future syncArticleTitles() async {
-    var result = await _articleTitles.syncArticleTitles()
-        //.catchError((_) => oauthInfo.signIn());
-        .catchError((e) {
+    var result = await _articleTitles.syncArticleTitles().catchError((e) {
       String errorInfo = "";
       if (isAccessTokenError(e)) {
         errorInfo = "Login expired";
