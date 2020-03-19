@@ -9,6 +9,19 @@ import 'package:dio/dio.dart';
 import './settings.dart';
 import 'controller.dart';
 
+ArticleTitle getLoadingArticle() {
+  ArticleTitle loadingArticleTitle = ArticleTitle();
+  loadingArticleTitle.id = -1;
+  loadingArticleTitle.title = "☕ 🍕   loading new youtube article ......";
+  loadingArticleTitle.unlearnedCount = 1;
+  loadingArticleTitle.wordCount = 1;
+  loadingArticleTitle.loading = true;
+  loadingArticleTitle.percent = 0;
+  loadingArticleTitle.createdAt = DateTime.now();
+  loadingArticleTitle.updatedAt = DateTime.now();
+  return loadingArticleTitle;
+}
+
 class ArticleTitles with ChangeNotifier {
   String searchKey = ''; // 过滤关键字
   //List<ArticleTitle> filterTitles = []; // 过滤好的列表
@@ -62,12 +75,12 @@ class ArticleTitles with ChangeNotifier {
     return hasShared;
   }
 
-  Future newYouTube(String url) async {
+  Future<bool> newYouTube(String url) async {
     String result;
     if (scrollToSharedItem(url)) {
       result = exists;
       Store.dio.post(Store.baseURL + "Subtitle", data: {"Youtube": url});
-      return;
+      return true;
     }
     this.showLoadingItem();
     if (scrollToArticleTitle != null) scrollToArticleTitle(0);
@@ -93,6 +106,8 @@ class ArticleTitles with ChangeNotifier {
       }
       // 只更新本地缓存, 避免下次打开是老的
       syncArticleTitles(justSetToLocal: true);
+      if (newYouTubeCallBack != null) newYouTubeCallBack(result);
+      return true;
     } on DioError catch (e) {
       this.removeLoadingItem();
       if (e.response != null) {
@@ -101,8 +116,8 @@ class ArticleTitles with ChangeNotifier {
         else
           result = e.response.data['error'];
       }
+      return false;
     }
-    if (newYouTubeCallBack != null) newYouTubeCallBack(result);
   }
 
   // 根据给出的articleID，找到在 filterTitles 中的 前后 articleID
@@ -126,6 +141,8 @@ class ArticleTitles with ChangeNotifier {
   }
 
   List<ArticleTitle> get filterTitles {
+    // must make new list otherwise Selector will not trigger
+    //List<ArticleTitle> _filterTitles = [...this.titles];
     List<ArticleTitle> _filterTitles = this.titles;
     if (searchKey != "")
       _filterTitles = _filterTitles
@@ -163,17 +180,8 @@ class ArticleTitles with ChangeNotifier {
   }
 
   showLoadingItem() {
-    ArticleTitle loadingArticleTitle = ArticleTitle();
-    loadingArticleTitle.id = -1;
-    loadingArticleTitle.title = "☕ 🍕   loading new youtube article ......";
-    loadingArticleTitle.unlearnedCount = 1;
-    loadingArticleTitle.wordCount = 1;
-    loadingArticleTitle.loading = true;
-    loadingArticleTitle.percent = 0;
-    loadingArticleTitle.createdAt = DateTime.now();
-    loadingArticleTitle.updatedAt = DateTime.now();
-    //this.titles.insert(0, loadingArticleTitle);
-    this.titles.add(loadingArticleTitle);
+    this.titles = [...this.titles];
+    this.titles.add(getLoadingArticle());
     notifyListeners();
   }
 
@@ -184,6 +192,7 @@ class ArticleTitles with ChangeNotifier {
 
   removeLoadingItem() {
     //this.titles.removeAt(0);
+    this.titles = [...this.titles];
     this.titles.removeLast();
     notifyListeners();
   }
@@ -240,14 +249,8 @@ class ArticleTitles with ChangeNotifier {
   }
 
   removeFromList(ArticleTitle articleTitle) {
-    //titles.remove(articleTitle);
+    this.titles = [...this.titles];
     titles.removeWhere((item) => item.id == articleTitle.id);
-    notifyListeners();
-  }
-
-// 退出清空数据
-  clear() {
-    this.titles.clear();
     notifyListeners();
   }
 
@@ -261,24 +264,21 @@ class ArticleTitles with ChangeNotifier {
     articleTitle.avatar = article.avatar;
     articleTitle.wordCount = article.wordCount;
     articleTitle.setPercent();
-    // 新增加的插入到第一位
-    //this.titles.insert(0, articleTitle);
+    //need use new list to trigger Selector
+    this.titles = [...this.titles];
     this.titles.add(articleTitle);
     print("addByArticle");
     notifyListeners();
   }
 
-  add(ArticleTitle articleTitle) {
-    this.titles.add(articleTitle);
-  }
-
 // 根据返回的 json 设置到对象
   setFromJSON(List json) {
-    this.titles.clear();
+    // must create new List for provider Selector
+    this.titles = List<ArticleTitle>();
     json.forEach((d) {
       ArticleTitle articleTitle = ArticleTitle();
       articleTitle.setFromJSON(d);
-      add(articleTitle);
+      this.titles.add(articleTitle);
       // this.articles.add(articleTitle);
       // this.setArticleTitles.add(articleTitle.title);
     });

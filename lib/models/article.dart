@@ -93,14 +93,6 @@ class Article with ChangeNotifier {
         'Avatar': this.avatar,
         'WordCount': this.wordCount,
       };
-  /*
-  clear() {
-    this.youtube = '';
-    this.title = '';
-    this.sentences.clear();
-    // notifyListeners2();
-  }
-   */
 
   setToLocal(String data) async {
     // 登录后存储到临时缓存中

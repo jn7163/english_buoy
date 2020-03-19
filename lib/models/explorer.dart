@@ -20,21 +20,23 @@ class Explorer with ChangeNotifier {
     var response = await Store.dio.get(Store.baseURL + _key);
     this.setFromJSON(response.data);
     notifyListeners();
-    setToLocal(json.encode(response.data));
+    this.setToLocal(json.encode(response.data));
     return response;
   }
 
-  add(ArticleTitle articleTitle) {
-    this.titles.add(articleTitle);
+  removeFromList(ArticleTitle articleTitle) {
+    this.titles = [...this.titles];
+    this.titles.removeWhere((item) => item.id == articleTitle.id);
+    notifyListeners();
   }
 
 // 根据返回的 json 设置到对象
   setFromJSON(List json) {
-    this.titles.clear();
+    this.titles = List<ArticleTitle>();
     json.forEach((d) {
       ArticleTitle articleTitle = ArticleTitle();
       articleTitle.setFromJSON(d);
-      add(articleTitle);
+      this.titles.add(articleTitle);
     });
 
     //print("syncExplorer this.titles.length=" + this.titles.length.toString());

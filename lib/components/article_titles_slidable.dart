@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/article_title.dart';
 import '../models/article_titles.dart';
+import '../models/explorer.dart';
 import './article_youtube_avatar.dart';
 import '../models/controller.dart';
 
@@ -66,7 +67,12 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
               if (i == -1) {
                 //use shared flow
                 _controller.setMainSelectedIndex(0);
-                articleTitles.newYouTube(articleTitle.youtube);
+                articleTitles.newYouTube(articleTitle.youtube).then((sucess) {
+                  if (sucess)
+                    //remove from explorer list
+                    Provider.of<Explorer>(context, listen: false)
+                        .removeFromList(articleTitle);
+                });
               }
               print("onTap open i=" + i.toString());
               _controller.setPageSelectedIndex(i);

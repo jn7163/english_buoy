@@ -38,6 +38,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   initState() {
     super.initState();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    _articleTitles.getFromLocal();
     //when add new youtube done call this function
     _articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
     // use witch function srcoll to article item
@@ -93,12 +94,9 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
 
   Widget getArticleTitlesBody() {
     return Selector<ArticleTitles, List<ArticleTitle>>(
-        shouldRebuild: (previous, next) => previous.length == next.length,
         selector: (context, articleTitles) => articleTitles.filterTitles,
         builder: (context, filterTitles, child) {
-          print("run Selector ArticleTitles length=" +
-              filterTitles.length.toString());
-          //if (filterTitles.length == 0)
+          print("Selector $this");
           if (filterTitles.length == 0)
             return getBlankPage();
           else
@@ -134,28 +132,24 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   Widget build(BuildContext context) {
     super.build(context);
     print("build $this");
-    return FutureBuilder(
-        future: _articleTitles.getFromLocal(),
-        builder: (BuildContext context, AsyncSnapshot<bool> hasLocal) {
-          return Scaffold(
-            key: _scaffoldKey,
-            appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
-            drawer: LeftDrawer(),
-            endDrawer: RightDrawer(),
-            body: RefreshIndicator(
-              onRefresh: syncArticleTitles,
-              child: getArticleTitlesBody(),
-              color: mainColor,
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                //_articleTitles.showLoadingItem();
-                Provider.of<Controller>(context, listen: false)
-                    .setMainSelectedIndex(ExplorerPageIndex);
-              },
-              child: Icon(Icons.explore),
-            ),
-          );
-        });
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
+      drawer: LeftDrawer(),
+      endDrawer: RightDrawer(),
+      body: RefreshIndicator(
+        onRefresh: syncArticleTitles,
+        child: getArticleTitlesBody(),
+        color: mainColor,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          //_articleTitles.justNotifyListeners();
+          Provider.of<Controller>(context, listen: false)
+              .setMainSelectedIndex(ExplorerPageIndex);
+        },
+        child: Icon(Icons.explore),
+      ),
+    );
   }
 }
