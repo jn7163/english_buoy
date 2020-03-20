@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Controller with ChangeNotifier {
+  String snackBarInfo = "";
   PageController mainPageController;
   int mainSelectedIndex = 0; // current open main page index
 
@@ -11,6 +12,11 @@ class Controller with ChangeNotifier {
   Controller() {
     if (mainPageController == null)
       mainPageController = PageController(initialPage: 0);
+  }
+  showSnackBar(String info) {
+    print("showSnackBar=$showSnackBar");
+    snackBarInfo = info;
+    notifyListeners();
   }
 
   setSelectedArticleID(int id) {

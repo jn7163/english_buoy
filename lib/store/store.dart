@@ -22,9 +22,9 @@ class Store {
       options.headers["token"] = accessTokenShare;
       return options; //continue
     }, onError: (DioError e) {
-      print(e.toString());
-      return Store.dio;
-      //return e;
+      print("Dio get dio show $e");
+      //return Store.dio;
+      throw e;
     }));
     return _dio;
   }

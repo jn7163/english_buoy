@@ -29,6 +29,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   @override
   bool get wantKeepAlive => true;
   ArticleTitles _articleTitles;
+  Controller _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener =
@@ -37,6 +38,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
   @override
   initState() {
     super.initState();
+    _controller = Provider.of<Controller>(context, listen: false);
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _articleTitles.getFromLocal();
     //when add new youtube done call this function
@@ -50,32 +52,22 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     _oauthInfo.backFromShared();
   }
 
-  showInfo(String info) {
-    final snackBar = SnackBar(
-      backgroundColor: mainColor,
-      content: Text(
-        info,
-        textAlign: TextAlign.center,
-      ),
-    );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
-  }
-
   //添加新的youtube以后的处理回调
   newYouTubeCallBack(String result) {
     print("newYouTubeCallBack result=" + result);
     switch (result) {
       case ArticleTitles.exists:
-        this.showInfo("❦ Article already exists");
+        _controller.showSnackBar("❦ Article already exists");
         break;
       case ArticleTitles.noSubtitle:
-        this.showInfo("❕This YouTube video don't have any en subtitle!");
+        _controller
+            .showSnackBar("❕This YouTube video don't have any en subtitle!");
         break;
       case ArticleTitles.done:
-        this.showInfo("❦ Add success");
+        _controller.showSnackBar("❦ Add success");
         break;
       default:
-        this.showInfo("✗ Something wrong: " + result);
+        _controller.showSnackBar("✗ Something wrong: " + result);
     }
   }
 
@@ -87,7 +79,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         _oauthInfo.signIn();
       } else
         errorInfo = e.message;
-      this.showInfo(errorInfo);
+      _controller.showSnackBar(errorInfo);
     });
     return result;
   }
@@ -145,8 +137,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           //_articleTitles.justNotifyListeners();
-          Provider.of<Controller>(context, listen: false)
-              .setMainSelectedIndex(ExplorerPageIndex);
+          _controller.setMainSelectedIndex(ExplorerPageIndex);
+          //.showSnackBar("test");
         },
         child: Icon(Icons.explore),
       ),
