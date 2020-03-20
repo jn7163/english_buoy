@@ -12,7 +12,7 @@ class Store {
   static Map wordwiseMap = Map<String, String>();
   static Map noWordwiseMap = Map<String, String>();
 
-  static Dio get dio {
+  static Dio dio() {
     Dio _dio = Dio();
     // 发送请求前加入 token
     _dio.interceptors
@@ -23,7 +23,7 @@ class Store {
       return options; //continue
     }, onError: (DioError e) {
       print("Dio get dio show $e");
-      //return Store.dio;
+      //return Store.dio();
       throw e;
     }));
     return _dio;

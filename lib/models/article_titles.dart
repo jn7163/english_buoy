@@ -79,7 +79,7 @@ class ArticleTitles with ChangeNotifier {
     String result;
     if (scrollToSharedItem(url)) {
       result = exists;
-      Store.dio.post(Store.baseURL + "Subtitle", data: {"Youtube": url});
+      Store.dio().post(Store.baseURL + "Subtitle", data: {"Youtube": url});
       return true;
     }
     this.showLoadingItem();
@@ -87,7 +87,7 @@ class ArticleTitles with ChangeNotifier {
 
     Response response;
     try {
-      response = await Store.dio
+      response = await Store.dio()
           .post(Store.baseURL + "Subtitle", data: {"Youtube": url});
       Article article = Article();
       // 将新添加的文章添加到缓存中
@@ -232,7 +232,7 @@ class ArticleTitles with ChangeNotifier {
   // 和服务器同步
   Future syncArticleTitles({bool justSetToLocal = false}) async {
     print("syncArticleTitles");
-    Response response = await Store.dio.get(Store.baseURL + "article_titles");
+    Response response = await Store.dio().get(Store.baseURL + "article_titles");
     if (!justSetToLocal) this.setFromJSON(response.data);
     // save to local for cache
     setToLocal(json.encode(response.data));

@@ -36,7 +36,7 @@ class ArticleTitle with ChangeNotifier {
     print('deleteArticle: ' + this.id.toString());
 
     try {
-      var response = await Store.dio
+      var response = await Store.dio()
           .delete(Store.baseURL + "article/" + this.id.toString());
       return response.data;
     } finally {
