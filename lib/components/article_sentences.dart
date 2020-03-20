@@ -261,12 +261,13 @@ class ArticleSentencesState extends State<ArticleSentences> {
     return star;
   }
 
-  ArticleRichText buildArticleRichText(Sentence s) {
+  ArticleSentence buildArticleRichText(Sentence s) {
     TextSpan star = getSeekButton(context, s.words[0].text, s);
     List<TextSpan> words = s.words.map((d) {
       return getTextSpan(d);
     }).toList();
     words.insert(0, star);
+
     TextStyle playingStyle = TextStyle();
     //if play to current sentence
     if (s.highlight)
@@ -274,7 +275,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
         backgroundColor: Colors.teal[50],
       );
 
-    return ArticleRichText(
+    return ArticleSentence(
         textSpan: TextSpan(
           style: playingStyle,
           text: "",
