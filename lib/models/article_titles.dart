@@ -106,7 +106,6 @@ class ArticleTitles with ChangeNotifier {
       }
       // 只更新本地缓存, 避免下次打开是老的
       syncArticleTitles(justSetToLocal: true);
-      if (newYouTubeCallBack != null) newYouTubeCallBack(result);
       return true;
     } on DioError catch (e) {
       this.removeLoadingItem();
@@ -117,6 +116,8 @@ class ArticleTitles with ChangeNotifier {
           result = e.response.data['error'];
       }
       return false;
+    } finally {
+      if (newYouTubeCallBack != null) newYouTubeCallBack(result);
     }
   }
 

@@ -54,20 +54,19 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
 
   //添加新的youtube以后的处理回调
   newYouTubeCallBack(String result) {
-    print("newYouTubeCallBack result=" + result);
+    print("newYouTubeCallBack result=$result");
     switch (result) {
       case ArticleTitles.exists:
-        _controller.showSnackBar("❦ Article already exists");
+        _controller.showSnackBar("❦  Already exists!");
         break;
       case ArticleTitles.noSubtitle:
-        _controller
-            .showSnackBar("❕This YouTube video don't have any en subtitle!");
+        _controller.showSnackBar("❕  Don't have any en subtitle!");
         break;
       case ArticleTitles.done:
-        _controller.showSnackBar("❦ Add success");
+        _controller.showSnackBar("❦  Success~~");
         break;
       default:
-        _controller.showSnackBar("✗ Something wrong: " + result);
+        _controller.showSnackBar("✗  Something wrong: $result!");
     }
   }
 
