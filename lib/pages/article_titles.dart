@@ -60,7 +60,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         _controller.showSnackBar("❦  Already exists!");
         break;
       case ArticleTitles.noSubtitle:
-        _controller.showSnackBar("❕  Don't have any en subtitle!");
+        _controller.showSnackBar("❕  Don't have any English subtitle!");
         break;
       case ArticleTitles.done:
         _controller.showSnackBar("❦  Success~~");

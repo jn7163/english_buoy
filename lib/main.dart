@@ -37,21 +37,23 @@ class Ebuoy extends StatefulWidget {
 
 class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
+  Controller _controller;
   ArticleTitles _articleTitles;
   Settings _settings;
-  Controller _controller;
+  OauthInfo _oauthInfo;
   @override
   void initState() {
     super.initState();
     Store.prefs;
     openDB();
+    _controller = Controller();
+    _oauthInfo = OauthInfo();
     _articleTitles = ArticleTitles();
     _settings = Settings();
-    _controller = Controller();
-    // 绑定 setting 迸去
-    _articleTitles.settings = _settings;
-    // 绑定 controller 迸去
+    //bind
+    _oauthInfo.controller = _controller;
     _articleTitles.controller = _controller;
+    _articleTitles.settings = _settings;
     initReceiveShare();
   }
 
@@ -92,7 +94,7 @@ class _EbuoyState extends State<Ebuoy> {
           ChangeNotifierProvider.value(value: _controller),
           ChangeNotifierProvider(create: (_) => Article()),
           ChangeNotifierProvider(create: (_) => Loading()),
-          ChangeNotifierProvider(create: (_) => OauthInfo()),
+          ChangeNotifierProvider.value(value: _oauthInfo),
           ChangeNotifierProvider.value(value: _articleTitles),
           ChangeNotifierProvider.value(value: _settings),
         ],

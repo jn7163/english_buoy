@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../store/sign.dart';
 import '../store/store.dart';
+import './controller.dart';
 
 class OauthInfo with ChangeNotifier {
+  Controller controller; // use to show info
   String accessToken;
   String email;
   String name;
@@ -46,24 +48,23 @@ class OauthInfo with ChangeNotifier {
     signIn();
   }
 
-  disconnect() async {
-    try {
-      await _googleSignIn.disconnect();
-    } catch (e) {
-      print(e.toString());
-    }
+  Future disconnect() async {
+    return _googleSignIn.disconnect().then((e) {
+      String info = "sign out Error: $e";
+      debugPrint(info);
+      if (this.controller != null) this.controller.showSnackBar(info);
+    });
   }
 
   signIn() async {
-    print("signIn");
     this.loading = true;
     notifyListeners();
-    try {
-      _googleSignIn.signIn();
-    } catch (e) {
-      print("something wrong: $e");
-      this.signIn();
-    }
+    _googleSignIn.signIn().catchError((e) {
+      String info = "Please check your network!\nError: $e \nTry again...";
+      debugPrint(info);
+      if (this.controller != null) this.controller.showSnackBar(info);
+      Future.delayed(Duration(seconds: 4), () => this.signIn());
+    });
   }
 
   // set login info to shared
