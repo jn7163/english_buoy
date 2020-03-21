@@ -10,13 +10,14 @@ class ConfigScrollWithPlaying extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingNews>(builder: (context, setting, child) {
-      return SwitchListTile(
-          value: setting.isScrollWithPlay,
-          onChanged: setting.setIsScrollWithPlay,
-          title: Text(
-            'Scroll with playing',
-          ));
-    });
+    return Selector<SettingNews, bool>(
+        selector: (context, settings) => settings.isScrollWithPlay,
+        builder: (context, isScrollWithPlay, child) {
+          return SwitchListTile(
+              value: isScrollWithPlay,
+              onChanged: Provider.of<SettingNews>(context, listen: false).setIsScrollWithPlay,
+              title: child);
+        },
+        child: Text('Scroll with playing'));
   }
 }

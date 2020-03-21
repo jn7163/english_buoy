@@ -8,13 +8,15 @@ import '../models/settings.dart';
 class ConfigDarkTheme extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingNews>(builder: (context, setting, child) {
-      return SwitchListTile(
-          value: setting.isDark,
-          onChanged: setting.setIsDark,
-          title: Text(
-            'Dark Mode',
-          ));
-    });
+    return Selector<SettingNews, bool>(
+        selector: (context, settings) => settings.isDark,
+        builder: (context, isDark, child) {
+          return SwitchListTile(
+              value: isDark,
+              onChanged: Provider.of<SettingNews>(context, listen: false).setIsDark,
+              title: Text(
+                'Dark Mode',
+              ));
+        });
   }
 }

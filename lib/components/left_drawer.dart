@@ -9,16 +9,24 @@ class LeftDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     OauthInfo _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
-    Consumer consumerAvatar = Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
-      return CircleAvatar(backgroundImage: oauthInfo.avatarURL != null ? NetworkImage(oauthInfo.avatarURL) : AssetImage('assets/images/logo.png'));
-    });
+    Selector selectorAvatar = Selector<OauthInfo, String>(
+        selector: (context, oauthInfo) => oauthInfo.avatarURL,
+        builder: (context, avatarURL, child) {
+          return CircleAvatar(
+              backgroundImage: avatarURL != null ? NetworkImage(avatarURL) : AssetImage('assets/images/logo.png'));
+        });
 
-    Consumer consumerName = Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
-      return Text(oauthInfo.name);
-    });
-    Consumer consumerEmail = Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
-      return Text(oauthInfo.email);
-    });
+    Selector selectorName = Selector<OauthInfo, String>(
+        selector: (context, oauthInfo) => oauthInfo.name,
+        builder: (context, name, child) {
+          return Text(name);
+        });
+
+    Selector selectorEmail = Selector<OauthInfo, String>(
+        selector: (context, oauthInfo) => oauthInfo.email,
+        builder: (context, email, child) {
+          return Text(email);
+        });
 
     return Drawer(
         child: Column(
@@ -27,15 +35,15 @@ class LeftDrawer extends StatelessWidget {
         AppBar(
             backgroundColor: Theme.of(context).primaryColorDark,
             //automaticallyImplyLeading: false,
-            leading: Padding(padding: const EdgeInsets.all(8.0), child: consumerAvatar),
+            leading: Padding(padding: const EdgeInsets.all(8.0), child: selectorAvatar),
             actions: <Widget>[Container()],
             centerTitle: true,
             title: Text(
               "User Profile",
             )),
         ListTile(
-          title: Center(child: consumerName),
-          subtitle: Center(child: consumerEmail),
+          title: Center(child: selectorName),
+          subtitle: Center(child: selectorEmail),
         ),
         RaisedButton(
           child: const Text('switch user'),

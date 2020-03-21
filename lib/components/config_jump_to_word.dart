@@ -6,17 +6,17 @@ import 'package:provider/provider.dart';
 import '../models/settings.dart';
 
 class ConfigJumpToWord extends StatelessWidget {
-  //const ConfigJumpToWord({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingNews>(builder: (context, setting, child) {
-      return SwitchListTile(
-          value: setting.isJump,
-          onChanged: setting.setIsJump,
-          title: Text(
-            'jump to word when click twice',
-          ));
-    });
+    return Selector<SettingNews, bool>(
+      selector: (context, settings) => settings.isJump,
+      builder: (context, isJump, child) {
+        return SwitchListTile(
+            value: isJump, onChanged: Provider.of<SettingNews>(context, listen: false).setIsJump, title: child);
+      },
+      child: Text(
+        'jump to word when click twice',
+      ),
+    );
   }
 }
