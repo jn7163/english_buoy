@@ -1,7 +1,6 @@
 // 文章中的每个文字的结构体
 import 'dart:async';
 import '../store/store.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import './sentence.dart';
 
@@ -30,8 +29,7 @@ class Word with ChangeNotifier {
 // 记录学习状态
   Future putLearned() async {
     // 标记所有单词为对应状态, 并通知
-    Dio dio = getDio();
-    var response = await dio.put(Store.baseURL + "learned",
+    var response = await Store.dio().put(Store.baseURL + "learned",
         data: {"word": this.text, "learned": this.learned});
     //提交未学会单词数(其实可以放在后台, 或者和上面的提交合并)
     // _putUnlearnedCount();
@@ -40,9 +38,8 @@ class Word with ChangeNotifier {
 
 // 记录学习次数
   Future putLearn() async {
-    Dio dio = getDio();
     var response =
-        await dio.put(Store.baseURL + "learn", data: {"word": this.text});
+        await Store.dio().put(Store.baseURL + "learn", data: {"word": this.text});
     return response;
   }
 }

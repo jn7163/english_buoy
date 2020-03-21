@@ -24,13 +24,9 @@ class ArticleTopBar extends StatelessWidget {
           onTap: () {
             _launchURL(article.youtube);
           },
-          leading: ArticleYoutubeAvatar(
-              youtubeURL: article.youtube,
-              avatar: article.avatar,
-              loading: false),
+          leading: ArticleYoutubeAvatar(avatar: article.avatar, loading: false),
           title: (article != null)
-              ? Text(article.title,
-                  style: Theme.of(context).primaryTextTheme.title)
+              ? Text(article.title, style: Theme.of(context).primaryTextTheme.title)
               : Text(
                   "loading...",
                   style: Theme.of(context).primaryTextTheme.title,

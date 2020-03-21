@@ -13,10 +13,8 @@ Widget getSpinkitProgressIndicator(BuildContext context) {
 Future<String> getDeviceID() async {
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-  print('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
 
   IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-  print('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
   return androidInfo.androidId;
 }
 */
@@ -25,4 +23,15 @@ Duration toDuration(String time) {
   return Duration(
     milliseconds: (double.parse(time) * 1000).round(),
   );
+}
+
+bool isAccessTokenError(dynamic e) {
+  if (e.response != null) {
+    if (e.response.statusCode == 401) return true;
+  } else {
+    // Something happened in setting up or sending the request that triggered an Error
+    debugPrint(e.request);
+    debugPrint(e.message);
+  }
+  return false;
 }

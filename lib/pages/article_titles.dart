@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_widgets/flutter_widgets.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'dart:async';
 
 import '../components/article_titles_app_bar.dart';
@@ -9,9 +8,10 @@ import '../components/article_titles_slidable.dart';
 import '../components/right_drawer.dart';
 import '../components/left_drawer.dart';
 
+import '../models/controller.dart';
 import '../models/article_titles.dart';
 import '../models/oauth_info.dart';
-import '../models/settings.dart';
+import '../models/article_title.dart';
 
 import '../functions/utility.dart';
 import '../themes/base.dart';
@@ -23,167 +23,109 @@ class ArticleTitlesPage extends StatefulWidget {
   ArticleTitlesPageState createState() => ArticleTitlesPageState();
 }
 
-class ArticleTitlesPageState extends State<ArticleTitlesPage>
-    with AutomaticKeepAliveClientMixin {
+class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   ArticleTitles _articleTitles;
+  Controller _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionListener =
-      ItemPositionsListener.create();
-  Settings settings;
-  OauthInfo oauthInfo;
+  final ItemPositionsListener itemPositionListener = ItemPositionsListener.create();
+  OauthInfo _oauthInfo;
   @override
   initState() {
     super.initState();
-
-    settings = Provider.of<Settings>(context, listen: false);
+    _controller = Provider.of<Controller>(context, listen: false);
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _articleTitles.getFromLocal();
-    oauthInfo = Provider.of<OauthInfo>(context, listen: false);
-    oauthInfo.backFromShared();
-    //设置回调
+    //when add new youtube done call this function
     _articleTitles.newYouTubeCallBack = this.newYouTubeCallBack;
+    // use witch function srcoll to article item
     _articleTitles.scrollToArticleTitle = this.scrollToArticleTitle;
+
+    _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
+    // if new login resync article title
+    _oauthInfo.setAccessTokenCallBack = this.syncArticleTitles;
+    _oauthInfo.backFromShared();
   }
 
   //添加新的youtube以后的处理回调
   newYouTubeCallBack(String result) {
-    print("newYouTubeCallBack result=" + result);
     switch (result) {
       case ArticleTitles.exists:
-        {
-          final snackBar = SnackBar(
-            backgroundColor: mainColor,
-            content: Text(
-              "Already exists",
-              textAlign: TextAlign.center,
-            ),
-            //duration: Duration(milliseconds: 500),
-          );
-          _scaffoldKey.currentState.showSnackBar(snackBar);
-        }
+        _controller.showSnackBar("❦  Already exists!");
         break;
       case ArticleTitles.noSubtitle:
-        {
-          final snackBar = SnackBar(
-            backgroundColor: Colors.red,
-            content: Text("This YouTube video don't have any en subtitle!"),
-            action: SnackBarAction(
-              textColor: Theme.of(context).textTheme.headline6.color,
-              label: "👌I known",
-              onPressed: () {},
-            ),
-            duration: Duration(minutes: 1),
-          );
-          _scaffoldKey.currentState.showSnackBar(snackBar);
-        }
+        _controller.showSnackBar("❕  Don't have any English subtitle!");
         break;
       case ArticleTitles.done:
-        {
-          final snackBar = SnackBar(
-            backgroundColor: mainColor,
-            content: Text(
-              "Add success",
-              textAlign: TextAlign.center,
-            ),
-            //duration: Duration(milliseconds: 500),
-          );
-          _scaffoldKey.currentState.showSnackBar(snackBar);
-        }
+        _controller.showSnackBar("❦  Success~~");
         break;
       default:
-        {
-          print("Something wrong result=" + result);
-        }
+        _controller.showSnackBar("✗  Something wrong: $result!");
     }
   }
 
   Future syncArticleTitles() async {
-    return _articleTitles.syncArticleTitles().catchError((e) {
-      if (e.response && e.response.statusCode == 401) oauthInfo.signIn();
+    var result = await _articleTitles.syncArticleTitles().catchError((e) {
+      String errorInfo = "";
+      if (isAccessTokenError(e)) {
+        errorInfo = "Login expired";
+        _oauthInfo.signIn();
+      } else
+        errorInfo = e.message;
+      _controller.showSnackBar(errorInfo);
     });
+    return result;
   }
 
   Widget getArticleTitlesBody() {
-    return Consumer<ArticleTitles>(builder: (context, articleTitles, child) {
-      var body;
-      if (articleTitles.filterTitles.length == 0)
-        body = Container();
-      else
-        /*
-        body = ListWheelScrollView(
-          useMagnifier: true,
-          itemExtent: 80,
-          diameterRatio: 4.0,
-          children: articleTitles.filterTitles.reversed.map((d) {
-            return ArticleTitlesSlidable(articleTitle: d);
-          }).toList(),
-        );
-        */
-        body = ScrollablePositionedList.builder(
-          itemCount: articleTitles.filterTitles.length,
-          itemBuilder: (context, index) {
-            return ArticleTitlesSlidable(
-                articleTitle:
-                    articleTitles.filterTitles.reversed.toList()[index]);
-          },
-          itemScrollController: itemScrollController,
-          itemPositionsListener: itemPositionListener,
-        );
-      return ModalProgressHUD(
-          opacity: 1,
-          progressIndicator: getSpinkitProgressIndicator(context),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          dismissible: true,
-          child: body,
-          inAsyncCall: articleTitles.filterTitles.length == 0);
-    });
+    return Selector<ArticleTitles, List<ArticleTitle>>(
+        selector: (context, articleTitles) => articleTitles.filterTitles,
+        builder: (context, filterTitles, child) {
+          if (filterTitles.length == 0)
+            return getBlankPage();
+          else
+            return ScrollablePositionedList.builder(
+              itemCount: filterTitles.length,
+              itemBuilder: (context, index) {
+                return ArticleTitlesSlidable(articleTitle: filterTitles.reversed.toList()[index]);
+              },
+              itemScrollController: itemScrollController,
+              itemPositionsListener: itemPositionListener,
+            );
+        });
   }
 
-  Future refresh() async {
-    await syncArticleTitles();
-    return;
+  Widget getBlankPage() {
+    return Center(child: Image(image: AssetImage('assets/images/logo.png')));
   }
 
   // 滚动到那一条目
   scrollToArticleTitle(int index) {
-    print("scrollToArticleTitle index=" + index.toString());
     // 稍微等等, 避免 build 时候滚动
     Future.delayed(Duration.zero, () {
-      itemScrollController.scrollTo(
-          index: index,
-          duration: Duration(seconds: 2),
-          curve: Curves.easeInOutCubic);
+      itemScrollController.scrollTo(index: index, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    print("build ArticleTitlesPage");
     return Scaffold(
       key: _scaffoldKey,
       appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
       drawer: LeftDrawer(),
       endDrawer: RightDrawer(),
       body: RefreshIndicator(
-        onRefresh: refresh,
+        onRefresh: syncArticleTitles,
         child: getArticleTitlesBody(),
         color: mainColor,
       ),
-
-      /*
-      floatingActionButton: Visibility(
-          visible: _articleTitles.titles.length > 10 ? false : true,
-          child: FloatingActionButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/Guid');
-            },
-            child: Icon(Icons.help_outline),
-          )),
-          */
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _controller.jumpToHome(ExplorerPageIndex),
+        child: Icon(Icons.explore),
+      ),
     );
   }
 }

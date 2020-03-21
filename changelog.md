@@ -1,8 +1,40 @@
-# ebuoy
+# English Buoy
 
 Learn English by reading YouTube subtitle article.
 
 ## Version
+
+v1.4.12+1.4.12
+
+- fix enter wrong article error
+
+v1.4.11+1.4.11
+
+- Fix save local cache error
+- Fix some word failure get word wise data
+- Always dim when YouTube player pause make sure play/loading button see clearly
+- Add default avatar to the text article
+
+v1.4.10+1.4.10
+
+- Word wise
+- Show loading animation when login
+- Show server sad error
+
+v1.4.09+1.4.09
+
+- Fix check login bug
+- Adjust explorer page
+
+v1.4.08+1.4.08
+
+- Add explorer
+
+v1.4.07+1.4.07
+
+- Make sure the same word in the different article show the same status
+- Speedup filter by percent slider
+- Add auto-scroll with playing config
 
 v1.4.02+1.4.02
 
