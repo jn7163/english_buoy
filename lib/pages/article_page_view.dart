@@ -14,10 +14,8 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> {
   //with AutomaticKeepAliveClientMixin {
   //@override
   //bool get wantKeepAlive => false;
-  Controller _controller;
   @override
   void initState() {
-    _controller = Provider.of<Controller>(context, listen: false);
     super.initState();
   }
 
@@ -26,6 +24,7 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> {
     //super.build(context);
     return WillPopScope(
       onWillPop: () async {
+        Controller _controller = Provider.of<Controller>(context, listen: false);
         if (_controller.homeIndex != ArticleTitlesPageIndex) {
           _controller.jumpToHome(ArticleTitlesPageIndex);
           return false;
@@ -36,6 +35,7 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> {
           selector: (context, articleTitles) => articleTitles.filterTitles,
           builder: (context, filterTitles, child) {
             print("Selector $this init _controller.articlePageViewController!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Controller _controller = Provider.of<Controller>(context, listen: false);
             _controller.articlePageViewController = PageController(initialPage: _controller.articleIndex);
             return PageView(
                 reverse: true,

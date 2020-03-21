@@ -61,9 +61,10 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                 if (_controller.articlePageViewController == null) {
                   _controller.articleIndex = i;
                   _controller.jumpToHome(ArticlePageViewPageIndex);
+                  // no need run jumpToArticle when first open
                 } else {
-                  _controller.jumpToArticle(i);
                   _controller.jumpToHome(ArticlePageViewPageIndex);
+                  _controller.jumpToArticle(i);
                 }
               }
             },
