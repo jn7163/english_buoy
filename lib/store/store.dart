@@ -15,15 +15,12 @@ class Store {
   static Dio dio() {
     Dio _dio = Dio();
     // 发送请求前加入 token
-    _dio.interceptors
-        .add(InterceptorsWrapper(onRequest: (Options options) async {
+    _dio.interceptors.add(InterceptorsWrapper(onRequest: (Options options) async {
       if (_prefs == null) await Store.prefs;
       String accessTokenShare = _prefs.getString('accessToken');
       options.headers["token"] = accessTokenShare;
       return options; //continue
     }, onError: (DioError e) {
-      print("Dio get dio show $e");
-      //return Store.dio();
       throw e;
     }));
     return _dio;
@@ -35,4 +32,3 @@ class Store {
     return _prefs;
   }
 }
-

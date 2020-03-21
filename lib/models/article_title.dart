@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import '../store/store.dart';
 
 class ArticleTitle with ChangeNotifier {
@@ -33,11 +32,8 @@ class ArticleTitle with ChangeNotifier {
 
   // 删除文章
   Future deleteArticle() async {
-    print('deleteArticle: ' + this.id.toString());
-
     try {
-      var response = await Store.dio()
-          .delete(Store.baseURL + "article/" + this.id.toString());
+      var response = await Store.dio().delete(Store.baseURL + "article/" + this.id.toString());
       return response.data;
     } finally {
       //allLoading.set(false);

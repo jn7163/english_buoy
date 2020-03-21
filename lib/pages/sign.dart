@@ -24,9 +24,7 @@ class SignInPageState extends State<SignInPage> {
           children: [
             ListTile(
               leading: CircleAvatar(
-                backgroundImage: NetworkImage(oauthInfo.avatarURL == null
-                    ? "https://ebuoydoc.bigzhu.net/assets/img/ic_launcher_APP.png"
-                    : oauthInfo.avatarURL),
+                backgroundImage: NetworkImage(oauthInfo.avatarURL == null ? "https://ebuoydoc.bigzhu.net/assets/img/ic_launcher_APP.png" : oauthInfo.avatarURL),
               ),
               title: Text(oauthInfo.name),
               subtitle: Text(oauthInfo.email),
@@ -58,7 +56,6 @@ class SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("build sign");
     return Scaffold(
         appBar: AppBar(
           title: const Text('Config'),

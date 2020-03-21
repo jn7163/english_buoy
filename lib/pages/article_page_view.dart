@@ -24,11 +24,10 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> {
   @override
   Widget build(BuildContext context) {
     //super.build(context);
-    if (_controller.articlePageController == null) return Container();
     return WillPopScope(
       onWillPop: () async {
-        if (_controller.mainSelectedIndex == 1) {
-          _controller.setMainSelectedIndex(0);
+        if (_controller.homeIndex != ArticleTitlesPageIndex) {
+          _controller.jumpToHome(ArticleTitlesPageIndex);
           return false;
         } else
           return true;
@@ -36,17 +35,13 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> {
       child: Selector<ArticleTitles, List<ArticleTitle>>(
           selector: (context, articleTitles) => articleTitles.filterTitles,
           builder: (context, filterTitles, child) {
-            print("Selector $this");
+            print("Selector $this init _controller.articlePageViewController!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            _controller.articlePageViewController = PageController(initialPage: _controller.articleIndex);
             return PageView(
                 reverse: true,
-                onPageChanged: (i) {
-                  // used to highlight aritcleTitlePage item
-                  _controller.setSelectedArticleID(filterTitles[i].id);
-                },
-                controller: _controller.articlePageController,
-                children: filterTitles.map((d) {
-                  return ArticlePage(d.id);
-                }).toList());
+                onPageChanged: (i) => _controller.setSelectedArticleID(filterTitles[i].id), // used to highlight aritcleTitlePage item
+                controller: _controller.articlePageViewController,
+                children: filterTitles.map((d) => ArticlePage(d.id)).toList());
           }),
     );
   }

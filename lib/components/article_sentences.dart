@@ -18,17 +18,10 @@ import '../functions/article.dart';
 import '../functions/utility.dart';
 
 // init text style
-TextStyle bodyTextStyle = TextStyle(
-    color: Colors.black87, fontSize: 20.0, fontFamily: 'NotoSans-Medium');
+TextStyle bodyTextStyle = TextStyle(color: Colors.black87, fontSize: 20.0, fontFamily: 'NotoSans-Medium');
 
 class ArticleSentences extends StatefulWidget {
-  ArticleSentences(
-      {Key key,
-      @required this.article,
-      @required this.sentences,
-      this.needWordWise = true,
-      this.crossAxisAlignment = CrossAxisAlignment.start})
-      : super(key: key);
+  ArticleSentences({Key key, @required this.article, @required this.sentences, this.needWordWise = true, this.crossAxisAlignment = CrossAxisAlignment.start}) : super(key: key);
   final bool needWordWise;
   final Article article; // 用于计算文章的未掌握数目
   final List<Sentence> sentences; // 需要渲染的多条句子
@@ -63,9 +56,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
 
   int _getIDByTitle(String title) {
     var articles = Provider.of<ArticleTitles>(context, listen: false);
-    var titles = articles.titles
-        .where((d) => d.title.toLowerCase() == title.toLowerCase())
-        .toList();
+    var titles = articles.titles.where((d) => d.title.toLowerCase() == title.toLowerCase()).toList();
     if (titles.length > 0) {
       return titles[0].id;
     }
@@ -90,15 +81,13 @@ class ArticleSentencesState extends State<ArticleSentences> {
         //update global word status
         _global.words[word.text.toLowerCase()] = word;
 
-        if (word.learned == false) print("run getDefinitionByWord");
         await getDefinitionByWord(word.text.toLowerCase());
         setState(() {});
 
         // set all sentences word to this state
         await widget.article.putLearned(word); //重新计算文章未掌握单词数
         var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-        articleTitles.setUnlearnedCountByArticleID(
-            widget.article.unlearnedCount, widget.article.articleID);
+        articleTitles.setUnlearnedCountByArticleID(widget.article.unlearnedCount, widget.article.articleID);
         //save to local
         widget.article.updateLocal();
       }
@@ -114,9 +103,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
             });
           });
           // 无需学的, 没必要显示级别
-          if (word.level != 0)
-            Alert.toast(context, word.level.toString(),
-                position: ToastPosition.bottom, duration: ToastDuration.long);
+          if (word.level != 0) Alert.toast(context, word.level.toString(), position: ToastPosition.bottom, duration: ToastDuration.long);
           // 实时增加次数的效果
           widget.article.increaseLearnCount(word.text);
           // 记录学习次数
@@ -124,9 +111,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
           Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
           // 已经在这个单词页, 就不要跳转了
-          if (_lastTapedText.toLowerCase() == word.text.toLowerCase() &&
-              word.text.toLowerCase() != widget.article.title.toLowerCase() &&
-              _settings.isJump) {
+          if (_lastTapedText.toLowerCase() == word.text.toLowerCase() && word.text.toLowerCase() != widget.article.title.toLowerCase() && _settings.isJump) {
             int id = _getIDByTitle(word.text);
             if (id != 0) {
               Navigator.pushNamed(context, '/Article', arguments: id);
@@ -140,8 +125,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
 
   // 生成修改播放位置的图标
   TextSpan getSeekTextSpan(BuildContext context, String time, Sentence s) {
-    if (seekTextSpanTapStatus[time] == null)
-      seekTextSpanTapStatus[time] = false;
+    if (seekTextSpanTapStatus[time] == null) seekTextSpanTapStatus[time] = false;
     Duration seekTime = toDuration(time);
     TapGestureRecognizer recognizer = TapGestureRecognizer()
       ..onTap = () {
@@ -155,14 +139,8 @@ class ArticleSentencesState extends State<ArticleSentences> {
           });
         });
       };
-    TextStyle playTextStyle =
-        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
-    return TextSpan(
-        text: " ▷ ",
-        style: seekTextSpanTapStatus[time] || s.highlight
-            ? playTextStyle.copyWith(fontWeight: FontWeight.bold)
-            : playTextStyle,
-        recognizer: recognizer);
+    TextStyle playTextStyle = bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
+    return TextSpan(text: " ▷ ", style: seekTextSpanTapStatus[time] || s.highlight ? playTextStyle.copyWith(fontWeight: FontWeight.bold) : playTextStyle, recognizer: recognizer);
   }
 
 // 根据规则, 判断单词前是否需要添加空白
@@ -173,20 +151,16 @@ class ArticleSentencesState extends State<ArticleSentences> {
   // 定义应该的 style
   TextStyle _defineStyle(Word word) {
     bool isCommandWord = (word.level != null && word.level != 0); // 是否3000常用
-    bool isSelected =
-        (_tapedText.toLowerCase() == word.text.toLowerCase()); // 是否选中
+    bool isSelected = (_tapedText.toLowerCase() == word.text.toLowerCase()); // 是否选中
     // 常用高亮色
-    this.needLearnTextStyle =
-        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
+    this.needLearnTextStyle = bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
     // 非常用的高亮色
-    this.noNeedLearnTextStyle =
-        bodyTextStyle.copyWith(color: Theme.of(context).primaryColorDark);
+    this.noNeedLearnTextStyle = bodyTextStyle.copyWith(color: Theme.of(context).primaryColorDark);
 
     //根据条件逐步加工修改的样式
     TextStyle processTextStyle = bodyTextStyle;
     // 是常用
-    processTextStyle =
-        isCommandWord ? needLearnTextStyle : noNeedLearnTextStyle;
+    processTextStyle = isCommandWord ? needLearnTextStyle : noNeedLearnTextStyle;
     //无需学习的非标准单词
     if (!isNeedLearn(word)) processTextStyle = bodyTextStyle;
     // 已经学会且没有选中, 不用任何修改
@@ -198,17 +172,12 @@ class ArticleSentencesState extends State<ArticleSentences> {
           decoration: TextDecoration.underline,
           decorationStyle: TextDecorationStyle.wavy);
     // 查找时高亮
-    if (widget.article.findWord.toLowerCase() == word.text.toLowerCase())
-      processTextStyle = processTextStyle.copyWith(
-          color: Colors.deepOrange[700],
-          decoration: TextDecoration.underline,
-          decorationStyle: TextDecorationStyle.wavy);
+    if (widget.article.findWord.toLowerCase() == word.text.toLowerCase()) processTextStyle = processTextStyle.copyWith(color: Colors.deepOrange[700], decoration: TextDecoration.underline, decorationStyle: TextDecorationStyle.wavy);
     return processTextStyle;
   }
 
   keepWordHasSameStat(Word word) {
-    if (_global.words.containsKey(word.text.toLowerCase()))
-      word.learned = _global.words[word.text.toLowerCase()].learned;
+    if (_global.words.containsKey(word.text.toLowerCase())) word.learned = _global.words[word.text.toLowerCase()].learned;
     return word;
   }
 
@@ -225,27 +194,15 @@ class ArticleSentencesState extends State<ArticleSentences> {
     //需要学习的单词
     if (word.learned == false && isNeedLearn(word)) {
       String shortDef = "";
-      if (widget.needWordWise &&
-          Store.wordwiseMap[word.text.toLowerCase()] != null)
-        shortDef = "-" + Store.wordwiseMap[word.text.toLowerCase()];
+      if (widget.needWordWise && Store.wordwiseMap[word.text.toLowerCase()] != null) shortDef = "-" + Store.wordwiseMap[word.text.toLowerCase()];
       if (word.count != 0) shortDef += " " + word.count.toString();
-      subscript = TextSpan(
-          text: shortDef,
-          style: wordStyle.copyWith(fontSize: 12)); // 下标样式和原本保持一致, 只是变小
+      subscript = TextSpan(text: shortDef, style: wordStyle.copyWith(fontSize: 12)); // 下标样式和原本保持一致, 只是变小
 
     }
 
     return TextSpan(text: _getBlank(word.text), children: [
       // if not letter no need recognizer
-      hasLetter(word.text)
-          ? TextSpan(
-              text: word.text,
-              style: wordStyle,
-              recognizer: _getTapRecognizer(word))
-          : TextSpan(
-              text: word.text,
-              style: wordStyle,
-              recognizer: _getTapRecognizer(word)),
+      hasLetter(word.text) ? TextSpan(text: word.text, style: wordStyle, recognizer: _getTapRecognizer(word)) : TextSpan(text: word.text, style: wordStyle, recognizer: _getTapRecognizer(word)),
       subscript,
     ]);
   }
@@ -287,13 +244,11 @@ class ArticleSentencesState extends State<ArticleSentences> {
   @override
   Widget build(BuildContext context) {
     //只有一个单词时候不要用 Column封装,避免位置上移
-    if (widget.sentences.length == 1)
-      return buildArticleRichText(widget.sentences[0]);
+    if (widget.sentences.length == 1) return buildArticleRichText(widget.sentences[0]);
     List<Widget> richTextList = widget.sentences.map((s) {
       return buildArticleRichText(s);
     }).toList();
 
-    return Column(
-        children: richTextList, crossAxisAlignment: CrossAxisAlignment.start);
+    return Column(children: richTextList, crossAxisAlignment: CrossAxisAlignment.start);
   }
 }

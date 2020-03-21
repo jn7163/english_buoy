@@ -4,15 +4,12 @@ import '../models/article_inherited.dart';
 
 class ArticleFloatingActionButton extends StatefulWidget {
   @override
-  ArticleFloatingActionButtonState createState() =>
-      ArticleFloatingActionButtonState();
+  ArticleFloatingActionButtonState createState() => ArticleFloatingActionButtonState();
 }
 
-class ArticleFloatingActionButtonState
-    extends State<ArticleFloatingActionButton> {
+class ArticleFloatingActionButtonState extends State<ArticleFloatingActionButton> {
   @override
   Widget build(BuildContext context) {
-    //print("build $this");
     Article article = ArticleInherited.of(context).article;
     return Align(
         alignment: Alignment.centerRight,
@@ -36,7 +33,5 @@ class ArticleFloatingActionButtonState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // build方法中没有依赖InheritedWidget，此回调不会被调用。
-    print("ArticleFloatingActionButton Dependencies change");
   }
 }

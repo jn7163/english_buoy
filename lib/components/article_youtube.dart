@@ -11,10 +11,8 @@ class ArticleYouTube extends StatelessWidget {
   final Article article;
   @override
   Widget build(BuildContext context) {
-    //print("build $this");
     //Article article = Provider.of<Article>(context);
-    if (article == null || article.title == null || article.youtube == '')
-      return Container(width: 0.0, height: 0.0);
+    if (article == null || article.title == null || article.youtube == '') return Container(width: 0.0, height: 0.0);
     Settings settings = Provider.of<Settings>(context);
     return VisibilityDetector(
         key: Key("youtube_" + article.articleID.toString()),
@@ -29,8 +27,7 @@ class ArticleYouTube extends StatelessWidget {
             color: Theme.of(context).primaryColorDark,
             child: SafeArea(
                 child: YoutubePlayer(
-              onPlayerInitialized: (controller) =>
-                  article.setYouTube(controller),
+              onPlayerInitialized: (controller) => article.setYouTube(controller),
               context: context,
               videoId: YoutubePlayer.convertUrlToId(article.youtube),
               flags: YoutubePlayerFlags(

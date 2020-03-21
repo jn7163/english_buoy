@@ -18,7 +18,6 @@ class ArticleTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //print("build $this");
     return Container(
       color: Theme.of(context).primaryColorDark,
       child: ListTile(
@@ -27,8 +26,7 @@ class ArticleTopBar extends StatelessWidget {
           },
           leading: ArticleYoutubeAvatar(avatar: article.avatar, loading: false),
           title: (article != null)
-              ? Text(article.title,
-                  style: Theme.of(context).primaryTextTheme.title)
+              ? Text(article.title, style: Theme.of(context).primaryTextTheme.title)
               : Text(
                   "loading...",
                   style: Theme.of(context).primaryTextTheme.title,

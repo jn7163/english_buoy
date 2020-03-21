@@ -15,7 +15,6 @@ import '../models/article_title.dart';
 
 import '../functions/utility.dart';
 import '../themes/base.dart';
-import '../pages/home.dart';
 
 class ArticleTitlesPage extends StatefulWidget {
   ArticleTitlesPage({Key key}) : super(key: key);
@@ -24,16 +23,14 @@ class ArticleTitlesPage extends StatefulWidget {
   ArticleTitlesPageState createState() => ArticleTitlesPageState();
 }
 
-class ArticleTitlesPageState extends State<ArticleTitlesPage>
-    with AutomaticKeepAliveClientMixin {
+class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   ArticleTitles _articleTitles;
   Controller _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionListener =
-      ItemPositionsListener.create();
+  final ItemPositionsListener itemPositionListener = ItemPositionsListener.create();
   OauthInfo _oauthInfo;
   @override
   initState() {
@@ -54,7 +51,6 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
 
   //添加新的youtube以后的处理回调
   newYouTubeCallBack(String result) {
-    print("newYouTubeCallBack result=$result");
     switch (result) {
       case ArticleTitles.exists:
         _controller.showSnackBar("❦  Already exists!");
@@ -87,15 +83,13 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
     return Selector<ArticleTitles, List<ArticleTitle>>(
         selector: (context, articleTitles) => articleTitles.filterTitles,
         builder: (context, filterTitles, child) {
-          print("Selector $this");
           if (filterTitles.length == 0)
             return getBlankPage();
           else
             return ScrollablePositionedList.builder(
               itemCount: filterTitles.length,
               itemBuilder: (context, index) {
-                return ArticleTitlesSlidable(
-                    articleTitle: filterTitles.reversed.toList()[index]);
+                return ArticleTitlesSlidable(articleTitle: filterTitles.reversed.toList()[index]);
               },
               itemScrollController: itemScrollController,
               itemPositionsListener: itemPositionListener,
@@ -109,20 +103,15 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
 
   // 滚动到那一条目
   scrollToArticleTitle(int index) {
-    print("scrollToArticleTitle index=" + index.toString());
     // 稍微等等, 避免 build 时候滚动
     Future.delayed(Duration.zero, () {
-      itemScrollController.scrollTo(
-          index: index,
-          duration: Duration(seconds: 2),
-          curve: Curves.easeInOutCubic);
+      itemScrollController.scrollTo(index: index, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    print("build $this");
     return Scaffold(
       key: _scaffoldKey,
       appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
@@ -134,11 +123,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage>
         color: mainColor,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          //_articleTitles.justNotifyListeners();
-          _controller.setMainSelectedIndex(ExplorerPageIndex);
-          //.showSnackBar("test");
-        },
+        onPressed: () => _controller.jumpToHome(ExplorerPageIndex),
         child: Icon(Icons.explore),
       ),
     );

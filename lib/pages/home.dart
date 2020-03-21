@@ -6,10 +6,6 @@ import './article_page_view.dart';
 import '../models/controller.dart';
 import '../themes/base.dart';
 
-const ArticleTitlesPageIndex = 0;
-const ArticlePageViewPageIndex = 1;
-const ExplorerPageIndex = 2;
-
 class HomePage extends StatelessWidget {
   SnackBar getSnackBar(String info) {
     return SnackBar(
@@ -25,16 +21,14 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Selector<Controller, String>(
-            shouldRebuild: (previous, next) =>
-                next != "", //even the snackBarInfo not change, still need show
+            shouldRebuild: (previous, next) => next != "", //even the snackBarInfo not change, still need show
             selector: (context, controller) => controller.snackBarInfo,
             builder: (context, snackBarInfo, child) {
-              print("Selector $snackBarInfo");
-              if (snackBarInfo != "")
-                Future.delayed(
-                    Duration.zero,
-                    () => Scaffold.of(context)
-                        .showSnackBar(getSnackBar(snackBarInfo)));
+              if (snackBarInfo != null)
+                Future.delayed(Duration.zero, () {
+                  Scaffold.of(context).showSnackBar(getSnackBar(snackBarInfo));
+                  Provider.of<Controller>(context, listen: false).snackBarInfo = null;
+                });
               return child;
             },
             child: PageView(
@@ -45,7 +39,6 @@ class HomePage extends StatelessWidget {
                   ArticlePageViewPage(),
                   ExplorerPage(),
                 ],
-                controller: Provider.of<Controller>(context, listen: false)
-                    .mainPageController)));
+                controller: Provider.of<Controller>(context, listen: false).homePageViewController)));
   }
 }

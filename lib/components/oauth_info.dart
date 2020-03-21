@@ -16,11 +16,6 @@ class OauthInfoWidget extends StatelessWidget {
         tooltip: 'Sign',
         onPressed: () {},
       );
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: CircleAvatar(
-            backgroundImage: oauthInfo.avatarURL != null
-                ? NetworkImage(oauthInfo.avatarURL)
-                : AssetImage('assets/images/logo.png')));
+    return Padding(padding: const EdgeInsets.all(8.0), child: CircleAvatar(backgroundImage: oauthInfo.avatarURL != null ? NetworkImage(oauthInfo.avatarURL) : AssetImage('assets/images/logo.png')));
   }
 }

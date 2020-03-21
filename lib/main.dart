@@ -59,18 +59,16 @@ class _EbuoyState extends State<Ebuoy> {
 
   receiveShare(String sharedText) {
     if (sharedText == null) return;
-    _controller.setMainSelectedIndex(0);
+    _controller.jumpToHome(ArticleTitlesPageIndex);
     _articleTitles.newYouTube(sharedText);
   }
 
   void initReceiveShare() {
     // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    _intentDataStreamSubscription =
-        ReceiveSharingIntent.getTextStream().listen((String value) {
-      print("shared to run app value=$value");
+    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen((String value) {
       receiveShare(value);
     }, onError: (e) {
-      print("getLinkStream error: $e");
+      debugPrint("getLinkStream error: $e");
     });
 
     // For sharing or opening urls/text coming from outside the app while the app is closed

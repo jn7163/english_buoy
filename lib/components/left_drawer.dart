@@ -9,20 +9,14 @@ class LeftDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     OauthInfo _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
-    Consumer consumerAvatar =
-        Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
-      return CircleAvatar(
-          backgroundImage: oauthInfo.avatarURL != null
-              ? NetworkImage(oauthInfo.avatarURL)
-              : AssetImage('assets/images/logo.png'));
+    Consumer consumerAvatar = Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
+      return CircleAvatar(backgroundImage: oauthInfo.avatarURL != null ? NetworkImage(oauthInfo.avatarURL) : AssetImage('assets/images/logo.png'));
     });
 
-    Consumer consumerName =
-        Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
+    Consumer consumerName = Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
       return Text(oauthInfo.name);
     });
-    Consumer consumerEmail =
-        Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
+    Consumer consumerEmail = Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
       return Text(oauthInfo.email);
     });
 
@@ -33,8 +27,7 @@ class LeftDrawer extends StatelessWidget {
         AppBar(
             backgroundColor: Theme.of(context).primaryColorDark,
             //automaticallyImplyLeading: false,
-            leading: Padding(
-                padding: const EdgeInsets.all(8.0), child: consumerAvatar),
+            leading: Padding(padding: const EdgeInsets.all(8.0), child: consumerAvatar),
             actions: <Widget>[Container()],
             centerTitle: true,
             title: Text(

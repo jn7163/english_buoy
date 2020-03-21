@@ -8,6 +8,7 @@ import '../models/explorer.dart';
 import '../models/article_title.dart';
 
 import '../themes/base.dart';
+import '../pages/home.dart';
 
 class ExplorerPage extends StatefulWidget {
   ExplorerPage({Key key}) : super(key: key);
@@ -16,14 +17,12 @@ class ExplorerPage extends StatefulWidget {
   ExplorerPageState createState() => ExplorerPageState();
 }
 
-class ExplorerPageState extends State<ExplorerPage>
-    with AutomaticKeepAliveClientMixin {
+class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   Explorer _explorer;
   final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionListener =
-      ItemPositionsListener.create();
+  final ItemPositionsListener itemPositionListener = ItemPositionsListener.create();
   Controller _controller;
   @override
   initState() {
@@ -48,14 +47,10 @@ class ExplorerPageState extends State<ExplorerPage>
     return Selector<Explorer, List<ArticleTitle>>(
         selector: (context, explorer) => explorer.titles,
         builder: (context, titles, child) {
-          print("Selector $this titles.length=" + titles.length.toString());
           return ScrollablePositionedList.builder(
             itemCount: titles.length,
             itemBuilder: (context, index) {
-              return index == 0
-                  ? Container()
-                  : ArticleTitlesSlidable(
-                      articleTitle: titles.reversed.toList()[index]);
+              return index == 0 ? Container() : ArticleTitlesSlidable(articleTitle: titles.reversed.toList()[index]);
             },
             itemScrollController: itemScrollController,
             itemPositionsListener: itemPositionListener,
@@ -66,11 +61,10 @@ class ExplorerPageState extends State<ExplorerPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    print("build ArticleTitlesPage");
     return WillPopScope(
         onWillPop: () async {
-          if (_controller.mainSelectedIndex == 3) {
-            _controller.setMainSelectedIndex(0);
+          if (_controller.homeIndex != ArticleTitlesPageIndex) {
+            _controller.jumpToHome(ArticleTitlesPageIndex);
             return false;
           } else
             return true;
@@ -84,7 +78,7 @@ class ExplorerPageState extends State<ExplorerPage>
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              _controller.setMainSelectedIndex(0);
+              _controller.jumpToHome(ArticleTitlesPageIndex);
             },
             child: Icon(Icons.arrow_back),
           ),

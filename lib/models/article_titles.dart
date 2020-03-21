@@ -87,8 +87,7 @@ class ArticleTitles with ChangeNotifier {
 
     Response response;
     try {
-      response = await Store.dio()
-          .post(Store.baseURL + "Subtitle", data: {"Youtube": url});
+      response = await Store.dio().post(Store.baseURL + "Subtitle", data: {"Youtube": url});
       Article article = Article();
       // 将新添加的文章添加到缓存中
       article.setFromJSON(response.data);
@@ -145,21 +144,15 @@ class ArticleTitles with ChangeNotifier {
     // must make new list otherwise Selector will not trigger
     //List<ArticleTitle> _filterTitles = [...this.titles];
     List<ArticleTitle> _filterTitles = this.titles;
-    if (searchKey != "")
-      _filterTitles = _filterTitles
-          .where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase()))
-          .toList();
+    if (searchKey != "") _filterTitles = _filterTitles.where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase())).toList();
     if (settings.filertPercent > 70)
       _filterTitles = _filterTitles
-          .where((d) =>
-              d.percent >= settings.filertPercent ||
-              d.percent == 0) // show percent 0 used to show loading item
+          .where((d) => d.percent >= settings.filertPercent || d.percent == 0) // show percent 0 used to show loading item
           .toList();
     //hide 100% aritcle
     if (settings.isHideFullMastered)
       _filterTitles = _filterTitles
-          .where((d) =>
-              d.percent != 100) // show percent 0 used to show loading item
+          .where((d) => d.percent != 100) // show percent 0 used to show loading item
           .toList();
     return _filterTitles;
   }
@@ -176,7 +169,6 @@ class ArticleTitles with ChangeNotifier {
 
   // 啥事都不干, 只是通知
   justNotifyListeners() {
-    print("justNotifyListeners");
     notifyListeners();
   }
 
@@ -231,7 +223,6 @@ class ArticleTitles with ChangeNotifier {
 
   // 和服务器同步
   Future syncArticleTitles({bool justSetToLocal = false}) async {
-    print("syncArticleTitles");
     Response response = await Store.dio().get(Store.baseURL + "article_titles");
     if (!justSetToLocal) this.setFromJSON(response.data);
     // save to local for cache
@@ -268,7 +259,6 @@ class ArticleTitles with ChangeNotifier {
     //need use new list to trigger Selector
     this.titles = [...this.titles];
     this.titles.add(articleTitle);
-    print("addByArticle");
     notifyListeners();
   }
 

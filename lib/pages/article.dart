@@ -38,8 +38,7 @@ class ArticlePage extends StatefulWidget {
   _ArticlePageState createState() => _ArticlePageState();
 }
 
-class _ArticlePageState extends State<ArticlePage>
-    with AutomaticKeepAliveClientMixin {
+class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClientMixin {
   bool wantKeepAlive = true;
   Article _article;
   ScrollController _scrollController;
@@ -53,7 +52,6 @@ class _ArticlePageState extends State<ArticlePage>
 
   @override
   void initState() {
-    print("ArticlePage initState");
     super.initState();
     _articleID = widget._articleID;
 
@@ -91,8 +89,7 @@ class _ArticlePageState extends State<ArticlePage>
   //star check sentence highlight routine
   initRoutine() {
     if (_timer == null && _article.youtube != "") {
-      _timer = Timer.periodic(const Duration(milliseconds: 800),
-          (t) => routineCheckSentenceHighLight());
+      _timer = Timer.periodic(const Duration(milliseconds: 800), (t) => routineCheckSentenceHighLight());
     }
   }
 
@@ -106,8 +103,7 @@ class _ArticlePageState extends State<ArticlePage>
     for (int i = 0; i < _timeSentenceIndexs.length; i++) {
       int currentSeconds = _article.youtubeController.value.position.inSeconds;
       // current playing time between start and end then highlight it
-      if (currentSeconds >= _timeSentenceIndexs[i].startSeconds &&
-          currentSeconds < _timeSentenceIndexs[i].endSeconds) {
+      if (currentSeconds >= _timeSentenceIndexs[i].startSeconds && currentSeconds < _timeSentenceIndexs[i].endSeconds) {
         _timeSentenceIndexs[i].setHighlight(true, _article.sentences);
         currentIndex = i;
       } else
@@ -117,16 +113,10 @@ class _ArticlePageState extends State<ArticlePage>
     if (currentIndex != null && _highlightSentenceIndex != currentIndex) {
       //make highlight show
       setState(() {});
-      print("find some set index=" + currentIndex.toString());
       //auto scroll sentence to top
-      if (settings.isScrollWithPlay &&
-          controller.mainSelectedIndex == 1 &&
-          controller.selectedArticleID == _article.articleID &&
-          _article.youtubeController.value.isPlaying) {
-        print("run ensureVisible");
+      if (settings.isScrollWithPlay && controller.homeIndex == ArticlePageViewPageIndex && controller.selectedArticleID == _article.articleID && _article.youtubeController.value.isPlaying) {
         int sentenceIndex = _timeSentenceIndexs[currentIndex].indexs[0];
-        Scrollable.ensureVisible(_article.sentences[sentenceIndex].c,
-            duration: Duration(milliseconds: 1400), alignment: 0.0);
+        Scrollable.ensureVisible(_article.sentences[sentenceIndex].c, duration: Duration(milliseconds: 1400), alignment: 0.0);
       }
       //alignment: 0.0);
       _highlightSentenceIndex = currentIndex;
@@ -135,8 +125,7 @@ class _ArticlePageState extends State<ArticlePage>
 
   // preload last and next article from server save to local
   preload() {
-    List<int> result =
-        _articleTitles.findLastNextArticleByID(_article.articleID);
+    List<int> result = _articleTitles.findLastNextArticleByID(_article.articleID);
     int lastID = result[0];
     int nextID = result[1];
 
@@ -149,14 +138,12 @@ class _ArticlePageState extends State<ArticlePage>
     await _article.getArticleByID(_article.articleID);
     if (this.mounted) {
       // 更新本地未学单词数
-      _articleTitles.setUnlearnedCountByArticleID(
-          _article.unlearnedCount, _article.articleID);
+      _articleTitles.setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);
     }
   }
 
   Future loadArticleByID() async {
     bool hasLocal = await _article.getFromLocal(_article.articleID);
-    print("hasLocal=$hasLocal");
     if (hasLocal)
       loadFromServer();
     else {
@@ -188,15 +175,12 @@ class _ArticlePageState extends State<ArticlePage>
       String startTime = _article.sentences[i].startTime;
       if (startTime != "") {
         int iStartTime = toDuration(startTime).inSeconds;
-        if (_timeSentenceIndexs.length > 0)
-          _timeSentenceIndexs[_timeSentenceIndexs.length - 1].endSeconds =
-              iStartTime;
+        if (_timeSentenceIndexs.length > 0) _timeSentenceIndexs[_timeSentenceIndexs.length - 1].endSeconds = iStartTime;
         TimeSentenceIndex timeSentenceIndex = TimeSentenceIndex();
         timeSentenceIndex.startSeconds = iStartTime;
         timeSentenceIndex.indexs.add(i);
 
-        while (i + 1 < _article.sentences.length &&
-            _article.sentences[i + 1].startTime == "") {
+        while (i + 1 < _article.sentences.length && _article.sentences[i + 1].startTime == "") {
           i++;
           timeSentenceIndex.indexs.add(i);
         }
@@ -204,9 +188,7 @@ class _ArticlePageState extends State<ArticlePage>
       }
     }
     //make sure last sentence has endtime
-    _timeSentenceIndexs[_timeSentenceIndexs.length - 1].endSeconds =
-        _timeSentenceIndexs[_timeSentenceIndexs.length - 1].startSeconds +
-            10000;
+    _timeSentenceIndexs[_timeSentenceIndexs.length - 1].endSeconds = _timeSentenceIndexs[_timeSentenceIndexs.length - 1].startSeconds + 10000;
   }
 
   Widget refreshBody() {
@@ -247,16 +229,12 @@ class _ArticlePageState extends State<ArticlePage>
         child: Column(children: [
           ArticleTopBar(article: _article),
           NotMasteredVocabulary(),
-          Padding(
-              padding: EdgeInsets.all(5),
-              child: ArticleSentences(
-                  article: _article, sentences: _article.sentences)),
+          Padding(padding: EdgeInsets.all(5), child: ArticleSentences(article: _article, sentences: _article.sentences)),
         ]));
   }
 
   @override
   updateKeepAlive() {
-    print("PageView updateKeepAlive");
     super.updateKeepAlive();
     if (widget._articleID != _article.articleID) {
       _article.articleID = widget._articleID;
@@ -272,10 +250,6 @@ class _ArticlePageState extends State<ArticlePage>
       this.loadArticleByID();
     }
 
-    print("build article $_articleID");
-    return ArticleInherited(
-        article: this._article,
-        child: Scaffold(
-            body: body(), floatingActionButton: ArticleFloatingActionButton()));
+    return ArticleInherited(article: this._article, child: Scaffold(body: body(), floatingActionButton: ArticleFloatingActionButton()));
   }
 }

@@ -39,7 +39,6 @@ class Explorer with ChangeNotifier {
       this.titles.add(articleTitle);
     });
 
-    //print("syncExplorer this.titles.length=" + this.titles.length.toString());
     notifyListeners();
   }
 

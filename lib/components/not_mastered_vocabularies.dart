@@ -46,14 +46,11 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
       s.words.forEach((w) {
         // not mastered words
         if (!w.learned && isNeedLearn(w)) {
-          if (w.level != null &&
-              w.level != 0 &&
-              !_mustLearnUnique.containsKey(w.text.toLowerCase())) {
+          if (w.level != null && w.level != 0 && !_mustLearnUnique.containsKey(w.text.toLowerCase())) {
             w.belongSentence = s;
             _mustLearnWords.add(w);
             _mustLearnUnique[w.text.toLowerCase()] = w;
-          } else if ((w.level == null || w.level == 0) &&
-              !_mustLearnUnique.containsKey(w.text.toLowerCase())) {
+          } else if ((w.level == null || w.level == 0) && !_mustLearnUnique.containsKey(w.text.toLowerCase())) {
             w.belongSentence = s;
             _mustLearnWords.add(w);
             _mustLearnUnique[w.text.toLowerCase()] = w;
@@ -82,8 +79,7 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
     });
 
     for (int i = 0; i < oldWords.length; i++) {
-      if (_mustLearnUnique.containsKey(oldWords[i].text.toLowerCase()))
-        oldWords[i].learned = false;
+      if (_mustLearnUnique.containsKey(oldWords[i].text.toLowerCase())) oldWords[i].learned = false;
     }
     return oldWords;
   }
@@ -100,11 +96,7 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
   TableRow getTitleRow() {
     return getTableRow(
       one: Text("NGSL", style: bodyTextStyle),
-      two: Text(
-          "words(" +
-              (_mustLearnWords + _needLearnWords).length.toString() +
-              ")",
-          style: bodyTextStyle),
+      two: Text("words(" + (_mustLearnWords + _needLearnWords).length.toString() + ")", style: bodyTextStyle),
       three: Text("find", style: bodyTextStyle),
     );
   }
@@ -117,11 +109,7 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
           d.level == 0 ? "-" : d.level.toString(), style: bodyTextStyle,
           //style: Theme.of(context).textTheme.display2,
         ),
-        two: ArticleSentences(
-            article: _article,
-            sentences: [sentence],
-            needWordWise: false,
-            crossAxisAlignment: CrossAxisAlignment.baseline),
+        two: ArticleSentences(article: _article, sentences: [sentence], needWordWise: false, crossAxisAlignment: CrossAxisAlignment.baseline),
         three: GestureDetector(
             onTap: () {
               //跳转到文章中这一句
@@ -146,19 +134,16 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
       three: Text("..."),
     );
 
-    List<TableRow> renderWordRows =
-        allWordRows.length != 0 ? [titleRow] + allWordRows : allWordRows;
+    List<TableRow> renderWordRows = allWordRows.length != 0 ? [titleRow] + allWordRows : allWordRows;
     if (_hideSome) renderWordRows = renderWordRows + [moreRow];
     return renderWordRows;
   }
 
   @override
   Widget build(BuildContext context) {
-    print("build $this");
     List<TableRow> renderWordRows = getRenderWordRows();
     return Table(
-        border: TableBorder.all(
-            color: Theme.of(context).primaryColorDark, width: 0.4),
+        border: TableBorder.all(color: Theme.of(context).primaryColorDark, width: 0.4),
         columnWidths: {
           0: IntrinsicColumnWidth(),
           1: FlexColumnWidth(8),
@@ -169,11 +154,9 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
 
   @override
   void didChangeDependencies() {
-    print("NotMasteredVocabulary didChangeDependencies");
     super.didChangeDependencies();
     // 更换内容时, 重置所有状态
-    if (_article != null &&
-        ArticleInherited.of(context).article.articleID != _article.articleID)
+    if (_article != null && ArticleInherited.of(context).article.articleID != _article.articleID)
       this.reset();
     else
       this.clear();
