@@ -13,7 +13,7 @@ class ArticleYouTube extends StatelessWidget {
   Widget build(BuildContext context) {
     //Article article = Provider.of<Article>(context);
     if (article == null || article.title == null || article.youtube == '') return Container(width: 0.0, height: 0.0);
-    Settings settings = Provider.of<Settings>(context);
+    SettingNews settings = Provider.of<SettingNews>(context);
     return VisibilityDetector(
         key: Key("youtube_" + article.articleID.toString()),
         onVisibilityChanged: (d) {

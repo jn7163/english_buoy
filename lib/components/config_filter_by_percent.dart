@@ -12,12 +12,12 @@ class ConfigFilterByPercent extends StatefulWidget {
 }
 
 class ConfigFilterByPercentState extends State<ConfigFilterByPercent> {
-  Settings _settings;
+  SettingNews _settings;
   ArticleTitles articleTitles;
   @override
   void initState() {
     articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    _settings = Settings();
+    _settings = SettingNews();
     super.initState();
   }
 

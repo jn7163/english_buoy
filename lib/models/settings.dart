@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../store/store.dart';
 
 const double MIN_FILTER_PERCENT = 70;
 const double MAX_FILTER_PERCENT = 100;
 
-class Settings with ChangeNotifier {
+class SettingNews with ChangeNotifier {
   bool isJump = false;
   bool isDark = false;
   bool isAutoplay = true;
@@ -21,8 +22,8 @@ class Settings with ChangeNotifier {
   SharedPreferences prefs;
 
   // 构造函数从缓存获取
-  Settings() {
-    SharedPreferences.getInstance().then((d) {
+  SettingNews() {
+    Store.prefs.then((d) {
       prefs = d;
       getFromLocal();
     });

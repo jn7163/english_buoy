@@ -39,7 +39,7 @@ class _EbuoyState extends State<Ebuoy> {
   StreamSubscription _intentDataStreamSubscription;
   Controller _controller;
   ArticleTitles _articleTitles;
-  Settings _settings;
+  SettingNews _settings;
   OauthInfo _oauthInfo;
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _EbuoyState extends State<Ebuoy> {
     _controller = Controller();
     _oauthInfo = OauthInfo();
     _articleTitles = ArticleTitles();
-    _settings = Settings();
+    _settings = SettingNews();
     //bind
     _oauthInfo.controller = _controller;
     _articleTitles.controller = _controller;
@@ -87,6 +87,7 @@ class _EbuoyState extends State<Ebuoy> {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
+          ChangeNotifierProvider.value(value: _settings),
           ChangeNotifierProvider(create: (_) => Explorer()),
           Provider<Global>(create: (_) => Global()),
           ChangeNotifierProvider.value(value: _controller),
@@ -94,9 +95,17 @@ class _EbuoyState extends State<Ebuoy> {
           ChangeNotifierProvider(create: (_) => Loading()),
           ChangeNotifierProvider.value(value: _oauthInfo),
           ChangeNotifierProvider.value(value: _articleTitles),
-          ChangeNotifierProvider.value(value: _settings),
         ],
-        child: Selector<Settings, bool>(
+        /*
+        child: MaterialApp(
+          title: 'English Buoy',
+          theme: brightTheme,
+          darkTheme: darkTheme,
+          //themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+          home: HomePage(),
+        )
+            */
+        child: Selector<SettingNews, bool>(
             selector: (context, settings) => settings.isDark,
             builder: (context, isDark, child) {
               return MaterialApp(

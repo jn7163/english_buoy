@@ -37,7 +37,7 @@ class ArticleTitles with ChangeNotifier {
   static const String done = "done";
   SharedPreferences _prefs;
   // show article percent
-  Settings settings;
+  SettingNews settings;
   Controller controller;
   ArticleTitles() {
     SharedPreferences.getInstance().then((d) {

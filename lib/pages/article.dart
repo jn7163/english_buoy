@@ -43,7 +43,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   Article _article;
   ScrollController _scrollController;
   ArticleTitles _articleTitles;
-  Settings settings;
+  SettingNews settings;
   int _articleID;
   bool _loading = true;
   Timer _timer;
@@ -56,7 +56,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     _articleID = widget._articleID;
 
     _scrollController = ScrollController();
-    settings = Provider.of<Settings>(context, listen: false);
+    settings = Provider.of<SettingNews>(context, listen: false);
     _article = Article();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _article.articleID = _articleID;

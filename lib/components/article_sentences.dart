@@ -21,7 +21,13 @@ import '../functions/utility.dart';
 TextStyle bodyTextStyle = TextStyle(color: Colors.black87, fontSize: 20.0, fontFamily: 'NotoSans-Medium');
 
 class ArticleSentences extends StatefulWidget {
-  ArticleSentences({Key key, @required this.article, @required this.sentences, this.needWordWise = true, this.crossAxisAlignment = CrossAxisAlignment.start}) : super(key: key);
+  ArticleSentences(
+      {Key key,
+      @required this.article,
+      @required this.sentences,
+      this.needWordWise = true,
+      this.crossAxisAlignment = CrossAxisAlignment.start})
+      : super(key: key);
   final bool needWordWise;
   final Article article; // 用于计算文章的未掌握数目
   final List<Sentence> sentences; // 需要渲染的多条句子
@@ -40,7 +46,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
   // 后台返回的文章结构
   String _tapedText = ''; // 当前点击的文本
   String _lastTapedText = ''; // 上次点击的文本
-  Settings _settings;
+  SettingNews _settings;
 
   // 必学的高亮色
   TextStyle needLearnTextStyle;
@@ -50,7 +56,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
   @override
   initState() {
     super.initState();
-    _settings = Provider.of<Settings>(context, listen: false);
+    _settings = Provider.of<SettingNews>(context, listen: false);
     _global = Provider.of<Global>(context, listen: false);
   }
 
@@ -103,7 +109,8 @@ class ArticleSentencesState extends State<ArticleSentences> {
             });
           });
           // 无需学的, 没必要显示级别
-          if (word.level != 0) Alert.toast(context, word.level.toString(), position: ToastPosition.bottom, duration: ToastDuration.long);
+          if (word.level != 0)
+            Alert.toast(context, word.level.toString(), position: ToastPosition.bottom, duration: ToastDuration.long);
           // 实时增加次数的效果
           widget.article.increaseLearnCount(word.text);
           // 记录学习次数
@@ -111,7 +118,9 @@ class ArticleSentencesState extends State<ArticleSentences> {
           Clipboard.setData(ClipboardData(text: word.text));
           // 一个点击一个单词两次, 那么尝试跳转到这个单词列表
           // 已经在这个单词页, 就不要跳转了
-          if (_lastTapedText.toLowerCase() == word.text.toLowerCase() && word.text.toLowerCase() != widget.article.title.toLowerCase() && _settings.isJump) {
+          if (_lastTapedText.toLowerCase() == word.text.toLowerCase() &&
+              word.text.toLowerCase() != widget.article.title.toLowerCase() &&
+              _settings.isJump) {
             int id = _getIDByTitle(word.text);
             if (id != 0) {
               Navigator.pushNamed(context, '/Article', arguments: id);
@@ -140,7 +149,10 @@ class ArticleSentencesState extends State<ArticleSentences> {
         });
       };
     TextStyle playTextStyle = bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
-    return TextSpan(text: " ▷ ", style: seekTextSpanTapStatus[time] || s.highlight ? playTextStyle.copyWith(fontWeight: FontWeight.bold) : playTextStyle, recognizer: recognizer);
+    return TextSpan(
+        text: " ▷ ",
+        style: seekTextSpanTapStatus[time] || s.highlight ? playTextStyle.copyWith(fontWeight: FontWeight.bold) : playTextStyle,
+        recognizer: recognizer);
   }
 
 // 根据规则, 判断单词前是否需要添加空白
@@ -172,7 +184,9 @@ class ArticleSentencesState extends State<ArticleSentences> {
           decoration: TextDecoration.underline,
           decorationStyle: TextDecorationStyle.wavy);
     // 查找时高亮
-    if (widget.article.findWord.toLowerCase() == word.text.toLowerCase()) processTextStyle = processTextStyle.copyWith(color: Colors.deepOrange[700], decoration: TextDecoration.underline, decorationStyle: TextDecorationStyle.wavy);
+    if (widget.article.findWord.toLowerCase() == word.text.toLowerCase())
+      processTextStyle = processTextStyle.copyWith(
+          color: Colors.deepOrange[700], decoration: TextDecoration.underline, decorationStyle: TextDecorationStyle.wavy);
     return processTextStyle;
   }
 
@@ -194,7 +208,8 @@ class ArticleSentencesState extends State<ArticleSentences> {
     //需要学习的单词
     if (word.learned == false && isNeedLearn(word)) {
       String shortDef = "";
-      if (widget.needWordWise && Store.wordwiseMap[word.text.toLowerCase()] != null) shortDef = "-" + Store.wordwiseMap[word.text.toLowerCase()];
+      if (widget.needWordWise && Store.wordwiseMap[word.text.toLowerCase()] != null)
+        shortDef = "-" + Store.wordwiseMap[word.text.toLowerCase()];
       if (word.count != 0) shortDef += " " + word.count.toString();
       subscript = TextSpan(text: shortDef, style: wordStyle.copyWith(fontSize: 12)); // 下标样式和原本保持一致, 只是变小
 
@@ -202,7 +217,9 @@ class ArticleSentencesState extends State<ArticleSentences> {
 
     return TextSpan(text: _getBlank(word.text), children: [
       // if not letter no need recognizer
-      hasLetter(word.text) ? TextSpan(text: word.text, style: wordStyle, recognizer: _getTapRecognizer(word)) : TextSpan(text: word.text, style: wordStyle, recognizer: _getTapRecognizer(word)),
+      hasLetter(word.text)
+          ? TextSpan(text: word.text, style: wordStyle, recognizer: _getTapRecognizer(word))
+          : TextSpan(text: word.text, style: wordStyle, recognizer: _getTapRecognizer(word)),
       subscript,
     ]);
   }
