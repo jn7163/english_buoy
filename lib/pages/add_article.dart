@@ -83,7 +83,6 @@ class _AddArticlePageState extends State<AddArticlePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("build add article");
     return Scaffold(
       appBar: AppBar(
         title: Text("add new article"),
@@ -95,8 +94,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _isEnable ? _add : null,
         tooltip: 'add article',
-        child: Icon(_isEnable ? Icons.add : Icons.backup,
-            color: Theme.of(context).primaryTextTheme.title.color),
+        child: Icon(_isEnable ? Icons.add : Icons.backup, color: Theme.of(context).primaryTextTheme.title.color),
       ),
     );
   }

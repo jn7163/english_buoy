@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../store/store.dart';
 
-class Settings with ChangeNotifier {
+const double MIN_FILTER_PERCENT = 70;
+const double MAX_FILTER_PERCENT = 100;
+
+class SettingNews with ChangeNotifier {
   bool isJump = false;
   bool isDark = false;
   bool isAutoplay = true;
   bool isHideFullMastered = false;
+  bool isScrollWithPlay = true;
+
   double filertPercent = 70;
+  String isScrollWithPlayKey = "scrollWithPlay";
   String isHideFullMasteredKey = "hideFullMastered";
   String filertPercentKey = "filertPercent";
   String isJumpKey = "isJump";
@@ -15,11 +22,16 @@ class Settings with ChangeNotifier {
   SharedPreferences prefs;
 
   // 构造函数从缓存获取
-  Settings() {
-    SharedPreferences.getInstance().then((d) {
+  SettingNews() {
+    Store.prefs.then((d) {
       prefs = d;
       getFromLocal();
     });
+  }
+  setIsScrollWithPlay(bool v) async {
+    await prefs.setBool(isScrollWithPlayKey, v);
+    isScrollWithPlay = v;
+    notifyListeners();
   }
 
   setIsHideFullMastered(bool v) async {
@@ -52,20 +64,12 @@ class Settings with ChangeNotifier {
     await prefs.setDouble(filertPercentKey, v);
   }
 
-  getFromLocal() async {
-    setIsHideFullMastered(prefs.getBool(isHideFullMasteredKey) ?? false);
-    setIsJump(prefs.getBool(isJumpKey) ?? false);
-    setIsDark(prefs.getBool(isDarkKey) ?? false);
-    setIsAutoplay(prefs.getBool(isAutoplayKey) ?? false);
-
-    /*
-    if (prefs.containsKey(isAutoplayKey))
-      isAutoplay = prefs.getBool(isAutoplayKey);
-    else
-      isAutoplay = true;
-    setIsAutoplay(isAutoplay);
-    */
-
-    setFilertPercent(prefs.getDouble(filertPercentKey) ?? 70);
+  Future getFromLocal() async {
+    isScrollWithPlay = prefs.getBool(isScrollWithPlayKey) ?? true;
+    isHideFullMastered = (prefs.getBool(isHideFullMasteredKey) ?? false);
+    isJump = prefs.getBool(isJumpKey) ?? false;
+    isDark = prefs.getBool(isDarkKey) ?? false;
+    isAutoplay = prefs.getBool(isAutoplayKey) ?? false;
+    filertPercent = prefs.getDouble(filertPercentKey) ?? filertPercent;
   }
 }

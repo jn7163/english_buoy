@@ -10,10 +10,7 @@ import 'package:dio/dio.dart';
 import './store.dart';
 
 // 提交新的文章进行分析
-postArticle(BuildContext context, String article, ArticleTitles articleTitles,
-    Loading topLoading) async {
-  Dio dio = getDio();
-  print("postArticle");
+postArticle(BuildContext context, String article, ArticleTitles articleTitles, Loading topLoading) async {
   // 替换奇怪的连写字符串
   article = article.replaceAll("—", "-");
   if (article == "") {
@@ -21,17 +18,14 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles,
   }
   topLoading.set(true);
   try {
-    var response =
-        await dio.post(Store.baseURL + "analysis", data: {"article": article});
+    var response = await Store.dio().post(Store.baseURL + "analysis", data: {"article": article});
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
     newArticle.setToLocal(json.encode(response.data));
     // 如果是 update exists, 确保更新手机当前数据
     if (response.data["exists"]) {
-      toast.Alert.toast(context, "update article",
-          position: toast.ToastPosition.bottom,
-          duration: toast.ToastDuration.long);
+      toast.Alert.toast(context, "update article", position: toast.ToastPosition.bottom, duration: toast.ToastDuration.long);
       // make sure reflash local data
       // await articles.setByID(response.data["id"]);
     } else {
@@ -45,9 +39,7 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles,
     // 如果是已经存在, 那么应该会把 article id 传过来
     if (e.response != null) {
       if (e.response.data is String) {
-        toast.Alert.toast(context, e.message.toString(),
-            position: toast.ToastPosition.bottom,
-            duration: toast.ToastDuration.long);
+        toast.Alert.toast(context, e.message.toString(), position: toast.ToastPosition.bottom, duration: toast.ToastDuration.long);
       } else if (e.response.data['error'] == "already exists") {
         return e.response.data;
       }
@@ -59,22 +51,15 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles,
 
 // 根据标题查询文章内容
 Future getArticleByID(BuildContext context, int id) async {
-  Dio dio = getDio();
-  print('getArticleByID: ' + id.toString());
-  var response = await dio.get(Store.baseURL + "article/" + id.toString());
+  var response = await Store.dio().get(Store.baseURL + "article/" + id.toString());
   // bus.emit('get_article_done', response.data);
   return response.data;
 }
 
-Future putUnlearnedCount(
-    BuildContext context, int articleID, int unlearnedCount) async {
-  Dio dio = getDio();
+Future putUnlearnedCount(BuildContext context, int articleID, int unlearnedCount) async {
   if (articleID == 0) {
     return null;
   }
-  print('putLearnedCount id=' + articleID.toString());
-  print('putLearnedCount unlearnedCount=' + unlearnedCount.toString());
-  var response = await dio.put(Store.baseURL + "article/unlearned_count",
-      data: {"article_id": articleID, "unlearned_count": unlearnedCount});
+  var response = await Store.dio().put(Store.baseURL + "article/unlearned_count", data: {"article_id": articleID, "unlearned_count": unlearnedCount});
   return response;
 }

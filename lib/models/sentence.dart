@@ -1,6 +1,7 @@
 // 文章中的每个文字的结构体
 import 'package:flutter/material.dart';
 import './word.dart';
+import 'dart:convert';
 
 class Sentence {
   final String startTime;
@@ -16,4 +17,8 @@ class Sentence {
           Word w = Word.fromJson(d);
           return w;
         }).toList();
+  Map<String, dynamic> toJson() => {
+        'StarTime': startTime,
+        'Words': jsonEncode(words),
+      };
 }

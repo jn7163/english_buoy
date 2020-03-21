@@ -1,39 +1,41 @@
 import 'package:flutter/material.dart';
 
-class Controller with ChangeNotifier {
-  PageController mainPageController;
-  int mainSelectedIndex = 0; // current open main page index
+const ArticleTitlesPageIndex = 0;
+const ArticlePageViewPageIndex = 1;
+const ExplorerPageIndex = 2;
 
-  PageController articlePageController;
-  int pageSelectedIndex = 0;
+class Controller with ChangeNotifier {
+  String snackBarInfo;
+  PageController homePageViewController; // the top PageController to show home sub page
+  int homeIndex = 0; // current open main page index
+  PageController articlePageViewController; // articles page view
+  int articleIndex = 0; // current open article page index
 
   int selectedArticleID = 0; // current seelected article item
+  int jumpTargeArticleID = 0; // want jump to this article
   Controller() {
-    if (mainPageController == null)
-      mainPageController = PageController(initialPage: 0);
+    if (homePageViewController == null) homePageViewController = PageController(initialPage: 0);
+    //if (articlePageViewController == null) articlePageViewController = PageController(initialPage: 0);
+  }
+
+  jumpToHome(int index) {
+    this.homeIndex = index;
+    homePageViewController.jumpToPage(this.homeIndex);
+  }
+
+  jumpToArticle(int index) {
+    this.articleIndex = index;
+    articlePageViewController.jumpToPage(this.articleIndex);
   }
 
   setSelectedArticleID(int id) {
+    //debugPrint("setSelectedArticleID=" + id.toString());
     this.selectedArticleID = id;
-    //notifyListeners will make articleTitlesPage rebuild
-    //notifyListeners();
-  }
-
-  setPageSelectedIndex(int id) {
-    pageSelectedIndex = id;
-    if (articlePageController == null) {
-      articlePageController = PageController(initialPage: pageSelectedIndex);
-      notifyListeners();
-    }
-    articlePageController.jumpToPage(pageSelectedIndex);
-  }
-
-  setMainSelectedIndex(int id) {
-    this.mainSelectedIndex = id;
-    mainPageController.jumpToPage(id);
     notifyListeners();
   }
-  //setYouTube(YoutubePlayerController v) {
-  //  youtubeController = v;
-  //}
+
+  showSnackBar(String info) {
+    snackBarInfo = info;
+    notifyListeners();
+  }
 }

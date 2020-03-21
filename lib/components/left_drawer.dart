@@ -8,39 +8,53 @@ class LeftDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(child: Consumer<OauthInfo>(builder: (context, oauthInfo, _) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          AppBar(
-              backgroundColor: Theme.of(context).primaryColorDark,
-              //automaticallyImplyLeading: false,
-              leading: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                      backgroundImage: oauthInfo.avatarURL != null
-                          ? NetworkImage(oauthInfo.avatarURL)
-                          : AssetImage('assets/images/logo.png'))),
-              actions: <Widget>[Container()],
-              centerTitle: true,
-              title: Text(
-                "User Profile",
-              )),
-          ListTile(
-            title: Center(child: Text(oauthInfo.name)),
-            subtitle: Center(child: Text(oauthInfo.email)),
-          ),
-          RaisedButton(
-            child: const Text('switch user'),
-            onPressed: () {
-              oauthInfo.switchUser();
-              Navigator.of(context).pop();
-            },
-          ),
-          Text(""),
-          Text("version: 1.3.0")
-        ],
-      );
-    }));
+    OauthInfo _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
+    Selector selectorAvatar = Selector<OauthInfo, String>(
+        selector: (context, oauthInfo) => oauthInfo.avatarURL,
+        builder: (context, avatarURL, child) {
+          return CircleAvatar(
+              backgroundImage: avatarURL != null ? NetworkImage(avatarURL) : AssetImage('assets/images/logo.png'));
+        });
+
+    Selector selectorName = Selector<OauthInfo, String>(
+        selector: (context, oauthInfo) => oauthInfo.name,
+        builder: (context, name, child) {
+          return Text(name);
+        });
+
+    Selector selectorEmail = Selector<OauthInfo, String>(
+        selector: (context, oauthInfo) => oauthInfo.email,
+        builder: (context, email, child) {
+          return Text(email);
+        });
+
+    return Drawer(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        AppBar(
+            backgroundColor: Theme.of(context).primaryColorDark,
+            //automaticallyImplyLeading: false,
+            leading: Padding(padding: const EdgeInsets.all(8.0), child: selectorAvatar),
+            actions: <Widget>[Container()],
+            centerTitle: true,
+            title: Text(
+              "User Profile",
+            )),
+        ListTile(
+          title: Center(child: selectorName),
+          subtitle: Center(child: selectorEmail),
+        ),
+        RaisedButton(
+          child: const Text('switch user'),
+          onPressed: () {
+            _oauthInfo.switchUser();
+            Navigator.of(context).pop();
+          },
+        ),
+        Text(""),
+        Text("version: 1.4.08")
+      ],
+    ));
   }
 }
