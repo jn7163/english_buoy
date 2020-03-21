@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+const double MIN_FILTER_PERCENT = 70;
+const double MAX_FILTER_PERCENT = 100;
+
 class Settings with ChangeNotifier {
   bool isJump = false;
   bool isDark = false;

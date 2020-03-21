@@ -114,7 +114,10 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
       //make highlight show
       setState(() {});
       //auto scroll sentence to top
-      if (settings.isScrollWithPlay && controller.homeIndex == ArticlePageViewPageIndex && controller.selectedArticleID == _article.articleID && _article.youtubeController.value.isPlaying) {
+      if (settings.isScrollWithPlay &&
+          controller.homeIndex == ArticlePageViewPageIndex &&
+          controller.selectedArticleID == _article.articleID &&
+          _article.youtubeController.value.isPlaying) {
         int sentenceIndex = _timeSentenceIndexs[currentIndex].indexs[0];
         Scrollable.ensureVisible(_article.sentences[sentenceIndex].c, duration: Duration(milliseconds: 1400), alignment: 0.0);
       }
@@ -188,7 +191,8 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
       }
     }
     //make sure last sentence has endtime
-    _timeSentenceIndexs[_timeSentenceIndexs.length - 1].endSeconds = _timeSentenceIndexs[_timeSentenceIndexs.length - 1].startSeconds + 10000;
+    _timeSentenceIndexs[_timeSentenceIndexs.length - 1].endSeconds =
+        _timeSentenceIndexs[_timeSentenceIndexs.length - 1].startSeconds + 10000;
   }
 
   Widget refreshBody() {
@@ -250,6 +254,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
       this.loadArticleByID();
     }
 
-    return ArticleInherited(article: this._article, child: Scaffold(body: body(), floatingActionButton: ArticleFloatingActionButton()));
+    return ArticleInherited(
+        article: this._article, child: Scaffold(body: body(), floatingActionButton: ArticleFloatingActionButton()));
   }
 }

@@ -77,11 +77,14 @@ class ArticleTitles with ChangeNotifier {
 
   Future<bool> newYouTube(String url) async {
     String result;
+    //reset to min filter
+    this.filterByPercent(MIN_FILTER_PERCENT);
     if (scrollToSharedItem(url)) {
       result = exists;
       Store.dio().post(Store.baseURL + "Subtitle", data: {"Youtube": url});
       return true;
     }
+
     this.showLoadingItem();
     if (scrollToArticleTitle != null) scrollToArticleTitle(0);
 
@@ -144,7 +147,8 @@ class ArticleTitles with ChangeNotifier {
     // must make new list otherwise Selector will not trigger
     //List<ArticleTitle> _filterTitles = [...this.titles];
     List<ArticleTitle> _filterTitles = this.titles;
-    if (searchKey != "") _filterTitles = _filterTitles.where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase())).toList();
+    if (searchKey != "")
+      _filterTitles = _filterTitles.where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase())).toList();
     if (settings.filertPercent > 70)
       _filterTitles = _filterTitles
           .where((d) => d.percent >= settings.filertPercent || d.percent == 0) // show percent 0 used to show loading item

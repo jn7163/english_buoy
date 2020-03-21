@@ -27,16 +27,14 @@ class ConfigFilterByPercentState extends State<ConfigFilterByPercent> {
         future: _settings.getFromLocal(),
         builder: (BuildContext context, _) {
           return Column(children: [
-            _settings.filertPercent > 70
-                ? Text("Filter by percent: " +
-                    _settings.filertPercent.toStringAsFixed(0) +
-                    "%")
+            _settings.filertPercent > MIN_FILTER_PERCENT
+                ? Text("Filter by percent: " + _settings.filertPercent.toStringAsFixed(0) + "%")
                 : Text("Filter less than 70% show all articles"),
             Slider(
               label: _settings.filertPercent.toStringAsFixed(0) + "%",
-              divisions: 30,
-              min: 70,
-              max: 100,
+              divisions: (MAX_FILTER_PERCENT - MIN_FILTER_PERCENT).toInt(),
+              min: MIN_FILTER_PERCENT,
+              max: MAX_FILTER_PERCENT,
               //value: articleTitles.settings.filertPercent,
               value: _settings.filertPercent,
               //onChanged: articleTitles.filterByPercent,

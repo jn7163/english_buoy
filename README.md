@@ -4,6 +4,10 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.12+1.4.12
+
+- fix enter wrong article error
+
 v1.4.11+1.4.11
 
 - Fix save local cache error

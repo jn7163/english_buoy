@@ -34,12 +34,12 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> {
       child: Selector<ArticleTitles, List<ArticleTitle>>(
           selector: (context, articleTitles) => articleTitles.filterTitles,
           builder: (context, filterTitles, child) {
-            print("Selector $this init _controller.articlePageViewController!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             Controller _controller = Provider.of<Controller>(context, listen: false);
             _controller.articlePageViewController = PageController(initialPage: _controller.articleIndex);
             return PageView(
                 reverse: true,
-                onPageChanged: (i) => _controller.setSelectedArticleID(filterTitles[i].id), // used to highlight aritcleTitlePage item
+                onPageChanged: (i) =>
+                    _controller.setSelectedArticleID(filterTitles[i].id), // used to highlight aritcleTitlePage item
                 controller: _controller.articlePageViewController,
                 children: filterTitles.map((d) => ArticlePage(d.id)).toList());
           }),
