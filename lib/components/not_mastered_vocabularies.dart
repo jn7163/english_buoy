@@ -6,9 +6,10 @@ import '../models/sentence.dart';
 import '../models/word.dart';
 import '../functions/article.dart';
 import 'article_sentences.dart';
-import '../models/article_inherited.dart';
 
 class NotMasteredVocabulary extends StatefulWidget {
+  NotMasteredVocabulary(this._article);
+  final Article _article;
   @override
   NotMasteredVocabularyState createState() => NotMasteredVocabularyState();
 }
@@ -17,7 +18,7 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
   Article _article;
   List<Word> _mustLearnWords = List(); // in NESL
   List<Word> _needLearnWords = List(); // not in NESL
-  List<Word> _allWords;
+  List<Word> _allWords = List();
   Map<String, Word> _mustLearnUnique = Map();
   bool _hideSome = false;
 
@@ -59,12 +60,12 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
       });
     });
     // if first init
-    if (_allWords == null) {
+    if (_allWords.length == 0)
       _allWords = _mustLearnWords + _needLearnWords;
-    } else {
+    else
       // if update words
       _allWords = updateAllWords(_allWords, _mustLearnWords + _needLearnWords);
-    }
+
     if (_allWords.length > 40) {
       _hideSome = true;
       _allWords = _allWords.sublist(0, 40);
@@ -109,7 +110,8 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
           d.level == 0 ? "-" : d.level.toString(), style: bodyTextStyle,
           //style: Theme.of(context).textTheme.display2,
         ),
-        two: ArticleSentences(article: _article, sentences: [sentence], needWordWise: false, crossAxisAlignment: CrossAxisAlignment.baseline),
+        two: ArticleSentences(
+            article: _article, sentences: [sentence], needWordWise: false, crossAxisAlignment: CrossAxisAlignment.baseline),
         three: GestureDetector(
             onTap: () {
               //跳转到文章中这一句
@@ -141,6 +143,12 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
 
   @override
   Widget build(BuildContext context) {
+    if (_article == null || _article.articleID != widget._article.articleID)
+      this.reset();
+    else
+      this.clear();
+    _article = widget._article;
+    filterMustNeedWords();
     List<TableRow> renderWordRows = getRenderWordRows();
     return Table(
         border: TableBorder.all(color: Theme.of(context).primaryColorDark, width: 0.4),
@@ -152,6 +160,7 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
         children: renderWordRows);
   }
 
+  /*
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -163,4 +172,5 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
     _article = ArticleInherited.of(context).article;
     filterMustNeedWords();
   }
+  */
 }

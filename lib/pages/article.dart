@@ -14,7 +14,6 @@ import '../models/article_titles.dart';
 import '../models/article.dart';
 import '../models/settings.dart';
 import '../models/sentence.dart';
-import '../models/article_inherited.dart';
 import '../models/controller.dart';
 import '../functions/utility.dart';
 
@@ -94,6 +93,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   }
 
   routineCheckSentenceHighLight() {
+    if (this.mounted == false) return;
     Controller controller = Provider.of<Controller>(context, listen: false);
     //if leave this article page no need checkSentenceHighlight
     if (!_article.checkSentenceHighlight) return;
@@ -232,7 +232,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
         controller: _scrollController,
         child: Column(children: [
           ArticleTopBar(article: _article),
-          NotMasteredVocabulary(),
+          NotMasteredVocabulary(_article),
           Padding(padding: EdgeInsets.all(5), child: ArticleSentences(article: _article, sentences: _article.sentences)),
         ]));
   }
@@ -249,12 +249,13 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    /*
     if (widget._articleID != -1 && widget._articleID != _article.articleID) {
       _article.articleID = widget._articleID;
       this.loadArticleByID();
     }
+    */
 
-    return ArticleInherited(
-        article: this._article, child: Scaffold(body: body(), floatingActionButton: ArticleFloatingActionButton()));
+    return Scaffold(body: body(), floatingActionButton: ArticleFloatingActionButton(_article));
   }
 }

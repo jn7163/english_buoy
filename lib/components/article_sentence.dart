@@ -10,6 +10,6 @@ class ArticleSentence extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     sentence.c = context;
-    return RichText(text: textSpan);
+    return ExcludeSemantics(excluding: true, child: RichText(text: textSpan));
   }
 }

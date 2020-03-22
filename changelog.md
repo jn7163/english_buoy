@@ -6,7 +6,8 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.12+1.4.12
 
-- fix enter wrong article error
+- Improve article scroll performance
+- Fix enter wrong article error
 
 v1.4.11+1.4.11
 

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/article.dart';
-import '../models/article_inherited.dart';
 
 class ArticleFloatingActionButton extends StatefulWidget {
+  ArticleFloatingActionButton(this._article);
+  final Article _article;
   @override
   ArticleFloatingActionButtonState createState() => ArticleFloatingActionButtonState();
 }
@@ -10,7 +11,7 @@ class ArticleFloatingActionButton extends StatefulWidget {
 class ArticleFloatingActionButtonState extends State<ArticleFloatingActionButton> {
   @override
   Widget build(BuildContext context) {
-    Article article = ArticleInherited.of(context).article;
+    Article article = widget._article;
     return Align(
         alignment: Alignment.centerRight,
         child: Visibility(
@@ -28,10 +29,5 @@ class ArticleFloatingActionButtonState extends State<ArticleFloatingActionButton
                   },
                   child: Icon(Icons.arrow_upward),
                 ))));
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
   }
 }
