@@ -8,7 +8,6 @@ import '../models/explorer.dart';
 import '../models/article_title.dart';
 
 import '../themes/base.dart';
-import '../pages/home.dart';
 
 class ExplorerPage extends StatefulWidget {
   ExplorerPage({Key key}) : super(key: key);
@@ -50,7 +49,12 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
           return ScrollablePositionedList.builder(
             itemCount: titles.length,
             itemBuilder: (context, index) {
-              return index == 0 ? Container() : ArticleTitlesSlidable(articleTitle: titles.reversed.toList()[index]);
+              return index == 0
+                  ? Container()
+                  : ArticleTitlesSlidable(
+                      articleTitle: titles.reversed.toList()[index],
+                      isExplorer: true,
+                    );
             },
             itemScrollController: itemScrollController,
             itemPositionsListener: itemPositionListener,
