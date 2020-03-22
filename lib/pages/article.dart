@@ -65,6 +65,11 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     };
     loadArticleByID();
     preload();
+    //maybe this is reinit need set back to need keepAlive
+    if (this.wantKeepAlive == false) {
+      this.wantKeepAlive = true;
+      this.updateKeepAlive();
+    }
   }
 
   @override
@@ -220,7 +225,8 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     return VisibilityDetector(
         key: Key(_article.articleID.toString()),
         onVisibilityChanged: (d) {
-          //if (d.visibleFraction == 1) setState(() {});
+          //make sure show right word state
+          if (d.visibleFraction == 1) setState(() {});
         },
         child: hud);
   }
@@ -238,23 +244,13 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   }
 
   @override
-  updateKeepAlive() {
-    super.updateKeepAlive();
-    if (widget._articleID != _article.articleID) {
-      _article.articleID = widget._articleID;
-      loadArticleByID();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     super.build(context);
-    /*
-    if (widget._articleID != -1 && widget._articleID != _article.articleID) {
-      _article.articleID = widget._articleID;
-      this.loadArticleByID();
+    // article list data change make PageView  rebuild, need set article disable  want KeepAlive
+    if (_article.articleID != null && widget._articleID != _article.articleID) {
+      this.wantKeepAlive = false;
+      this.updateKeepAlive();
     }
-    */
 
     return Scaffold(body: body(), floatingActionButton: ArticleFloatingActionButton(_article));
   }

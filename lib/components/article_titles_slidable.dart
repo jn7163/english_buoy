@@ -56,6 +56,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                     //remove from explorer list
                     Provider.of<Explorer>(context, listen: false).removeFromList(articleTitle);
                 });
+                return;
               }
               _controller.setSelectedArticleID(articleTitle.id);
               int i = _articleTitles.findIndexByArticleID(articleTitle.id);
@@ -63,16 +64,15 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                 _controller.showSnackBar("can't find article:" + articleTitle.title + " in current article list! relaoding...");
                 _articleTitles.getFromLocal();
                 return;
+              }
+              // first open article page view
+              if (_controller.articlePageViewController == null) {
+                _controller.articleIndex = i;
+                _controller.jumpToHome(ArticlePageViewPageIndex);
+                // no need run jumpToArticle when first open
               } else {
-                // first open article page view
-                if (_controller.articlePageViewController == null) {
-                  _controller.articleIndex = i;
-                  _controller.jumpToHome(ArticlePageViewPageIndex);
-                  // no need run jumpToArticle when first open
-                } else {
-                  _controller.jumpToHome(ArticlePageViewPageIndex);
-                  _controller.jumpToArticle(i);
-                }
+                _controller.jumpToHome(ArticlePageViewPageIndex);
+                _controller.jumpToArticle(i);
               }
             },
             // percent in explorer is 0, no need show

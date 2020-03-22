@@ -5,19 +5,20 @@ import './article.dart';
 import '../models/controller.dart';
 import '../models/article_title.dart';
 
-class ArticlePageViewPage extends StatefulWidget {
+class ArticlePageViewPage extends StatelessWidget {
+  /*
   @override
   _ArticlePageViewPage createState() => _ArticlePageViewPage();
 }
 
-class _ArticlePageViewPage extends State<ArticlePageViewPage> {
-  //with AutomaticKeepAliveClientMixin {
-  //@override
-  //bool get wantKeepAlive => false;
+class _ArticlePageViewPage extends State<ArticlePageViewPage> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => false;
   @override
   void initState() {
     super.initState();
   }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +35,7 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> {
       child: Selector<ArticleTitles, List<ArticleTitle>>(
           selector: (context, articleTitles) => articleTitles.filterTitles,
           builder: (context, filterTitles, child) {
+            print("Selector rebuild $this");
             Controller _controller = Provider.of<Controller>(context, listen: false);
             _controller.articlePageViewController = PageController(initialPage: _controller.articleIndex);
             return PageView(

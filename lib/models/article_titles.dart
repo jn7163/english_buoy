@@ -145,8 +145,8 @@ class ArticleTitles with ChangeNotifier {
 
   List<ArticleTitle> get filterTitles {
     // must make new list otherwise Selector will not trigger
-    //List<ArticleTitle> _filterTitles = [...this.titles];
-    List<ArticleTitle> _filterTitles = this.titles;
+    List<ArticleTitle> _filterTitles = [...this.titles];
+    //List<ArticleTitle> _filterTitles = this.titles;
     if (searchKey != "")
       _filterTitles = _filterTitles.where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase())).toList();
     if (settings.filertPercent > 70)
