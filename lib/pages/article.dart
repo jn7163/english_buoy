@@ -102,7 +102,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     Controller controller = Provider.of<Controller>(context, listen: false);
     //if leave this article page no need checkSentenceHighlight
     if (!_article.checkSentenceHighlight) return;
-    //debugPrint("routineCheckSentenceHighLight article=" + widget._articleID.toString());
     if (_article.youtubeController == null) return;
     int currentIndex;
     for (int i = 0; i < _timeSentenceIndexs.length; i++) {

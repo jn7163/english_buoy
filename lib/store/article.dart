@@ -39,7 +39,7 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles, L
     // 如果是已经存在, 那么应该会把 article id 传过来
     if (e.response != null) {
       if (e.response.data is String) {
-        toast.Alert.toast(context, e.message.toString(), position: toast.ToastPosition.bottom, duration: toast.ToastDuration.long);
+        toast.Alert.toast(context, e.message, position: toast.ToastPosition.bottom, duration: toast.ToastDuration.long);
       } else if (e.response.data['error'] == "already exists") {
         return e.response.data;
       }
@@ -51,7 +51,7 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles, L
 
 // 根据标题查询文章内容
 Future getArticleByID(BuildContext context, int id) async {
-  var response = await Store.dio().get(Store.baseURL + "article/" + id.toString());
+  var response = await Store.dio().get(Store.baseURL + "article/$id");
   // bus.emit('get_article_done', response.data);
   return response.data;
 }
@@ -60,6 +60,7 @@ Future putUnlearnedCount(BuildContext context, int articleID, int unlearnedCount
   if (articleID == 0) {
     return null;
   }
-  var response = await Store.dio().put(Store.baseURL + "article/unlearned_count", data: {"article_id": articleID, "unlearned_count": unlearnedCount});
+  var response = await Store.dio()
+      .put(Store.baseURL + "article/unlearned_count", data: {"article_id": articleID, "unlearned_count": unlearnedCount});
   return response;
 }

@@ -20,8 +20,7 @@ class Article with ChangeNotifier {
   int unlearnedCount;
   int articleID;
   Sentence notMasteredWord; // 尚未掌握的table中的单词, 用来滚回去
-  Function notifyListeners2 =
-      () {}; //beacause notifyListeners2 not work, must use callBack replace
+  Function notifyListeners2 = () {}; //beacause notifyListeners2 not work, must use callBack replace
 
   // 文章中的文字内容
   // List words = [];
@@ -97,12 +96,12 @@ class Article with ChangeNotifier {
   setToLocal(String data) async {
     // 登录后存储到临时缓存中
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('article_' + this.articleID.toString(), data);
+    prefs.setString('article_${this.articleID}', data);
   }
 
   Future<bool> getFromLocal(int articleID) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String data = prefs.getString('article_' + articleID.toString());
+    String data = prefs.getString('article_${this.articleID}');
     if (data != null) {
       this.setFromJSON(json.decode(data));
       return true;
@@ -114,8 +113,7 @@ class Article with ChangeNotifier {
   // justUpdateLocal 仅更新本地缓存, 避免延迟导致页面内容错乱
   Future getArticleByID(int articleID) async {
     this.articleID = articleID;
-    var response = await Store.dio()
-        .get(Store.baseURL + "article/" + this.articleID.toString());
+    var response = await Store.dio().get(Store.baseURL + "article/${this.articleID}");
 
     this.setFromJSON(response.data);
     this.setToLocal(json.encode(response.data));
@@ -144,9 +142,8 @@ class Article with ChangeNotifier {
     unlearnedCount = allWords.toSet().length;
     unlearnedCount--;
     // 设置本地的列表
-    var response = await Store.dio().put(
-        Store.baseURL + "article/unlearned_count",
-        data: {"article_id": articleID, "unlearned_count": unlearnedCount});
+    var response = await Store.dio()
+        .put(Store.baseURL + "article/unlearned_count", data: {"article_id": articleID, "unlearned_count": unlearnedCount});
     return response;
   }
 

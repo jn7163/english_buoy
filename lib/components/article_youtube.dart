@@ -15,7 +15,7 @@ class ArticleYouTube extends StatelessWidget {
     if (article == null || article.title == null || article.youtube == '') return Container(width: 0.0, height: 0.0);
     SettingNews settings = Provider.of<SettingNews>(context);
     return VisibilityDetector(
-        key: Key("youtube_" + article.articleID.toString()),
+        key: Key("youtube_${article.articleID}"),
         onVisibilityChanged: (d) {
           if (d.visibleFraction == 0) {
             article.youtubeController.pause();

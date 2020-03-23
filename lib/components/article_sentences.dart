@@ -210,7 +210,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
       String shortDef = "";
       if (widget.needWordWise && Store.wordwiseMap[word.text.toLowerCase()] != null)
         shortDef = "-" + Store.wordwiseMap[word.text.toLowerCase()];
-      if (word.count != 0) shortDef += " " + word.count.toString();
+      if (word.count != 0) shortDef += " ${word.count}";
       subscript = TextSpan(text: shortDef, style: wordStyle.copyWith(fontSize: 12)); // 下标样式和原本保持一致, 只是变小
 
     }

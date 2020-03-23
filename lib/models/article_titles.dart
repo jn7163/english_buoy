@@ -113,7 +113,7 @@ class ArticleTitles with ChangeNotifier {
       this.removeLoadingItem();
       if (e.response != null) {
         if (e.response.data is String)
-          result = e.message.toString() + ": " + e.response.data;
+          result = "${e.message}: " + e.response.data;
         else
           result = e.response.data['error'];
       }
