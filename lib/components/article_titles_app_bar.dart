@@ -8,7 +8,7 @@ import '../models/article_titles.dart';
 
 // 顶部那个浮动的 appbar
 class ArticleListsAppBarState extends State<ArticleListsAppBar> {
-  bool isSearching = false;
+  bool _isSearching = false;
   TextEditingController searchController = TextEditingController();
 
   //Search search;
@@ -27,13 +27,9 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).primaryColorDark,
-      leading: GestureDetector(
-          onTap: () {
-            widget.scaffoldKey.currentState.openDrawer();
-          },
-          child: OauthInfoWidget()),
+      leading: GestureDetector(onTap: () => widget.scaffoldKey.currentState.openDrawer(), child: OauthInfoWidget()),
       automaticallyImplyLeading: false,
-      title: isSearching
+      title: _isSearching
           ? TextField(
               // 自动对焦
               autofocus: true,
@@ -43,19 +39,21 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
               controller: searchController,
               style: Theme.of(context).primaryTextTheme.headline6,
             )
-          : Text(
-              "English Buoy",
-            ),
+          : GestureDetector(
+              onTap: () => _isSearching = true,
+              child: Text(
+                "English Buoy",
+              )),
       actions: <Widget>[
         IconButton(
           icon: Icon(
-            isSearching ? Icons.close : Icons.search,
+            _isSearching ? Icons.close : Icons.search,
           ),
           tooltip: 'go to articles',
           onPressed: () {
             setState(() {
-              isSearching = !isSearching;
-              if (!isSearching) {
+              _isSearching = !_isSearching;
+              if (!_isSearching) {
                 searchController.text = "";
                 articleTitles.setSearchKey(searchController.text);
               }
@@ -64,16 +62,12 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
         ),
         IconButton(
           icon: Icon(Icons.sort),
-          onPressed: () {
-            articleTitles.changeSort();
-          },
+          onPressed: () => articleTitles.changeSort(),
         ),
         IconButton(
           icon: Icon(Icons.settings),
           tooltip: 'go to settings',
-          onPressed: () {
-            widget.scaffoldKey.currentState.openEndDrawer();
-          },
+          onPressed: () => widget.scaffoldKey.currentState.openEndDrawer(),
         ),
       ],
     );
