@@ -10,6 +10,7 @@ class ArticleTitle with ChangeNotifier {
   int wordCount;
   String youtube;
   String avatar;
+  String thumbnailURL;
   double percent;
   bool loading = false;
 
@@ -22,6 +23,7 @@ class ArticleTitle with ChangeNotifier {
     this.youtube = json['Youtube'];
     this.avatar = json['Avatar'];
     this.wordCount = json['WordCount'];
+    this.thumbnailURL = json['ThumbnailURL'];
     //this.percent = 100-(this.unlearnedCount/this.wordCount)*100;
     setPercent();
   }

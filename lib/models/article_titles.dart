@@ -19,6 +19,7 @@ ArticleTitle getLoadingArticle() {
   loadingArticleTitle.percent = 0;
   loadingArticleTitle.createdAt = DateTime.now();
   loadingArticleTitle.updatedAt = DateTime.now();
+  loadingArticleTitle.thumbnailURL = "";
   return loadingArticleTitle;
 }
 
@@ -259,6 +260,7 @@ class ArticleTitles with ChangeNotifier {
     articleTitle.youtube = article.youtube;
     articleTitle.avatar = article.avatar;
     articleTitle.wordCount = article.wordCount;
+    articleTitle.thumbnailURL = article.thumbnailURL;
     articleTitle.setPercent();
     //need use new list to trigger Selector
     this.titles = [...this.titles];

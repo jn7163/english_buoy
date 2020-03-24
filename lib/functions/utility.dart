@@ -30,8 +30,8 @@ bool isAccessTokenError(dynamic e) {
     if (e.response.statusCode == 401) return true;
   } else {
     // Something happened in setting up or sending the request that triggered an Error
-    debugPrint(e.request);
-    debugPrint(e.message);
+    debugPrint("${e.request}");
+    debugPrint("${e.message}");
   }
   return false;
 }

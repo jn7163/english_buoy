@@ -10,15 +10,21 @@ class ArticleYoutubeAvatar extends StatelessWidget {
     Key key,
     @required this.avatar,
     @required this.loading,
+    this.loadErrorCallback,
   }) : super(key: key);
   final String avatar;
   final bool loading;
+  final Function loadErrorCallback;
 
   @override
   Widget build(BuildContext context) {
     if (loading) return RefreshProgressIndicator();
     return CircleAvatar(
-      backgroundImage: avatar == null || avatar == '' ? AssetImage('assets/images/logo.png') : CachedNetworkImageProvider(avatar),
+      backgroundImage: avatar == null || avatar == ''
+          ? AssetImage('assets/images/logo.png')
+          : CachedNetworkImageProvider(avatar, errorListener: () {
+              if (loadErrorCallback != null) loadErrorCallback();
+            }),
     );
   }
 }

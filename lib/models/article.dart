@@ -30,6 +30,7 @@ class Article with ChangeNotifier {
   String title;
   String youtube;
   String avatar;
+  String thumbnailURL;
   int wordCount;
 
   setNotMasteredWord(Sentence v) {
@@ -65,6 +66,7 @@ class Article with ChangeNotifier {
     this.unlearnedCount = json['UnlearnedCount'];
     this.avatar = json['Avatar'];
     this.wordCount = json['WordCount'];
+    this.thumbnailURL = json['ThumbnailURL'];
   }
 
   queryWordWise() async {
