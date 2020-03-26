@@ -16,6 +16,7 @@ import '../store/wordwise.dart';
 import './article_sentence.dart';
 import '../functions/article.dart';
 import '../functions/utility.dart';
+import '../themes/base.dart';
 
 // init text style
 TextStyle bodyTextStyle = TextStyle(color: Colors.black87, fontSize: 20.0, fontFamily: 'NotoSans-Medium');
@@ -148,7 +149,7 @@ class ArticleSentencesState extends State<ArticleSentences> {
           });
         });
       };
-    TextStyle playTextStyle = bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
+    TextStyle playTextStyle = bodyTextStyle.copyWith(color: mainColor[700]);
     return TextSpan(
         text: " ▷ ",
         style: seekTextSpanTapStatus[time] || s.highlight ? playTextStyle.copyWith(fontWeight: FontWeight.bold) : playTextStyle,
@@ -165,9 +166,9 @@ class ArticleSentencesState extends State<ArticleSentences> {
     bool isCommandWord = (word.level != null && word.level != 0); // 是否3000常用
     bool isSelected = (_tapedText.toLowerCase() == word.text.toLowerCase()); // 是否选中
     // 常用高亮色
-    this.needLearnTextStyle = bodyTextStyle.copyWith(color: Theme.of(context).primaryColorLight);
+    this.needLearnTextStyle = bodyTextStyle.copyWith(color: mainColor[700]);
     // 非常用的高亮色
-    this.noNeedLearnTextStyle = bodyTextStyle.copyWith(color: Theme.of(context).primaryColorDark);
+    this.noNeedLearnTextStyle = bodyTextStyle.copyWith(color: Colors.blueGrey);
 
     //根据条件逐步加工修改的样式
     TextStyle processTextStyle = bodyTextStyle;
