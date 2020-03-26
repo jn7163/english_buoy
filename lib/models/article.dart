@@ -115,7 +115,7 @@ class Article with ChangeNotifier {
   // justUpdateLocal 仅更新本地缓存, 避免延迟导致页面内容错乱
   Future getArticleByID(int articleID) async {
     this.articleID = articleID;
-    var response = await Store.dio().get(Store.baseURL + "article/${this.articleID}");
+    var response = await dio().get(Store.baseURL + "article/${this.articleID}");
 
     this.setFromJSON(response.data);
     this.setToLocal(json.encode(response.data));
@@ -144,7 +144,7 @@ class Article with ChangeNotifier {
     unlearnedCount = allWords.toSet().length;
     unlearnedCount--;
     // 设置本地的列表
-    var response = await Store.dio()
+    var response = await dio()
         .put(Store.baseURL + "article/unlearned_count", data: {"article_id": articleID, "unlearned_count": unlearnedCount});
     return response;
   }

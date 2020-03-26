@@ -2,6 +2,6 @@ import './store.dart';
 
 // add new youtube to server
 Future newYouTube(String youtube) async {
-  return await Store.dio()
+  return await dio()
       .post(Store.baseURL + "Subtitle", data: {"Youtube": youtube});
 }

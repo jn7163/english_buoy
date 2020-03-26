@@ -35,7 +35,7 @@ class ArticleTitle with ChangeNotifier {
   // 删除文章
   Future deleteArticle() async {
     try {
-      var response = await Store.dio().delete(Store.baseURL + "article/${this.id}");
+      var response = await dio().delete(Store.baseURL + "article/${this.id}");
       return response.data;
     } finally {
       //allLoading.set(false);

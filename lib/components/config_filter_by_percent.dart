@@ -1,3 +1,4 @@
+import 'package:english_buoy/themes/base.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class ConfigFilterByPercentState extends State<ConfigFilterByPercent> {
                 ? Text("Filter by percent: " + _settings.filertPercent.toStringAsFixed(0) + "%")
                 : Text("Filter less than 70% show all articles"),
             Slider(
+              activeColor: mainColor,
               label: _settings.filertPercent.toStringAsFixed(0) + "%",
               divisions: (MAX_FILTER_PERCENT - MIN_FILTER_PERCENT).toInt(),
               min: MIN_FILTER_PERCENT,

@@ -34,12 +34,11 @@ class OauthInfo with ChangeNotifier {
   }
 
   handleGetContact() async {
-    GoogleSignInAuthentication authentication =
-        await _currentUser.authentication;
+    GoogleSignInAuthentication authentication = await _currentUser.authentication;
     //put user info to server
     await putAccount(_currentUser, authentication);
-    this.setToShared(authentication.accessToken, _currentUser.email,
-        _currentUser.displayName, _currentUser.photoUrl);
+    await this.setToShared(authentication.accessToken, _currentUser.email, _currentUser.displayName, _currentUser.photoUrl);
+    Store.init();
     this.signoDone();
   }
 
@@ -68,8 +67,7 @@ class OauthInfo with ChangeNotifier {
   }
 
   // set login info to shared
-  setToShared(
-      String accessToken, String email, String name, String avatarURL) async {
+  setToShared(String accessToken, String email, String name, String avatarURL) async {
     // 如果从未登录转换到登录, 那么返回需要跳转
     this.accessToken = accessToken;
     this.email = email;

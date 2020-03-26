@@ -82,7 +82,7 @@ class ArticleTitles with ChangeNotifier {
     this.filterByPercent(MIN_FILTER_PERCENT);
     if (scrollToSharedItem(url)) {
       result = exists;
-      Store.dio().post(Store.baseURL + "Subtitle", data: {"Youtube": url});
+      dio().post(Store.baseURL + "Subtitle", data: {"Youtube": url});
       return true;
     }
 
@@ -91,7 +91,7 @@ class ArticleTitles with ChangeNotifier {
 
     Response response;
     try {
-      response = await Store.dio().post(Store.baseURL + "Subtitle", data: {"Youtube": url});
+      response = await dio().post(Store.baseURL + "Subtitle", data: {"Youtube": url});
       Article article = Article();
       // 将新添加的文章添加到缓存中
       article.setFromJSON(response.data);
@@ -228,7 +228,7 @@ class ArticleTitles with ChangeNotifier {
 
   // 和服务器同步
   Future syncArticleTitles({bool justSetToLocal = false}) async {
-    Response response = await Store.dio().get(Store.baseURL + "article_titles");
+    Response response = await dio().get(Store.baseURL + "article_titles");
     if (!justSetToLocal) this.setFromJSON(response.data);
     // save to local for cache
     setToLocal(json.encode(response.data));

@@ -18,7 +18,7 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles, L
   }
   topLoading.set(true);
   try {
-    var response = await Store.dio().post(Store.baseURL + "analysis", data: {"article": article});
+    var response = await dio().post(Store.baseURL + "analysis", data: {"article": article});
     // 将新添加的文章添加到缓存中
     Article newArticle = Article();
     newArticle.setFromJSON(response.data);
@@ -51,7 +51,7 @@ postArticle(BuildContext context, String article, ArticleTitles articleTitles, L
 
 // 根据标题查询文章内容
 Future getArticleByID(BuildContext context, int id) async {
-  var response = await Store.dio().get(Store.baseURL + "article/$id");
+  var response = await dio().get(Store.baseURL + "article/$id");
   // bus.emit('get_article_done', response.data);
   return response.data;
 }
@@ -60,7 +60,7 @@ Future putUnlearnedCount(BuildContext context, int articleID, int unlearnedCount
   if (articleID == 0) {
     return null;
   }
-  var response = await Store.dio()
+  var response = await dio()
       .put(Store.baseURL + "article/unlearned_count", data: {"article_id": articleID, "unlearned_count": unlearnedCount});
   return response;
 }

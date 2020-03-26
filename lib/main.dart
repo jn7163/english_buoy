@@ -44,7 +44,7 @@ class _EbuoyState extends State<Ebuoy> {
   @override
   void initState() {
     super.initState();
-    Store.prefs;
+    Store.init();
     openDB();
     _controller = Controller();
     _oauthInfo = OauthInfo();

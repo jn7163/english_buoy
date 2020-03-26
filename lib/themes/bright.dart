@@ -43,10 +43,10 @@ var brightTheme = ThemeData(
 */
 
 var brightTheme = ThemeData(
-  //primarySwatch: darkMaterialColor,
+  primarySwatch: darkMaterialColor,
   primaryColor: mainColor,
   primaryColorLight: mainColor[700],
-  primaryColorDark: Colors.blueGrey,
+  primaryColorDark: Colors.black,
   accentColor: mainColor, // loading 动画的颜色
   //brightness: Brightness.light,
   fontFamily: "NotoSans-Medium",
