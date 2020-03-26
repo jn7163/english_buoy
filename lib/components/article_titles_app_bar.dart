@@ -26,7 +26,7 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Theme.of(context).primaryColorDark,
+      backgroundColor: Colors.black,
       leading: GestureDetector(onTap: () => widget.scaffoldKey.currentState.openDrawer(), child: OauthInfoWidget()),
       automaticallyImplyLeading: false,
       title: _isSearching

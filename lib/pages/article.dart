@@ -16,6 +16,7 @@ import '../models/settings.dart';
 import '../models/sentence.dart';
 import '../models/controller.dart';
 import '../functions/utility.dart';
+import '../themes/base.dart';
 
 class TimeSentenceIndex {
   int startSeconds = 0;
@@ -251,6 +252,11 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
       this.updateKeepAlive();
     }
 
-    return Scaffold(body: body(), floatingActionButton: ArticleFloatingActionButton(_article));
+    return Scaffold(
+      //backgroundColor: darkMaterialColor[50],
+      //backgroundColor: Colors.white,
+      body: body(),
+      floatingActionButton: ArticleFloatingActionButton(_article),
+    );
   }
 }

@@ -43,8 +43,8 @@ var brightTheme = ThemeData(
 */
 
 var brightTheme = ThemeData(
-  primarySwatch: mainColor,
-  //primaryColor: mainColor,
+  //primarySwatch: darkMaterialColor,
+  primaryColor: mainColor,
   primaryColorLight: mainColor[700],
   primaryColorDark: Colors.blueGrey,
   accentColor: mainColor, // loading 动画的颜色

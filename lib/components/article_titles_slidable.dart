@@ -27,18 +27,19 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
   }
 
   Widget getCardItem(ArticleTitle articleTitle, String percent) {
-    String url = articleTitle.thumbnailURL;
-    return Container(
+    String thumbnailURL = articleTitle.thumbnailURL;
+    return GestureDetector(
+      onTap: () => this.onTap(articleTitle),
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: <Widget>[
           Container(
-            height: 240,
-            decoration: BoxDecoration(
-                image: DecorationImage(
+            height: MediaQuery.of(context).size.height * 0.29,
+            child: CachedNetworkImage(
               fit: BoxFit.cover,
-              image: CachedNetworkImageProvider(url),
-            )),
+              imageUrl: thumbnailURL,
+              //placeholder: (context, url) => const CircularProgressIndicator(),
+            ),
           ),
           Container(
             color: Colors.black.withOpacity(0.5),
@@ -56,6 +57,37 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
     );
   }
 
+  onTap(ArticleTitle articleTitle) {
+    Controller _controller = Provider.of<Controller>(context, listen: false);
+    ArticleTitles _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    //use shared flow
+    if (widget.isExplorer) {
+      _controller.jumpToHome(ArticleTitlesPageIndex);
+      _articleTitles.newYouTube(articleTitle.youtube).then((sucess) {
+        if (sucess)
+          //remove from explorer list
+          Provider.of<Explorer>(context, listen: false).removeFromList(articleTitle);
+      });
+      return;
+    }
+    _controller.setSelectedArticleID(articleTitle.id);
+    int i = _articleTitles.findIndexByArticleID(articleTitle.id);
+    if (i == -1) {
+      _controller.showSnackBar("can't find article:" + articleTitle.title + " in current article list! relaoding...");
+      _articleTitles.getFromLocal();
+      return;
+    }
+    // first open article page view
+    if (_controller.articlePageViewController == null) {
+      _controller.articleIndex = i;
+      _controller.jumpToHome(ArticlePageViewPageIndex);
+      // no need run jumpToArticle when first open
+    } else {
+      _controller.jumpToHome(ArticlePageViewPageIndex);
+      _controller.jumpToArticle(i);
+    }
+  }
+
   Widget getListItem(ArticleTitle articleTitle, String percent, {Color textColor = Colors.white}) {
     return ListTile(
       trailing: ArticleYoutubeAvatar(
@@ -67,34 +99,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
           loading: this.deleting || articleTitle.loading), // data loading to create loading item when add new article
       dense: false,
       onTap: () {
-        Controller _controller = Provider.of<Controller>(context, listen: false);
-        ArticleTitles _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-        //use shared flow
-        if (widget.isExplorer) {
-          _controller.jumpToHome(ArticleTitlesPageIndex);
-          _articleTitles.newYouTube(articleTitle.youtube).then((sucess) {
-            if (sucess)
-              //remove from explorer list
-              Provider.of<Explorer>(context, listen: false).removeFromList(articleTitle);
-          });
-          return;
-        }
-        _controller.setSelectedArticleID(articleTitle.id);
-        int i = _articleTitles.findIndexByArticleID(articleTitle.id);
-        if (i == -1) {
-          _controller.showSnackBar("can't find article:" + articleTitle.title + " in current article list! relaoding...");
-          _articleTitles.getFromLocal();
-          return;
-        }
-        // first open article page view
-        if (_controller.articlePageViewController == null) {
-          _controller.articleIndex = i;
-          _controller.jumpToHome(ArticlePageViewPageIndex);
-          // no need run jumpToArticle when first open
-        } else {
-          _controller.jumpToHome(ArticlePageViewPageIndex);
-          _controller.jumpToArticle(i);
-        }
+        this.onTap(articleTitle);
       },
       // percent in explorer is 0, no need show
       leading: percent == "0" ? null : Text(percent + "%", style: TextStyle(color: textColor)),
@@ -104,6 +109,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
 
   @override
   Widget build(BuildContext context) {
+    //print(MediaQuery.of(context).size.height * 0.29);
     ArticleTitle articleTitle = widget.articleTitle;
     String percent =
         articleTitle.percent.toStringAsFixed(articleTitle.percent.truncateToDouble() == articleTitle.percent ? 0 : 1);

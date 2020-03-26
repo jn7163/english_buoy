@@ -4,8 +4,13 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.13+1.4.13
+
+- use same YouTube thumbnail
+
 v1.4.12+1.4.12
 
+- Show video thumbnail
 - Improve article scroll performance
 - Fix enter wrong article error
 

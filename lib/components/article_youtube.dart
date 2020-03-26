@@ -30,6 +30,7 @@ class ArticleYouTube extends StatelessWidget {
               onPlayerInitialized: (controller) => article.setYouTube(controller),
               context: context,
               videoId: YoutubePlayer.convertUrlToId(article.youtube),
+              thumbnailUrl: article.thumbnailURL,
               flags: YoutubePlayerFlags(
                 //自动播放
                 autoPlay: settings.isAutoplay,

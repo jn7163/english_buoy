@@ -75,6 +75,7 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
         },
         child: SafeArea(
             child: Scaffold(
+          backgroundColor: darkMaterialColor[700],
           body: RefreshIndicator(
             onRefresh: _explorer.syncExplorer,
             child: getArticleTitlesBody(),

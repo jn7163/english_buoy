@@ -113,7 +113,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: Colors.grey,
+      backgroundColor: darkMaterialColor[700],
       key: _scaffoldKey,
       appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
       drawer: LeftDrawer(),
