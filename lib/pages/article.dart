@@ -168,13 +168,12 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
       this.splitSentencesByTime();
       this.initRoutine();
     }
-    if (this.mounted)
-      setState(() {
-        _loading = false;
-      });
+    setState(() {
+      _loading = false;
+    });
     await _article.queryWordWise();
     // make sure show word wise
-    setState(() {});
+    if (this.mounted) setState(() {});
     return hasLocal;
   }
 
