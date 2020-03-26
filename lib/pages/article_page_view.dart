@@ -6,20 +6,6 @@ import '../models/controller.dart';
 import '../models/article_title.dart';
 
 class ArticlePageViewPage extends StatelessWidget {
-  /*
-  @override
-  _ArticlePageViewPage createState() => _ArticlePageViewPage();
-}
-
-class _ArticlePageViewPage extends State<ArticlePageViewPage> with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => false;
-  @override
-  void initState() {
-    super.initState();
-  }
-  */
-
   @override
   Widget build(BuildContext context) {
     //super.build(context);
@@ -43,7 +29,12 @@ class _ArticlePageViewPage extends State<ArticlePageViewPage> with AutomaticKeep
                 onPageChanged: (i) =>
                     _controller.setSelectedArticleID(filterTitles[i].id), // used to highlight aritcleTitlePage item
                 controller: _controller.articlePageViewController,
-                children: filterTitles.map((d) => ArticlePage(d.id)).toList());
+                children: filterTitles
+                    .map((d) => ArticlePage(
+                          key: ValueKey("article_${d.id}"),
+                          articleID: d.id,
+                        ))
+                    .toList());
           }),
     );
   }

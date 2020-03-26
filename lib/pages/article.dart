@@ -16,7 +16,6 @@ import '../models/settings.dart';
 import '../models/sentence.dart';
 import '../models/controller.dart';
 import '../functions/utility.dart';
-import '../themes/base.dart';
 
 class TimeSentenceIndex {
   int startSeconds = 0;
@@ -29,10 +28,10 @@ class TimeSentenceIndex {
 
 @immutable
 class ArticlePage extends StatefulWidget {
-  //ArticlePage({Key key, this.initID}) : super(key: key);
-  ArticlePage(this._articleID);
+  ArticlePage({Key key, this.articleID}) : super(key: key);
+  //ArticlePage(this._articleID);
 
-  final int _articleID;
+  final int articleID;
 
   @override
   _ArticlePageState createState() => _ArticlePageState();
@@ -52,8 +51,9 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
 
   @override
   void initState() {
+    print("initState $this");
     super.initState();
-    _articleID = widget._articleID;
+    _articleID = widget.articleID;
 
     _scrollController = ScrollController();
     settings = Provider.of<SettingNews>(context, listen: false);
@@ -66,11 +66,13 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     };
     loadArticleByID();
     preload();
+    /*
     //maybe this is reinit need set back to need keepAlive
     if (this.wantKeepAlive == false) {
       this.wantKeepAlive = true;
       this.updateKeepAlive();
     }
+    */
   }
 
   @override
@@ -246,11 +248,14 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    /*
     // article list data change make PageView  rebuild, need set article disable  want KeepAlive
-    if (_article.articleID != null && widget._articleID != _article.articleID) {
+    if (_article.articleID != null && widget.articleID != _article.articleID) {
+      print("change articleID build $this");
       this.wantKeepAlive = false;
       this.updateKeepAlive();
     }
+    */
 
     return Scaffold(
       //backgroundColor: darkMaterialColor[50],
