@@ -16,7 +16,7 @@ void main() {
     await tester.pumpWidget(Ebuoy());
 
     // Verify that title is correct.
-    expect(find.text('English Buoy'), findsOneWidget);
+    //expect(find.text('English Buoy'), findsOneWidget);
     //expect(find.text('1'), findsNothing);
 
     // Tap the 'settings' icon and trigger a frame.

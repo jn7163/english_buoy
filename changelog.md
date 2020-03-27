@@ -6,7 +6,9 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.13+1.4.13
 
-- use same YouTube thumbnail
+- Better efficiency when sorting and filtering articles lists
+- Use same YouTube thumbnail
+- Change themes
 
 v1.4.12+1.4.12
 
