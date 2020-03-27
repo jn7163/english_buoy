@@ -87,6 +87,7 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
             },
             child: Icon(Icons.arrow_back),
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         )));
   }
 }

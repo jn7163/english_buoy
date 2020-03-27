@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 
 import 'oauth_info.dart';
 import '../models/article_titles.dart';
+import 'package:decoding_text_effect/decoding_text_effect.dart';
 
 // 顶部那个浮动的 appbar
 class ArticleListsAppBarState extends State<ArticleListsAppBar> {
   bool _isSearching = false;
   TextEditingController searchController = TextEditingController();
+  int _searchCount = 0;
 
   //Search search;
   ArticleTitles articleTitles;
@@ -42,11 +44,13 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
           : GestureDetector(
               onTap: () {
                 setState(() {
+                  _searchCount++;
                   _isSearching = true;
                 });
               },
-              child: Text(
-                "English Buoy",
+              child: DecodingTextEffect(
+                _searchCount > 4 && _searchCount % 2 == 0 ? "BigZhu Very Big" : "English Buoy",
+                decodeEffect: DecodeEffect.fromStart,
               )),
       actions: <Widget>[
         IconButton(
@@ -60,7 +64,8 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
               if (!_isSearching) {
                 searchController.text = "";
                 articleTitles.setSearchKey(searchController.text);
-              }
+              } else
+                _searchCount++;
             });
           },
         ),

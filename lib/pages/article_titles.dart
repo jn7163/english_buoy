@@ -129,6 +129,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
         onPressed: () => _controller.jumpToHome(ExplorerPageIndex),
         child: Icon(Icons.explore),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
