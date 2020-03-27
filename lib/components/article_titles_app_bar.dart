@@ -40,7 +40,11 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
               style: Theme.of(context).primaryTextTheme.headline6,
             )
           : GestureDetector(
-              onTap: () => _isSearching = true,
+              onTap: () {
+                setState(() {
+                  _isSearching = true;
+                });
+              },
               child: Text(
                 "English Buoy",
               )),

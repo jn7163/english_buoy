@@ -67,13 +67,15 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
   }
 
   Future syncArticleTitles() async {
-    var result = await _articleTitles.syncArticleTitles().catchError((e) {
+    var result = await _articleTitles.syncArticleTitles().catchError((e) async {
       String errorInfo = "";
       if (isAccessTokenError(e)) {
         errorInfo = "Login expired";
         _oauthInfo.signIn();
-      } else
-        errorInfo = e.message;
+      } else {
+        errorInfo = e.toString();
+        if (errorInfo.contains('Connection terminated during handshake')) this.syncArticleTitles();
+      }
       _controller.showSnackBar(errorInfo);
     });
     return result;

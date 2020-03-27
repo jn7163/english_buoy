@@ -209,9 +209,9 @@ class ArticleSentencesState extends State<ArticleSentences> {
     //需要学习的单词
     if (word.learned == false && isNeedLearn(word)) {
       String shortDef = "";
-      if (widget.needWordWise && Store.wordwiseMap[word.text.toLowerCase()] != null)
-        shortDef = "-" + Store.wordwiseMap[word.text.toLowerCase()];
       if (word.count != 0) shortDef += " ${word.count}";
+      if (widget.needWordWise && Store.wordwiseMap[word.text.toLowerCase()] != null)
+        shortDef = " -" + Store.wordwiseMap[word.text.toLowerCase()];
       subscript = TextSpan(text: shortDef, style: wordStyle.copyWith(fontSize: 12)); // 下标样式和原本保持一致, 只是变小
 
     }

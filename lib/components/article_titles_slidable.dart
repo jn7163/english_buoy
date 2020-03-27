@@ -113,13 +113,16 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
               backgroundColor: Colors.transparent,
             )
           : null,
-      title: Text(articleTitle.title, style: TextStyle(color: textColor)), // 用的 TextTheme.subhead
+      title: Text(articleTitle.title,
+          style: TextStyle(
+            color: textColor,
+            //fontWeight: controller.selectedArticleID == articleTitle.id ? FontWeight.bold : null)), // 用的 TextTheme.subhead
+          )),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    //print(MediaQuery.of(context).size.height * 0.29);
     ArticleTitle articleTitle = widget.articleTitle;
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
