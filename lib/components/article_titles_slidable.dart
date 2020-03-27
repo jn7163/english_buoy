@@ -33,17 +33,16 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.29,
-            child: CachedNetworkImage(
-              fit: BoxFit.cover,
-              imageUrl: thumbnailURL,
-              //placeholder: (context, url) => const CircularProgressIndicator(),
-            ),
+          CachedNetworkImage(
+            //height: 240,
+            //height: MediaQuery.of(context).size.height * 0.29,
+            //fit: BoxFit.cover,
+            imageUrl: thumbnailURL,
+            //placeholder: (context, url) => const CircularProgressIndicator(),
           ),
           Container(
             color: Colors.black.withOpacity(0.5),
-            padding: const EdgeInsets.all(8.0),
+            //padding: const EdgeInsets.all(8.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -48,7 +48,7 @@ class OauthInfo with ChangeNotifier {
   }
 
   Future disconnect() async {
-    return _googleSignIn.disconnect().then((e) {
+    return _googleSignIn.disconnect().catchError((e) {
       String info = "sign out Error: $e";
       debugPrint(info);
       if (this.controller != null) this.controller.showSnackBar(info);

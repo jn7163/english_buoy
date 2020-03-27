@@ -32,8 +32,8 @@ Dio dio() {
     options.headers["token"] = Store.accessToken;
     return options; //continue
   }, onError: (DioError e) {
-    print("$e");
-    return dio();
+    print("dio error: $e");
+    return e;
   }));
   return _dio;
 }
