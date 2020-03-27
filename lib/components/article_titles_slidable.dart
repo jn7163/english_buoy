@@ -7,6 +7,7 @@ import '../models/explorer.dart';
 import './article_youtube_avatar.dart';
 import '../models/controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class ArticleTitlesSlidable extends StatefulWidget {
   ArticleTitlesSlidable({Key key, @required this.articleTitle, this.isExplorer = false}) : super(key: key);
@@ -26,7 +27,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
     super.initState();
   }
 
-  Widget getCardItem(ArticleTitle articleTitle, String percent) {
+  Widget getCardItem(ArticleTitle articleTitle) {
     String thumbnailURL = articleTitle.thumbnailURL;
     return GestureDetector(
       onTap: () => this.onTap(articleTitle),
@@ -47,7 +48,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                getListItem(articleTitle, percent),
+                getListItem(articleTitle),
               ],
             ),
           ),
@@ -87,7 +88,9 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
     }
   }
 
-  Widget getListItem(ArticleTitle articleTitle, String percent, {Color textColor = Colors.white}) {
+  Widget getListItem(ArticleTitle articleTitle, {Color textColor = Colors.white}) {
+    String percent =
+        articleTitle.percent.toStringAsFixed(articleTitle.percent.truncateToDouble() == articleTitle.percent ? 0 : 0);
     return ListTile(
       trailing: ArticleYoutubeAvatar(
           loadErrorCallback: () async {
@@ -100,8 +103,16 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
       onTap: () {
         this.onTap(articleTitle);
       },
-      // percent in explorer is 0, no need show
-      leading: percent == "0" ? null : Text(percent + "%", style: TextStyle(color: textColor)),
+      leading: articleTitle.percent != 0
+          ? CircularPercentIndicator(
+              radius: 40.0,
+              lineWidth: 3.0,
+              percent: articleTitle.percent / 100,
+              center: Text("$percent%", style: TextStyle(fontSize: 10, color: textColor)),
+              progressColor: Colors.white,
+              backgroundColor: Colors.transparent,
+            )
+          : null,
       title: Text(articleTitle.title, style: TextStyle(color: textColor)), // 用的 TextTheme.subhead
     );
   }
@@ -110,8 +121,6 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
   Widget build(BuildContext context) {
     //print(MediaQuery.of(context).size.height * 0.29);
     ArticleTitle articleTitle = widget.articleTitle;
-    String percent =
-        articleTitle.percent.toStringAsFixed(articleTitle.percent.truncateToDouble() == articleTitle.percent ? 0 : 1);
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
@@ -123,8 +132,8 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
                 child: child);
           },
           child: articleTitle.thumbnailURL == null || articleTitle.thumbnailURL == ""
-              ? getListItem(articleTitle, percent)
-              : getCardItem(articleTitle, percent),
+              ? getListItem(articleTitle)
+              : getCardItem(articleTitle),
         ),
         secondaryActions: [
           IconSlideAction(
