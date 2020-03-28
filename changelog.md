@@ -6,6 +6,10 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.14+1.4.14
 
+- Fix: auto scroll to the wrong position
+- Highlight selected article
+- Add loading animation to explorer
+
 v1.4.13+1.4.13
 
 - Better efficiency when sorting and filtering articles lists

@@ -117,11 +117,17 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
               backgroundColor: Colors.transparent,
             )
           : null,
-      title: Text(articleTitle.title,
-          style: TextStyle(
-            color: textColor,
-            //fontWeight: controller.selectedArticleID == articleTitle.id ? FontWeight.bold : null)), // 用的 TextTheme.subhead
-          )),
+      title: Selector<Controller, int>(
+        selector: (context, controller) => controller.selectedArticleID,
+        builder: (context, selectedArticleID, child) {
+          return Text(articleTitle.title,
+              style: TextStyle(
+                color: textColor,
+                fontWeight: selectedArticleID == articleTitle.id ? FontWeight.bold : null,
+                //fontWeight: controller.selectedArticleID == articleTitle.id ? FontWeight.bold : null)), // 用的 TextTheme.subhead
+              ));
+        },
+      ),
     );
   }
 
@@ -131,17 +137,9 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
-        child: Selector<Controller, int>(
-          selector: (context, controller) => controller.selectedArticleID,
-          builder: (context, selectedArticleID, child) {
-            return Ink(
-                color: selectedArticleID == articleTitle.id ? Theme.of(context).highlightColor : Colors.transparent,
-                child: child);
-          },
-          child: articleTitle.thumbnailURL == null || articleTitle.thumbnailURL == ""
-              ? getListItem(articleTitle)
-              : getCardItem(articleTitle),
-        ),
+        child: articleTitle.thumbnailURL == null || articleTitle.thumbnailURL == ""
+            ? getListItem(articleTitle)
+            : getCardItem(articleTitle),
         secondaryActions: [
           IconSlideAction(
             caption: 'Delete',

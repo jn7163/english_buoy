@@ -15,6 +15,7 @@ import '../models/article.dart';
 import '../models/settings.dart';
 import '../models/sentence.dart';
 import '../models/controller.dart';
+import '../models/oauth_info.dart';
 import '../functions/utility.dart';
 
 class TimeSentenceIndex {
@@ -48,11 +49,15 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   Timer _timer;
   int _highlightSentenceIndex;
   List<TimeSentenceIndex> _timeSentenceIndexs = List();
+  Controller _controller;
+  OauthInfo _oauthInfo;
 
   @override
   void initState() {
     print("initState $this");
     super.initState();
+    _controller = Provider.of<Controller>(context, listen: false);
+    _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
     _articleID = widget.articleID;
 
     _scrollController = ScrollController();
@@ -145,7 +150,17 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   }
 
   Future loadFromServer() async {
-    await _article.getArticleByID(_article.articleID);
+    await _article.getArticleByID(_article.articleID).catchError((e) {
+      String errorInfo = "";
+      if (isAccessTokenError(e)) {
+        errorInfo = "Login expired";
+        _oauthInfo.signIn();
+      } else {
+        errorInfo = e.toString();
+        if (errorInfo.contains('Connection terminated during handshake')) this.loadFromServer();
+      }
+      _controller.showSnackBar(errorInfo);
+    });
     if (this.mounted) {
       // 更新本地未学单词数
       _articleTitles.setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);

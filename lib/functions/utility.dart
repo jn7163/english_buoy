@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 //import 'package:device_info/device_info.dart';
 
-Widget getSpinkitProgressIndicator(BuildContext context) {
+Widget getSpinkitProgressIndicator(BuildContext context, {color}) {
   return SpinKitRipple(
-    color: Theme.of(context).primaryColorLight,
+    color: color ?? Theme.of(context).primaryColorLight,
     size: 340.0,
   );
 }

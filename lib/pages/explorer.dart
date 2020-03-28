@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../components/article_titles_slidable.dart';
 import '../models/controller.dart';
@@ -8,6 +10,8 @@ import '../models/explorer.dart';
 import '../models/article_title.dart';
 
 import '../themes/base.dart';
+
+import '../functions/utility.dart';
 
 class ExplorerPage extends StatefulWidget {
   ExplorerPage({Key key}) : super(key: key);
@@ -23,6 +27,7 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionListener = ItemPositionsListener.create();
   Controller _controller;
+  bool _loading = false;
   @override
   initState() {
     super.initState();
@@ -32,14 +37,18 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
   }
 
   loadData() async {
+    setState(() {
+      _loading = true;
+    });
     bool hasLocal = await _explorer.getFromLocal();
     if (hasLocal) {
-      setState(() {});
       _explorer.syncExplorer();
     } else {
       await _explorer.syncExplorer();
-      setState(() {});
     }
+    setState(() {
+      _loading = false;
+    });
   }
 
   Widget getArticleTitlesBody() {
@@ -62,6 +71,20 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
         });
   }
 
+  Widget body() {
+    return ModalProgressHUD(
+        color: darkMaterialColor[700],
+        opacity: 1,
+        progressIndicator: getSpinkitProgressIndicator(context, color: Colors.white),
+        dismissible: true,
+        child: RefreshIndicator(
+          onRefresh: _explorer.syncExplorer,
+          child: getArticleTitlesBody(),
+          color: mainColor,
+        ),
+        inAsyncCall: _loading);
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -76,11 +99,7 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
         child: SafeArea(
             child: Scaffold(
           backgroundColor: darkMaterialColor[700],
-          body: RefreshIndicator(
-            onRefresh: _explorer.syncExplorer,
-            child: getArticleTitlesBody(),
-            color: mainColor,
-          ),
+          body: body(),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               _controller.jumpToHome(ArticleTitlesPageIndex);

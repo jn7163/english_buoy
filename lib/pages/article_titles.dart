@@ -67,7 +67,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
   }
 
   Future syncArticleTitles() async {
-    var result = await _articleTitles.syncArticleTitles().catchError((e) async {
+    var result = await _articleTitles.syncArticleTitles().catchError((e) {
       String errorInfo = "";
       if (isAccessTokenError(e)) {
         errorInfo = "Login expired";
