@@ -18,12 +18,28 @@ class ArticleTitlesSlidable extends StatefulWidget {
   ArticleTitlesSlidableState createState() => ArticleTitlesSlidableState();
 }
 
-class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
+class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with SingleTickerProviderStateMixin {
   bool deleting = false; // is deleting
   bool selected = false; // is selected
-
+  Animation _animation;
+  AnimationController _animationController;
+  ArticleTitle _articleTitle;
+  String _percent = '0';
+  int _duration = 4444;
   @override
   initState() {
+    _articleTitle = widget.articleTitle;
+    _animationController = AnimationController(duration: Duration(milliseconds: _duration), vsync: this);
+
+    _animation = Tween<double>(begin: 0, end: _articleTitle.percent)
+        .animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut))
+          ..addListener(() {
+            setState(() {
+              _percent = _animation.value.toStringAsFixed(1);
+            });
+          });
+
+    _animationController.forward();
     super.initState();
   }
 
@@ -91,8 +107,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
   }
 
   Widget getListItem(ArticleTitle articleTitle, {Color textColor = Colors.white}) {
-    String percent =
-        articleTitle.percent.toStringAsFixed(articleTitle.percent.truncateToDouble() == articleTitle.percent ? 0 : 0);
+    //String percent = articleTitle.percent.toStringAsFixed(articleTitle.percent.truncateToDouble() == articleTitle.percent ? 0 : 0);
     return ListTile(
       trailing: ArticleYoutubeAvatar(
           loadErrorCallback: () async {
@@ -107,12 +122,12 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
       },
       leading: articleTitle.percent != 0
           ? CircularPercentIndicator(
-              animationDuration: 4444,
+              animationDuration: _duration,
               animation: true,
               radius: 40.0,
               lineWidth: 3.0,
               percent: articleTitle.percent / 100,
-              center: Text("$percent%", style: TextStyle(fontSize: 10, color: textColor)),
+              center: Text("$_percent%", style: TextStyle(fontSize: 10, color: textColor)),
               progressColor: Colors.white,
               backgroundColor: Colors.transparent,
             )
@@ -133,13 +148,12 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
 
   @override
   Widget build(BuildContext context) {
-    ArticleTitle articleTitle = widget.articleTitle;
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
-        child: articleTitle.thumbnailURL == null || articleTitle.thumbnailURL == ""
-            ? getListItem(articleTitle)
-            : getCardItem(articleTitle),
+        child: _articleTitle.thumbnailURL == null || _articleTitle.thumbnailURL == ""
+            ? getListItem(_articleTitle)
+            : getCardItem(_articleTitle),
         secondaryActions: [
           IconSlideAction(
             caption: 'Delete',
@@ -149,11 +163,11 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
               setState(() {
                 this.deleting = true;
               });
-              await articleTitle.deleteArticle();
+              await _articleTitle.deleteArticle();
               // widget 会被上层复用,状态也会保留,loading状态得改回来
               this.deleting = false;
               ArticleTitles _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-              _articleTitles.removeFromList(articleTitle);
+              _articleTitles.removeFromList(_articleTitle);
               //更新本地缓存
               _articleTitles.syncArticleTitles(justSetToLocal: true);
             },
