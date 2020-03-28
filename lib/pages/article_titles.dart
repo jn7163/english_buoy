@@ -106,9 +106,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
   // 滚动到那一条目
   scrollToArticleTitle(int index) {
     // 稍微等等, 避免 build 时候滚动
-    Future.delayed(Duration.zero, () {
-      itemScrollController.scrollTo(index: index, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic);
-    });
+    Future.delayed(Duration.zero,
+        () => itemScrollController.scrollTo(index: index, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic));
   }
 
   @override

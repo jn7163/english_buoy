@@ -217,9 +217,11 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
         color: Theme.of(context).scaffoldBackgroundColor,
         dismissible: true,
         child: Column(children: [
-          ArticleYouTube(
-            article: _article,
-          ),
+          Hero(
+              tag: 'thumbnail_${_article.articleID}',
+              child: ArticleYouTube(
+                article: _article,
+              )),
           refreshBody()
         ]),
         inAsyncCall: _loading);
