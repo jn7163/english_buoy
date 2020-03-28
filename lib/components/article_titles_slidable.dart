@@ -105,6 +105,8 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
       },
       leading: articleTitle.percent != 0
           ? CircularPercentIndicator(
+              animationDuration: 4444,
+              animation: true,
               radius: 40.0,
               lineWidth: 3.0,
               percent: articleTitle.percent / 100,

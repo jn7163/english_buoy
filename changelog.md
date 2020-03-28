@@ -4,6 +4,8 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.14+1.4.14
+
 v1.4.13+1.4.13
 
 - Better efficiency when sorting and filtering articles lists
