@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -157,7 +158,10 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
         _oauthInfo.signIn();
       } else {
         errorInfo = e.toString();
-        if (errorInfo.contains('Connection terminated during handshake')) this.loadFromServer();
+        if (errorInfo.contains('Connection terminated during handshake')) {
+          sleep(Duration(seconds: 2));
+          this.loadFromServer();
+        }
       }
       _controller.showSnackBar(errorInfo);
     });

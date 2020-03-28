@@ -23,14 +23,14 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
   bool selected = false; // is selected
   Animation _animation;
   AnimationController _animationController;
-  ArticleTitle _articleTitle;
   String _percent = '0';
   int _duration = 4444;
+  ArticleTitle _articleTitle;
+  bool _circularPercentAnimation = true;
   @override
   initState() {
     _articleTitle = widget.articleTitle;
     _animationController = AnimationController(duration: Duration(milliseconds: _duration), vsync: this);
-
     _animation = Tween<double>(begin: 0, end: _articleTitle.percent)
         .animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut))
           ..addListener(() {
@@ -38,7 +38,6 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
               _percent = _animation.value.toStringAsFixed(1);
             });
           });
-
     _animationController.forward();
     super.initState();
   }
@@ -123,7 +122,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
       leading: articleTitle.percent != 0
           ? CircularPercentIndicator(
               animationDuration: _duration,
-              animation: true,
+              animation: _circularPercentAnimation,
               radius: 40.0,
               lineWidth: 3.0,
               percent: articleTitle.percent / 100,
@@ -148,6 +147,10 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
 
   @override
   Widget build(BuildContext context) {
+    if (_articleTitle == null || _articleTitle.id != widget.articleTitle.id) {
+      print("fuck");
+    }
+
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
@@ -160,6 +163,9 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
             color: Theme.of(context).primaryColor,
             icon: Icons.delete,
             onTap: () async {
+              //when deleting, no need show _circularPercentAnimation
+              _circularPercentAnimation = false;
+              _duration = 0;
               setState(() {
                 this.deleting = true;
               });

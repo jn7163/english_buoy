@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'dart:async';
 
+import 'dart:io';
+
 import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
 import '../components/right_drawer.dart';
@@ -74,7 +76,10 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
         _oauthInfo.signIn();
       } else {
         errorInfo = e.toString();
-        if (errorInfo.contains('Connection terminated during handshake')) this.syncArticleTitles();
+        if (errorInfo.contains('Connection terminated during handshake')) {
+          sleep(Duration(seconds: 2));
+          this.syncArticleTitles();
+        }
       }
       _controller.showSnackBar(errorInfo);
     });
@@ -91,7 +96,10 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
             return ScrollablePositionedList.builder(
               itemCount: filterTitles.length,
               itemBuilder: (context, index) {
-                return ArticleTitlesSlidable(articleTitle: filterTitles.reversed.toList()[index]);
+                return ArticleTitlesSlidable(
+                  key: ValueKey("article_title_${filterTitles.reversed.toList()[index].id}"),
+                  articleTitle: filterTitles.reversed.toList()[index],
+                );
               },
               itemScrollController: itemScrollController,
               itemPositionsListener: itemPositionListener,
