@@ -31,9 +31,10 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
   ArticleTitles _articleTitles;
   Controller _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionListener = ItemPositionsListener.create();
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  //final ItemPositionsListener itemPositionListener = ItemPositionsListener.create();
   OauthInfo _oauthInfo;
+  List<Widget> _aritcleTitles;
   @override
   initState() {
     super.initState();
@@ -90,19 +91,22 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
     return Selector<ArticleTitles, List<ArticleTitle>>(
         selector: (context, articleTitles) => articleTitles.filterTitles,
         builder: (context, filterTitles, child) {
+          _aritcleTitles = filterTitles
+              .map((d) => ArticleTitlesSlidable(
+                    key: ValueKey("article_title_${d.id}"),
+                    articleTitle: d,
+                  ))
+              .toList()
+              .reversed
+              .toList();
           if (filterTitles.length == 0)
             return getBlankPage();
           else
             return ScrollablePositionedList.builder(
               itemCount: filterTitles.length,
-              itemBuilder: (context, index) {
-                return ArticleTitlesSlidable(
-                  key: ValueKey("article_title_${filterTitles.reversed.toList()[index].id}"),
-                  articleTitle: filterTitles.reversed.toList()[index],
-                );
-              },
-              itemScrollController: itemScrollController,
-              itemPositionsListener: itemPositionListener,
+              itemBuilder: (context, index) => _aritcleTitles[index],
+              itemScrollController: _itemScrollController,
+              //itemPositionsListener: itemPositionListener,
             );
         });
   }
@@ -115,7 +119,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
   scrollToArticleTitle(int index) {
     // 稍微等等, 避免 build 时候滚动
     Future.delayed(Duration.zero,
-        () => itemScrollController.scrollTo(index: index, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic));
+        () => _itemScrollController.scrollTo(index: index, duration: Duration(seconds: 2), curve: Curves.easeInOutCubic));
   }
 
   @override

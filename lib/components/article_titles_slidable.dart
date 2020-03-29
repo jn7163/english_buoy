@@ -7,7 +7,7 @@ import '../models/explorer.dart';
 import './article_youtube_avatar.dart';
 import '../models/controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:percent_indicator/percent_indicator.dart';
+import './increase_percent_number.dart';
 
 class ArticleTitlesSlidable extends StatefulWidget {
   ArticleTitlesSlidable({Key key, @required this.articleTitle, this.isExplorer = false}) : super(key: key);
@@ -20,26 +20,12 @@ class ArticleTitlesSlidable extends StatefulWidget {
 
 class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with SingleTickerProviderStateMixin {
   bool deleting = false; // is deleting
-  bool selected = false; // is selected
-  Animation _animation;
-  AnimationController _animationController;
-  String _percent = '0';
-  int _duration = 4444;
   ArticleTitle _articleTitle;
-  bool _circularPercentAnimation = true;
   @override
   initState() {
-    _articleTitle = widget.articleTitle;
-    _animationController = AnimationController(duration: Duration(milliseconds: _duration), vsync: this);
-    _animation = Tween<double>(begin: 0, end: _articleTitle.percent)
-        .animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut))
-          ..addListener(() {
-            setState(() {
-              _percent = _animation.value.toStringAsFixed(1);
-            });
-          });
-    _animationController.forward();
+    print("initState $this ${widget.key}");
     super.initState();
+    _articleTitle = widget.articleTitle;
   }
 
   Widget getCardItem(ArticleTitle articleTitle) {
@@ -119,18 +105,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
       onTap: () {
         this.onTap(articleTitle);
       },
-      leading: articleTitle.percent != 0
-          ? CircularPercentIndicator(
-              animationDuration: _duration,
-              animation: _circularPercentAnimation,
-              radius: 40.0,
-              lineWidth: 3.0,
-              percent: articleTitle.percent / 100,
-              center: Text("$_percent%", style: TextStyle(fontSize: 10, color: textColor)),
-              progressColor: Colors.white,
-              backgroundColor: Colors.transparent,
-            )
-          : null,
+      leading: articleTitle.percent != 0 ? IncreasePercentNumber(number: articleTitle.percent) : null,
       title: Selector<Controller, int>(
         selector: (context, controller) => controller.selectedArticleID,
         builder: (context, selectedArticleID, child) {
@@ -164,8 +139,6 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
             icon: Icons.delete,
             onTap: () async {
               //when deleting, no need show _circularPercentAnimation
-              _circularPercentAnimation = false;
-              _duration = 0;
               setState(() {
                 this.deleting = true;
               });
