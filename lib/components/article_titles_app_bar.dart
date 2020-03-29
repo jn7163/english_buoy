@@ -49,7 +49,7 @@ class ArticleListsAppBarState extends State<ArticleListsAppBar> {
                 });
               },
               child: DecodingTextEffect(
-                _searchCount > 4 && _searchCount % 2 == 0 ? "BigZhu Very Big" : "English Buoy",
+                _searchCount > 2 && _searchCount % 2 == 0 ? "BigZhu Very Big" : "English Buoy",
                 decodeEffect: DecodeEffect.fromStart,
               )),
       actions: <Widget>[

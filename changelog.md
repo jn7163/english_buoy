@@ -10,6 +10,7 @@ v1.4.14+1.4.14
 - Highlight selected article
 - Add loading animation to explorer
 - Add percent number increase animation
+- AnimatedOpacity to find word button
 
 v1.4.13+1.4.13
 

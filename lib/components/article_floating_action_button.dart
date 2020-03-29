@@ -15,7 +15,7 @@ class ArticleFloatingActionButtonState extends State<ArticleFloatingActionButton
     return Align(
         alignment: Alignment.centerRight,
         child: AnimatedOpacity(
-            duration: Duration(milliseconds: 500),
+            duration: Duration(milliseconds: 1000),
             opacity: article.notMasteredWord == null ? 0 : 0.4,
             child: FloatingActionButton(
               mini: true,
