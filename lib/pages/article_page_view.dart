@@ -31,7 +31,8 @@ class ArticlePageViewPage extends StatelessWidget {
                 controller: _controller.articlePageViewController,
                 children: filterTitles
                     .map((d) => ArticlePage(
-                          key: ValueKey("article_${d.id}"),
+                          //key: Key("article_${d.id}"),
+                          key: ValueKey(d.id),
                           articleID: d.id,
                         ))
                     .toList());

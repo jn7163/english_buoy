@@ -93,7 +93,8 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
         builder: (context, filterTitles, child) {
           _aritcleTitles = filterTitles
               .map((d) => ArticleTitlesSlidable(
-                    key: ValueKey("article_title_${d.id}"),
+                    //key: Key("article_title_${d.id}"),
+                    key: ValueKey(d.id),
                     articleTitle: d,
                   ))
               .toList()

@@ -102,9 +102,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
           avatar: articleTitle.avatar,
           loading: this.deleting || articleTitle.loading), // data loading to create loading item when add new article
       dense: false,
-      onTap: () {
-        this.onTap(articleTitle);
-      },
+      onTap: () => this.onTap(articleTitle),
       leading: articleTitle.percent != 0 ? IncreasePercentNumber(number: articleTitle.percent) : null,
       title: Selector<Controller, int>(
         selector: (context, controller) => controller.selectedArticleID,
@@ -138,13 +136,10 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
             color: Theme.of(context).primaryColor,
             icon: Icons.delete,
             onTap: () async {
-              //when deleting, no need show _circularPercentAnimation
               setState(() {
                 this.deleting = true;
               });
               await _articleTitle.deleteArticle();
-              // widget 会被上层复用,状态也会保留,loading状态得改回来
-              this.deleting = false;
               ArticleTitles _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
               _articleTitles.removeFromList(_articleTitle);
               //更新本地缓存
