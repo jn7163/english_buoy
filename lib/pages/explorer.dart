@@ -58,10 +58,12 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
           return ScrollablePositionedList.builder(
             itemCount: titles.length,
             itemBuilder: (context, index) {
+              ArticleTitle artibleTitle = titles.reversed.toList()[index];
               return index == 0
                   ? Container()
                   : ArticleTitlesSlidable(
-                      articleTitle: titles.reversed.toList()[index],
+                      key: ValueKey(artibleTitle.id),
+                      articleTitle: artibleTitle,
                       isExplorer: true,
                     );
             },
