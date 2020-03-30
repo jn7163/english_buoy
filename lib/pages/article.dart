@@ -44,7 +44,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   Article _article;
   ScrollController _scrollController;
   ArticleTitles _articleTitles;
-  SettingNews settings;
+  SettingNews _settings;
   int _articleID;
   bool _loading = true;
   Timer _timer;
@@ -62,7 +62,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     _articleID = widget.articleID;
 
     _scrollController = ScrollController();
-    settings = Provider.of<SettingNews>(context, listen: false);
+    _settings = Provider.of<SettingNews>(context, listen: false);
     _article = Article();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _article.articleID = _articleID;
@@ -127,7 +127,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
       //make highlight show
       setState(() {});
       //auto scroll sentence to top
-      if (settings.isScrollWithPlay &&
+      if (_settings.isScrollWithPlay &&
           controller.homeIndex == ArticlePageViewPageIndex &&
           controller.selectedArticleID == _article.articleID &&
           _article.youtubeController.value.isPlaying) {

@@ -21,7 +21,11 @@ class ArticleYouTube extends StatelessWidget {
             article.youtubeController.pause();
             article.checkSentenceHighlight = false;
           }
-          if (d.visibleFraction != 0) article.checkSentenceHighlight = true;
+          if (d.visibleFraction == 1) {
+            //auto paly when visible
+            if (Provider.of<SettingNews>(context, listen: false).isAutoplay) article.youtubeController.play();
+            article.checkSentenceHighlight = true;
+          }
         },
         child: Container(
             color: Theme.of(context).primaryColorDark,
