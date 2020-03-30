@@ -4,6 +4,10 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.15+1.4.15
+
+- fix bug
+
 v1.4.14+1.4.14
 
 - Fix: auto scroll to the wrong position
