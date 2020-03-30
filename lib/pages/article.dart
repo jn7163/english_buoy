@@ -46,7 +46,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   ArticleTitles _articleTitles;
   SettingNews _settings;
   int _articleID;
-  bool _loading = true;
+  bool _loading = false;
   Timer _timer;
   int _highlightSentenceIndex;
   List<TimeSentenceIndex> _timeSentenceIndexs = List();
@@ -55,7 +55,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
 
   @override
   void initState() {
-    print("initState $this");
     super.initState();
     _controller = Provider.of<Controller>(context, listen: false);
     _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
@@ -109,9 +108,9 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   routineCheckSentenceHighLight() {
     if (this.mounted == false) return;
     Controller controller = Provider.of<Controller>(context, listen: false);
-    //if leave this article page no need checkSentenceHighlight
-    if (!_article.checkSentenceHighlight) return;
     if (_article.youtubeController == null) return;
+    if (!_article.youtubeController.value.isPlaying) return;
+
     int currentIndex;
     for (int i = 0; i < _timeSentenceIndexs.length; i++) {
       int currentSeconds = _article.youtubeController.value.position.inSeconds;
@@ -124,13 +123,14 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     }
     // trigger setState if set new highlight sentence
     if (currentIndex != null && _highlightSentenceIndex != currentIndex) {
+      print("currentIndex=$currentIndex");
       //make highlight show
       setState(() {});
       //auto scroll sentence to top
       if (_settings.isScrollWithPlay &&
-          controller.homeIndex == ArticlePageViewPageIndex &&
-          controller.selectedArticleID == _article.articleID &&
-          _article.youtubeController.value.isPlaying) {
+              controller.homeIndex == ArticlePageViewPageIndex && // is in page view page
+              controller.selectedArticleID == _article.articleID // is open current page, the youtube play status may
+          ) {
         int sentenceIndex = _timeSentenceIndexs[currentIndex].indexs[0];
         Scrollable.ensureVisible(_article.sentences[sentenceIndex].c, duration: Duration(milliseconds: 1400), alignment: 0.0);
       }
@@ -171,6 +171,11 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     }
   }
 
+  Future runRoutine() async {
+    this.splitSentencesByTime();
+    this.initRoutine();
+  }
+
   Future loadArticleByID() async {
     bool hasLocal = await _article.getFromLocal(_article.articleID);
     if (hasLocal)
@@ -183,15 +188,12 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
       await loadFromServer();
     }
 
-    if (_article.youtube != null && _article.youtube != "") {
-      this.splitSentencesByTime();
-      this.initRoutine();
-    }
+    if (_article.youtube != null && _article.youtube != "") runRoutine();
     setState(() {
       _loading = false;
     });
     await _article.queryWordWise();
-    // make sure show word wise
+    //  show word wise
     if (this.mounted) setState(() {});
     return hasLocal;
   }

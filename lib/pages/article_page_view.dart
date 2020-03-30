@@ -21,7 +21,6 @@ class ArticlePageViewPage extends StatelessWidget {
       child: Selector<ArticleTitles, List<ArticleTitle>>(
           selector: (context, articleTitles) => articleTitles.filterTitles,
           builder: (context, filterTitles, child) {
-            print("Selector rebuild $this");
             Controller _controller = Provider.of<Controller>(context, listen: false);
             _controller.articlePageViewController = PageController(initialPage: _controller.articleIndex);
             return PageView(
@@ -31,7 +30,6 @@ class ArticlePageViewPage extends StatelessWidget {
                 controller: _controller.articlePageViewController,
                 children: filterTitles
                     .map((d) => ArticlePage(
-                          //key: Key("article_${d.id}"),
                           key: ValueKey(d.id),
                           articleID: d.id,
                         ))

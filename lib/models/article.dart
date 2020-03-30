@@ -14,7 +14,6 @@ import '../store/store.dart';
 import '../store/wordwise.dart';
 
 class Article with ChangeNotifier {
-  bool checkSentenceHighlight = false;
   YoutubePlayerController youtubeController;
   String findWord = ""; //在文章中查找的单词
   int unlearnedCount;

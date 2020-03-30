@@ -23,7 +23,6 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
   ArticleTitle _articleTitle;
   @override
   initState() {
-    print("initState $this ${widget.key}");
     super.initState();
     _articleTitle = widget.articleTitle;
   }
@@ -120,10 +119,6 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
 
   @override
   Widget build(BuildContext context) {
-    if (_articleTitle == null || _articleTitle.id != widget.articleTitle.id) {
-      print("fuck");
-    }
-
     return Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,

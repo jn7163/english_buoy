@@ -19,7 +19,6 @@ class IncreasePercentNumberState extends State<IncreasePercentNumber> with Singl
   initState() {
     super.initState();
     _number = widget.number;
-    print("initState $this ${widget.key} $_number");
     _animationController = AnimationController(duration: Duration(milliseconds: _duration), vsync: this);
     _animation =
         Tween<double>(begin: 0, end: _number).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut))

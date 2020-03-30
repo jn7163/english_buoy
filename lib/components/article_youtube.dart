@@ -17,15 +17,9 @@ class ArticleYouTube extends StatelessWidget {
     return VisibilityDetector(
         key: Key("youtube_${article.articleID}"),
         onVisibilityChanged: (d) {
-          if (d.visibleFraction == 0) {
-            article.youtubeController.pause();
-            article.checkSentenceHighlight = false;
-          }
-          if (d.visibleFraction == 1) {
-            //auto paly when visible
-            if (Provider.of<SettingNews>(context, listen: false).isAutoplay) article.youtubeController.play();
-            article.checkSentenceHighlight = true;
-          }
+          if (d.visibleFraction == 0) article.youtubeController.pause();
+          if (d.visibleFraction == 1) if (Provider.of<SettingNews>(context, listen: false).isAutoplay)
+            article.youtubeController.play();
         },
         child: Container(
             color: Theme.of(context).primaryColorDark,
