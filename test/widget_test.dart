@@ -16,7 +16,8 @@ void main() {
     await tester.pumpWidget(Ebuoy());
 
     // Verify that title is correct.
-    //expect(find.text('English Buoy'), findsOneWidget);
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Explore'), findsOneWidget);
     //expect(find.text('1'), findsNothing);
 
     // Tap the 'settings' icon and trigger a frame.
@@ -25,6 +26,8 @@ void main() {
 
     // Verify that show Autoplay config.
     expect(find.text('Autoplay'), findsOneWidget);
+    expect(find.text('Scroll with playing'), findsOneWidget);
+    expect(find.text('Hide 100%'), findsOneWidget);
     //expect(find.text('1'), findsOneWidget);
   });
 }
