@@ -5,6 +5,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../components/article_titles_slidable.dart';
+import '../components/articles_bottom_app_bar.dart';
 import '../models/controller.dart';
 import '../models/explorer.dart';
 import '../models/article_title.dart';
@@ -55,21 +56,15 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
     return Selector<Explorer, List<ArticleTitle>>(
         selector: (context, explorer) => explorer.titles,
         builder: (context, titles, child) {
-          return ScrollablePositionedList.builder(
-            itemCount: titles.length,
-            itemBuilder: (context, index) {
-              ArticleTitle artibleTitle = titles.reversed.toList()[index];
-              return index == 0
-                  ? Container()
-                  : ArticleTitlesSlidable(
-                      key: ValueKey(artibleTitle.id),
-                      articleTitle: artibleTitle,
-                      isExplorer: true,
-                    );
-            },
-            itemScrollController: itemScrollController,
-            itemPositionsListener: itemPositionListener,
-          );
+          return ListView(
+              children: titles.reversed
+                  .toList()
+                  .map((d) => ArticleTitlesSlidable(
+                        key: ValueKey(d.id),
+                        articleTitle: d,
+                        isExplorer: true,
+                      ))
+                  .toList());
         });
   }
 
@@ -100,8 +95,10 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
         },
         child: SafeArea(
             child: Scaffold(
+          bottomNavigationBar: ArticlesBottomAppBar(),
           backgroundColor: darkMaterialColor[700],
           body: body(),
+          /*
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               _controller.jumpToHome(ArticleTitlesPageIndex);
@@ -109,6 +106,7 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
             child: Icon(Icons.arrow_back),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          */
         )));
   }
 }

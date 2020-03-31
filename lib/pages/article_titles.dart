@@ -9,6 +9,7 @@ import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
 import '../components/right_drawer.dart';
 import '../components/left_drawer.dart';
+import '../components/articles_bottom_app_bar.dart';
 
 import '../models/controller.dart';
 import '../models/article_titles.dart';
@@ -130,6 +131,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
       backgroundColor: darkMaterialColor[700],
       key: _scaffoldKey,
       appBar: ArticleListsAppBar(scaffoldKey: _scaffoldKey),
+      bottomNavigationBar: ArticlesBottomAppBar(),
       drawer: LeftDrawer(),
       endDrawer: RightDrawer(),
       body: RefreshIndicator(
@@ -137,11 +139,13 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
         child: getArticleTitlesBody(),
         color: mainColor,
       ),
+      /*
       floatingActionButton: FloatingActionButton(
         onPressed: () => _controller.jumpToHome(ExplorerPageIndex),
         child: Icon(Icons.explore),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      */
     );
   }
 }
