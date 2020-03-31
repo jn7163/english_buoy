@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../components/article_titles_slidable.dart';
 import '../components/articles_bottom_app_bar.dart';
@@ -57,8 +58,7 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
         selector: (context, explorer) => explorer.titles,
         builder: (context, titles, child) {
           return ListView(
-              children: titles.reversed
-                  .toList()
+              children: titles
                   .map((d) => ArticleTitlesSlidable(
                         key: ValueKey(d.id),
                         articleTitle: d,
@@ -76,7 +76,13 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
         dismissible: true,
         child: RefreshIndicator(
           onRefresh: _explorer.syncExplorer,
-          child: getArticleTitlesBody(),
+          child: VisibilityDetector(
+            key: UniqueKey(),
+            onVisibilityChanged: (d) {
+              if (d.visibleFraction == 1) _explorer.syncExplorer();
+            },
+            child: getArticleTitlesBody(),
+          ),
           color: mainColor,
         ),
         inAsyncCall: _loading);
