@@ -150,7 +150,11 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     if (nextID != null) preArticle.getArticleByID(nextID);
   }
 
-  Future loadFromServer() async {
+  Future loadFromServer({bool showLoading = false}) async {
+    if (showLoading)
+      setState(() {
+        _loading = true;
+      });
     await _article.getArticleByID(_article.articleID).catchError((e) {
       String errorInfo = "";
       if (isAccessTokenError(e)) {
@@ -165,10 +169,16 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
       }
       _controller.showSnackBar(errorInfo);
     });
+    if (showLoading)
+      setState(() {
+        _loading = false;
+      });
+    // update unmastered word count
+    /*
     if (this.mounted) {
-      // 更新本地未学单词数
       _articleTitles.setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);
     }
+    */
   }
 
   Future runRoutine() async {
@@ -178,20 +188,9 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
 
   Future loadArticleByID() async {
     bool hasLocal = await _article.getFromLocal(_article.articleID);
-    if (hasLocal)
-      loadFromServer();
-    else {
-      if (this.mounted)
-        setState(() {
-          _loading = true;
-        });
-      await loadFromServer();
-    }
+    if (!hasLocal) await loadFromServer(showLoading: true);
 
     if (_article.youtube != null && _article.youtube != "") runRoutine();
-    setState(() {
-      _loading = false;
-    });
     await _article.queryWordWise();
     //  show word wise
     if (this.mounted) setState(() {});
@@ -238,11 +237,13 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
         color: Theme.of(context).scaffoldBackgroundColor,
         dismissible: true,
         child: Column(children: [
+          /*
           Hero(
               tag: 'thumbnail_${_article.articleID}',
               child: ArticleYouTube(
                 article: _article,
               )),
+              */
           refreshBody()
         ]),
         inAsyncCall: _loading);
@@ -251,6 +252,8 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
         onVisibilityChanged: (d) {
           //make sure show right word state
           if (d.visibleFraction == 1) setState(() {});
+          // when leave get new content from server
+          if (d.visibleFraction == 0) loadFromServer();
         },
         child: hud);
   }

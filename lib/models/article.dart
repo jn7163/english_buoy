@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../functions/article.dart';
+import '../functions/word.dart';
 import './sentence.dart';
 import './word.dart';
 import '../store/store.dart';
@@ -23,7 +24,7 @@ class Article with ChangeNotifier {
 
   // 文章中的文字内容
   // List words = [];
-  List<Sentence> sentences;
+  List<Sentence> sentences = List();
 
   // 标题
   String title;
@@ -88,7 +89,7 @@ class Article with ChangeNotifier {
         'id': this.articleID,
         'title': this.title,
         'Youtube': this.youtube,
-        'Sentences': jsonEncode(this.sentences),
+        'Sentences': this.sentences,
         'UnlearnedCount': this.unlearnedCount,
         'Avatar': this.avatar,
         'WordCount': this.wordCount,
@@ -121,40 +122,37 @@ class Article with ChangeNotifier {
     return response;
   }
 
-  //计算已经学会百分比
-  computeLearnedPercent() {}
+  updateWordStatusProcess(Word word) {
+    this.setAllWordStatus(word.text, word.learned);
+    this.computeUnmasteredCount();
+    this.putUnlearnedCount();
+    this.updateLocal();
+  }
 
-  // 计算未掌握单词数并提交
-  Future _putUnlearnedCount() async {
-    if (articleID == null) {
-      return null;
-    }
+  int computeUnmasteredCount() {
     // 重新计算未掌握单词数
-    List<String> allWords = [];
-    for (int i = 0; i < this.sentences.length; i++) {
-      List<String> l = this.sentences[i].words.map((d) {
-        if (!d.learned && isNeedLearn(d)) {
-          return d.text.toLowerCase();
-        }
-        return "";
-      }).toList();
-      allWords = List.from(allWords)..addAll(l);
-    }
-    unlearnedCount = allWords.toSet().length;
-    unlearnedCount--;
-    // 设置本地的列表
-    var response = await dio()
-        .put(Store.baseURL + "article/unlearned_count", data: {"article_id": articleID, "unlearned_count": unlearnedCount});
-    return response;
+    Set<String> words = Set();
+    this.sentences.forEach((sentence) {
+      sentence.words.forEach((word) {
+        keepWordHasSameStat(word);
+        if (!word.learned && isNeedLearn(word)) words.add(word.text.toLowerCase());
+      });
+    });
+    unlearnedCount = words.length;
+    return unlearnedCount;
+  }
+
+  // 更新文章未掌握单词数
+  Future putUnlearnedCount() {
+    return dio().put(Store.baseURL + "article/unlearned_count",
+        data: {"article_id": articleID, "unlearned_count": computeUnmasteredCount()});
   }
 
 // 设置当前文章这个单词的学习状态
-  _setWordIsLearned(String word, bool isLearned) {
-    for (int i = 0; i < this.sentences.length; i++) {
-      this.sentences[i].words.forEach((d) {
-        if (d.text.toLowerCase() == word.toLowerCase()) {
-          d.learned = isLearned;
-        }
+  setAllWordStatus(String word, bool isLearned) {
+    for (final sentence in this.sentences) {
+      sentence.words.forEach((w) {
+        if (w.text.toLowerCase() == word.toLowerCase()) w.learned = isLearned;
       });
     }
     notifyListeners2();
@@ -169,14 +167,5 @@ class Article with ChangeNotifier {
         }
       });
     }
-  }
-
-  // 记录学习状态
-  Future putLearned(Word word) async {
-    // 标记所有单词为对应状态, 并通知
-    this._setWordIsLearned(word.text, word.learned);
-    var d = await word.putLearned();
-    _putUnlearnedCount();
-    return d;
   }
 }

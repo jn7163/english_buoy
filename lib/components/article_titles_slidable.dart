@@ -24,7 +24,6 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
   @override
   initState() {
     super.initState();
-    _articleTitle = widget.articleTitle;
   }
 
   Widget getCardItem(ArticleTitle articleTitle) {
@@ -91,7 +90,6 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
   }
 
   Widget getListItem(ArticleTitle articleTitle, {Color textColor = Colors.white}) {
-    //String percent = articleTitle.percent.toStringAsFixed(articleTitle.percent.truncateToDouble() == articleTitle.percent ? 0 : 0);
     return ListTile(
       trailing: ArticleYoutubeAvatar(
           loadErrorCallback: () async {
@@ -103,6 +101,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
       dense: false,
       onTap: () => this.onTap(articleTitle),
       leading: articleTitle.percent != 0 ? IncreasePercentNumber(number: articleTitle.percent) : null,
+      //leading: Text(articleTitle.percent.toString(), style: TextStyle(color: textColor)),
       title: Selector<Controller, int>(
         selector: (context, controller) => controller.selectedArticleID,
         builder: (context, selectedArticleID, child) {
@@ -119,28 +118,26 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> with Singl
 
   @override
   Widget build(BuildContext context) {
-    return Slidable(
-        actionPane: SlidableDrawerActionPane(),
-        actionExtentRatio: 0.25,
-        child: _articleTitle.thumbnailURL == null || _articleTitle.thumbnailURL == ""
-            ? getListItem(_articleTitle)
-            : getCardItem(_articleTitle),
-        secondaryActions: [
-          IconSlideAction(
-            caption: 'Delete',
-            color: Theme.of(context).primaryColor,
-            icon: Icons.delete,
-            onTap: () async {
-              setState(() {
-                this.deleting = true;
-              });
-              await _articleTitle.deleteArticle();
-              ArticleTitles _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-              _articleTitles.removeFromList(_articleTitle);
-              //更新本地缓存
-              _articleTitles.syncArticleTitles(justSetToLocal: true);
-            },
-          ),
-        ]);
+    _articleTitle = widget.articleTitle;
+    Widget child = _articleTitle.thumbnailURL == null || _articleTitle.thumbnailURL == ""
+        ? getListItem(_articleTitle)
+        : getCardItem(_articleTitle);
+    return Slidable(actionPane: SlidableDrawerActionPane(), actionExtentRatio: 0.25, child: child, secondaryActions: [
+      IconSlideAction(
+        caption: 'Delete',
+        color: Theme.of(context).primaryColor,
+        icon: Icons.delete,
+        onTap: () async {
+          setState(() {
+            this.deleting = true;
+          });
+          await _articleTitle.deleteArticle();
+          ArticleTitles _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+          _articleTitles.removeFromList(_articleTitle);
+          //更新本地缓存
+          _articleTitles.syncArticleTitles(justSetToLocal: true);
+        },
+      ),
+    ]);
   }
 }

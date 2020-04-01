@@ -30,15 +30,11 @@ class ArticleTitle with ChangeNotifier {
 
   setPercent() {
     this.percent = 100 - (this.unlearnedCount / this.wordCount) * 100;
+    notifyListeners();
   }
 
   // 删除文章
   Future deleteArticle() async {
-    try {
-      var response = await dio().delete(Store.baseURL + "article/${this.id}");
-      return response.data;
-    } finally {
-      //allLoading.set(false);
-    }
+    return await dio().delete(Store.baseURL + "article/${this.id}");
   }
 }

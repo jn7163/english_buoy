@@ -29,8 +29,6 @@ bool consecutiveLetter(String str) {
 }
 
 bool isNeedLearn(Word word) {
-  // 如果是词中没有字母
-  //if (!hasLetter(word.text)) return false;
   // 无需前置空格的单词
   if (noNeedBlank.contains(word.text.toLowerCase())) return false;
   // 只有一个字符

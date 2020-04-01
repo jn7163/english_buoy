@@ -24,8 +24,8 @@ ArticleTitle getLoadingArticle() {
 }
 
 class ArticleTitles with ChangeNotifier {
+  List<ArticleTitle> filterTitles = [];
   String searchKey = ''; // 过滤关键字
-  //List<ArticleTitle> filterTitles = []; // 过滤好的列表
   List<ArticleTitle> titles = [];
   bool sortByUnlearned = true;
   // 完成添加后的回调
@@ -48,6 +48,7 @@ class ArticleTitles with ChangeNotifier {
 
   setSearchKey(String v) {
     searchKey = v;
+    this.filter();
     notifyListeners();
   }
 
@@ -65,10 +66,8 @@ class ArticleTitles with ChangeNotifier {
     if (hasShared) {
       for (int i = 0; i < this.filterTitles.length; i++) {
         if (this.filterTitles[i].youtube == url) {
-          //this.selectedArticleID = this.filterTitles[i].id;
           controller.selectedArticleID = this.filterTitles[i].id;
           scrollToArticleTitle(this.filterTitles.length - 1 - i);
-          this.justNotifyListeners();
           break;
         }
       }
@@ -98,9 +97,7 @@ class ArticleTitles with ChangeNotifier {
       article.setToLocal(json.encode(response.data));
       // 设置高亮, 但是不要通知,等待后续来更新
       this.controller.selectedArticleID = article.articleID;
-      this.removeLoadingItemNoNotify();
       if (response.data[exists]) {
-        this.justNotifyListeners();
         result = exists;
       } else {
         // 先添加到 titles 加速显示
@@ -144,54 +141,45 @@ class ArticleTitles with ChangeNotifier {
     return [lastID, nextID];
   }
 
-  List<ArticleTitle> get filterTitles {
+  filter() {
     // must make new list otherwise Selector will not trigger
-    List<ArticleTitle> _filterTitles = [...this.titles];
-    //List<ArticleTitle> _filterTitles = this.titles;
+    filterTitles = [...this.titles];
     if (searchKey != "")
-      _filterTitles = _filterTitles.where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase())).toList();
+      filterTitles = filterTitles.where((d) => d.title.toLowerCase().contains(searchKey.toLowerCase())).toList();
     if (settings.filertPercent > 70)
-      _filterTitles = _filterTitles
+      filterTitles = filterTitles
           .where((d) => d.percent >= settings.filertPercent || d.percent == 0) // show percent 0 used to show loading item
           .toList();
     //hide 100% aritcle
     if (settings.isHideFullMastered)
-      _filterTitles = _filterTitles
+      filterTitles = filterTitles
           .where((d) => d.percent != 100) // show percent 0 used to show loading item
           .toList();
-    return _filterTitles;
+    //print("filterTitles done: ${filterTitles[filterTitles.length - 1].percent}");
+    //print(filterTitles[filterTitles.length - 1].id);
   }
 
   filterByPercent(double percent) async {
     await settings.setFilertPercent(percent);
+    this.filter();
     notifyListeners();
   }
 
   filterHideMastered(bool b) async {
     await settings.setIsHideFullMastered(b);
-    notifyListeners();
-  }
-
-  // 啥事都不干, 只是通知
-  justNotifyListeners() {
+    this.filter();
     notifyListeners();
   }
 
   showLoadingItem() {
-    this.titles = [...this.titles];
-    this.titles.add(getLoadingArticle());
+    this.filterTitles = [...this.filterTitles];
+    this.filterTitles.add(getLoadingArticle());
     notifyListeners();
   }
 
-  removeLoadingItemNoNotify() {
-    //this.titles.removeAt(0);
-    this.titles.removeLast();
-  }
-
+  // loading just add filter item, run filter will remove loading item
   removeLoadingItem() {
-    //this.titles.removeAt(0);
-    this.titles = [...this.titles];
-    this.titles.removeLast();
+    this.filter();
     notifyListeners();
   }
 
@@ -202,6 +190,7 @@ class ArticleTitles with ChangeNotifier {
       titles.sort((b, a) => b.createdAt.compareTo(a.createdAt));
     }
     sortByUnlearned = !sortByUnlearned;
+    this.filter();
     notifyListeners();
   }
 
@@ -220,12 +209,6 @@ class ArticleTitles with ChangeNotifier {
     return false;
   }
 
-  syncArticleTitlesIfNoData() {
-    if (this.titles.length == 0) {
-      syncArticleTitles();
-    }
-  }
-
   // 和服务器同步
   Future syncArticleTitles({bool justSetToLocal = false}) async {
     Response response = await dio().get(Store.baseURL + "article_titles");
@@ -236,18 +219,23 @@ class ArticleTitles with ChangeNotifier {
   }
 
   setUnlearnedCountByArticleID(int unlearnedCount, int articleID) {
-    for (int i = 0; i < titles.length; i++) {
-      if (titles[i].id == articleID) {
-        titles[i].unlearnedCount = unlearnedCount;
-        titles[i].setPercent();
-        return;
+    //for (ArticleTitle title in this.titles) {
+    for (int i = 0; i < this.titles.length; i++) {
+      if (this.titles[i].id == articleID) {
+        this.titles[i].unlearnedCount = unlearnedCount;
+        this.titles[i].setPercent();
+        print("title.percent=${this.titles[i].percent}");
+        break;
       }
     }
+    this.filter();
+    notifyListeners();
   }
 
   removeFromList(ArticleTitle articleTitle) {
     this.titles = [...this.titles];
     titles.removeWhere((item) => item.id == articleTitle.id);
+    filter();
     notifyListeners();
   }
 
@@ -265,6 +253,7 @@ class ArticleTitles with ChangeNotifier {
     //need use new list to trigger Selector
     this.titles = [...this.titles];
     this.titles.add(articleTitle);
+    this.filter();
     notifyListeners();
   }
 
@@ -272,13 +261,15 @@ class ArticleTitles with ChangeNotifier {
   setFromJSON(List json) {
     // must create new List for provider Selector
     this.titles = List<ArticleTitle>();
-    json.forEach((d) {
+    //json.forEach((d) {
+    for (final d in json) {
       ArticleTitle articleTitle = ArticleTitle();
       articleTitle.setFromJSON(d);
       this.titles.add(articleTitle);
       // this.articles.add(articleTitle);
       // this.setArticleTitles.add(articleTitle.title);
-    });
+    }
+    this.filter();
     notifyListeners();
   }
 

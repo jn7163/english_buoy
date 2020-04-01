@@ -11,7 +11,6 @@ import './models/loading.dart';
 import './models/article_titles.dart';
 import './models/settings.dart';
 import './models/controller.dart';
-import './models/global.dart';
 import './models/explorer.dart';
 
 import './pages/home.dart';
@@ -89,7 +88,6 @@ class _EbuoyState extends State<Ebuoy> {
         providers: [
           ChangeNotifierProvider.value(value: _settings),
           ChangeNotifierProvider(create: (_) => Explorer()),
-          Provider<Global>(create: (_) => Global()),
           ChangeNotifierProvider.value(value: _controller),
           ChangeNotifierProvider(create: (_) => Article()),
           ChangeNotifierProvider(create: (_) => Loading()),

@@ -9,13 +9,12 @@ import '../models/article_titles.dart';
 import '../models/settings.dart';
 import '../models/word.dart';
 import '../models/sentence.dart';
-import '../models/global.dart';
 import '../store/store.dart';
-import '../store/wordwise.dart';
 
 import './article_sentence.dart';
 import '../functions/article.dart';
 import '../functions/utility.dart';
+import '../functions/word.dart';
 import '../themes/base.dart';
 
 // init text style
@@ -39,7 +38,6 @@ class ArticleSentences extends StatefulWidget {
 }
 
 class ArticleSentencesState extends State<ArticleSentences> {
-  Global _global;
   Map seekTextSpanTapStatus = Map<String, bool>();
 
   RegExp _startExp = RegExp(r"00[0-9]+\.[0-9]+00");
@@ -58,7 +56,6 @@ class ArticleSentencesState extends State<ArticleSentences> {
   initState() {
     super.initState();
     _settings = Provider.of<SettingNews>(context, listen: false);
-    _global = Provider.of<Global>(context, listen: false);
   }
 
   int _getIDByTitle(String title) {
@@ -85,18 +82,17 @@ class ArticleSentencesState extends State<ArticleSentences> {
         setState(() {
           word.learned = learned;
         });
+        //update server side word status
+        word.putLearned();
         //update global word status
-        _global.words[word.text.toLowerCase()] = word;
+        Store.wordStatus[word.text.toLowerCase()] = word;
 
-        await getDefinitionByWord(word.text.toLowerCase());
-        setState(() {});
+        Article article = widget.article;
+        article.updateWordStatusProcess(word);
 
-        // set all sentences word to this state
-        await widget.article.putLearned(word); //重新计算文章未掌握单词数
-        var articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-        articleTitles.setUnlearnedCountByArticleID(widget.article.unlearnedCount, widget.article.articleID);
-        //save to local
-        widget.article.updateLocal();
+        // recompute all articles percent
+        ArticleTitles articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+        articleTitles.setUnlearnedCountByArticleID(article.unlearnedCount, article.articleID);
       }
       ..onTap = (i) {
         // 避免长按的同时触发
@@ -191,14 +187,9 @@ class ArticleSentencesState extends State<ArticleSentences> {
     return processTextStyle;
   }
 
-  keepWordHasSameStat(Word word) {
-    if (_global.words.containsKey(word.text.toLowerCase())) word.learned = _global.words[word.text.toLowerCase()].learned;
-    return word;
-  }
-
 // 组装为需要的 textSpan
   TextSpan getTextSpan(Word word) {
-    word = keepWordHasSameStat(word);
+    keepWordHasSameStat(word);
     if (word.text == "\n" || _startExp.hasMatch(word.text)) {
       return TextSpan(text: "");
     }

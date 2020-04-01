@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import '../models/word.dart';
 
 class Store {
+  static Map wordStatus = Map<String, Word>();
   static const baseURL = "https://english.bigzhu.net/api/";
   static const PATH = "assets/db/wordwise.db";
   //static const baseURL = "http://192.168.43.231:3004/api/";

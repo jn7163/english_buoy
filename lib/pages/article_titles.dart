@@ -90,6 +90,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
 
   Widget getArticleTitlesBody() {
     return Selector<ArticleTitles, List<ArticleTitle>>(
+        shouldRebuild: (previous, next) => previous != next,
         selector: (context, articleTitles) => articleTitles.filterTitles,
         builder: (context, filterTitles, child) {
           _aritcleTitles = filterTitles
