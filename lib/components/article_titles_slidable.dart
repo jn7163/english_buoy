@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/article_title.dart';
 import '../models/article_titles.dart';
-import '../models/explorer.dart';
 import './article_youtube_avatar.dart';
 import '../models/controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -84,11 +83,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
     //use shared flow
     if (widget.isExplorer) {
       _controller.jumpToHome(ArticleTitlesPageIndex);
-      _articleTitles.newYouTube(articleTitle.youtube).then((sucess) {
-        if (sucess)
-          //remove from explorer list
-          Provider.of<Explorer>(context, listen: false).removeFromList(articleTitle);
-      });
+      _articleTitles.newYouTube(articleTitle.youtube);
       return;
     }
     _controller.setSelectedArticleID(articleTitle.id);

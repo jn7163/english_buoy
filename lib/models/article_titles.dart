@@ -78,7 +78,7 @@ class ArticleTitles with ChangeNotifier {
   Future<bool> newYouTube(String url) async {
     String result;
     //reset to min filter
-    this.filterByPercent(MIN_FILTER_PERCENT);
+    await this.filterByPercent(MIN_FILTER_PERCENT);
     if (scrollToSharedItem(url)) {
       result = exists;
       dio().post(Store.baseURL + "Subtitle", data: {"Youtube": url});
@@ -142,6 +142,7 @@ class ArticleTitles with ChangeNotifier {
   }
 
   filter() {
+    print("filter");
     // must make new list otherwise Selector will not trigger
     filterTitles = [...this.titles];
     if (searchKey != "")

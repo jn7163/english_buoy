@@ -93,9 +93,9 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
         shouldRebuild: (previous, next) => previous != next,
         selector: (context, articleTitles) => articleTitles.filterTitles,
         builder: (context, filterTitles, child) {
+          print(filterTitles[filterTitles.length - 1].title);
           _aritcleTitles = filterTitles
               .map((d) => ArticleTitlesSlidable(
-                    //key: Key("article_title_${d.id}"),
                     key: ValueKey(d.id),
                     articleTitle: d,
                   ))
