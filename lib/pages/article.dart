@@ -237,14 +237,8 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
         color: Theme.of(context).scaffoldBackgroundColor,
         dismissible: true,
         child: Column(children: [
-          /*
-          Hero(
-              tag: 'thumbnail_${_article.articleID}',
-              child: ArticleYouTube(
-                article: _article,
-              )),
-              */
-          refreshBody()
+          //ArticleYouTube(article: _article),
+          refreshBody(),
         ]),
         inAsyncCall: _loading);
     return VisibilityDetector(

@@ -19,7 +19,6 @@ class IncreasePercentNumberState extends State<IncreasePercentNumber>
   bool get wantKeepAlive => true;
   @override
   initState() {
-    print("initState $this");
     super.initState();
     _animationController = AnimationController(duration: Duration(milliseconds: _duration), vsync: this);
     _animation = Tween<double>(begin: 0, end: widget.number)
