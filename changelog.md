@@ -4,6 +4,10 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.19+1.4.19
+
+- Fix: Selected article is not auto scroll to top
+
 v1.4.16+1.4.16
 
 - change floatingActionButton to bottomNavigationBar

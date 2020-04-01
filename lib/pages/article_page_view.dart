@@ -22,11 +22,15 @@ class ArticlePageViewPage extends StatelessWidget {
           selector: (context, articleTitles) => articleTitles.filterTitles,
           builder: (context, filterTitles, child) {
             Controller _controller = Provider.of<Controller>(context, listen: false);
+            ArticleTitles _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
             _controller.articlePageViewController = PageController(initialPage: _controller.articleIndex);
             return PageView(
                 reverse: true,
-                onPageChanged: (i) =>
-                    _controller.setSelectedArticleID(filterTitles[i].id), // used to highlight aritcleTitlePage item
+                onPageChanged: (i) {
+                  // is reversed to need change
+                  _articleTitles.scrollToArticleTitle(_articleTitles.filterTitles.length - i - 1);
+                  _controller.setSelectedArticleID(filterTitles[i].id);
+                }, // used to highlight aritcleTitlePage item
                 controller: _controller.articlePageViewController,
                 children: filterTitles
                     .map((d) => ArticlePage(

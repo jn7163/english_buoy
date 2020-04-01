@@ -74,12 +74,10 @@ packages:
   decoding_text_effect:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "4db858830505a6f2b9f787f58d1698ddfd758a23"
-      url: "https://github.com/bigzhu/decoding_text_effect"
-    source: git
-    version: "1.0.1"
+      name: decoding_text_effect
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.1"
   dio:
     dependency: "direct main"
     description:
