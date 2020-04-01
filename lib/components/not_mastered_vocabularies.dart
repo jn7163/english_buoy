@@ -115,6 +115,7 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
         three: GestureDetector(
             onTap: () {
               //跳转到文章中这一句
+              if (d.belongSentence == null) this.filterMustNeedWords();
               Scrollable.ensureVisible(d.belongSentence.c);
               _article.setFindWord(d.text);
               _article.setNotMasteredWord(sentence);
@@ -160,17 +161,9 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
         children: renderWordRows);
   }
 
-  /*
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // 更换内容时, 重置所有状态
-    if (_article != null && ArticleInherited.of(context).article.articleID != _article.articleID)
-      this.reset();
-    else
-      this.clear();
-    _article = ArticleInherited.of(context).article;
-    filterMustNeedWords();
+    //filterMustNeedWords();
   }
-  */
 }

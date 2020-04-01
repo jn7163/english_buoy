@@ -6,6 +6,7 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.19+1.4.19
 
+- Even load image failed still make tap enter work fine
 - Fix: Selected article is not auto scroll to top
 
 v1.4.16+1.4.16
