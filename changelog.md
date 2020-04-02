@@ -6,6 +6,7 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.19+1.4.19
 
+- Add Skeleton Screen to loading page
 - Tap the home button again when already in the home page will scroll articles-list to top
 - Even load image failed still make tap enter work fine
 - Fix: Selected article is not auto scroll to top
