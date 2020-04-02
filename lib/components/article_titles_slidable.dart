@@ -5,8 +5,8 @@ import '../models/article_title.dart';
 import '../models/article_titles.dart';
 import './article_youtube_avatar.dart';
 import '../models/controller.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import './increase_percent_number.dart';
+import './youtube_thumbnail.dart';
 
 class ArticleTitlesSlidable extends StatefulWidget {
   ArticleTitlesSlidable({Key key, @required this.articleTitle, this.isExplorer = false}) : super(key: key);
@@ -28,7 +28,6 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
   }
 
   Widget getCardItem(ArticleTitle articleTitle) {
-    String thumbnailURL = articleTitle.thumbnailURL;
     return GestureDetector(
       onTap: () {
         print("card item on tap");
@@ -37,30 +36,11 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: <Widget>[
-          Container(
-              color: Colors.transparent, // must have color property otherwise can't tap to enter
-              height: MediaQuery.of(context).size.width * 9 / 16,
-              width: MediaQuery.of(context).size.width,
-              child: CachedNetworkImage(
-                height: MediaQuery.of(context).size.width * 9 / 16,
-                width: MediaQuery.of(context).size.width,
-                //BoxFit.fill don't work
-                //fit: BoxFit.fill,
-                imageUrl: thumbnailURL,
-                errorWidget: (context, url, error) {
-                  return Container(
-                      height: MediaQuery.of(context).size.width * 9 / 16,
-                      child: Center(
-                        child: Text("Please check your network and try again later. err: $error",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              //fontWeight: controller.selectedArticleID == articleTitle.id ? FontWeight.bold : null)), // 用的 TextTheme.subhead
-                            )),
-                      ));
-                },
-                //placeholder: (context, url) => const CircularProgressIndicator(),
-              )),
+          YouTubeThumbnail(
+            thumbnailURL: articleTitle.thumbnailURL,
+            height: MediaQuery.of(context).size.width * 9 / 16,
+            width: MediaQuery.of(context).size.width,
+          ),
           Container(
             color: Colors.black.withOpacity(0.5),
             //padding: const EdgeInsets.all(8.0),

@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../components/article_sentences.dart';
@@ -11,7 +11,10 @@ import '../components/article_top_bar.dart';
 import '../components/not_mastered_vocabularies.dart';
 import '../components/article_youtube.dart';
 import '../components/article_floating_action_button.dart';
+import '../components/youtube_thumbnail.dart';
+import '../components/article_sentence.dart';
 import '../models/article_titles.dart';
+import '../models/article_title.dart';
 import '../models/article.dart';
 import '../models/settings.dart';
 import '../models/sentence.dart';
@@ -30,10 +33,11 @@ class TimeSentenceIndex {
 
 @immutable
 class ArticlePage extends StatefulWidget {
-  ArticlePage({Key key, this.articleID}) : super(key: key);
+  ArticlePage({Key key, @required this.articleID, this.articleTitle}) : super(key: key);
   //ArticlePage(this._articleID);
 
   final int articleID;
+  final ArticleTitle articleTitle;
 
   @override
   _ArticlePageState createState() => _ArticlePageState();
@@ -231,6 +235,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   }
 
   Widget body() {
+    /*
     ModalProgressHUD hud = ModalProgressHUD(
         opacity: 1,
         progressIndicator: getSpinkitProgressIndicator(context),
@@ -241,6 +246,13 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
           refreshBody(),
         ]),
         inAsyncCall: _loading);
+        */
+    Widget col = _loading
+        ? loadingPage()
+        : Column(children: [
+            ArticleYouTube(article: _article),
+            refreshBody(),
+          ]);
     return VisibilityDetector(
         key: Key(_article.articleID.toString()),
         onVisibilityChanged: (d) {
@@ -249,11 +261,69 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
           // when leave get new content from server
           if (d.visibleFraction == 0) loadFromServer();
         },
-        child: hud);
+        child: col);
+  }
+
+  Widget loadingPage() {
+    if (widget.articleTitle.thumbnailURL == null || widget.articleTitle.thumbnailURL == '') return Container();
+
+    Article loadingAritcle = Article();
+    loadingAritcle.title = widget.articleTitle.title;
+    loadingAritcle.avatar = widget.articleTitle.avatar;
+    loadingAritcle.youtube = widget.articleTitle.youtube;
+    return SafeArea(
+      child: Column(children: [
+        YouTubeThumbnail(
+          thumbnailURL: widget.articleTitle.thumbnailURL,
+        ),
+        ArticleTopBar(article: loadingAritcle),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(5),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey[500],
+              highlightColor: Colors.grey[200],
+              child: Text(
+                '''
+How to memorize?
+
+The first thing you need to know about committing vocabulary to memory is that
+
+CONTEXT is KING.
+
+The richer the context (short story, movie scene, etc.) the easier to memorize and later remember.
+
+What is context?
+
+The Cambridge Dictionary says: “Context is the text or speech that comes immediately before and after a particular phrase or piece of text and helps to explain its meaning.” Generally speaking, context is something with a beginning, middle and an end – at least 3 sentences. Everything else is more or less a waste of time.
+
+When you come across a new word, in a book or in a movie (rich context), in order to increase your chances of remembering that word later on, you need to do the following 7 things:
+
+Use MLDs 
+
+Collocate 
+
+Rephrase 
+
+Visualize 
+
+Personalize
+
+Harmonize 
+
+Notice
+              ''',
+                style: bodyTextStyle,
+              ),
+            ),
+          ),
+        ),
+      ]),
+    );
   }
 
   Widget articleBody() {
-    if (_article.title == null) return Container();
+    if (_article.title == null) return loadingPage();
     return SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         controller: _scrollController,

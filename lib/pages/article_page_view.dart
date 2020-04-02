@@ -36,6 +36,7 @@ class ArticlePageViewPage extends StatelessWidget {
                     .map((d) => ArticlePage(
                           key: ValueKey(d.id),
                           articleID: d.id,
+                          articleTitle: d,
                         ))
                     .toList());
           }),
