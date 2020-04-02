@@ -328,7 +328,7 @@ Notice
   }
 
   Widget articleBody() {
-    if (_article.title == null) return loadingPage();
+    if (_article.title == null || _article.sentences == null) return loadingPage();
     return SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         controller: _scrollController,

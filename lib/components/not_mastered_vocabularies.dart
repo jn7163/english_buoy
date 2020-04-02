@@ -41,7 +41,7 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
     _mustLearnUnique.clear();
   }
 
-  filterMustNeedWords() {
+  filterNotMasteredWords() {
     _mustLearnUnique.clear();
     _article.sentences.forEach((s) {
       s.words.forEach((w) {
@@ -115,7 +115,6 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
         three: GestureDetector(
             onTap: () {
               //跳转到文章中这一句
-              if (d.belongSentence == null) this.filterMustNeedWords();
               Scrollable.ensureVisible(d.belongSentence.c);
               _article.setFindWord(d.text);
               _article.setNotMasteredWord(sentence);
@@ -149,7 +148,7 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
     else
       this.clear();
     _article = widget._article;
-    filterMustNeedWords();
+    filterNotMasteredWords();
     List<TableRow> renderWordRows = getRenderWordRows();
     return Table(
         border: TableBorder.all(color: Theme.of(context).primaryColorDark, width: 0.4),

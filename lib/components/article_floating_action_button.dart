@@ -14,19 +14,22 @@ class ArticleFloatingActionButtonState extends State<ArticleFloatingActionButton
     Article article = widget._article;
     return Align(
         alignment: Alignment.centerRight,
-        child: AnimatedOpacity(
-            duration: Duration(milliseconds: 700),
-            opacity: article.notMasteredWord == null ? 0 : 0.4,
-            child: FloatingActionButton(
-              mini: true,
-              onPressed: () {
-                Scrollable.ensureVisible(article.notMasteredWord.c);
-                article.setFindWord(article.notMasteredWord.words[0].text);
-                setState(() {
-                  article.notMasteredWord = null;
-                });
-              },
-              child: Icon(Icons.arrow_upward),
-            )));
+        child: Visibility(
+            visible: article.notMasteredWord != null,
+            //duration: Duration(milliseconds: 700),
+            //opacity: article.notMasteredWord == null ? 0 : 0.4,
+            child: Opacity(
+                opacity: 0.4,
+                child: FloatingActionButton(
+                  mini: true,
+                  onPressed: () {
+                    Scrollable.ensureVisible(article.notMasteredWord.c);
+                    article.setFindWord(article.notMasteredWord.words[0].text);
+                    setState(() {
+                      article.notMasteredWord = null;
+                    });
+                  },
+                  child: Icon(Icons.arrow_upward),
+                ))));
   }
 }
