@@ -229,6 +229,7 @@ class ArticleTitles with ChangeNotifier {
         break;
       }
     }
+    this.titles = [...this.titles];
     this.filter();
     notifyListeners();
   }
