@@ -4,6 +4,10 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.20+1.4.20
+
+- Auto-compute current article mastered percent when enter in
+
 v1.4.19+1.4.19
 
 - Add Skeleton Screen to loading page

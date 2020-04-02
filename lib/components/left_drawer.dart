@@ -52,7 +52,7 @@ class LeftDrawer extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
-        Text(""),
+        Divider(),
         Text("version: 1.4.18")
       ],
     ));

@@ -124,6 +124,10 @@ class Article with ChangeNotifier {
 
   updateWordStatusProcess(Word word) {
     this.setAllWordStatus(word.text, word.learned);
+    this.recomputeUnmastered();
+  }
+
+  recomputeUnmastered() {
     this.computeUnmasteredCount();
     this.putUnlearnedCount();
     this.updateLocal();

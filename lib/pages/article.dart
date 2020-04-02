@@ -12,7 +12,6 @@ import '../components/not_mastered_vocabularies.dart';
 import '../components/article_youtube.dart';
 import '../components/article_floating_action_button.dart';
 import '../components/youtube_thumbnail.dart';
-import '../components/article_sentence.dart';
 import '../models/article_titles.dart';
 import '../models/article_title.dart';
 import '../models/article.dart';
@@ -193,6 +192,12 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   Future loadArticleByID() async {
     bool hasLocal = await _article.getFromLocal(_article.articleID);
     if (!hasLocal) await loadFromServer(showLoading: true);
+
+    // recompute unmastered word
+    _article.recomputeUnmastered();
+    // update aritcles
+    Provider.of<ArticleTitles>(context, listen: false)
+        .setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);
 
     if (_article.youtube != null && _article.youtube != "") runRoutine();
     await _article.queryWordWise();
