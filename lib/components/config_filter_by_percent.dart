@@ -49,6 +49,7 @@ class ConfigFilterByPercentState extends State<ConfigFilterByPercent> {
             RaisedButton(
               child: const Text('Done'),
               onPressed: () {
+                articleTitles.scrollToArticleTitle(0);
                 articleTitles.filterByPercent(_settings.filertPercent);
                 Navigator.of(context).pop();
               },
