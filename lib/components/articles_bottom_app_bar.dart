@@ -11,9 +11,15 @@ class ArticlesBottomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     Controller _controller = Provider.of<Controller>(context, listen: false);
     ArticleTitles _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-    Color homeColor = _controller.homeIndex == ArticleTitlesPageIndex ? Colors.white : Colors.grey;
-    Color exploreColor = _controller.homeIndex == ExplorerPageIndex ? Colors.white : Colors.grey;
+    int _currentIndex = 0;
+    if (_controller.homeIndex == ArticleTitlesPageIndex) _currentIndex = 0;
+    if (_controller.homeIndex == ExplorerPageIndex) _currentIndex = 1;
     return BottomNavigationBar(
+      currentIndex: _currentIndex,
+      selectedIconTheme: IconThemeData(color: Colors.white),
+      unselectedIconTheme: IconThemeData(color: Colors.grey),
+      unselectedItemColor: Colors.grey,
+      selectedItemColor: Colors.white,
       onTap: (i) {
         if (i == 0) {
           if (_controller.homeIndex == ArticleTitlesPageIndex)
@@ -29,26 +35,22 @@ class ArticlesBottomAppBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.home,
-            color: homeColor,
           ),
           title: Text(
             "Home",
             style: TextStyle(
               fontSize: 10,
-              color: homeColor,
             ),
           ),
         ),
         BottomNavigationBarItem(
           icon: Icon(
             Icons.explore,
-            color: exploreColor,
           ),
           title: Text(
             "Explore",
             style: TextStyle(
               fontSize: 10,
-              color: exploreColor,
             ),
           ),
         ),

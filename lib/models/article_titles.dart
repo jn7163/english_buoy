@@ -142,7 +142,6 @@ class ArticleTitles with ChangeNotifier {
   }
 
   filter() {
-    print("filter");
     // must make new list otherwise Selector will not trigger
     filterTitles = [...this.titles];
     if (searchKey != "")
@@ -156,8 +155,6 @@ class ArticleTitles with ChangeNotifier {
       filterTitles = filterTitles
           .where((d) => d.percent != 100) // show percent 0 used to show loading item
           .toList();
-    //print("filterTitles done: ${filterTitles[filterTitles.length - 1].percent}");
-    //print(filterTitles[filterTitles.length - 1].id);
   }
 
   filterByPercent(double percent) async {
@@ -225,7 +222,6 @@ class ArticleTitles with ChangeNotifier {
       if (this.titles[i].id == articleID) {
         this.titles[i].unlearnedCount = unlearnedCount;
         this.titles[i].setPercent();
-        print("title.percent=${this.titles[i].percent}");
         break;
       }
     }

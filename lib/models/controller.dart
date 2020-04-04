@@ -6,6 +6,7 @@ const ExplorerPageIndex = 2;
 
 class Controller with ChangeNotifier {
   String snackBarInfo;
+  Function retryFuc;
   PageController homePageViewController; // the top PageController to show home sub page
   int homeIndex = 0; // current open main page index
   PageController articlePageViewController; // articles page view
@@ -33,8 +34,9 @@ class Controller with ChangeNotifier {
     notifyListeners();
   }
 
-  showSnackBar(String info) {
-    snackBarInfo = info;
+  showSnackBar(String info, {Function retry}) {
+    this.retryFuc = retry;
+    this.snackBarInfo = info;
     notifyListeners();
   }
 }

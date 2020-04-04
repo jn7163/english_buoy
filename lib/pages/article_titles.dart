@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'dart:async';
 
-import 'dart:io';
-
 import '../components/article_titles_app_bar.dart';
 import '../components/article_titles_slidable.dart';
 import '../components/right_drawer.dart';
@@ -63,7 +61,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
         _controller.showSnackBar("❕  Don't have any English subtitle!");
         break;
       case ArticleTitles.done:
-        _controller.showSnackBar("❦  Success~~");
+        //_controller.showSnackBar("❦  Success~~");
         break;
       default:
         _controller.showSnackBar("✗  Something wrong: $result!");
@@ -78,12 +76,11 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
         _oauthInfo.signIn();
       } else {
         errorInfo = e.toString();
-        if (errorInfo.contains('Connection terminated during handshake')) {
-          sleep(Duration(seconds: 2));
-          this.syncArticleTitles();
-        }
+        if (errorInfo.contains('Connection terminated during handshake'))
+          _controller.showSnackBar("Failed to load article titles.", retry: this.syncArticleTitles);
+        else
+          _controller.showSnackBar(errorInfo);
       }
-      _controller.showSnackBar(errorInfo);
     });
     return result;
   }
@@ -93,7 +90,7 @@ class ArticleTitlesPageState extends State<ArticleTitlesPage> with AutomaticKeep
         shouldRebuild: (previous, next) => previous != next,
         selector: (context, articleTitles) => articleTitles.filterTitles,
         builder: (context, filterTitles, child) {
-          if (filterTitles.length > 0) print(filterTitles[filterTitles.length - 1].title);
+          //if (filterTitles.length > 0) print(filterTitles[filterTitles.length - 1].title);
           _aritcleTitles = filterTitles
               .map((d) => ArticleTitlesSlidable(
                     key: ValueKey(d.id),

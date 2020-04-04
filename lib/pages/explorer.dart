@@ -10,6 +10,7 @@ import '../components/articles_bottom_app_bar.dart';
 import '../models/controller.dart';
 import '../models/explorer.dart';
 import '../models/article_title.dart';
+import '../models/oauth_info.dart';
 
 import '../themes/base.dart';
 
@@ -39,18 +40,42 @@ class ExplorerPageState extends State<ExplorerPage> with AutomaticKeepAliveClien
   }
 
   loadData() async {
-    setState(() {
-      _loading = true;
-    });
     bool hasLocal = await _explorer.getFromLocal();
-    if (hasLocal) {
-      _explorer.syncExplorer();
-    } else {
-      await _explorer.syncExplorer();
-    }
-    setState(() {
-      _loading = false;
+    if (hasLocal)
+      loadFromServer();
+    else
+      await loadFromServer(showLoading: true);
+  }
+
+  Future loadFromServer({bool showLoading = false}) async {
+    if (showLoading)
+      setState(() {
+        _loading = true;
+      });
+    await _explorer.syncExplorer().catchError((e) {
+      String errorInfo = "";
+      if (isAccessTokenError(e)) {
+        errorInfo = "Login expired";
+        Provider.of<OauthInfo>(context, listen: false).signIn();
+      } else {
+        errorInfo = e.toString();
+        if (errorInfo.contains('Connection terminated during handshake'))
+          _controller.showSnackBar("Failed to load explor article titles.",
+              retry: () => loadFromServer(showLoading: showLoading));
+        else
+          _controller.showSnackBar(errorInfo);
+      }
     });
+    if (showLoading)
+      setState(() {
+        _loading = false;
+      });
+    // update unmastered word count
+    /*
+    if (this.mounted) {
+      _articleTitles.setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);
+    }
+    */
   }
 
   Widget getArticleTitlesBody() {

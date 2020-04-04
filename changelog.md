@@ -4,9 +4,17 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.21+1.4.21
+
+- Remove Success snake bar
+- Fix delete item loading bug
+- Lets user retry by self when a network error
+- (todo)add bottom app bar to article detail page, add back-to-top button
+
 v1.4.20+1.4.20
 
-- Auto-compute current article mastered percent when enter in
+- Auto-compute current article mastered percent when open article
+- Fix stupid bug
 
 v1.4.19+1.4.19
 

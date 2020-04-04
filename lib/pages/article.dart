@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -55,6 +55,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   List<TimeSentenceIndex> _timeSentenceIndexs = List();
   Controller _controller;
   OauthInfo _oauthInfo;
+  bool _isScrollUp = false;
 
   @override
   void initState() {
@@ -64,6 +65,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     _articleID = widget.articleID;
 
     _scrollController = ScrollController();
+    //_scrollController.addListener(this.scrollListener);
     _settings = Provider.of<SettingNews>(context, listen: false);
     _article = Article();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
@@ -101,6 +103,43 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     super.dispose();
   }
 
+  // no need
+  scrollListener() {
+    //up
+    if (_scrollController.position.userScrollDirection == ScrollDirection.forward) {
+      if (!_isScrollUp)
+        setState(() {
+          _isScrollUp = true;
+        });
+    }
+    //down
+    if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+      if (_isScrollUp)
+        setState(() {
+          _isScrollUp = false;
+        });
+    }
+
+    /*
+    if (_scrollController.offset >= _scrollController.position.maxScrollExtent && !_scrollController.position.outOfRange) {
+      if (!_isScrollToBottom)
+        setState(() {
+          _isScrollToBottom = true;
+        });
+    } else {
+      if (_isScrollToBottom)
+        setState(() {
+          _isScrollToBottom = false;
+        });
+    }
+    if (_scrollController.offset <= _scrollController.position.minScrollExtent && !_scrollController.position.outOfRange) {
+      setState(() {
+        message = "reach the top";
+      });
+    }
+    */
+  }
+
   //star check sentence highlight routine
   initRoutine() {
     if (_timer == null && _article.youtube != "") {
@@ -126,7 +165,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     }
     // trigger setState if set new highlight sentence
     if (currentIndex != null && _highlightSentenceIndex != currentIndex) {
-      print("currentIndex=$currentIndex");
       //make highlight show
       setState(() {});
       //auto scroll sentence to top
@@ -165,12 +203,11 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
         _oauthInfo.signIn();
       } else {
         errorInfo = e.toString();
-        if (errorInfo.contains('Connection terminated during handshake')) {
-          sleep(Duration(seconds: 2));
-          this.loadFromServer();
-        }
+        if (errorInfo.contains('Connection terminated during handshake'))
+          _controller.showSnackBar("Failed to load article.", retry: () => loadFromServer(showLoading: showLoading));
+        else
+          _controller.showSnackBar(errorInfo);
       }
-      _controller.showSnackBar(errorInfo);
     });
     if (showLoading)
       setState(() {
@@ -345,7 +382,6 @@ Notice
     /*
     // article list data change make PageView  rebuild, need set article disable  want KeepAlive
     if (_article.articleID != null && widget.articleID != _article.articleID) {
-      print("change articleID build $this");
       this.wantKeepAlive = false;
       this.updateKeepAlive();
     }

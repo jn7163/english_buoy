@@ -17,7 +17,6 @@ class Explorer with ChangeNotifier {
   }
   // 和服务器同步
   Future syncExplorer() async {
-    print("syncExplorer");
     var response = await dio().get(Store.baseURL + _key);
     this.setFromJSON(response.data);
     this.setToLocal(json.encode(response.data));

@@ -29,10 +29,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
 
   Widget getCardItem(ArticleTitle articleTitle) {
     return GestureDetector(
-      onTap: () {
-        print("card item on tap");
-        this.enter(articleTitle);
-      },
+      onTap: () => this.enter(articleTitle),
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: <Widget>[
@@ -87,12 +84,9 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
   Widget getListItem(ArticleTitle articleTitle, {Color textColor = Colors.white}) {
     return ListTile(
       trailing: ArticleYoutubeAvatar(
-          loadErrorCallback: () async {
-            //re put new article
-            //need do something get new avatar
-          },
-          avatar: articleTitle.avatar,
-          loading: this.deleting || articleTitle.loading), // data loading to create loading item when add new article
+        avatar: articleTitle.avatar,
+        loading: this.deleting || articleTitle.loading,
+      ), // data loading to create loading item when add new article
       dense: false,
       onTap: () => this.enter(articleTitle),
       leading: articleTitle.percent != 0 ? IncreasePercentNumber(number: articleTitle.percent) : null,
@@ -113,11 +107,9 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
 
   @override
   Widget build(BuildContext context) {
-    if (_child == null) {
-      _child = _articleTitle.thumbnailURL == null || _articleTitle.thumbnailURL == ""
-          ? getListItem(_articleTitle)
-          : getCardItem(_articleTitle);
-    }
+    _child = _articleTitle.thumbnailURL == null || _articleTitle.thumbnailURL == ""
+        ? getListItem(_articleTitle)
+        : getCardItem(_articleTitle);
 
     return Slidable(actionPane: SlidableDrawerActionPane(), actionExtentRatio: 0.25, child: _child, secondaryActions: [
       IconSlideAction(
