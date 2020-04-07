@@ -91,8 +91,8 @@ class ArticleSentencesState extends State<ArticleSentences> {
         article.updateWordStatusProcess(word);
 
         // recompute all articles percent
-        ArticleTitles articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-        articleTitles.setUnlearnedCountByArticleID(article.unlearnedCount, article.articleID);
+        //ArticleTitles articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+        //articleTitles.setUnlearnedCountByArticleID(article.unlearnedCount, article.articleID);
       }
       ..onTap = (i) {
         // 避免长按的同时触发

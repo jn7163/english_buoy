@@ -11,7 +11,7 @@ description: Learn English sentence word for word with YouTube subtitle.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.4.21+1421
+version: 1.4.22+1422
 
 environment:
   sdk: ">=2.5.0 <3.0.0"

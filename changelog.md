@@ -4,12 +4,16 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.22+1.4.22
+
+- don't trigger recompute percent when tag word, do recompute percent when leave current article
+- add back-to-top button at the bottom
+
 v1.4.21+1.4.21
 
 - Remove Success snake bar
 - Fix delete item loading bug
 - Lets user retry by self when a network error
-- (todo)add bottom app bar to article detail page, add back-to-top button
 
 v1.4.20+1.4.20
 

@@ -65,7 +65,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     _articleID = widget.articleID;
 
     _scrollController = ScrollController();
-    //_scrollController.addListener(this.scrollListener);
+    _scrollController.addListener(this.scrollListener);
     _settings = Provider.of<SettingNews>(context, listen: false);
     _article = Article();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
@@ -105,6 +105,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
 
   // no need
   scrollListener() {
+    /*
     //up
     if (_scrollController.position.userScrollDirection == ScrollDirection.forward) {
       if (!_isScrollUp)
@@ -119,19 +120,11 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
           _isScrollUp = false;
         });
     }
+    */
 
+    //reach the bottom
+    if (_scrollController.offset >= _scrollController.position.maxScrollExtent && !_scrollController.position.outOfRange) {}
     /*
-    if (_scrollController.offset >= _scrollController.position.maxScrollExtent && !_scrollController.position.outOfRange) {
-      if (!_isScrollToBottom)
-        setState(() {
-          _isScrollToBottom = true;
-        });
-    } else {
-      if (_isScrollToBottom)
-        setState(() {
-          _isScrollToBottom = false;
-        });
-    }
     if (_scrollController.offset <= _scrollController.position.minScrollExtent && !_scrollController.position.outOfRange) {
       setState(() {
         message = "reach the top";
@@ -226,16 +219,18 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     this.initRoutine();
   }
 
-  Future loadArticleByID() async {
-    bool hasLocal = await _article.getFromLocal(_article.articleID);
-    if (!hasLocal) await loadFromServer(showLoading: true);
-
+  Future updateUnMastered() async {
     // recompute unmastered word
     _article.recomputeUnmastered();
     // update aritcles
     Provider.of<ArticleTitles>(context, listen: false)
         .setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);
+  }
 
+  Future loadArticleByID() async {
+    bool hasLocal = await _article.getFromLocal(_article.articleID);
+    if (!hasLocal) await loadFromServer(showLoading: true);
+    updateUnMastered();
     if (_article.youtube != null && _article.youtube != "") runRoutine();
     await _article.queryWordWise();
     //  show word wise
@@ -301,7 +296,10 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
           //make sure show right word state
           if (d.visibleFraction == 1) setState(() {});
           // when leave get new content from server
-          if (d.visibleFraction == 0) loadFromServer();
+          if (d.visibleFraction == 0) {
+            updateUnMastered();
+            loadFromServer();
+          }
         },
         child: col);
   }
@@ -373,6 +371,11 @@ Notice
           ArticleTopBar(article: _article),
           NotMasteredVocabulary(_article),
           Padding(padding: EdgeInsets.all(5), child: ArticleSentences(article: _article, sentences: _article.sentences)),
+          FloatingActionButton(
+            mini: true,
+            onPressed: () => _scrollController.jumpTo(0.1),
+            child: Icon(Icons.arrow_upward),
+          ),
         ]));
   }
 
