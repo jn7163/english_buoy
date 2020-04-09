@@ -65,7 +65,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     _articleID = widget.articleID;
 
     _scrollController = ScrollController();
-    _scrollController.addListener(this.scrollListener);
+    //_scrollController.addListener(this.scrollListener);
     _settings = Provider.of<SettingNews>(context, listen: false);
     _article = Article();
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
@@ -158,8 +158,9 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     }
     // trigger setState if set new highlight sentence
     if (currentIndex != null && _highlightSentenceIndex != currentIndex) {
-      //make highlight show
-      setState(() {});
+      //if article too long, highlight will make autoscroll rough
+      if (!_settings.isScrollWithPlay || _article.sentences.length < 200) setState(() {});
+
       //auto scroll sentence to top
       if (_settings.isScrollWithPlay &&
               controller.homeIndex == ArticlePageViewPageIndex && // is in page view page
@@ -168,6 +169,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
         int sentenceIndex = _timeSentenceIndexs[currentIndex].indexs[0];
         Scrollable.ensureVisible(_article.sentences[sentenceIndex].c, duration: Duration(milliseconds: 1400), alignment: 0.0);
       }
+
       //alignment: 0.0);
       _highlightSentenceIndex = currentIndex;
     }
@@ -372,7 +374,6 @@ Notice
           NotMasteredVocabulary(_article),
           Padding(padding: EdgeInsets.all(5), child: ArticleSentences(article: _article, sentences: _article.sentences)),
           FloatingActionButton(
-            mini: true,
             onPressed: () => _scrollController.jumpTo(0.1),
             child: Icon(Icons.arrow_upward),
           ),
