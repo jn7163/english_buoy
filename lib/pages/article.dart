@@ -228,7 +228,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   Future loadArticleByID() async {
     bool hasLocal = await _article.getFromLocal(_article.articleID);
     if (!hasLocal) await loadFromServer(showLoading: true);
-    updateUnMastered();
     if (_article.youtube != null && _article.youtube != "") runRoutine();
     await _article.queryWordWise();
     //  show word wise
