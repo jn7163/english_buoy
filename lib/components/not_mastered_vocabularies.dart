@@ -1,11 +1,10 @@
 import '../models/article.dart';
-import './article_sentences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/sentence.dart';
 import '../models/word.dart';
 import '../functions/article.dart';
-import 'article_sentences.dart';
+import 'article_sentence.dart';
 
 class NotMasteredVocabulary extends StatefulWidget {
   NotMasteredVocabulary(this._article);
@@ -110,8 +109,8 @@ class NotMasteredVocabularyState extends State<NotMasteredVocabulary> {
           d.level == 0 ? "-" : d.level.toString(), style: bodyTextStyle,
           //style: Theme.of(context).textTheme.display2,
         ),
-        two: ArticleSentences(
-            article: _article, sentences: [sentence], needWordWise: false, crossAxisAlignment: CrossAxisAlignment.baseline),
+        two: ArticleSentence(
+            article: _article, sentence: sentence, needWordWise: false, crossAxisAlignment: CrossAxisAlignment.baseline),
         three: GestureDetector(
             onTap: () {
               //跳转到文章中这一句

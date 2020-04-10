@@ -4,9 +4,14 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.23+1.4.23
+
+- Make long article highlight sentence smooth
+
 v1.4.22+1.4.22
 
-- don't trigger recompute percent when tag word, do recompute percent when leave current article
+- show retry button when delete failed
+- don't trigger recompute percent when tag word, do recompute percent when leaving the current article
 - add back-to-top button at the bottom
 
 v1.4.21+1.4.21

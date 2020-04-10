@@ -7,8 +7,19 @@ class Sentence {
   final List<Word> words;
   BuildContext c;
   bool highlight = false;
+  Function setStateCallback;
 
   Sentence(this.startTime, this.words);
+  setState() {
+    if (setStateCallback != null) setStateCallback();
+  }
+
+  setHightlight(bool h) {
+    if (h != this.highlight) {
+      this.highlight = h;
+      setState();
+    }
+  }
 
   Sentence.fromJson(Map json)
       : startTime = json['StarTime'],

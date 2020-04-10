@@ -38,7 +38,8 @@ class ArticleYouTube extends StatelessWidget {
                 hideFullScreenButton: false,
                 // 不可能是 live 的视频
                 isLive: false,
-                forceHideAnnotation: false,
+                forceHideAnnotation: true,
+                hideThumbnail: false,
               ),
               videoProgressIndicatorColor: Colors.blueGrey,
               liveUIColor: Colors.blueGrey,

@@ -7,6 +7,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../components/article_sentences.dart';
+import '../components/article_sentence.dart';
 import '../components/article_top_bar.dart';
 import '../components/not_mastered_vocabularies.dart';
 import '../components/article_youtube.dart';
@@ -26,7 +27,7 @@ class TimeSentenceIndex {
   int endSeconds = 0;
   List<int> indexs = List();
   setHighlight(bool highlight, List<Sentence> sentences) {
-    indexs.forEach((i) => sentences[i].highlight = highlight);
+    indexs.forEach((i) => sentences[i].setHightlight(highlight));
   }
 }
 
@@ -55,7 +56,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   List<TimeSentenceIndex> _timeSentenceIndexs = List();
   Controller _controller;
   OauthInfo _oauthInfo;
-  bool _isScrollUp = false;
 
   @override
   void initState() {
@@ -71,7 +71,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
     _article.articleID = _articleID;
     //send current setState callBack function to article model
-    _article.notifyListeners2 = () {
+    _article.setStateCallback = () {
       if (this.mounted) setState(() {});
     };
     loadArticleByID();
@@ -151,15 +151,14 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
       int currentSeconds = _article.youtubeController.value.position.inSeconds;
       // current playing time between start and end then highlight it
       if (currentSeconds >= _timeSentenceIndexs[i].startSeconds && currentSeconds < _timeSentenceIndexs[i].endSeconds) {
-        _timeSentenceIndexs[i].setHighlight(true, _article.sentences);
         currentIndex = i;
+        _timeSentenceIndexs[i].setHighlight(true, _article.sentences);
       } else
         _timeSentenceIndexs[i].setHighlight(false, _article.sentences);
     }
     // trigger setState if set new highlight sentence
     if (currentIndex != null && _highlightSentenceIndex != currentIndex) {
-      //if article too long, highlight will make autoscroll rough
-      if (_article.sentences.length < 400) setState(() {});
+      _highlightSentenceIndex = currentIndex;
       //auto scroll sentence to top
       if (_settings.isScrollWithPlay &&
               controller.homeIndex == ArticlePageViewPageIndex && // is in page view page
@@ -168,9 +167,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
         int sentenceIndex = _timeSentenceIndexs[currentIndex].indexs[0];
         Scrollable.ensureVisible(_article.sentences[sentenceIndex].c, duration: Duration(milliseconds: 1400), alignment: 0.0);
       }
-
-      //alignment: 0.0);
-      _highlightSentenceIndex = currentIndex;
     }
   }
 
@@ -371,7 +367,7 @@ Notice
         child: Column(children: [
           ArticleTopBar(article: _article),
           NotMasteredVocabulary(_article),
-          Padding(padding: EdgeInsets.all(5), child: ArticleSentences(article: _article, sentences: _article.sentences)),
+          Padding(padding: EdgeInsets.all(5), child: ArticleSentences(article: _article)),
           FloatingActionButton(
             onPressed: () => _scrollController.jumpTo(0.1),
             child: Icon(Icons.arrow_upward),

@@ -20,7 +20,7 @@ class Article with ChangeNotifier {
   int unlearnedCount;
   int articleID;
   Sentence notMasteredWord; // 尚未掌握的table中的单词, 用来滚回去
-  Function notifyListeners2 = () {}; //beacause notifyListeners2 not work, must use callBack replace
+  Function setStateCallback; //beacause setStateCallback not work, must use callBack replace
 
   // 文章中的文字内容
   // List words = [];
@@ -33,9 +33,14 @@ class Article with ChangeNotifier {
   String thumbnailURL;
   int wordCount;
 
+  setState() {
+    print("call article setState");
+    if (setStateCallback != null) setStateCallback();
+  }
+
   setNotMasteredWord(Sentence v) {
     notMasteredWord = v;
-    notifyListeners2();
+    setState();
   }
 
   setYouTube(YoutubePlayerController v) {
@@ -44,11 +49,11 @@ class Article with ChangeNotifier {
 
   setFindWord(String findWord) {
     this.findWord = findWord;
-    notifyListeners2();
+    setState();
     // just show 1 seconds
     Future.delayed(Duration(seconds: 1), () {
       this.findWord = "";
-      notifyListeners2();
+      setState();
     });
   }
 
@@ -159,7 +164,7 @@ class Article with ChangeNotifier {
         if (w.text.toLowerCase() == word.toLowerCase()) w.learned = isLearned;
       });
     }
-    notifyListeners2();
+    setState();
   }
 
 // 增加学习次数
