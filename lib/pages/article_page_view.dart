@@ -19,6 +19,7 @@ class ArticlePageViewPage extends StatelessWidget {
           return true;
       },
       child: Selector<ArticleTitles, List<ArticleTitle>>(
+          shouldRebuild: (previous, next) => previous != next,
           selector: (context, articleTitles) => articleTitles.filterTitles,
           builder: (context, filterTitles, child) {
             Controller _controller = Provider.of<Controller>(context, listen: false);
