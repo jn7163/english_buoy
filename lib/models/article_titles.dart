@@ -95,15 +95,15 @@ class ArticleTitles with ChangeNotifier {
       // 将新添加的文章添加到缓存中
       article.setFromJSON(response.data);
       article.setToLocal(json.encode(response.data));
-      // 设置高亮, 但是不要通知,等待后续来更新
-      this.controller.selectedArticleID = article.articleID;
-      if (response.data[exists]) {
+
+      if (response.data[exists])
         result = exists;
-      } else {
+      else {
         // 先添加到 titles 加速显示
         this.addArticleTitleByArticle(article);
         result = done;
       }
+      this.controller.setSelectedArticleID(article.articleID);
       // 只更新本地缓存, 避免下次打开是老的
       syncArticleTitles(justSetToLocal: true);
       return true;

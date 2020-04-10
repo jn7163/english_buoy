@@ -159,8 +159,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     // trigger setState if set new highlight sentence
     if (currentIndex != null && _highlightSentenceIndex != currentIndex) {
       //if article too long, highlight will make autoscroll rough
-      if (!_settings.isScrollWithPlay || _article.sentences.length < 200) setState(() {});
-
+      if (_article.sentences.length < 400) setState(() {});
       //auto scroll sentence to top
       if (_settings.isScrollWithPlay &&
               controller.homeIndex == ArticlePageViewPageIndex && // is in page view page

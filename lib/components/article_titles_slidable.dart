@@ -21,9 +21,11 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
   bool deleting = false; // is deleting
   ArticleTitle _articleTitle;
   Widget _child;
+  Controller _controller;
   @override
   initState() {
     super.initState();
+    _controller = Provider.of<Controller>(context, listen: false);
     _articleTitle = widget.articleTitle;
   }
 
@@ -105,6 +107,23 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
     );
   }
 
+  delete() async {
+    setState(() {
+      this.deleting = true;
+    });
+    await _articleTitle.deleteArticle().catchError((e) {
+      String errorInfo = e.toString();
+      if (errorInfo.contains('Connection terminated during handshake'))
+        _controller.showSnackBar("Failed to delete article.", retry: () => this.delete());
+      else
+        _controller.showSnackBar(errorInfo);
+    });
+    ArticleTitles _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
+    _articleTitles.removeFromList(_articleTitle);
+    //更新本地缓存
+    _articleTitles.syncArticleTitles(justSetToLocal: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     _child = _articleTitle.thumbnailURL == null || _articleTitle.thumbnailURL == ""
@@ -116,16 +135,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
         caption: 'Delete',
         color: Theme.of(context).primaryColor,
         icon: Icons.delete,
-        onTap: () async {
-          setState(() {
-            this.deleting = true;
-          });
-          await _articleTitle.deleteArticle();
-          ArticleTitles _articleTitles = Provider.of<ArticleTitles>(context, listen: false);
-          _articleTitles.removeFromList(_articleTitle);
-          //更新本地缓存
-          _articleTitles.syncArticleTitles(justSetToLocal: true);
-        },
+        onTap: () => this.delete(),
       ),
     ]);
   }
