@@ -218,10 +218,11 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
 
   Future updateUnMastered() async {
     // recompute unmastered word
-    _article.recomputeUnmastered();
+    bool isChange = _article.recomputeUnmastered();
     // update aritcles
-    Provider.of<ArticleTitles>(context, listen: false)
-        .setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);
+    if (isChange)
+      Provider.of<ArticleTitles>(context, listen: false)
+          .setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);
   }
 
   Future loadArticleByID() async {

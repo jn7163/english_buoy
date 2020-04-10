@@ -132,13 +132,15 @@ class Article with ChangeNotifier {
     this.recomputeUnmastered();
   }
 
-  recomputeUnmastered() {
-    this.computeUnmasteredCount();
+  bool recomputeUnmastered() {
+    bool isChange = this.computeUnmasteredCount();
     this.putUnlearnedCount();
     this.updateLocal();
+    return isChange;
   }
 
-  int computeUnmasteredCount() {
+  bool computeUnmasteredCount() {
+    bool isChange = false;
     // 重新计算未掌握单词数
     Set<String> words = Set();
     this.sentences.forEach((sentence) {
@@ -147,8 +149,9 @@ class Article with ChangeNotifier {
         if (!word.learned && isNeedLearn(word)) words.add(word.text.toLowerCase());
       });
     });
+    if (unlearnedCount != words.length) isChange = true;
     unlearnedCount = words.length;
-    return unlearnedCount;
+    return isChange;
   }
 
   // 更新文章未掌握单词数
