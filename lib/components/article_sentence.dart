@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
@@ -7,6 +8,8 @@ import 'package:easy_alert/easy_alert.dart';
 import '../models/article.dart';
 import '../models/word.dart';
 import '../models/sentence.dart';
+import '../models/oauth_info.dart';
+import '../models/controller.dart';
 import '../store/store.dart';
 
 import '../functions/article.dart';
@@ -58,6 +61,8 @@ class ArticleSentenceState extends State<ArticleSentence> {
 // 定义各种 tap 后的处理
 // isNoNeed 是不需要学习的
   MultiTapGestureRecognizer _getTapRecognizer(Word word) {
+    Controller _controller = Provider.of<Controller>(context, listen: false);
+    OauthInfo _oauthInfo = Provider.of<OauthInfo>(context, listen: false);
     if (word.text == "") return null;
     // 标记是否长按, 长按不要触发单词查询
     bool longTap = false;
@@ -66,10 +71,23 @@ class ArticleSentenceState extends State<ArticleSentence> {
       ..onLongTapDown = (i, detail) async {
         longTap = true;
         // set current word state for speed up change
-        bool learned = !word.learned;
-        word.learned = learned;
+        setState(() {
+          word.learned = !word.learned;
+        });
         //update server side word status
-        word.putLearned();
+        word.putLearned().catchError((e) {
+          String errorInfo = "";
+          if (isAccessTokenError(e)) {
+            errorInfo = "Login expired";
+            _oauthInfo.signIn();
+          } else {
+            errorInfo = e.toString();
+            if (errorInfo.contains('Connection terminated during handshake'))
+              _controller.showSnackBar("Failed to load article titles.", retry: word.putLearn);
+            else
+              _controller.showSnackBar(errorInfo);
+          }
+        });
         //update global word status
         Store.wordStatus[word.text.toLowerCase()] = word;
         widget.article.setState();

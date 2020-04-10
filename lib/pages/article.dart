@@ -26,8 +26,17 @@ class TimeSentenceIndex {
   int startSeconds = 0;
   int endSeconds = 0;
   List<int> indexs = List();
-  setHighlight(bool highlight, List<Sentence> sentences) {
-    indexs.forEach((i) => sentences[i].setHightlight(highlight));
+  reset(List<Sentence> sentences) {
+    for (Sentence sentence in sentences) {
+      sentence.setHightlight(false);
+    }
+  }
+
+  setHighlight(List<Sentence> sentences) {
+    this.reset(sentences);
+    for (int i in indexs) {
+      sentences[i].setHightlight(true);
+    }
   }
 }
 
@@ -152,13 +161,14 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
       // current playing time between start and end then highlight it
       if (currentSeconds >= _timeSentenceIndexs[i].startSeconds && currentSeconds < _timeSentenceIndexs[i].endSeconds) {
         currentIndex = i;
-        _timeSentenceIndexs[i].setHighlight(true, _article.sentences);
-      } else
-        _timeSentenceIndexs[i].setHighlight(false, _article.sentences);
+        break;
+      }
     }
     // trigger setState if set new highlight sentence
     if (currentIndex != null && _highlightSentenceIndex != currentIndex) {
       _highlightSentenceIndex = currentIndex;
+      _timeSentenceIndexs[currentIndex].setHighlight(_article.sentences);
+
       //auto scroll sentence to top
       if (_settings.isScrollWithPlay &&
               controller.homeIndex == ArticlePageViewPageIndex && // is in page view page
