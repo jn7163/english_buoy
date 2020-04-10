@@ -62,7 +62,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   bool _loading = false;
   Timer _timer;
   int _highlightSentenceIndex;
-  List<TimeSentenceIndex> _timeSentenceIndexs = List();
+  List<TimeSentenceIndex> _timeSentenceIndexs;
   Controller _controller;
   OauthInfo _oauthInfo;
 
@@ -151,6 +151,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
 
   routineCheckSentenceHighLight() {
     if (this.mounted == false) return;
+    if (_timeSentenceIndexs == null) splitSentencesByTime();
     Controller controller = Provider.of<Controller>(context, listen: false);
     if (_article.youtubeController == null) return;
     if (!_article.youtubeController.value.isPlaying) return;
@@ -301,7 +302,10 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
         key: Key(_article.articleID.toString()),
         onVisibilityChanged: (d) {
           //make sure show right word state
-          if (d.visibleFraction == 1) setState(() {});
+          if (d.visibleFraction == 1) {
+            //splitSentencesByTime();
+            setState(() {});
+          }
           // when leave get new content from server
           if (d.visibleFraction == 0) {
             updateUnMastered();

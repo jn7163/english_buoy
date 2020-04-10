@@ -241,6 +241,11 @@ class ArticleSentenceState extends State<ArticleSentence> {
 
   @override
   Widget build(BuildContext context) {
+    //make sure sentence setStateCallback work fine
+    if (widget.sentence.setStateCallback == null)
+      widget.sentence.setStateCallback = () {
+        setState(() {});
+      };
     return buildArticleRichText(widget.sentence);
   }
 }

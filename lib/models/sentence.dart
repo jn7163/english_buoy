@@ -11,7 +11,10 @@ class Sentence {
 
   Sentence(this.startTime, this.words);
   setState() {
-    if (setStateCallback != null) setStateCallback();
+    if (setStateCallback != null)
+      setStateCallback();
+    else
+      print("setStateCallback is null!!");
   }
 
   setHightlight(bool h) {
