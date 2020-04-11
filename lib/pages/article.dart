@@ -81,7 +81,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     _article.articleID = _articleID;
     //send current setState callBack function to article model
     _article.setStateCallback = () {
-      if (this.mounted) setState(() {});
+      setState(() {});
     };
     loadArticleByID();
     preload();
@@ -280,18 +280,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   }
 
   Widget body() {
-    /*
-    ModalProgressHUD hud = ModalProgressHUD(
-        opacity: 1,
-        progressIndicator: getSpinkitProgressIndicator(context),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        dismissible: true,
-        child: Column(children: [
-          ArticleYouTube(article: _article),
-          refreshBody(),
-        ]),
-        inAsyncCall: _loading);
-        */
     Widget col = _loading
         ? loadingPage()
         : Column(children: [
@@ -392,14 +380,6 @@ Notice
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    /*
-    // article list data change make PageView  rebuild, need set article disable  want KeepAlive
-    if (_article.articleID != null && widget.articleID != _article.articleID) {
-      this.wantKeepAlive = false;
-      this.updateKeepAlive();
-    }
-    */
-
     return Scaffold(
       //backgroundColor: darkMaterialColor[50],
       //backgroundColor: Colors.white,

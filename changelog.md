@@ -7,6 +7,7 @@ Learn English by reading YouTube subtitle article.
 v1.4.23+1.4.23
 
 - Make long article highlight sentence smooth
+- Lots of bug fixed
 
 v1.4.22+1.4.22
 

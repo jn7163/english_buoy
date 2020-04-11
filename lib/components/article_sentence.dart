@@ -73,6 +73,7 @@ class ArticleSentenceState extends State<ArticleSentence> {
         // set current word state for speed up change
         setState(() {
           word.learned = !word.learned;
+          Store.wordStatus[word.text.toLowerCase()] = Word(word.text, word.level, word.learned);
         });
         //update server side word status
         word.putLearned().catchError((e) {
@@ -88,8 +89,6 @@ class ArticleSentenceState extends State<ArticleSentence> {
               _controller.showSnackBar(errorInfo);
           }
         });
-        //update global word status
-        Store.wordStatus[word.text.toLowerCase()] = word;
         widget.article.setState();
       }
       ..onTap = (i) {

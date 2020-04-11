@@ -34,7 +34,6 @@ class Word with ChangeNotifier {
 
 // 记录学习次数
   Future putLearn() async {
-    var response = await dio().put(Store.baseURL + "learn", data: {"word": this.text});
-    return response;
+    return dio().put(Store.baseURL + "learn", data: {"word": this.text});
   }
 }
