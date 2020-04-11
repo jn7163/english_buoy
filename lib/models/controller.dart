@@ -30,7 +30,6 @@ class Controller with ChangeNotifier {
   }
 
   setSelectedArticleID(int id) {
-    print("setSelectedArticleID $id");
     this.selectedArticleID = id;
     notifyListeners();
   }

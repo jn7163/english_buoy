@@ -34,7 +34,6 @@ class Article with ChangeNotifier {
   int wordCount;
 
   setState() {
-    print("call article setState");
     if (setStateCallback != null) setStateCallback();
   }
 
@@ -45,6 +44,7 @@ class Article with ChangeNotifier {
 
   setYouTube(YoutubePlayerController v) {
     youtubeController = v;
+    notifyListeners();
   }
 
   setFindWord(String findWord) {
@@ -146,7 +146,10 @@ class Article with ChangeNotifier {
     this.sentences.forEach((sentence) {
       sentence.words.forEach((word) {
         keepWordHasSameStat(word);
-        if (!word.learned && isNeedLearn(word)) words.add(word.text.toLowerCase());
+        if (!word.learned && isNeedLearn(word)) {
+          print("unmastered: ${word.text}");
+          words.add(word.text.toLowerCase());
+        }
       });
     });
     if (unlearnedCount != words.length) isChange = true;

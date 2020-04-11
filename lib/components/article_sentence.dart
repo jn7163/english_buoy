@@ -72,8 +72,8 @@ class ArticleSentenceState extends State<ArticleSentence> {
         longTap = true;
         // set current word state for speed up change
         setState(() {
-          word.learned = !word.learned;
-          Store.wordStatus[word.text.toLowerCase()] = Word(word.text, word.level, word.learned);
+          Store.wordStatus[word.text.toLowerCase()] = Word(word.text, word.level, !word.learned);
+          word.setLearned(!word.learned);
         });
         //update server side word status
         word.putLearned().catchError((e) {

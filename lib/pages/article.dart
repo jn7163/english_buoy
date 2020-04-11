@@ -60,7 +60,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   SettingNews _settings;
   int _articleID;
   bool _loading = false;
-  Timer _timer;
   int _highlightSentenceIndex;
   List<TimeSentenceIndex> _timeSentenceIndexs;
   Controller _controller;
@@ -83,15 +82,18 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     _article.setStateCallback = () {
       setState(() {});
     };
+    //Listen is youtubeController initialized
+    _article.addListener(() {
+      if (_article.youtubeController != null) {
+        //Listen is playing inSeconds
+        _article.youtubeController.addListener(() {
+          this.highLightAndScrollSentence();
+        });
+      }
+    });
+
     loadArticleByID();
     preload();
-    /*
-    //maybe this is reinit need set back to need keepAlive
-    if (this.wantKeepAlive == false) {
-      this.wantKeepAlive = true;
-      this.updateKeepAlive();
-    }
-    */
   }
 
   @override
@@ -99,7 +101,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     debugPrint("ArticlePage deactivate");
     // This pauses video while navigating to next page.
     if (_article.youtubeController != null) _article.youtubeController.pause();
-    _timer?.cancel();
     super.deactivate();
   }
 
@@ -108,7 +109,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     debugPrint("ArticlePage dispose");
     //为了避免内存泄露，需要调用_scrollController.dispose
     _scrollController.dispose();
-    _timer?.cancel();
     super.dispose();
   }
 
@@ -142,18 +142,8 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     */
   }
 
-  //star check sentence highlight routine
-  initRoutine() {
-    if (_timer == null && _article.youtube != "") {
-      _timer = Timer.periodic(const Duration(milliseconds: 800), (t) => routineCheckSentenceHighLight());
-    }
-  }
-
-  routineCheckSentenceHighLight() {
-    if (this.mounted == false) return;
-    if (_timeSentenceIndexs == null) splitSentencesByTime();
-    Controller controller = Provider.of<Controller>(context, listen: false);
-    if (_article.youtubeController == null) return;
+  highLightAndScrollSentence() {
+    //if (_timeSentenceIndexs == null) splitSentencesByTime();
     if (!_article.youtubeController.value.isPlaying) return;
 
     int currentIndex;
@@ -172,8 +162,8 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
 
       //auto scroll sentence to top
       if (_settings.isScrollWithPlay &&
-              controller.homeIndex == ArticlePageViewPageIndex && // is in page view page
-              controller.selectedArticleID == _article.articleID // is open current page, the youtube play status may
+              _controller.homeIndex == ArticlePageViewPageIndex && // is in page view page
+              _controller.selectedArticleID == _article.articleID // is open current page, the youtube play status may
           ) {
         int sentenceIndex = _timeSentenceIndexs[currentIndex].indexs[0];
         Scrollable.ensureVisible(_article.sentences[sentenceIndex].c, duration: Duration(milliseconds: 1400), alignment: 0.0);
@@ -222,11 +212,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     */
   }
 
-  Future runRoutine() async {
-    this.splitSentencesByTime();
-    this.initRoutine();
-  }
-
   Future updateUnMastered() async {
     // recompute unmastered word
     bool isChange = _article.recomputeUnmastered();
@@ -239,7 +224,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   Future loadArticleByID() async {
     bool hasLocal = await _article.getFromLocal(_article.articleID);
     if (!hasLocal) await loadFromServer(showLoading: true);
-    if (_article.youtube != null && _article.youtube != "") runRoutine();
+    if (_article.youtube != null && _article.youtube != "") this.splitSentencesByTime();
     await _article.queryWordWise();
     //  show word wise
     if (this.mounted) setState(() {});
@@ -247,7 +232,7 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
   }
 
   //split article sentences by time
-  void splitSentencesByTime() {
+  splitSentencesByTime() async {
     _timeSentenceIndexs = List();
     for (int i = 0; i < _article.sentences.length; i++) {
       String startTime = _article.sentences[i].startTime;

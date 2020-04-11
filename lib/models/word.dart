@@ -25,6 +25,10 @@ class Word with ChangeNotifier {
         'count': count,
         'level': level,
       };
+  setLearned(bool v) {
+    this.learned = v;
+    notifyListeners();
+  }
 
 // 记录学习状态
   Future putLearned() async {
