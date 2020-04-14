@@ -8,6 +8,8 @@ v1.4.23+1.4.23
 
 - Make long article highlight sentence smooth
 - Lots of bug fixed
+- Fix: the wrong highlight selected article
+- Fix: sqflite sql bind variable error
 
 v1.4.22+1.4.22
 

@@ -53,7 +53,7 @@ class LeftDrawer extends StatelessWidget {
           },
         ),
         Divider(),
-        Text("version: 1.4.22")
+        Text("version: 1.4.23")
       ],
     ));
   }

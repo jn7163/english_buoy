@@ -39,8 +39,8 @@ Future<String> getDefinitionByWord(String word) async {
     FROM senses s, lemmas l
     WHERE s.display_lemma_id=l.id
       and s.sense_number=1
-      and lemma='$word' LIMIT 1
-  ''');
+      and lemma=? LIMIT 1
+  ''', [word]);
 
   if (queryResults != null) {
     if (queryResults.length > 0) {

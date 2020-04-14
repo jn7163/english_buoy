@@ -204,12 +204,6 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
       setState(() {
         _loading = false;
       });
-    // update unmastered word count
-    /*
-    if (this.mounted) {
-      _articleTitles.setUnlearnedCountByArticleID(_article.unlearnedCount, _article.articleID);
-    }
-    */
   }
 
   Future updateUnMastered() async {
@@ -274,9 +268,15 @@ class _ArticlePageState extends State<ArticlePage> with AutomaticKeepAliveClient
     return VisibilityDetector(
         key: Key(_article.articleID.toString()),
         onVisibilityChanged: (d) {
-          //make sure show right word state
           if (d.visibleFraction == 1) {
+            // is reversed to need change
+            if (_controller.selectedArticleID != _article.articleID) {
+              _controller.setSelectedArticleID(_article.articleID);
+              int i = _articleTitles.findIndexByArticleID(_article.articleID);
+              _articleTitles.scrollToArticleTitle(_articleTitles.filterTitles.length - i - 1);
+            }
             //splitSentencesByTime();
+            //make sure show right word state
             setState(() {});
           }
           // when leave get new content from server

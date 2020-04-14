@@ -70,6 +70,7 @@ class ArticleTitlesSlidableState extends State<ArticleTitlesSlidable> {
     if (i == -1) {
       _controller.showSnackBar("can't find article:" + articleTitle.title + " in current article list! relaoding...");
       _articleTitles.getFromLocal();
+      this.enter(articleTitle);
       return;
     }
     // first open article page view
