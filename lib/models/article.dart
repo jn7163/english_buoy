@@ -153,14 +153,15 @@ class Article with ChangeNotifier {
       });
     });
     if (unlearnedCount != words.length) isChange = true;
-    unlearnedCount = words.length;
+    this.unlearnedCount = words.length;
     return isChange;
   }
 
   // 更新文章未掌握单词数
   Future putUnlearnedCount() {
+    computeUnmasteredCount();
     return dio().put(Store.baseURL + "article/unlearned_count",
-        data: {"article_id": articleID, "unlearned_count": computeUnmasteredCount()});
+        data: {"article_id": articleID, "unlearned_count": this.unlearnedCount});
   }
 
 // 设置当前文章这个单词的学习状态

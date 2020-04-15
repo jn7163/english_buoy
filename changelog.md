@@ -4,6 +4,10 @@ Learn English by reading YouTube subtitle article.
 
 ## Version
 
+v1.4.24+1.4.24
+
+- Fix: computeUnmasteredCount bug
+
 v1.4.23+1.4.23
 
 - Make long article highlight sentence smooth
