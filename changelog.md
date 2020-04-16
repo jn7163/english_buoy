@@ -6,7 +6,9 @@ Learn English by reading YouTube subtitle article.
 
 v1.4.24+1.4.24
 
+- Make sure YouTube player CC status correct
 - Fix: computeUnmasteredCount bug
+- Fix: after WebView updating app will crashes when play YouTube
 
 v1.4.23+1.4.23
 

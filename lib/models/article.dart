@@ -147,7 +147,7 @@ class Article with ChangeNotifier {
       sentence.words.forEach((word) {
         keepWordHasSameStat(word);
         if (!word.learned && isNeedLearn(word)) {
-          print("unmastered: ${word.text}");
+          //print("unmastered: ${word.text}");
           words.add(word.text.toLowerCase());
         }
       });

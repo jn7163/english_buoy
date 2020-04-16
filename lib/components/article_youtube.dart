@@ -35,17 +35,18 @@ class ArticleYouTube extends StatelessWidget {
                 // 下半部分小小的进度条
                 showVideoProgressIndicator: true,
                 // 允许全屏
-                hideFullScreenButton: false,
+                hideFullScreenButton: true,
                 // 不可能是 live 的视频
                 isLive: false,
-                forceHideAnnotation: true,
+                forceHideAnnotation:
+                    false, // if true will make app crash https://github.com/sarbagyastha/youtube_player_flutter/issues/188
                 hideThumbnail: false,
               ),
-              videoProgressIndicatorColor: Colors.blueGrey,
-              liveUIColor: Colors.blueGrey,
+              videoProgressIndicatorColor: Colors.teal,
+              liveUIColor: Colors.teal,
               progressColors: ProgressColors(
-                playedColor: Colors.blueGrey,
-                handleColor: Colors.blueGrey,
+                playedColor: Colors.teal,
+                handleColor: Colors.teal,
               ),
             ))));
   }
